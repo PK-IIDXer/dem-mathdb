@@ -1,0 +1,140 @@
+name: Backtest
+
+# A-only public seed の語彙・公理と、将来追加される公開定理・証明を
+# Lean 4 で再検査する (docs/design/ops/external-verification-backtest.md)。
+# 初回 candidate は定理・証明を含まないため、語彙と 8 公理の型検査が中心になる。
+#
+# main への push でも走らせる。開発は手元で ff-only マージしてから push する運用で、
+# pull_request だけでは走らないため。push では master に入った後に結果が出るので、
+# 「防ぐ」ではなく「気づく」ための仕組みである。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "dem/**"
+      - "scripts/backtest/**"
+      - "backtest/lean/**"
+      - "tests/test_backtest_*.py"
+      - ".github/workflows/backtest.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "dem/**"
+      - "scripts/backtest/**"
+      - "backtest/lean/**"
+      - "tests/test_backtest_*.py"
+      - ".github/workflows/backtest.yml"
+  workflow_dispatch:
+    inputs:
+      max_theorems:
+        # 既定値は空にする。GitHub は空で送られた入力を既定値に置き換えるので、
+        # 既定値を入れておくと欄を消しても既定値が届き、全定理を走らせられない (2026-09-19)。
+        description: "翻訳する定理数の上限 (空または all なら全定理)"
+        required: false
+        default: ""
+      run_mutations:
+        description: "変異テストも走らせる"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install the package
+        run: python -m pip install -e ".[dev]"
+
+      - name: Cache the Lean toolchain
+        uses: actions/cache@v5
+        with:
+          path: ~/.elan
+          key: elan-${{ hashFiles('backtest/lean/lean-toolchain') }}
+
+      # バージョンは固定する。toolchain 自体は backtest/lean/lean-toolchain が決める。
+      - name: Install elan
+        run: |
+          set -euo pipefail
+          if [ ! -x "$HOME/.elan/bin/lake" ]; then
+            mkdir -p elan-download
+            archive=elan-download/elan-x86_64-unknown-linux-gnu.tar.gz
+            curl -sSfL \
+              https://github.com/leanprover/elan/releases/download/v4.2.3/elan-x86_64-unknown-linux-gnu.tar.gz \
+              -o "$archive"
+            echo "df0b2b3a439961ffcbb3985214365ffe40f49bc871df04dff268c7d8e21ca8b2  $archive" \
+              | sha256sum -c -
+            tar xzf "$archive" -C elan-download
+            init=$(find elan-download -type f -name 'elan-init' | head -n 1)
+            test -n "$init"
+            chmod +x "$init"
+            "$init" -y --default-toolchain none
+            rm -rf elan-download
+          fi
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Seed the database
+        run: python -m dem.db.seeds
+
+      - name: Export Lean sources
+        env:
+          # 空の入力を「全定理」として扱うため、`inputs.max_theorems || '<既定値>'` は使わない
+          # (空文字は偽とみなされ既定値に戻ってしまう)。push / pull_request では常に全定理。
+          EVENT_NAME: ${{ github.event_name }}
+          MAX_THEOREMS_INPUT: ${{ github.event.inputs.max_theorems }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            MAX_THEOREMS="$MAX_THEOREMS_INPUT"
+            if [ "$MAX_THEOREMS" = "all" ]; then
+              MAX_THEOREMS=""
+            fi
+          else
+            MAX_THEOREMS=""
+          fi
+          if [ -n "$MAX_THEOREMS" ]; then
+            python -m scripts.backtest.export_lean --db dem_dev.db --out backtest/lean \
+              --max-theorems "$MAX_THEOREMS"
+          else
+            python -m scripts.backtest.export_lean --db dem_dev.db --out backtest/lean
+          fi
+
+      # ここが本体。DEM の proof が DEM の axiom から DEM のステートメントを
+      # 実際に導出しているかを、Lean のカーネルが判定する。
+      - name: Typecheck with Lean
+        working-directory: backtest/lean
+        run: lake build
+
+      # 型検査が通っただけでは公理系の主張までは分からない (設計 §9)。
+      - name: Cross-check axiom dependencies
+        run: python -m scripts.backtest.check_axioms --db dem_dev.db --project backtest/lean
+
+      # 翻訳器が壊れた proof を通していないか (設計 §8)。
+      - name: Mutation tests
+        if: ${{ github.event.inputs.run_mutations == 'true' }}
+        env:
+          DEM_BACKTEST_LEAN: "1"
+        run: python -m pytest -q tests/test_backtest_mutations.py
+
+      - name: Upload the generated Lean sources
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: lean-sources
+          path: |
+            backtest/lean/Dem.lean
+            backtest/lean/AxiomCheck.lean
+            backtest/lean/Dem/Vocabulary.lean
+            backtest/lean/Dem/Axioms.lean
+            backtest/lean/Dem/Theorems/
+          retention-days: 7

@@ -1,0 +1,10 @@
+name = "dem_backtest"
+version = "0.1.0"
+defaultTargets = ["Dem"]
+
+# 外部ライブラリには依存せず、Lean 4 core だけで完結させる。
+# Dem/Prelude.lean だけが手書きで、Dem.lean と Dem/ 配下の他は export_lean.py の生成物。
+# "Dem.+" は root module Dem とその全 submodule をビルド対象にする。
+[[lean_lib]]
+name = "Dem"
+globs = ["Dem.+"]

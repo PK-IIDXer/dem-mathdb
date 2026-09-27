@@ -1,0 +1,8 @@
+[
+  {"case": "depth_0", "depth": 0, "avoid": [], "expected": "x"},
+  {"case": "depth_3", "depth": 3, "avoid": [], "expected": "x_1"},
+  {"case": "free_x_collision", "depth": 0, "avoid": ["x"], "expected": "x′"},
+  {"case": "two_prime_collisions", "depth": 0, "avoid": ["x", "x′"], "expected": "x″"},
+  {"case": "fallback_collision", "depth": 0, "avoid": ["x", "x′", "x″"], "expected": "x_1"},
+  {"case": "depth_15", "depth": 15, "avoid": [], "expected": "x_5"}
+]

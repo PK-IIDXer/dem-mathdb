@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+.proof-tree-canvas {
+  display: inline-flex;
+  min-width: 100%;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 2.5rem 4rem;
+  color: #1e293b;
+  background: #fff;
+}
+
+.proof-tree-node {
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: var(--proof-label-clearance, 0px);
+}
+
+.proof-tree-premises {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4rem;
+  padding-bottom: 1.15rem;
+}
+
+.proof-tree-source {
+  margin-bottom: 0.35rem;
+  color: #64748b;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.proof-tree-conclusion {
+  --proof-line-left: 0px;
+  --proof-line-width: 100%;
+  position: relative;
+  display: flex;
+  min-width: 7rem;
+  align-items: baseline;
+  justify-content: center;
+  padding: 0.55rem 0.9rem 0;
+}
+
+.proof-tree-inference-line {
+  position: absolute;
+  left: var(--proof-line-left);
+  top: 0;
+  width: var(--proof-line-width);
+  border-top: 1.5px solid #334155;
+}
+
+.proof-tree-rule-label {
+  position: absolute;
+  left: calc(var(--proof-line-left) + var(--proof-line-width) + 0.4rem);
+  top: -0.72rem;
+  color: #475569;
+  font-size: 0.7rem;
+  line-height: 1rem;
+  white-space: nowrap;
+}
+
+.proof-tree-formula {
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.proof-tree-formula:hover {
+  color: #4f46e5;
+}
+
+/* A discharged assumption is written `[φ]` in a natural deduction figure. The
+   step number beside it plays the part of the discharge marker: the same ord
+   appears in the label of the =>I that discharges it. */
+.proof-tree-bracket {
+  padding: 0 0.06rem;
+  color: inherit;
+  font-size: 0.95rem;
+}
+
+.proof-tree-step-number {
+  position: static;
+  margin-left: 0.2rem;
+  color: #94a3b8;
+  font-size: 0.6rem;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateY(0.3em);
+}
+
+@media print {
+  .proof-tree-explanation {
+    display: none !important;
+  }
+  body * {
+    visibility: hidden !important;
+  }
+
+  #proof-tree-print-area,
+  #proof-tree-print-area * {
+    visibility: visible !important;
+  }
+
+  #proof-tree-print-area {
+    position: absolute;
+    inset: 0 auto auto 0;
+    overflow: visible !important;
+    border: 0 !important;
+  }
+
+  .proof-tree-canvas {
+    min-width: max-content;
+    padding: 1rem;
+  }
+
+  @page {
+    size: landscape;
+    margin: 10mm;
+  }
+}

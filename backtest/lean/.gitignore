@@ -1,0 +1,10 @@
+# Lake のビルド成果物
+/.lake/
+
+# export_lean.py の生成物 (手書きは Dem/Prelude.lean だけ)
+/Dem.lean
+/AxiomCheck.lean
+/Dem/Vocabulary.lean
+/Dem/Axioms.lean
+/Dem/Shared.lean
+/Dem/Theorems/

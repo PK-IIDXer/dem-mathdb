@@ -1,0 +1,45 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.pytest-tmp*/
+.e2e-tmp*/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Packaging/build artifacts
+*.egg-info/
+build/
+dist/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# Local database/runtime artifacts
+*.sqlite
+*.sqlite3
+*.db
+*.log
+*.dump
+backups/
+work/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Machine-local assistant settings
+.claude/settings.local.json

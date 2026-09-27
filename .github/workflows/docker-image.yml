@@ -1,0 +1,69 @@
+name: API image
+
+# The Dockerfile copies top-level packages one by one, so a new package
+# (e.g. demlang) can be left out while the editable dev install still works.
+# Build the real image and import the app inside it.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  api-image:
+    runs-on: ubuntu-latest
+    services:
+      # Same major version as docker-compose.yml. Migration tests otherwise run on
+      # SQLite only, which hid a qmark placeholder that psycopg rejects.
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: dem
+          POSTGRES_PASSWORD: dem
+          POSTGRES_DB: dem_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dem -d dem_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build API image
+        run: docker build -f Dockerfile -t dem-api-check .
+
+      - name: Import webapi.main inside the image
+        run: docker run --rm dem-api-check python -c "import webapi.main"
+
+      - name: Image must not contain demai
+        run: >
+          docker run --rm dem-api-check python -c
+          "import importlib.util, sys; sys.exit(importlib.util.find_spec('demai') is not None)"
+
+      - name: Migrate PostgreSQL inside the image (upgrade, downgrade, upgrade)
+        shell: bash
+        env:
+          # --network host lets the container reach the service port on the runner.
+          DEM_DATABASE_URL: postgresql+psycopg://dem:dem@127.0.0.1:5432/dem_ci
+        run: |
+          set -euo pipefail
+          in_image() {
+            docker run -i --rm --network host -e DEM_DATABASE_URL dem-api-check "$@"
+          }
+          check() {
+            in_image python - "$1" < .github/scripts/migration_roundtrip.py
+          }
+          in_image alembic upgrade 20260910_0001
+          check seed
+          in_image alembic upgrade head
+          check check-head
+          in_image alembic downgrade 20260910_0001
+          check check-base
+          in_image alembic upgrade head
+          check check-head
+          in_image alembic current
