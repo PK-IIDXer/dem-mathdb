@@ -17,7 +17,14 @@ from dem.types import FormulaTypeName
 from dem.types import SymbolMeta, SymbolTypeName, Token
 from demlang.match import MatchResult, match_formulas
 from dem.services.formula import FormulaService
-from dem.identity import DEFAULT_NAMESPACE_NAME, ensure_namespace, new_entity_public_id
+from dem.services.system_tags import visible_theorem_clause
+from dem.identity import (
+    ImportedPublicId,
+    DEFAULT_NAMESPACE_NAME,
+    ensure_namespace,
+    new_entity_public_id,
+    split_qualified_name,
+)
 
 
 @dataclass(frozen=True)
@@ -132,7 +139,7 @@ class TheoremService:
         remarks: str | None = None,
         namespace: str = DEFAULT_NAMESPACE_NAME,
         namespace_id: int | None = None,
-        public_id_key: str | None = None,
+        public_id_key: str | ImportedPublicId | None = None,
     ) -> Theorem:
         """Register a conjecture.
 
@@ -214,6 +221,7 @@ class TheoremService:
         return row
 
     def get_by_name(self, name: str, namespace: str | None = None) -> Theorem:
+        name, namespace = split_qualified_name(name, namespace)
         stmt = select(Theorem).where(Theorem.name.in_(theorem_lookup_names(name)))
         if namespace is not None:
             stmt = stmt.join(Namespace).where(Namespace.name == namespace)
@@ -234,7 +242,7 @@ class TheoremService:
         tag_ids: list[int] | None = None,
         status: str | None = None,
     ) -> list[Theorem]:
-        stmt = select(Theorem).order_by(Theorem.id)
+        stmt = select(Theorem).where(visible_theorem_clause(Theorem.id)).order_by(Theorem.id)
         if search:
             like = f"%{search}%"
             stmt = stmt.where(or_(Theorem.name.ilike(like), Theorem.description.ilike(like)))
@@ -282,7 +290,11 @@ class TheoremService:
         if not theorem_ids:
             return []
         return list(
-            self._session.scalars(select(Theorem).where(Theorem.id.in_(theorem_ids)).order_by(Theorem.id))
+            self._session.scalars(
+                select(Theorem)
+                .where(Theorem.id.in_(theorem_ids), visible_theorem_clause(Theorem.id))
+                .order_by(Theorem.id)
+            )
         )
 
     def list_applicable(
@@ -348,7 +360,7 @@ class TheoremService:
             Proof.theorem_id == Theorem.id, Proof.status == "verified"
         ).exists()
         theorem_stmt = select(Theorem).where(
-            Theorem.status == "proven", verified
+            Theorem.status == "proven", verified, visible_theorem_clause(Theorem.id)
         )
         if goal_tokens is not None:
             schematic_heads = select(Symbol.id).join(SymbolType).where(
@@ -389,17 +401,21 @@ class TheoremService:
         formula_ids.update(arg_formula_ids.values())
         if goal_formula_id is not None:
             formula_ids.add(goal_formula_id)
-        rows = self._session.scalars(
-            select(FormulaToken)
+        rows = self._session.execute(
+            select(
+                FormulaToken.formula_id,
+                FormulaToken.symbol_id,
+                FormulaToken.de_bruijn_index,
+            )
             .where(FormulaToken.formula_id.in_(formula_ids))
             .order_by(FormulaToken.formula_id, FormulaToken.position)
         )
         tokens_by_formula: dict[int, list[Token]] = {}
-        for row in rows:
-            tokens_by_formula.setdefault(row.formula_id, []).append(
-                Token(symbol_id=row.symbol_id)
-                if row.symbol_id is not None
-                else Token(de_bruijn_index=row.de_bruijn_index)
+        for formula_id, symbol_id, de_bruijn_index in rows:
+            tokens_by_formula.setdefault(formula_id, []).append(
+                Token(symbol_id=symbol_id)
+                if symbol_id is not None
+                else Token(de_bruijn_index=de_bruijn_index)
             )
         arg_tokens = [
             tokens_by_formula[arg_formula_ids[ord_]] for ord_ in arg_step_ords

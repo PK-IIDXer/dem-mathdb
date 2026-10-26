@@ -1,0 +1,121 @@
+name: dem-beta
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+services:
+  db:
+    image: postgres:18.2
+    environment:
+      POSTGRES_USER: dem_beta_admin
+      POSTGRES_PASSWORD: ${DEM_BETA_ADMIN_PASSWORD:?set admin password}
+      POSTGRES_DB: postgres
+    command: ["postgres", "-c", "shared_buffers=128MB", "-c", "max_connections=40"]
+    volumes:
+      - pgdata:/var/lib/postgresql
+    networks: [database]
+    mem_limit: 512m
+    restart: unless-stopped
+    logging: *logging
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dem_beta_admin -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+  api:
+    image: dem-beta-api:${DEM_BETA_COMMIT:?set full commit}
+    build:
+      context: ../..
+      dockerfile: deploy/beta/api.Dockerfile
+    environment:
+      DEM_BETA: "1"
+      DEM_DATABASE_URL: postgresql+psycopg://dem_beta_app:${DEM_BETA_APP_PASSWORD:?set app password}@db/dem_beta_live
+      DEM_BETA_FLAG_DIR: /beta/flags
+      DEM_BETA_STATUS_FILE: /beta/status/status.json
+      DEM_BETA_CONTACT_DIR: /beta/contacts
+    volumes:
+      - ${DEM_BETA_HOME:?set runtime directory}/flags:/beta/flags:ro
+      - ${DEM_BETA_HOME:?set runtime directory}/status:/beta/status:ro
+      - ${DEM_BETA_HOME:?set runtime directory}/contacts:/beta/contacts:rw
+    networks:
+      database: {}
+      proxy:
+        ipv4_address: 172.30.42.3
+    depends_on:
+      db:
+        condition: service_healthy
+    read_only: true
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=64m"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 768m
+    restart: unless-stopped
+    logging: *logging
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=4)"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 10s
+  tools:
+    image: dem-beta-api:${DEM_BETA_COMMIT:?set full commit}
+    profiles: [tools]
+    entrypoint: ["python", "-m", "scripts.beta_admin"]
+    environment:
+      DEM_BETA: "1"
+      DEM_BETA_ADMIN_DATABASE_URL: postgresql+psycopg://dem_beta_admin:${DEM_BETA_ADMIN_PASSWORD:?set admin password}@db/postgres
+      DEM_BETA_OWNER_PASSWORD: ${DEM_BETA_OWNER_PASSWORD:?set owner password}
+      DEM_BETA_APP_PASSWORD: ${DEM_BETA_APP_PASSWORD:?set app password}
+      DEM_BETA_COMMIT: ${DEM_BETA_COMMIT:?set full commit}
+      DEM_BETA_RESET_SCHEDULE: ${DEM_BETA_RESET_SCHEDULE:-Mon 04:00 Asia/Tokyo}
+      DEM_BETA_FLAG_DIR: /beta/flags
+      DEM_BETA_STATUS_FILE: /beta/status/status.json
+      DEM_BETA_STATE_DIR: /beta/state
+      DEM_BETA_BACKUP_DIR: /beta/backups
+    volumes:
+      - ${DEM_BETA_HOME:?set runtime directory}/flags:/beta/flags
+      - ${DEM_BETA_HOME:?set runtime directory}/status:/beta/status
+      - ${DEM_BETA_HOME:?set runtime directory}/state:/beta/state
+      - ${DEM_BETA_HOME:?set runtime directory}/backups:/beta/backups
+    networks: [database]
+    read_only: true
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=128m"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 768m
+    logging: *logging
+  web:
+    image: dem-beta-web:${DEM_BETA_COMMIT:?set full commit}
+    build:
+      context: ../..
+      dockerfile: deploy/beta/web.Dockerfile
+    environment:
+      DEM_BETA_DOMAIN: ${DEM_BETA_DOMAIN:?set domain}
+      DEM_BETA_NOINDEX: ${DEM_BETA_NOINDEX:-1}
+    ports: ["80:80", "443:443"]
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      - ${DEM_BETA_HOME:?set runtime directory}/logs:/var/log/caddy
+    networks:
+      frontend: {}
+      proxy:
+        ipv4_address: 172.30.42.2
+    mem_limit: 128m
+    restart: unless-stopped
+    logging: *logging
+networks:
+  database:
+    internal: true
+  frontend:
+    internal: false
+  proxy:
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.30.42.0/24
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

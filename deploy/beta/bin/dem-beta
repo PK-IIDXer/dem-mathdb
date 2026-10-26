@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+set -euo pipefail
+umask 077
+REPO=${DEM_BETA_REPO:-/opt/dem-beta}
+ENV_FILE="$REPO/deploy/beta/.env"
+set -a
+# Root-owned, generated locally, never obtained from a request or a dump.
+source "$ENV_FILE"
+set +a
+: "${DEM_BETA_HOME:?}" "${DEM_BETA_COMMIT:?}"
+command=${1:-status}
+# Delivery has its own lock; it must not block or depend on a DB operation.
+if [[ "$command" == notify ]]; then
+    exec python3 "$REPO/deploy/beta/notify.py" "$DEM_BETA_HOME"
+fi
+exec 9>"$DEM_BETA_HOME/host-state/operation.lock"
+flock -n 9 || { echo 'dem-beta: another host operation is running' >&2; exit 75; }
+dc() { docker compose --env-file "$ENV_FILE" -f "$REPO/deploy/beta/compose.yml" "$@"; }
+tools() { dc run --rm tools "$@"; }
+notify() {
+    python3 "$REPO/deploy/beta/notify.py" "$DEM_BETA_HOME" --record-only "$@" || echo 'dem-beta: notification recording failed' >&2
+}
+freeze() {
+    # Preserve beta_admin's existing token; finish requires its ownership.
+    if [[ ! -e "$DEM_BETA_HOME/flags/read_only" ]]; then
+        printf 'host maintenance\n' > "$DEM_BETA_HOME/flags/read_only"
+        chmod 644 "$DEM_BETA_HOME/flags/read_only"
+    fi
+}
+write_reset_error() {
+    local temporary
+    temporary=$(mktemp "$DEM_BETA_HOME/status/.reset-error.XXXXXX")
+    printf '{"failed_at":"%s","stage":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$stage" > "$temporary"
+    chmod 644 "$temporary"
+    mv -f -- "$temporary" "$DEM_BETA_HOME/status/reset-error.json"
+}
+switch_started=0
+stage=prepare
+failed_switch() {
+    result=$?
+    trap - EXIT
+    if (( result != 0 )); then
+        if (( switch_started )); then
+            dc start api || true
+            freeze || true
+            echo 'dem-beta: switch failed; API start attempted; writes remain frozen' >&2
+        else
+            echo 'dem-beta: preparation failed; live API left running' >&2
+        fi
+        write_reset_error || echo 'dem-beta: could not record reset error' >&2
+        notify
+    fi
+    exit "$result"
+}
+ready() {
+    local id state attempt
+    id=$(dc ps -aq api)
+    [[ -n "$id" ]] || return 1
+    for ((attempt=0; attempt<60; attempt++)); do
+        state=$(docker inspect --format '{{.State.Health.Status}}' "$id") || return 1
+        [[ "$state" == healthy ]] && return 0
+        sleep 2
+    done
+    echo 'dem-beta: API readiness timed out' >&2
+    return 1
+}
+host_stats() { python3 "$REPO/deploy/beta/host.py" "$1" "$DEM_BETA_HOME" "${DEM_BETA_INTERFACE:?}"; }
+command=${1:-status}
+case "$command" in
+    up) dc build; dc up -d ;;
+    roles) tools roles ;;
+    build-base) tools build-base ;;
+    backup) tools backup ;;
+    reset)
+        trap failed_switch EXIT
+        tools reset prepare
+        stage=stop
+        switch_started=1
+        dc stop api
+        stage=swap
+        tools reset swap
+        stage=start
+        dc start api
+        stage=ready
+        ready
+        stage=finish
+        tools reset finish
+        rm -f -- "$DEM_BETA_HOME/status/reset-error.json"
+        notify
+        trap - EXIT
+        ;;
+    restore)
+        [[ $# == 2 ]] || { echo 'usage: dem-beta restore BACKUP_FILENAME' >&2; exit 2; }
+        switch_started=1
+        stage=stop
+        trap failed_switch EXIT
+        [[ "$2" != */* && "$2" != *\\* ]] || exit 2
+        dc stop api
+        stage=restore
+        tools restore --file "/beta/backups/$2"
+        stage=start
+        dc start api
+        stage=ready
+        ready
+        stage=finish
+        tools reset finish
+        rm -f -- "$DEM_BETA_HOME/status/reset-error.json"
+        notify
+        trap - EXIT
+        ;;
+    freeze) freeze ;;
+    unfreeze) rm -f -- "$DEM_BETA_HOME/flags/read_only" ;;
+    watch)
+        if ! stats=$(host_stats watch); then
+            freeze
+            dc stop web
+            notify --watch -1 1 1 1
+            echo 'dem-beta watch: counters unavailable; frozen; web stopped' >&2
+            exit 1
+        fi
+        read -r disk tx deleted <<< "$stats"
+        action=observe
+        frozen=0
+        stopped=0
+        if (( disk >= 85 )); then freeze; action=freeze; frozen=1; fi
+        if (( tx >= ${DEM_BETA_MONTHLY_TX_LIMIT:-2500000000000} )); then dc stop web; action=stop-web; stopped=1; fi
+        notify --watch "$disk" "$frozen" "$stopped" 0
+        echo "dem-beta watch: disk=$disk% month_tx=$tx deleted_backups=$deleted action=$action"
+        ;;
+    status)
+        tools status
+        dc ps -a
+        stats=$(host_stats status)
+        read -r disk tx deleted <<< "$stats"
+        echo "dem-beta status: disk=$disk% month_tx=$tx"
+        ;;
+    *) echo 'usage: dem-beta up|roles|build-base|reset|backup|restore FILE|freeze|unfreeze|watch|status|notify' >&2; exit 2 ;;
+esac

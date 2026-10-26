@@ -13,6 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from dem.db.models import Formula, FormulaToken, Symbol
+from dem.db.package_triggers import PUBLISHED_GUARDS
 from dem.db.triggers import (
     POSTGRES_TIER_B_TRIGGER_SPECS,
     SQLITE_TIER_B_TRIGGER_SPECS,
@@ -25,7 +26,7 @@ from dem.services.formula import validate_tokens
 from dem.types import FormulaTypeName, SymbolMeta, SymbolTypeName, Token
 
 
-SEED_PHASE = "l2"
+SEED_PHASE = "public_core"
 _TEST_DATABASE_ENV = "DEM_TEST_DATABASE"
 
 
@@ -467,6 +468,7 @@ def test_tier_b_trigger_sets_match_schema_origins(seed_snapshot_factory) -> None
             *TIER_A_TRIGGER_SPECS,
             *dialect_specs,
             *TIER_B_IMMUTABILITY_TRIGGER_SPECS,
+            *PUBLISHED_GUARDS,
         )
     }
     with seed_snapshot_factory.l2_origin_urls(database) as urls:

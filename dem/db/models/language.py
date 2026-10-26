@@ -99,9 +99,11 @@ class Symbol(Base):
             name="infix_requires_arity_two",
         ),
         UniqueConstraint("namespace_id", "name"),
+        Index("ix_symbol_identity", "id", "namespace_id", "name", unique=True),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    release_id: Mapped[int | None] = mapped_column(ForeignKey("package_release.id"))
     public_id: Mapped[str] = mapped_column(
         Text, nullable=False, unique=True, default=new_public_id
     )

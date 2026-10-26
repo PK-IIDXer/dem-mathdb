@@ -1,0 +1,8 @@
+[Unit]
+Description=Check anonymous beta disk and transfer budget
+Requires=docker.service
+After=docker.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/dem-beta watch
+TimeoutStartSec=2min

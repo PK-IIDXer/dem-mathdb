@@ -8,6 +8,7 @@ from dem.db.models import Base
 from dem.db.seed import seed_inference_rules, seed_language
 from dem.db.seeds.hilbert import seed_hilbert_core
 from dem.errors import ValidationError
+from dem.identity import DEFAULT_NAMESPACE_NAME
 from dem.services.definition import DefinitionService
 from dem.services.formula import FormulaService
 from dem.services.proof import ProofService
@@ -136,6 +137,47 @@ def test_function_desc_rejects_unverified_existence_uniqueness_proof() -> None:
                     existence_uniqueness_proof_id=draft_proof.id,
                 )
             )
+
+
+def test_existence_uniqueness_uses_foundation_connectives_when_names_collide() -> None:
+    with make_session() as session:
+        symbols = SymbolService(session)
+        formulas = FormulaService(session)
+        definitions = DefinitionService(session)
+
+        foundation_and = symbols.get_by_name("∧", namespace=DEFAULT_NAMESPACE_NAME)
+        foundation_exists = symbols.get_by_name("∃", namespace=DEFAULT_NAMESPACE_NAME)
+        local_and = symbols.register(
+            "∧",
+            foundation_and.symbol_type_id,
+            foundation_and.arity,
+            namespace="local.workspace",
+        )
+        local_exists = symbols.register(
+            "∃",
+            foundation_exists.symbol_type_id,
+            foundation_exists.arity,
+            namespace="local.workspace",
+        )
+        value = register_term_var(symbols, "y_namespace_collision")
+        witness = register_term_var(symbols, "z_namespace_collision")
+        target = register_term_var(symbols, "x_namespace_collision")
+        eq = symbols.get_by_role("equality")
+        body = formulas.register(
+            [
+                Token(symbol_id=eq.id),
+                Token(symbol_id=value.id),
+                Token(symbol_id=target.id),
+            ]
+        )
+
+        tokens = definitions.compute_existence_uniqueness_statement_tokens(
+            (), value.id, witness.id, body.id
+        )
+        symbol_ids = {token.symbol_id for token in tokens if token.symbol_id is not None}
+        assert {foundation_and.id, foundation_exists.id} <= symbol_ids
+        assert local_and.id not in symbol_ids
+        assert local_exists.id not in symbol_ids
 
 
 def test_function_desc_rejects_existence_uniqueness_proof_with_premises() -> None:

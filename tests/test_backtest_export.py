@@ -22,7 +22,7 @@ from scripts.backtest import export_lean
 from scripts.backtest.dem_db import BacktestError, DemDatabase
 
 # 論理コアだけで足りる。記号・公理の翻訳は上位層に依存しない。
-SEED_PHASE = "l0"
+SEED_PHASE = "public_core"
 SEED_DATABASE = "sqlite"
 
 BACKTEST_SOURCES = sorted(Path("scripts/backtest").glob("*.py"))

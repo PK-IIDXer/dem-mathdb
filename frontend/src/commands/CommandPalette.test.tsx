@@ -1,9 +1,11 @@
+import { setupUser } from '../test/user'
+import { PAGE_INTERACTION_TIMEOUT } from '../test/timeouts'
 // @vitest-environment jsdom
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, useLocation } from 'react-router-dom'
 import { useRef, useState } from 'react'
 import { afterEach, expect, it, vi } from 'vitest'
 import { CommandPalette } from './CommandPalette'
@@ -169,6 +171,29 @@ it('executes only the active option once', async () => {
   await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('main')))
 })
 
+it('looks up proofs only by complete public ID and displays the theorem name', async () => {
+  const publicId = '00000000-0000-4000-8000-000000000077'
+  const fetchMock = vi.fn((input: RequestInfo | URL) => {
+    const url = String(input)
+    if (url === '/api/formulas/search') return Promise.resolve(json({ items: [], next_cursor: null }))
+    if (url === `/api/proofs/${publicId}`) return Promise.resolve(json({ id: 77, public_id: publicId, theorem_id: 88 }))
+    if (url === '/api/theorems/88') return Promise.resolve(json({ name: '検索した定理' }))
+    return Promise.resolve(json([]))
+  })
+  vi.stubGlobal('fetch', fetchMock)
+  renderPalette()
+  fireEvent.click(screen.getByText('操作を検索'))
+  const input = screen.getByRole('combobox', { name: 'コマンドまたは項目を検索' })
+  for (const query of ['77', publicId.slice(0, -1)]) {
+    fireEvent.change(input, { target: { value: query } })
+    await waitFor(() => expect(fetchMock.mock.calls.some(([url]) => String(url).includes(encodeURIComponent(query)))).toBe(true))
+    expect(fetchMock.mock.calls.some(([url]) => String(url).startsWith('/api/proofs/'))).toBe(false)
+  }
+  fireEvent.change(input, { target: { value: publicId } })
+  expect(await screen.findByText('検索した定理の証明')).toBeTruthy()
+  expect(screen.queryByText('Proof #77')).toBeNull()
+})
+
 it('preserves focus moved by a plan command and restores origin for a non-focus command', async () => {
   vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(json([]))))
   const onToggle = renderFocusPalette()
@@ -246,3 +271,23 @@ it('falls back to the palette trigger when the origin unmounts', async () => {
   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   await waitFor(() => expect(document.activeElement).toBe(screen.getByRole('button', { name: /操作を検索/ })))
 })
+
+function PaletteLocation() { return <output data-testid="palette-location">{useLocation().pathname}</output> }
+
+it('opens axiom systems using their public ID', async () => {
+  const publicId = '00000000-0000-4000-8000-000000000789'
+  vi.stubGlobal('fetch', vi.fn((input: RequestInfo | URL) => {
+    const url = String(input)
+    if (url === '/api/axiom-systems') return Promise.resolve(json([{ id: 789, public_id: publicId, name: '体系検索' }]))
+    if (url === '/api/formulas/search') return Promise.resolve(json({ items: [], next_cursor: null }))
+    return Promise.resolve(json([]))
+  }))
+  render(<QueryClientProvider client={new QueryClient()}><MemoryRouter><CommandProvider>
+    <CommandPalette /><PaletteLocation />
+  </CommandProvider></MemoryRouter></QueryClientProvider>)
+  const user = setupUser()
+  await user.click(screen.getByText('操作を検索'))
+  await user.type(screen.getByRole('combobox'), '体系検索')
+  await user.click(await screen.findByText('体系検索'))
+  expect(screen.getByTestId('palette-location').textContent).toBe(`/axiom-systems/${publicId}`)
+}, PAGE_INTERACTION_TIMEOUT)

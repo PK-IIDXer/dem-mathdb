@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Sequence
 
-from dem.types import Token
+from dem.types import SymbolTypeName, Token
 from demlang.symbols import SurfaceSymbol, SymbolTable
 
 
@@ -88,6 +88,7 @@ def _render(node: _Node, table: SymbolTable, scope: list[str], used: set[str]) -
             node.children[1].token.is_symbol
             and table.get(node.children[1].token.symbol_id or 0).id == symbol.id
             and symbol.notation_kind == "infix"
+            and symbol.meta.symbol_type_name == SymbolTypeName.LOGICAL
         )
         if not _is_atomic(node.children[1], table) and not right_is_same_chain:
             right = f"({right})"

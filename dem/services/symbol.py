@@ -8,8 +8,14 @@ from sqlalchemy.orm import Session
 from dem.db.models.language import FormulaToken, FormulaType, Namespace, Symbol, SymbolAlias, SymbolRole, SymbolType
 from dem.db.ordering import utf8_sort_key
 from dem.errors import ConflictError, NotFoundError, ValidationError
-from dem.identity import DEFAULT_NAMESPACE_NAME, ensure_namespace, new_entity_public_id
-from dem.services.formula import flush_pending_symbol_usage_counts
+from dem.identity import (
+    ImportedPublicId,
+    DEFAULT_NAMESPACE_NAME,
+    ensure_namespace,
+    new_entity_public_id,
+    split_qualified_name,
+)
+from dem.services.formula import flush_pending_symbol_usage_counts, symbol_is_published
 from dem.types import SymbolTypeName
 from dem.symbol_aliases import BUILTIN_ALIASES
 
@@ -97,7 +103,7 @@ class SymbolService:
         remarks: str | None = None,
         namespace: str = DEFAULT_NAMESPACE_NAME,
         namespace_id: int | None = None,
-        public_id_key: str | None = None,
+        public_id_key: str | ImportedPublicId | None = None,
     ) -> Symbol:
         """Register a symbol.
 
@@ -159,7 +165,12 @@ class SymbolService:
         # spellings immediately as well; partial cascade snapshots should have
         # the same parser vocabulary as a completed seed_all() database.
         for alias_name, target_name in BUILTIN_ALIASES.items():
-            if target_name == name:
+            # Aliases remain workspace-global and unambiguous.  When a second
+            # namespace defines the same canonical name, keep the existing
+            # built-in spelling attached to the first (foundation) symbol.
+            if target_name == name and self._session.scalar(
+                select(SymbolAlias.id).where(SymbolAlias.alias == alias_name)
+            ) is None:
                 self.add_alias(symbol.id, alias_name, source="builtin")
         return symbol
 
@@ -170,6 +181,7 @@ class SymbolService:
         return row
 
     def get_by_name(self, name: str, namespace: str | None = None) -> Symbol:
+        name, namespace = split_qualified_name(name, namespace)
         stmt = select(Symbol).where(Symbol.name == name)
         if namespace is not None:
             stmt = stmt.join(Namespace).where(Namespace.name == namespace)
@@ -191,7 +203,13 @@ class SymbolService:
         if symbol_type_id is not None:
             self.get_symbol_type(symbol_type_id)
         flush_pending_symbol_usage_counts(self._session)
-        stmt = select(Symbol, Symbol.usage_count).order_by(Symbol.id)
+        from sqlalchemy import case
+        actual_count = select(func.count(func.distinct(FormulaToken.formula_id))).where(
+            FormulaToken.symbol_id == Symbol.id
+        ).scalar_subquery()
+        # Published rows are immutable, including this display-only cache.
+        count = case((symbol_is_published(), actual_count), else_=Symbol.usage_count)
+        stmt = select(Symbol, count).order_by(Symbol.id)
         if symbol_type_id is not None:
             stmt = stmt.where(Symbol.symbol_type_id == symbol_type_id)
         return [(symbol, count) for symbol, count in self._session.execute(stmt)]
@@ -205,7 +223,7 @@ class SymbolService:
             .scalar_subquery()
         )
         self._session.execute(
-            update(Symbol).values(usage_count=count_for_symbol)
+            update(Symbol).where(~symbol_is_published()).values(usage_count=count_for_symbol)
         )
         self._session.flush()
 

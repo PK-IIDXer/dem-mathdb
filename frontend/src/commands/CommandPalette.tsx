@@ -1,3 +1,4 @@
+import { isPublicId } from '../publicId'
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { axiomsApi } from '../api/axioms'
@@ -93,8 +94,11 @@ export function CommandPalette() {
       const signal = controller.signal
       setLoading(true)
       const entityResults = async () => {
-        const proofLookup = /^\d+$/.test(value) || /^[0-9a-f-]{8,}$/i.test(value)
-          ? ignoreFailure(proofsApi.get(value, signal).then((proof) => [proof]))
+        const proofLookup = isPublicId(value)
+          ? ignoreFailure(proofsApi.get(value, signal).then(async (proof) => {
+              const theorem = await theoremsApi.get(proof.theorem_id)
+              return [{ ...proof, theoremName: theorem.name }]
+            }))
           : Promise.resolve([])
         const [symbols, axioms, systems, theorems, definitions, formulas, proofs, rules] = await Promise.all([
           ignoreFailure(symbolsApi.listSymbols(undefined, false, signal)),
@@ -120,7 +124,7 @@ export function CommandPalette() {
           ...axioms.slice(0, 10)
             .map((item) => entityResult(`axiom-${item.id}`, item.name, 'Axioms', `/axioms/${item.public_id}`)),
           ...systems.filter((item) => matches(value, [item.name])).slice(0, 10)
-            .map((item) => entityResult(`axiom-system-${item.id}`, item.name, 'Axiom systems', `/axiom-systems/${item.id}`)),
+            .map((item) => entityResult(`axiom-system-${item.id}`, item.name, 'Axiom systems', `/axiom-systems/${item.public_id}`)),
           ...theorems.slice(0, 10)
             .map((item) => entityResult(`theorem-${item.id}`, item.name, 'Theorems', `/theorems/${item.public_id}`)),
           ...rules.filter((item) => document.querySelector('[data-rule-enabled="true"]') && matches(value, [item.name])).map((item): PaletteResult => ({
@@ -134,7 +138,7 @@ export function CommandPalette() {
           ...definitions.slice(0, 10)
             .map((item) => entityResult(`definition-${item.id}`, item.name, 'Definitions', `/definitions/${item.public_id}`)),
           ...formulas.map((item) => entityResult(`formula-${item.formula_id}`, `Formula #${item.formula_id}`, 'Formulas', `/formulas?formula=${item.formula_id}`)),
-          ...proofs.map((item) => entityResult(`proof-${item.id}`, `Proof #${item.id}`, 'Proofs', `/proofs/${item.public_id}`)),
+          ...proofs.map((item) => entityResult(`proof-${item.id}`, `${item.theoremName}の証明`, 'Proofs', `/proofs/${item.public_id}`)),
         ]
         setEntities(next)
         setLoading(false)

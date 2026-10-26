@@ -24,6 +24,7 @@ class Theorem(Base):
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    release_id: Mapped[int | None] = mapped_column(ForeignKey("package_release.id"))
     public_id: Mapped[str] = mapped_column(
         Text, nullable=False, unique=True, default=new_public_id
     )
@@ -80,10 +81,11 @@ class Proof(Base):
     __tablename__ = "proof"
     __table_args__ = (
         CheckConstraint("status IN ('draft', 'verified', 'rejected')", name="known_status"),
-        UniqueConstraint("theorem_id", "identity_ordinal"),
+        UniqueConstraint("theorem_id", "identity_ordinal", name="uq_proof_theorem_identity_ordinal"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    release_id: Mapped[int | None] = mapped_column(ForeignKey("package_release.id"))
     public_id: Mapped[str] = mapped_column(
         Text, nullable=False, unique=True, default=new_public_id
     )

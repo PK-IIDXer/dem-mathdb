@@ -1,3 +1,6 @@
+import { EntityBadge } from '../components/BetaIdentity'
+import { statsApi } from '../api/stats'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { theoremsApi } from '../api/theorems'
@@ -5,7 +8,10 @@ import { tagsApi } from '../api/tags'
 import { axiomsApi } from '../api/axioms'
 import { FormulaPreview } from '../components/FormulaPreview'
 import { ONBOARDING_TAG_NAME, onboardingQuery } from '../onboarding'
+import { EXPLORATION_TAG_NAME } from '../exploration'
 import { useReadOnly } from '../ReadOnlyContext'
+import { BetaGettingStarted } from '../components/BetaGettingStarted'
+import { useBeta } from '../components/BetaContext'
 
 const STATUS_LABEL: Record<string, string> = {
   conjecture: '未証明',
@@ -19,19 +25,23 @@ const STATUS_BADGE: Record<string, string> = {
 const RECENT_COUNT = 5
 
 export function HomePage() {
+  usePageTitle('')
   const readOnly = useReadOnly()
+  const beta = useBeta()
   const { data: theorems = [] } = useQuery({ queryKey: ['theorems'], queryFn: () => theoremsApi.listVisible() })
   const { data: tags = [] } = useQuery({ queryKey: ['tags'], queryFn: () => tagsApi.list() })
   const { data: axiomSystems = [] } = useQuery({ queryKey: ['axiomSystems'], queryFn: () => axiomsApi.listSystems() })
 
-  const provenCount = theorems.filter((t) => t.status === 'proven').length
-  const conjectureCount = theorems.length - provenCount
+  const { data: stats, isError: statsError } = useQuery({ queryKey: ['stats'], queryFn: statsApi.get })
   const recentTheorems = [...theorems].sort((a, b) => b.id - a.id).slice(0, RECENT_COUNT)
-  const visibleTags = tags.filter((tag) => tag.name !== ONBOARDING_TAG_NAME)
+  const visibleTags = tags.filter(
+    (tag) => tag.name !== ONBOARDING_TAG_NAME && tag.name !== EXPLORATION_TAG_NAME,
+  )
 
   return (
     <div className="space-y-6">
-      {!readOnly && (
+      <BetaGettingStarted theorems={theorems} />
+      {!readOnly && !beta && (
         <section className="rounded-xl border border-indigo-200 bg-indigo-50 p-5">
           <h2 className="text-lg font-semibold text-indigo-950">はじめての定理</h2>
           <p className="mt-1 text-sm text-indigo-900">実際の画面で、式の入力から機械検証済みの証明まで進めます。</p>
@@ -43,20 +53,22 @@ export function HomePage() {
           </Link>
         </section>
       )}
-      <section className="grid grid-cols-3 gap-3">
-        <div className="rounded-lg border border-slate-200 p-4 text-center">
-          <div className="text-2xl font-bold text-slate-800">{theorems.length}</div>
-          <div className="text-xs text-slate-500">登録済みの定理</div>
-        </div>
-        <div className="rounded-lg border border-slate-200 p-4 text-center">
-          <div className="text-2xl font-bold text-green-700">{provenCount}</div>
-          <div className="text-xs text-slate-500">証明済み</div>
-        </div>
-        <div className="rounded-lg border border-slate-200 p-4 text-center">
-          <div className="text-2xl font-bold text-slate-600">{conjectureCount}</div>
-          <div className="text-xs text-slate-500">未証明</div>
-        </div>
+      <section aria-label="収録規模" className="grid grid-cols-3 gap-3">
+        {([
+          ['theorem_count', '登録済みの定理'],
+          ['proven_theorem_count', '証明済み'],
+          ['proof_step_count', '証明ステップ'],
+          ['primitive_axiom_count', '原始公理'],
+          ['axiom_system_count', '公理系'],
+          ['dependency_count', '定理間の依存'],
+        ] as const).map(([key, label]) => (
+          <div key={key} className="rounded-lg border border-slate-200 p-4 text-center">
+            <div className="text-2xl font-bold text-slate-800">{stats?.[key].toLocaleString('ja-JP') ?? '—'}</div>
+            <div className="text-xs text-slate-500">{label}</div>
+          </div>
+        ))}
       </section>
+      {statsError && <p role="alert" className="text-sm text-slate-500">収録規模を取得できませんでした。</p>}
 
       <section className="rounded-lg border border-slate-200 p-4">
         <div className="mb-3 flex items-center justify-between">
@@ -76,7 +88,7 @@ export function HomePage() {
                   className="block rounded border border-slate-100 px-3 py-2 hover:border-indigo-300 hover:bg-indigo-50/40"
                 >
                   <div className="mb-1 flex items-center justify-between">
-                    <span className="font-mono text-sm text-slate-800">{theorem.name}</span>
+                    <span className="font-mono text-sm text-slate-800">{theorem.name}</span> <EntityBadge namespace={theorem.namespace_name} />
                     <span
                       className={`rounded px-2 py-0.5 text-[10px] font-semibold ${STATUS_BADGE[theorem.status] ?? ''}`}
                     >
@@ -121,9 +133,9 @@ export function HomePage() {
             <ul className="space-y-1 text-sm">
               {axiomSystems.map((system) => (
                 <li key={system.id}>
-                  <Link to={`/axiom-systems/${system.id}`} className="text-indigo-600 hover:underline">
+                  <Link to={`/axiom-systems/${system.public_id}`} className="text-indigo-600 hover:underline">
                     {system.name}
-                  </Link>
+                  </Link> <EntityBadge namespace={system.namespace_name} />
                 </li>
               ))}
             </ul>

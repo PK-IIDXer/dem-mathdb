@@ -2,15 +2,17 @@ from __future__ import annotations
 
 import pytest
 from sqlalchemy import create_engine, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from dem.api import DemServices
+from dem.db.engine import make_engine
 from dem.db.models import Axiom, Base, Definition, Formula, Proof, Symbol, Theorem
 from dem.db.seed import seed_language
 from dem.db.seeds import seed_all
 from dem.errors import ConflictError, FormulaValidationError, ValidationError
 from dem.services.formula import compute_hash
-from dem.types import SymbolTypeName, Token
+from dem.types import LogicalDefinitionInput, SymbolTypeName, Token
 
 
 @pytest.fixture
@@ -81,6 +83,81 @@ def test_theorem_names_are_namespace_scoped(dem: DemServices) -> None:
     with pytest.raises(ValidationError) as caught:
         dem.theorems.get_by_name("same")
     assert caught.value.code == "theorem.ambiguous_name"
+
+
+def test_axiom_definition_and_system_names_are_namespace_scoped(
+    dem: DemServices,
+) -> None:
+    prop_type = dem.symbols.get_symbol_type_by_name(
+        SymbolTypeName.FREE_PROP_VAR.value
+    )
+    phi = dem.symbols.register("definition_param", prop_type.id, 0)
+    formula = dem.formulas.register([Token(symbol_id=phi.id)])
+
+    first_axiom = dem.axioms.register(
+        "same_axiom", formula.id, namespace="local.alpha"
+    )
+    second_axiom = dem.axioms.register(
+        "same_axiom", formula.id, namespace="local.beta"
+    )
+    assert first_axiom.public_id != second_axiom.public_id
+    with pytest.raises(ConflictError):
+        dem.axioms.register("same_axiom", formula.id, namespace="local.alpha")
+
+    definition_input = LogicalDefinitionInput(
+        name="same_definition",
+        param_symbol_ids=(phi.id,),
+        body_formula_id=formula.id,
+    )
+    first_definition = dem.definitions.register(
+        definition_input, namespace="local.alpha"
+    )
+    second_definition = dem.definitions.register(
+        definition_input, namespace="local.beta"
+    )
+    assert first_definition.public_id != second_definition.public_id
+    with pytest.raises(ConflictError):
+        dem.definitions.register(definition_input, namespace="local.alpha")
+
+    first_system = dem.axioms.register_system(
+        "same_system", namespace="local.alpha"
+    )
+    second_system = dem.axioms.register_system(
+        "same_system", namespace="local.beta"
+    )
+    assert first_system.id != second_system.id
+    with pytest.raises(ConflictError):
+        dem.axioms.register_system("same_system", namespace="local.alpha")
+
+
+def test_definition_identity_must_match_its_new_symbol() -> None:
+    engine = make_engine("sqlite+pysqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    with Session(engine) as session:
+        seed_language(session)
+        dem = DemServices(session)
+        prop_type = dem.symbols.get_symbol_type_by_name(
+            SymbolTypeName.FREE_PROP_VAR.value
+        )
+        first = dem.symbols.register(
+            "identity_guard", prop_type.id, 0, namespace="local.alpha"
+        )
+        second = dem.symbols.register(
+            "identity_guard", prop_type.id, 0, namespace="local.beta"
+        )
+        with pytest.raises(IntegrityError):
+            session.add(
+                Definition(
+                    public_id="definition-identity-guard",
+                    namespace_id=second.namespace_id,
+                    name=first.name,
+                    kind="logical",
+                    new_symbol_id=first.id,
+                )
+            )
+            session.flush()
+        session.rollback()
+    engine.dispose()
 
 
 def test_seed_public_ids_are_stable(all_seeded_session: Session) -> None:

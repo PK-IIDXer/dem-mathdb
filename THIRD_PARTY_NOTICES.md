@@ -1,14 +1,95 @@
 # Third-party notices
 
-This release candidate does not bundle a third-party mathematical text,
-derived mathematical corpus, or generated database snapshot.
+This snapshot does not bundle a third-party mathematical text, a derived
+mathematical corpus, or a generated database snapshot. The independent logic
+demonstrations use the retained public logical core.
 
-Runtime and development dependencies are declared in `pyproject.toml` and
-`frontend/package.json`; their own licenses govern those packages. They are
-not relicensed by this repository.
+Dependencies retain their own licenses and are not relicensed by `LICENSE.md`.
+Exact JavaScript versions and integrity hashes are in
+`frontend/package-lock.json`; beta Python versions are in
+`deploy/beta/requirements.lock`. The tables below identify metadata inspected
+for this update, rather than granting permission for an entire binary image.
 
-Building the frontend produces artifacts that include third-party code and
-fonts, including KaTeX and its fonts and other JavaScript dependencies. These
-assets are not stored in this repository. Before distributing the built
-frontend or a Docker image containing it, review and comply with each
-component's applicable license terms.
+## Frontend dependency updates
+
+Compared with the preceding public snapshot, the following lock entries were
+added or updated. Existing dependencies remain subject to their own notices.
+
+| Package | Locked version | Declared license | Use |
+| --- | --- | --- | --- |
+| `@playwright/test` | 1.63.0 | Apache-2.0 | Development/test |
+| `commander` | 15.0.0 | MIT | Runtime dependency |
+| `katex` | 0.18.9 | MIT | Runtime dependency |
+| `playwright` | 1.63.0 | Apache-2.0 | Development/test |
+| `playwright-core` | 1.63.0 | Apache-2.0 | Development/test |
+| `source-map-js` | 1.2.2 | BSD-3-Clause | Development/test |
+
+Frontend builds include third-party JavaScript and KaTeX fonts. KaTeX's MIT
+notice also covers its distributed fonts; retain upstream copyright and license
+files when redistributing build artifacts. Playwright browser downloads, if
+installed for testing, are separate artifacts with their own notices.
+
+## Beta Python runtime lock
+
+The installed distribution metadata matched every locked version when reviewed.
+Licenses below are the packages' declared identifiers (or license classifiers).
+
+| Package | Locked version | Declared license |
+| --- | --- | --- |
+| `alembic` | 1.18.5 | MIT |
+| `annotated-doc` | 0.0.4 | MIT |
+| `annotated-types` | 0.7.0 | MIT |
+| `anyio` | 4.14.1 | MIT |
+| `click` | 8.4.2 | BSD-3-Clause |
+| `colorama` | 0.4.6 | BSD-3-Clause |
+| `fastapi` | 0.139.0 | MIT |
+| `greenlet` | 3.5.3 | MIT AND PSF-2.0 |
+| `h11` | 0.16.0 | MIT |
+| `httptools` | 0.8.0 | MIT |
+| `idna` | 3.18 | BSD-3-Clause |
+| `mako` | 1.3.12 | MIT |
+| `markupsafe` | 3.0.3 | BSD-3-Clause |
+| `psycopg` | 3.3.5 | LGPL-3.0-only |
+| `psycopg-binary` | 3.3.5 | LGPL-3.0-only |
+| `pydantic` | 2.13.4 | MIT |
+| `pydantic-core` | 2.46.4 | MIT |
+| `python-dotenv` | 1.2.2 | BSD-3-Clause |
+| `pyyaml` | 6.0.3 | MIT |
+| `sqlalchemy` | 2.0.51 | MIT |
+| `starlette` | 1.3.1 | BSD-3-Clause |
+| `typing-extensions` | 4.16.0 | PSF-2.0 |
+| `typing-inspection` | 0.4.2 | MIT |
+| `tzdata` | 2026.4 | Apache-2.0 |
+| `uvicorn` | 0.50.1 | BSD-3-Clause |
+| `watchfiles` | 1.2.0 | MIT |
+| `websockets` | 16.0 | BSD-3-Clause |
+
+`psycopg-binary` wheels contain native libraries, including libpq and TLS
+libraries. Their bundled license files are part of the required review of the
+actual platform wheel; the Python package's LGPL identifier does not describe
+all embedded libraries. See the [Psycopg installation documentation](https://www.psycopg.org/psycopg3/docs/basic/install.html).
+`tzdata` packages also include time-zone data and upstream notices. Preserve
+all distribution license and notice files.
+
+## Deployment containers
+
+| Configuration | Base images referenced |
+| --- | --- |
+| Generic API / database | `python:3.12-slim`, `postgres:16` |
+| Generic frontend build / serving | `node:20-alpine`, `caddy:2-alpine` |
+| Beta API / database | `python:3.13.7-slim-bookworm`, `postgres:18.2` |
+| Beta frontend build / serving | `node:22.15.0-alpine`, `caddy:2.10.2-alpine` |
+
+These images are fetched at build/deployment time, not bundled in the source
+snapshot. Locally built `dem-beta-api` and `dem-beta-web` images inherit their
+base layers and add the locked dependencies or built frontend. The API beta
+image additionally installs Debian packages and PostgreSQL client tools.
+
+Python, Node.js, PostgreSQL and Caddy have their own upstream licenses; base
+images also contain operating-system packages with separate licenses. Caddy
+uses [Apache-2.0](https://github.com/caddyserver/caddy/blob/master/LICENSE).
+The official [PostgreSQL image documentation](https://github.com/docker-library/docs/blob/master/postgres/README.md)
+explains that additional software in images has its own terms. Retain license,
+notice and copyright material from the actual images, wheels and frontend
+packages when distributing binaries. This source inventory is not a completed
+license inventory of a built multi-platform image.

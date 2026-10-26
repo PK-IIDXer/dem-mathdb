@@ -180,6 +180,29 @@ def used_axiom_ids_for_proof(
     return frozenset(axiom_ids)
 
 
+def used_axiom_ids_for_dependencies(
+    session: Session,
+    *,
+    direct_axiom_ids: Collection[int],
+    applied_proof_ids: Collection[int],
+    known: Mapping[int, frozenset[int]] | None = None,
+) -> frozenset[int]:
+    """Axiom closure for a selected set of proof steps.
+
+    This is the same dependency boundary as ``used_axiom_ids_for_proof`` but
+    starts from caller-supplied direct edges.  It is used when only the
+    ancestors of one exploration line, rather than an entire proof, count.
+    """
+    direct = frozenset(direct_axiom_ids)
+    definition_axioms = load_definition_axioms(session, direct)
+    proof_ids = set(applied_proof_ids)
+    proof_ids.update(definition_axioms.existence_proofs_for(direct))
+    result = set(direct)
+    for proof_id in proof_ids:
+        result.update(used_axiom_ids_for_proof(session, proof_id, known=known))
+    return frozenset(result)
+
+
 def used_axiom_ids_by_proof(
     edges: ProofEdges, definition_axioms: DefinitionAxioms
 ) -> dict[int, frozenset[int]]:

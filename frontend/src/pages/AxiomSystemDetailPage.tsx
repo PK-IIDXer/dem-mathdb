@@ -1,3 +1,7 @@
+import { SystemValidityNote } from '../components/BetaIdentity'
+import { EntityBadge } from '../components/BetaIdentity'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { PublicIdRoute } from '../components/PublicIdRoute'
 import { Link, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { axiomsApi } from '../api/axioms'
@@ -12,21 +16,30 @@ const STATUS_BADGE: Record<string, string> = {
 }
 
 export function AxiomSystemDetailPage() {
+  return <PublicIdRoute><AxiomSystemDetailContent /></PublicIdRoute>
+}
+
+function AxiomSystemDetailContent() {
   const { id } = useParams<{ id: string }>()
-  const systemId = Number(id)
+  const systemRef = id ?? ''
 
   const { data: system } = useQuery({
-    queryKey: ['axiomSystems', systemId],
-    queryFn: () => axiomsApi.getSystem(systemId),
+    queryKey: ['axiomSystems', systemRef],
+    queryFn: () => axiomsApi.getSystem(systemRef),
   })
+  const systemId = system?.id ?? 0
   const { data: members = [] } = useQuery({
     queryKey: ['axiomSystemMembers', systemId],
     queryFn: () => axiomsApi.listSystemMembers(systemId),
+    enabled: system != null,
   })
   const { data: theorems = [] } = useQuery({
     queryKey: ['axiomSystems', systemId, 'theorems'],
     queryFn: () => axiomsApi.listSystemProvableTheorems(systemId),
+    enabled: system != null,
   })
+
+  usePageTitle(system?.name ?? '公理系')
 
   if (!system) return <p className="text-sm text-slate-400">読み込み中…</p>
 
@@ -36,8 +49,9 @@ export function AxiomSystemDetailPage() {
         ← 公理一覧に戻る
       </Link>
 
+      <SystemValidityNote namespace={system.namespace_name} />
       <section className="space-y-3 rounded-lg border border-slate-200 p-4">
-        <span className="font-mono text-base text-slate-800">{system.name}</span>
+        <span className="font-mono text-base text-slate-800">{system.name}</span> <EntityBadge namespace={system.namespace_name} detail />
         {system.remarks && <div className="text-sm text-slate-600">{system.remarks}</div>}
         <div>
           <div className="mb-1 text-xs text-slate-500">メンバー公理 ({members.length})</div>
@@ -52,7 +66,7 @@ export function AxiomSystemDetailPage() {
                     className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs text-indigo-700 hover:bg-indigo-100"
                   >
                     {axiom.name}
-                  </Link>
+                  </Link> <EntityBadge namespace={axiom.namespace_name} />
                 </li>
               ))}
             </ul>
@@ -70,7 +84,7 @@ export function AxiomSystemDetailPage() {
               <li key={theorem.id}>
                 <Link to={`/theorems/${theorem.public_id}`} className="text-indigo-600 hover:underline">
                   {theorem.name}
-                </Link>{' '}
+                </Link> <EntityBadge namespace={theorem.namespace_name} />{' '}
                 <span
                   className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${STATUS_BADGE[theorem.status] ?? ''}`}
                 >

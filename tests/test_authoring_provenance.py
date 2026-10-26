@@ -105,14 +105,15 @@ def test_a_only_seed_has_no_generated_proof_provenance(seeded_session):
     assert rows == []
 
     seed_all(seeded_session)
-    assert (
-        seeded_session.scalar(
-            select(func.count())
-            .select_from(AuthoringProvenance)
-            .where(AuthoringProvenance.via == "seed")
-        )
-        == 0
-    )
+    generated = set(seeded_session.scalars(select(Proof.id)))
+    assert len(generated) == 6
+    assert seeded_session.scalar(select(func.count()).select_from(ProofStep)) == 20
+    proof_rows = list(seeded_session.scalars(select(AuthoringProvenance).where(
+        AuthoringProvenance.via == "seed", AuthoringProvenance.entity_kind == "proof")))
+    assert {row.entity_id for row in proof_rows} == {str(pid) for pid in generated}
+    count = seeded_session.scalar(select(func.count()).select_from(AuthoringProvenance))
+    seed_all(seeded_session)
+    assert seeded_session.scalar(select(func.count()).select_from(AuthoringProvenance)) == count
 
 
 def test_authoring_provenance_migration_up_and_down():

@@ -3,11 +3,11 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Integer, Text, false, func
+from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, ForeignKeyConstraint, Integer, Text, UniqueConstraint, false, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from dem.db.base import Base
-from dem.db.models.language import Formula, Symbol
+from dem.db.models.language import Formula, Namespace, Symbol
 from dem.db.ordering import tag_name_order
 from dem.identity import new_public_id
 
@@ -18,6 +18,12 @@ if TYPE_CHECKING:
 class Definition(Base):
     __tablename__ = "definition"
     __table_args__ = (
+        UniqueConstraint("namespace_id", "name"),
+        ForeignKeyConstraint(
+            ["new_symbol_id", "namespace_id", "name"],
+            ["symbol.id", "symbol.namespace_id", "symbol.name"],
+            name="fk_definition_symbol_identity",
+        ),
         CheckConstraint(
             "kind IN ('predicate', 'function', 'logical', 'quant_prop', 'quant_term', "
             "'function_desc')",
@@ -31,10 +37,12 @@ class Definition(Base):
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    release_id: Mapped[int | None] = mapped_column(ForeignKey("package_release.id"))
     public_id: Mapped[str] = mapped_column(
         Text, nullable=False, unique=True, default=new_public_id
     )
-    name: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
+    namespace_id: Mapped[int] = mapped_column(ForeignKey("namespace.id"), nullable=False)
+    name: Mapped[str] = mapped_column(Text, nullable=False)
     kind: Mapped[str] = mapped_column(Text, nullable=False)
     new_symbol_id: Mapped[int] = mapped_column(
         ForeignKey("symbol.id"), nullable=False, unique=True
@@ -55,7 +63,10 @@ class Definition(Base):
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
 
-    new_symbol: Mapped[Symbol] = relationship(lazy="joined")
+    new_symbol: Mapped[Symbol] = relationship(
+        lazy="joined", foreign_keys=[new_symbol_id]
+    )
+    namespace: Mapped[Namespace] = relationship(lazy="joined")
     display_formula: Mapped["Formula | None"] = relationship(lazy="joined")
     tags: Mapped[list["Tag"]] = relationship(
         "Tag",

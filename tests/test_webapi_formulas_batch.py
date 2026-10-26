@@ -21,7 +21,7 @@ from webapi.deps import dem_services
 from webapi.main import app
 from webapi.routers.formulas import BATCH_MAX_IDS
 
-SEED_PHASE = "l2"
+SEED_PHASE = "public_core"
 
 
 @pytest.fixture

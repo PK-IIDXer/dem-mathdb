@@ -59,6 +59,7 @@ from webapi.schemas import (
     TheoremOut,
     ValidateResultOut,
 )
+from webapi.theorem_output import theorem_output
 
 router = APIRouter(tags=["proofs"])
 
@@ -240,7 +241,7 @@ def _step_out(
 
 @router.post("/proofs/{id}/steps/suggest", response_model=StepSuggestOut)
 def suggest_proof_step(
-    id: int, body: StepSuggestRequest, dem: DemServices = Depends(dem_services)
+    id: int, body: StepSuggestRequest, dem: DemServices = Depends(dem_services, scope="function")
 ) -> StepSuggestOut:
     result = dem.proofs.suggest_step(
         id,
@@ -292,7 +293,7 @@ def suggest_proof_step(
 def suggest_proof_step_backward(
     id: int,
     body: BackwardStepSuggestRequest,
-    dem: DemServices = Depends(dem_services),
+    dem: DemServices = Depends(dem_services, scope="function"),
 ) -> BackwardStepSuggestOut:
     """Suggest an axiom/theorem application followed by at most three MPs."""
     suggestions = dem.proofs.suggest_backward_steps(
@@ -333,30 +334,30 @@ def suggest_proof_step_backward(
 
 
 @router.get("/inference-rules", response_model=list[InferenceRuleOut])
-def list_inference_rules(dem: DemServices = Depends(dem_services)) -> list[InferenceRuleOut]:
+def list_inference_rules(dem: DemServices = Depends(dem_services, scope="function")) -> list[InferenceRuleOut]:
     return dem.proofs.list_inference_rules()
 
 
 @router.post("/proofs", response_model=ProofOut, status_code=status.HTTP_201_CREATED)
-def create_proof(body: ProofCreate, dem: DemServices = Depends(dem_services)) -> ProofOut:
+def create_proof(body: ProofCreate, dem: DemServices = Depends(dem_services, scope="function")) -> ProofOut:
     return dem.proofs.create_proof(theorem_id=body.theorem_id, name=body.name, remarks=body.remarks)
 
 
 @router.get("/proofs/{ref}", response_model=ProofOut)
-def get_proof(ref: str, dem: DemServices = Depends(dem_services)) -> ProofOut:
+def get_proof(ref: str, dem: DemServices = Depends(dem_services, scope="function")) -> ProofOut:
     return dem.proofs.get(int(ref)) if ref.isdigit() else dem.proofs.get_by_public_id(ref)
 
 
 @router.get("/proofs/public/{public_id}", response_model=ProofOut)
 def get_proof_by_public_id(
-    public_id: str, dem: DemServices = Depends(dem_services)
+    public_id: str, dem: DemServices = Depends(dem_services, scope="function")
 ) -> ProofOut:
     return dem.proofs.get_by_public_id(public_id)
 
 
 @router.get("/proofs/{id}/state", response_model=ProofStateOut)
 def get_proof_state(
-    id: int, dem: DemServices = Depends(dem_services)
+    id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> ProofStateOut:
     return ProofStateOut.model_validate(
         dem.proofs.get_state(id), from_attributes=True
@@ -364,7 +365,7 @@ def get_proof_state(
 
 
 @router.get("/theorems/{id}/proofs", response_model=list[ProofOut])
-def list_proofs_for_theorem(id: int, dem: DemServices = Depends(dem_services)) -> list[ProofOut]:
+def list_proofs_for_theorem(id: int, dem: DemServices = Depends(dem_services, scope="function")) -> list[ProofOut]:
     return dem.proofs.list_for_theorem(id)
 
 
@@ -372,7 +373,7 @@ def list_proofs_for_theorem(id: int, dem: DemServices = Depends(dem_services)) -
     "/proofs/{id}/steps", response_model=ProofStepOut, status_code=status.HTTP_201_CREATED
 )
 def add_proof_step(
-    id: int, body: ProofStepCreate, dem: DemServices = Depends(dem_services)
+    id: int, body: ProofStepCreate, dem: DemServices = Depends(dem_services, scope="function")
 ) -> ProofStepOut:
     step_input = _to_step_input(body)
     step = dem.proofs.add_step(id, step_input, body.conclusion_formula_id)
@@ -380,7 +381,7 @@ def add_proof_step(
 
 
 @router.get("/proofs/{id}/steps", response_model=list[ProofStepOut])
-def list_proof_steps(id: int, dem: DemServices = Depends(dem_services)) -> list[ProofStepOut]:
+def list_proof_steps(id: int, dem: DemServices = Depends(dem_services, scope="function")) -> list[ProofStepOut]:
     steps = dem.proofs.list_steps(id)
     if not steps:
         return []
@@ -446,7 +447,7 @@ def list_proof_steps(id: int, dem: DemServices = Depends(dem_services)) -> list[
     response_model=list[ProofStepFollowupOut],
 )
 def list_proof_step_followups(
-    id: int, ord: int, dem: DemServices = Depends(dem_services)
+    id: int, ord: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> list[ProofStepFollowupOut]:
     return [
         ProofStepFollowupOut.model_validate(item, from_attributes=True)
@@ -456,7 +457,7 @@ def list_proof_step_followups(
 
 @router.get("/proofs/{id}/formulas", response_model=list[FormulaDetailOut])
 def list_proof_formulas(
-    id: int, dem: DemServices = Depends(dem_services)
+    id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> list[FormulaDetailOut]:
     """Every distinct conclusion formula of this proof, with its tokens.
 
@@ -479,7 +480,7 @@ def list_proof_formulas(
 
 @router.get("/proofs/{id}/direct-dependencies", response_model=DirectDependenciesOut)
 def list_direct_dependencies(
-    id: int, dem: DemServices = Depends(dem_services)
+    id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> DirectDependenciesOut:
     """The axioms and lemma theorems this proof's steps cite directly.
 
@@ -524,7 +525,7 @@ def list_direct_dependencies(
         lemmas.append(
             LemmaDependencyOut(
                 proof_id=proof.id,
-                theorem=TheoremOut.model_validate(proof.theorem, from_attributes=True),
+                theorem=theorem_output(dem.session, proof.theorem),
             )
         )
     return DirectDependenciesOut(
@@ -534,11 +535,17 @@ def list_direct_dependencies(
         ],
         lemmas=lemmas,
         applied_proofs={proof_id: proofs[proof_id].theorem_id for proof_id in applied_proof_ids},
+        applied_proof_public_ids={proof_id: proofs[proof_id].public_id for proof_id in applied_proof_ids},
     )
 
 
 @router.post("/proofs/{id}/validate", response_model=ValidateResultOut)
-def validate_proof(id: int, dem: DemServices = Depends(dem_services)) -> ValidateResultOut:
+def validate_proof(id: int, dem: DemServices = Depends(dem_services, scope="function")) -> ValidateResultOut:
+    if dem.explorations.contains_proof(id):
+        raise ValidationError(
+            "exploration notes do not have a final proof target",
+            code="exploration.no_final_validation",
+        )
     # ProofService.validate() intentionally persists status='rejected' as a
     # side effect of raising ProofValidationError (see docs/design/api/proof-service.md).
     # The webapi request-scoped transaction (dem_services()) rolls back on any
@@ -554,20 +561,20 @@ def validate_proof(id: int, dem: DemServices = Depends(dem_services)) -> Validat
 
 
 @router.get("/proofs/{id}/used-axioms", response_model=list[AxiomOut])
-def list_used_axioms(id: int, dem: DemServices = Depends(dem_services)) -> list[AxiomOut]:
+def list_used_axioms(id: int, dem: DemServices = Depends(dem_services, scope="function")) -> list[AxiomOut]:
     return dem.proofs.list_used_axioms(id)
 
 
 @router.get("/proofs/{id}/is-valid-in-system/{axiom_system_id}", response_model=IsSubsetOut)
 def is_proof_valid_in_system(
-    id: int, axiom_system_id: int, dem: DemServices = Depends(dem_services)
+    id: int, axiom_system_id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> IsSubsetOut:
     return IsSubsetOut(is_subset=dem.proofs.is_valid_in_system(id, axiom_system_id))
 
 
 @router.post("/proofs/compute-substituted-tokens", response_model=list[TokenOut])
 def compute_substituted_tokens(
-    body: ComputeSubstitutedTokensRequest, dem: DemServices = Depends(dem_services)
+    body: ComputeSubstitutedTokensRequest, dem: DemServices = Depends(dem_services, scope="function")
 ) -> list[TokenOut]:
     tokens = dem.proofs.compute_substituted_tokens(body.formula_id, _to_substitution(body.subst))
     return [
@@ -578,7 +585,7 @@ def compute_substituted_tokens(
 
 @router.post("/proofs/compute-gen-tokens", response_model=list[TokenOut])
 def compute_gen_tokens(
-    body: ComputeGenTokensRequest, dem: DemServices = Depends(dem_services)
+    body: ComputeGenTokensRequest, dem: DemServices = Depends(dem_services, scope="function")
 ) -> list[TokenOut]:
     tokens = dem.proofs.compute_gen_tokens(body.body_formula_id, body.gen_variable_symbol_id)
     return [

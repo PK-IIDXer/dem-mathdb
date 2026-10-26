@@ -1,3 +1,5 @@
+import { EntityBadge } from '../components/BetaIdentity'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { memo, useCallback, useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, type NavigateFunction } from 'react-router-dom'
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -8,6 +10,7 @@ import { FormulaPreview } from '../components/FormulaPreview'
 import { SearchFilterBar } from '../components/SearchFilterBar'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { usePrimeFormulas } from '../hooks/useFormulaLatex'
+import { hasPassedExternalCheck, theoremValidationCounts } from '../externalChecks'
 
 /** How long the search box must stay unchanged before a theorem request is sent. */
 export const SEARCH_DEBOUNCE_MS = 300
@@ -39,6 +42,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 export function TheoremSearchPage() {
+  usePageTitle('定理を探す')
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -124,9 +128,13 @@ const TheoremResults = memo(function TheoremResults({
   // One request for the conclusions not cached yet, instead of one FormulaPreview
   // fetch per card. Called here rather than in the page so the memo still holds.
   const formulasWaiting = usePrimeFormulas(theorems.map((theorem) => theorem.conclusion_formula_id))
+  const counts = theoremValidationCounts(theorems)
   return (
     <>
-      <div className="text-xs text-slate-500">{theorems.length} 件</div>
+      <div className="text-xs text-slate-500">
+        <span>{counts.total} 件</span>
+        <span>（DEM で証明済み: {counts.demProven} ／ Lean でのみ確認済み: {counts.leanOnly}）</span>
+      </div>
 
       <div className="grid grid-cols-2 gap-3">
         {theorems.map((theorem) => (
@@ -137,9 +145,16 @@ const TheoremResults = memo(function TheoremResults({
             className="rounded-lg border border-slate-200 p-4 text-left hover:border-indigo-300 hover:bg-indigo-50/40"
           >
             <div className="mb-1 flex items-center justify-between">
-              <span className="font-mono text-sm text-slate-800">{theorem.name}</span>
-              <span className={`rounded px-2 py-0.5 text-[10px] font-semibold ${STATUS_BADGE[theorem.status]}`}>
-                {STATUS_LABEL[theorem.status] ?? theorem.status}
+              <span className="font-mono text-sm text-slate-800">{theorem.name}</span> <EntityBadge namespace={theorem.namespace_name} />
+              <span className="flex flex-wrap justify-end gap-1">
+                <span className={`rounded px-2 py-0.5 text-[10px] font-semibold ${STATUS_BADGE[theorem.status]}`}>
+                  DEM: {STATUS_LABEL[theorem.status] ?? theorem.status}
+                </span>
+                {hasPassedExternalCheck(theorem) && (
+                  <span className="rounded bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold text-indigo-800">
+                    Lean: 翻訳検査済み
+                  </span>
+                )}
               </span>
             </div>
             <div className="mb-2 text-sm">

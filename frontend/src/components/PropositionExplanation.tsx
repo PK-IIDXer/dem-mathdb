@@ -1,3 +1,4 @@
+import { UserSymbolNotice } from './BetaIdentity'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
@@ -86,6 +87,7 @@ export function PropositionExplanation({ step, symbolsById, lemmas, trigger, onS
 
   return (
     <span className="relative inline-block align-baseline">
+      <UserSymbolNotice formulaIds={[step.conclusion_formula.id]} />
       <button ref={triggerRef} type="button" className={className ?? 'text-indigo-700 hover:underline'}
         aria-label={`ステップ (${step.ord}) の命題を説明`} aria-expanded={open}
         onClick={() => setOpen(true)}>{trigger}</button>
@@ -220,7 +222,7 @@ function describeStep(step: ProofStep, sourceName: string | undefined, symbols: 
     case 'premise': return `前提 (${step.premise_ord}) から導出`
     case 'assumption': return '仮定として導入'
     case 'axiom': return `公理「${sourceName ?? '不明'}」を当てはめた`
-    case 'theorem': return `定理「${sourceName ?? `Proof #${step.applied_proof_id}`}」を${refs ? ` ${refs} に` : ''}当てはめた`
+    case 'theorem': return `${sourceName ? `定理「${sourceName}」` : '引用した定理'}を${refs ? ` ${refs} に` : ''}当てはめた`
     case 'rule':
       if (step.inference_rule?.kind === 'modus_ponens') return `MP (${refs})`
       if (step.inference_rule?.kind === 'generalization') return `一般化 (${refs})${step.gen_variable_symbol_id != null ? `、変数 ${symbols.get(step.gen_variable_symbol_id)?.name ?? `#${step.gen_variable_symbol_id}`}` : ''}`

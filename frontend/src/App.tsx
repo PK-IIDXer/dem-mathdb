@@ -15,12 +15,19 @@ import { ProofPage } from './pages/ProofPage'
 import { DefinitionsPage } from './pages/DefinitionsPage'
 import { DefinitionDetailPage } from './pages/DefinitionDetailPage'
 import { TheoremSearchPage } from './pages/TheoremSearchPage'
+import { TermsPage } from './pages/TermsPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { DisclaimerPage } from './pages/DisclaimerPage'
+import { SourcesLicensesPage } from './pages/SourcesLicensesPage'
+import { ExplorationsPage } from './pages/ExplorationsPage'
 import { CommandProvider, useCommand } from './commands/CommandProvider'
 import { CommandPalette } from './commands/CommandPalette'
 import { ShortcutHelp } from './commands/ShortcutHelp'
 import { DisplaySettingsProvider } from './DisplaySettingsContext'
+import { BetaBanner } from './components/BetaBanner'
+import { BetaWriteErrorNotice } from './components/BetaWriteErrorNotice'
+import { useBeta } from './components/BetaContext'
+import { ContactPage } from './pages/ContactPage'
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `rounded px-3 py-1.5 text-sm font-medium ${
@@ -41,6 +48,7 @@ function App() {
 
 function AppShell() {
   const readOnly = useReadOnly()
+  const beta = useBeta()
   const navigate = useNavigate()
   const navigateFromCommand = useCallback((path: string) => {
     navigate(path)
@@ -87,6 +95,9 @@ function AppShell() {
           <NavLink to="/proofs" className={navLinkClass}>
             Proofs
           </NavLink>
+          <NavLink to="/explorations" className={navLinkClass}>
+            推論ノート
+          </NavLink>
           <NavLink to="/definitions" className={navLinkClass}>
             Definitions
           </NavLink>
@@ -94,6 +105,8 @@ function AppShell() {
         </nav>
       </header>
       <main tabIndex={-1}>
+        <BetaBanner />
+        <BetaWriteErrorNotice />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/symbols" element={<SymbolsPage />} />
@@ -107,20 +120,32 @@ function AppShell() {
           <Route path="/theorems/:id/proofs/:proofId" element={<TheoremDetailPage />} />
           <Route path="/proofs" element={<ProofsPage />} />
           <Route path="/proofs/:id" element={<ProofPage />} />
+          <Route path="/explorations" element={<ExplorationsPage />} />
+          <Route path="/explorations/:id" element={<ExplorationsPage />} />
           <Route path="/definitions" element={<DefinitionsPage />} />
           <Route path="/definitions/:id" element={<DefinitionDetailPage />} />
           <Route path="/search" element={<TheoremSearchPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/disclaimer" element={<DisclaimerPage />} />
+          <Route path="/sources-licenses" element={<SourcesLicensesPage />} />
         </Routes>
       </main>
       <ShortcutHelp />
       <footer className="mt-10 flex justify-center gap-4 border-t border-slate-200 pt-4 text-xs text-slate-400">
+        {beta && <NavLink to="/contact" className="hover:underline">お問い合わせ・削除依頼</NavLink>}
+        <NavLink to="/terms" className="hover:underline">
+          利用規約
+        </NavLink>
         <NavLink to="/privacy" className="hover:underline">
           プライバシーポリシー
         </NavLink>
         <NavLink to="/disclaimer" className="hover:underline">
           免責事項
+        </NavLink>
+        <NavLink to="/sources-licenses" className="hover:underline">
+          出典とライセンス
         </NavLink>
       </footer>
     </div>

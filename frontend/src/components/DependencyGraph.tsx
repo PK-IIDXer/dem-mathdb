@@ -35,7 +35,7 @@ function DependencyItems({
     <>
       {dependencies.axioms.map((axiom) => (
         <li key={`axiom-${axiom.id}`} className="text-xs">
-          <Link to={`/axioms/${axiom.id}`} className="text-slate-500 hover:text-indigo-600 hover:underline">
+          <Link to={`/axioms/${axiom.public_id}`} className="text-slate-500 hover:text-indigo-600 hover:underline">
             公理 {axiom.name}
           </Link>
         </li>
@@ -77,7 +77,7 @@ function DependencyNode({ lemma, ancestorIds }: { lemma: LemmaDependency; ancest
         >
           {expanded ? '▾' : '▸'}
         </button>
-        <Link to={`/theorems/${theorem.id}`} className="font-mono text-sm text-indigo-600 hover:underline">
+        <Link to={`/theorems/${theorem.public_id}`} className="font-mono text-sm text-indigo-600 hover:underline">
           {theorem.name}
         </Link>
         <span className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${STATUS_BADGE[theorem.status] ?? ''}`}>

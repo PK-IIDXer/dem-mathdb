@@ -1,4 +1,5 @@
 import type { Symbol, Token } from '../../api/types'
+import { SYMBOL_TYPE } from '../../constants/symbolTypes'
 import { freshBoundVarDisplayName, tokensToTree, type EditorNode } from '../FormulaEditor/model'
 
 /**
@@ -315,7 +316,7 @@ export function readTokens(
 }
 
 /** Reads a proposition. Returns null for a term or an unfilled tree. */
-export function readFormula(
+function readFormulaUnsafe(
   root: EditorNode,
   symbolsById: Map<number, Symbol>,
   options: ReadingOptions = {},
@@ -451,6 +452,11 @@ function sameSymbol(child: EditorNode, parent: EditorNode): boolean {
   return child.kind === 'symbol' && parent.kind === 'symbol' && child.symbolId === parent.symbolId
 }
 
+function sameLogicalSymbol(child: EditorNode, parent: EditorNode, ctx: Context): boolean {
+  if (!sameSymbol(child, parent) || parent.kind !== 'symbol') return false
+  return ctx.symbolsById.get(parent.symbolId)?.symbol_type.name === SYMBOL_TYPE.logical
+}
+
 // ---------------------------------------------------------------------------
 // DSS text for terms (a port of demlang/printer.py `_render`)
 
@@ -472,7 +478,7 @@ function printNode(node: EditorNode, ctx: Context, scope: string[]): string {
     let left = printNode(child(0), ctx, scope)
     let right = printNode(child(1), ctx, scope)
     if (!isAtomicNode(child(0), ctx)) left = `(${left})`
-    if (!isAtomicNode(child(1), ctx) && !sameSymbol(child(1), node)) right = `(${right})`
+    if (!isAtomicNode(child(1), ctx) && !sameLogicalSymbol(child(1), node, ctx)) right = `(${right})`
     return `${left} ${symbol.name} ${right}`
   }
   return `${symbol.name}(${node.children.map((c) => printNode(c as EditorNode, ctx, scope)).join(', ')})`
@@ -480,7 +486,7 @@ function printNode(node: EditorNode, ctx: Context, scope: string[]): string {
 
 /** The whole formula as DSS text. It must equal demlang/printer.py
  * `print_dss` (bound names included); the reading writes terms with it. */
-export function printFormula(tokens: Token[], symbolsById: Map<number, Symbol>): string | null {
+function printFormulaUnsafe(tokens: Token[], symbolsById: Map<number, Symbol>): string | null {
   const built = tokensToTree(tokens, symbolsById)
   if (!built.ok) return null
   const ctx: Context = {
@@ -656,4 +662,12 @@ export function readTheoremSentence(premises: FormulaReading[], conclusion: Form
   const c = `「${conclusion.sentence}」が成り立つ`
   if (premises.length === 0) return c
   return `${premises.map((premise) => `「${premise.sentence}」`).join('と')}が成り立つなら、${c}`
+}
+
+// Reading is display-only; an unrenderable formula never changes API validity.
+export function readFormula(root: EditorNode, symbolsById: Map<number, Symbol>, options: ReadingOptions = {}): FormulaReading | null {
+  try { return readFormulaUnsafe(root, symbolsById, options) } catch { return null }
+}
+export function printFormula(tokens: Token[], symbolsById: Map<number, Symbol>): string | null {
+  try { return printFormulaUnsafe(tokens, symbolsById) } catch { return null }
 }

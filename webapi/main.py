@@ -8,13 +8,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 
-from webapi.deps import close_database_connections, initialize_on_startup, is_read_only
+from webapi.deps import (
+    close_database_connections,
+    initialize_on_startup,
+    is_read_only,
+)
 from webapi.errors import register_exception_handlers
+from webapi import contact
+from webapi.beta import BetaMiddleware, PURE_POSTS
 from webapi.routers import (
     axioms,
     definitions,
+    explorations,
     formulas,
     proofs,
+    stats,
     symbols,
     tags,
     theorems,
@@ -22,7 +30,7 @@ from webapi.routers import (
 )
 
 SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
-READ_ONLY_POST_PATHS = {"/formulas/parse", "/formulas/print"}
+READ_ONLY_POST_PATHS = PURE_POSTS
 
 
 @asynccontextmanager
@@ -58,21 +66,25 @@ async def enforce_read_only(request: Request, call_next):
     is_pure_formula_post = (
         request.method == "POST" and request.url.path in READ_ONLY_POST_PATHS
     )
-    if request.method not in SAFE_METHODS and not is_pure_formula_post and is_read_only():
+    is_contact = request.method == "POST" and request.url.path == "/contact"
+    if request.method not in SAFE_METHODS and not is_pure_formula_post and not is_contact and is_read_only():
         return JSONResponse(status_code=403, content={"detail": "read-only mode: write operations are disabled"})
     return await call_next(request)
 
 
 register_exception_handlers(app)
 
+app.include_router(stats.router)
 app.include_router(symbols.router)
 app.include_router(formulas.router)
 app.include_router(axioms.router)
 app.include_router(theorems.router)
 app.include_router(proofs.router)
 app.include_router(definitions.router)
+app.include_router(explorations.router)
 app.include_router(tags.router)
 app.include_router(workspace.router)
+app.include_router(contact.router)
 
 
 @app.get("/health")
@@ -80,6 +92,31 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/health/ready", include_in_schema=False)
+def ready(request: Request):
+    from sqlalchemy import text
+    from webapi.deps import get_workspace_request_context, resolve_request_account
+    try:
+        context = get_workspace_request_context(request, resolve_request_account(request))
+        with context.api.engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except Exception:
+        return JSONResponse(status_code=503, content={"status": "unavailable"})
+    return {"status": "ok"}
+
+
 @app.get("/config")
-def config() -> dict[str, object]:
-    return {"read_only": is_read_only()}
+def config(request: Request) -> dict[str, object]:
+    from dataclasses import asdict
+    from webapi.beta import enabled, reset_status, settings, write_state
+    from webapi.deps import get_workspace_request_context, resolve_request_account
+    result = {"read_only": is_read_only()}
+    if enabled():
+        context = get_workspace_request_context(request, resolve_request_account(request))
+        limits = settings(request.app)
+        result["beta"] = {"enabled": True, "write_state": write_state(context.api.engine, limits),
+                          **reset_status(), "limits": asdict(limits)}
+    return result
+
+
+app.add_middleware(BetaMiddleware, owner=app)

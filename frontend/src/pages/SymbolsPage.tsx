@@ -1,3 +1,5 @@
+import { EntityBadge } from '../components/BetaIdentity'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { Fragment, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -9,6 +11,7 @@ import { Latex } from '../components/Latex'
 import { ambiguousSymbolGroups, renderTemplateSample } from '../components/FormulaEditor/model'
 
 export function SymbolsPage() {
+  usePageTitle('記号')
   const readOnly = useReadOnly()
   const queryClient = useQueryClient()
   const { data: symbolTypes = [] } = useQuery({
@@ -306,7 +309,6 @@ export function SymbolsPage() {
         <table className="w-full text-left text-sm">
           <thead className="text-xs text-slate-500">
             <tr>
-              <th className="py-1 pr-3">id</th>
               <th className="py-1 pr-3">name</th>
               <th className="py-1 pr-3">type</th>
               <th className="py-1 pr-3">arity</th>
@@ -322,11 +324,10 @@ export function SymbolsPage() {
             {filteredSymbols.map((symbol) => (
               <Fragment key={symbol.id}>
                 <tr className="border-t border-slate-100">
-                  <td className="py-1 pr-3">{symbol.id}</td>
                   <td className="py-1 pr-3 font-mono">
                     <Link to={`/symbols/${symbol.public_id}`} className="text-indigo-600 hover:underline">
                       {symbol.name}
-                    </Link>
+                    </Link> <EntityBadge namespace={symbol.namespace_name} />
                   </td>
                   <td className="py-1 pr-3">{symbol.symbol_type.name}</td>
                   <td className="py-1 pr-3">{symbol.arity}</td>
@@ -355,7 +356,7 @@ export function SymbolsPage() {
                 </tr>
                 {!readOnly && editingId === symbol.id && (
                   <tr className="bg-slate-50">
-                    <td colSpan={10} className="px-3 py-2">
+                    <td colSpan={9} className="px-3 py-2">
                       <div className="flex flex-wrap items-end gap-3">
                         <label className="flex flex-col text-xs text-slate-500">
                           表示形式
@@ -422,7 +423,7 @@ export function SymbolsPage() {
             ))}
             {filteredSymbols.length === 0 && (
               <tr>
-                <td colSpan={10} className="border-t border-slate-100 py-8 text-center text-sm text-slate-400">
+                <td colSpan={9} className="border-t border-slate-100 py-8 text-center text-sm text-slate-400">
                   条件に一致する記号がありません
                 </td>
               </tr>

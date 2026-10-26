@@ -164,7 +164,7 @@ function ProofTreeNodeView({
       )}
       {node.isReference && <div className="proof-tree-source">⋮ (ステップ {node.step.ord})</div>}
       {node.step.step_kind === 'theorem' && node.children.length === 0 && !node.isReference && (
-        <div className="proof-tree-source">⋮ (Proof #{node.step.applied_proof_id})</div>
+        <div className="proof-tree-source">⋮ ({lemmas.get(node.step.applied_proof_id ?? -1)?.theorem.name ?? '引用した証明'})</div>
       )}
       <div ref={conclusionRef} className="proof-tree-conclusion">
         <span className="proof-tree-inference-line" aria-hidden="true" />

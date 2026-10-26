@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { tagsApi } from '../api/tags'
 import type { Tag } from '../api/types'
 import { ONBOARDING_TAG_NAME } from '../onboarding'
+import { EXPLORATION_TAG_NAME } from '../exploration'
 import { isImeEvent, useCommand } from '../commands/CommandProvider'
 
 interface Props {
@@ -51,7 +52,7 @@ function TagPicker({
   const listboxId = useId()
   const availableTags = useMemo(
     () => tags
-      .filter((tag) => tag.name !== ONBOARDING_TAG_NAME)
+      .filter((tag) => tag.name !== ONBOARDING_TAG_NAME && tag.name !== EXPLORATION_TAG_NAME)
       .filter((tag) => tag.name.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())),
     [query, tags],
   )

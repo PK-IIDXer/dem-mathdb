@@ -1,3 +1,5 @@
+import { EntityBadge } from '../components/BetaIdentity'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -40,6 +42,7 @@ const BODY_TYPE_HINT: Record<DefinitionCreateKind, string> = {
 const SINGLE_PARAM_KINDS: DefinitionCreateKind[] = ['logical', 'quant_prop', 'quant_term']
 
 export function DefinitionsPage() {
+  usePageTitle('定義')
   const readOnly = useReadOnly()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -373,7 +376,6 @@ export function DefinitionsPage() {
         <table className="w-full text-left text-sm">
           <thead className="text-xs text-slate-500">
             <tr>
-              <th className="py-1 pr-3">id</th>
               <th className="py-1 pr-3">name / 説明 / タグ</th>
               <th className="py-1 pr-3">kind</th>
             </tr>
@@ -384,14 +386,13 @@ export function DefinitionsPage() {
                 key={definition.id}
                 className="border-t border-slate-100 hover:bg-slate-50"
               >
-                <td className="py-1 pr-3 align-top">{definition.id}</td>
                 <td className="py-1 pr-3">
                   <Link
                     to={`/definitions/${definition.public_id}`}
                     className="font-mono text-indigo-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     {definition.name}
-                  </Link>
+                  </Link> <EntityBadge namespace={definition.namespace_name} />
                   {definition.description && (
                     <div className="text-xs text-slate-500">{definition.description}</div>
                   )}

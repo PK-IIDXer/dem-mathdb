@@ -1,3 +1,4 @@
+import { SystemValidityNote } from './BetaIdentity'
 import { useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -12,10 +13,12 @@ import { symbolsWithDeclarationNames } from './FormulaEditor/display'
 import { ProofTree } from './ProofTree'
 import { PropositionExplanation } from './PropositionExplanation'
 import { ProofStepList, type ProofStepListHandle } from './ProofStepList'
+import { StepJustification, StepRef } from './ProofStepJustification'
+import { useLemmasByProofId } from './useLemmasByProofId'
 import { StepForm } from './StepForm'
 import { ApiError } from '../api/client'
 import { useReadOnly } from '../ReadOnlyContext'
-import type { LemmaDependency, ProofStep, ProofStepFollowup, PropSubst, Symbol, TermSubst, Token } from '../api/types'
+import type { ProofStepFollowup, Symbol, Token } from '../api/types'
 import { OnboardingCoach } from './OnboardingCoach'
 import { TopDownProofEditor } from './TopDownProofEditor'
 import { useCommand } from '../commands/CommandProvider'
@@ -29,9 +32,11 @@ const STATUS_COLOR: Record<string, string> = {
 export const PROOF_TREE_DEFAULT_STEP_LIMIT = 100
 export const PROOF_TREE_RENDER_STEP_LIMIT = 250
 
-export function ProofDetail({ proofId, theoremId, context = {}, onboarding = false }: {
+export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofNumber, context = {}, onboarding = false }: {
   proofId: number
   theoremId: number
+  theoremName?: string
+  proofNumber?: number
   context?: Record<string, number>
   onboarding?: boolean
 }) {
@@ -66,21 +71,7 @@ export function ProofDetail({ proofId, theoremId, context = {}, onboarding = fal
   })
   const { data: symbols = [] } = useQuery({ queryKey: ['symbols'], queryFn: () => symbolsApi.listSymbols() })
   const symbolsById = useMemo(() => new Map(symbols.map((s) => [s.id, s])), [symbols])
-  const { data: directDependencies } = useQuery({
-    queryKey: ['proofs', proofId, 'direct-dependencies'],
-    queryFn: () => proofsApi.listDirectDependencies(proofId),
-    enabled: hasStepsData && steps.length > 0,
-  })
-  const lemmasByProofId = useMemo(() => {
-    const byTheorem = new Map((directDependencies?.lemmas ?? []).map((lemma) => [lemma.theorem.id, lemma]))
-    const byProof = new Map<number, LemmaDependency>()
-    for (const [proofId, theoremId] of Object.entries(directDependencies?.applied_proofs ?? {})) {
-      const lemma = byTheorem.get(theoremId)
-      if (lemma) byProof.set(Number(proofId), lemma)
-    }
-    for (const lemma of directDependencies?.lemmas ?? []) byProof.set(lemma.proof_id, lemma)
-    return byProof
-  }, [directDependencies])
+  const lemmasByProofId = useLemmasByProofId(proofId, hasStepsData && steps.length > 0)
   const { data: axiomSystems = [] } = useQuery({
     queryKey: ['axiomSystems'],
     queryFn: () => axiomsApi.listSystems(),
@@ -255,7 +246,7 @@ export function ProofDetail({ proofId, theoremId, context = {}, onboarding = fal
   return (
     <section ref={proofRef} className="space-y-4">
       <div className="flex items-center gap-2">
-        <h2 className="text-lg font-semibold text-slate-800">Proof #{proof.id}</h2>
+        <h2 className="text-lg font-semibold text-slate-800">{theoremName}の証明{proofNumber != null ? ` (${proofNumber})` : ''}</h2>
         <span className={`rounded px-2 py-0.5 text-xs font-semibold ${STATUS_COLOR[proof.status]}`}>
           {proof.status}
         </span>
@@ -472,7 +463,7 @@ export function ProofDetail({ proofId, theoremId, context = {}, onboarding = fal
             {usedAxioms.map((axiom) => (
               <li key={axiom.id}>
                 <Link to={`/axioms/${axiom.public_id}`} className="text-indigo-600 hover:underline">
-                  #{axiom.id} {axiom.name}
+                  {axiom.name}
                 </Link>
               </li>
             ))}
@@ -504,7 +495,8 @@ export function ProofDetail({ proofId, theoremId, context = {}, onboarding = fal
             >
               判定
             </button>
-            {validInSystem != null && (
+            <SystemValidityNote namespace={axiomSystems.find(system => system.id === Number(systemId))?.namespace_name} />
+          {validInSystem != null && (
               <span className={`text-sm font-semibold ${validInSystem ? 'text-green-700' : 'text-red-700'}`}>
                 {validInSystem ? '✓ この公理系で成立' : '✗ この公理系では成立しない'}
               </span>
@@ -580,142 +572,4 @@ function TokenPreview({
       <span className="ml-2 text-xs text-slate-500">{preview}</span>
     </span>
   )
-}
-
-function StepRef({ ord, onJump }: { ord: number; onJump: (ord: number) => void }) {
-  return (
-    <button type="button" onClick={() => onJump(ord)} className="text-indigo-600 hover:underline">
-      ({ord})
-    </button>
-  )
-}
-
-function StepRefList({ ords, onJump }: { ords: number[]; onJump: (ord: number) => void }) {
-  return (
-    <>
-      {ords.map((ord, i) => (
-        <span key={ord}>
-          {i > 0 && ', '}
-          <StepRef ord={ord} onJump={onJump} />
-        </span>
-      ))}
-    </>
-  )
-}
-
-function SubstSummary({
-  termSubsts,
-  propSubsts,
-  symbolsById,
-}: {
-  termSubsts: TermSubst[]
-  propSubsts: PropSubst[]
-  symbolsById: Map<number, Symbol>
-}) {
-  const [open, setOpen] = useState(false)
-  if (termSubsts.length === 0 && propSubsts.length === 0) return null
-  return (
-    <span className="ml-1">
-      <button type="button" onClick={() => setOpen((v) => !v)} className="text-slate-400 hover:text-slate-600">
-        [代入 {open ? '▲' : '▼'}]
-      </button>
-      {open && (
-        <span className="ml-1 inline-flex flex-wrap items-center gap-x-2">
-          {termSubsts.map((subst, i) => (
-            <span key={`t${i}`} className="whitespace-nowrap">
-              {symbolsById.get(subst.source_symbol_id)?.name ?? `#${subst.source_symbol_id}`} ↦{' '}
-              <FormulaPreview formulaId={subst.target_formula_id} />
-            </span>
-          ))}
-          {propSubsts.map((subst, i) => (
-            <span key={`p${i}`} className="whitespace-nowrap">
-              {symbolsById.get(subst.source_symbol_id)?.name ?? `#${subst.source_symbol_id}`} ↦{' '}
-              <FormulaPreview formulaId={subst.body_formula_id} />
-            </span>
-          ))}
-        </span>
-      )}
-    </span>
-  )
-}
-
-function StepJustification({
-  step,
-  symbolsById,
-  lemmas,
-  onJump,
-}: {
-  step: ProofStep
-  symbolsById: Map<number, Symbol>
-  lemmas: Map<number, LemmaDependency>
-  onJump: (ord: number) => void
-}) {
-  switch (step.step_kind) {
-    case 'premise':
-      return <span>前提 #{step.premise_ord}</span>
-    case 'assumption':
-      return <span>仮定（⇒導入で落とす）</span>
-    case 'axiom':
-      return (
-        <span>
-          公理{' '}
-          {step.axiom ? (
-            <Link to={`/axioms/${step.axiom.public_id}`} className="text-indigo-600 hover:underline">
-              {step.axiom.name}
-            </Link>
-          ) : (
-            '?'
-          )}
-          <SubstSummary termSubsts={step.term_substs} propSubsts={step.prop_substs} symbolsById={symbolsById} />
-        </span>
-      )
-    case 'theorem':
-      return (
-        <span>
-          既証明の適用{' '}
-          {step.applied_proof_id != null && (
-            <Link to={`/proofs/${step.applied_proof_id}`} className="text-indigo-600 hover:underline">
-              {lemmas.get(step.applied_proof_id)?.theorem.name ?? `Proof #${step.applied_proof_id}`}
-            </Link>
-          )}
-          {step.arg_step_ords.length > 0 && (
-            <>
-              {' '}
-              (<StepRefList ords={step.arg_step_ords} onJump={onJump} />)
-            </>
-          )}
-          <SubstSummary termSubsts={step.term_substs} propSubsts={step.prop_substs} symbolsById={symbolsById} />
-        </span>
-      )
-    case 'rule':
-      if (step.inference_rule?.kind === 'modus_ponens') {
-        return (
-          <span>
-            MP <StepRefList ords={step.arg_step_ords} onJump={onJump} />
-          </span>
-        )
-      }
-      if (step.inference_rule?.kind === 'generalization') {
-        return (
-          <span>
-            Gen <StepRefList ords={step.arg_step_ords} onJump={onJump} />
-            {step.gen_variable_symbol_id != null && (
-              <> (var: {symbolsById.get(step.gen_variable_symbol_id)?.name ?? `#${step.gen_variable_symbol_id}`})</>
-            )}
-          </span>
-        )
-      }
-      if (step.inference_rule?.kind === 'implication_intro') {
-        const [assumptionOrd, bodyOrd] = step.arg_step_ords
-        return (
-          <span>
-            ⇒導入 (仮定 <StepRefList ords={assumptionOrd != null ? [assumptionOrd] : []} onJump={onJump} /> を{' '}
-            <StepRefList ords={bodyOrd != null ? [bodyOrd] : []} onJump={onJump} /> から落とす)
-          </span>
-        )
-      }
-      return <span>{step.inference_rule?.kind ?? 'rule'}</span>
-    default:
-      return null
-  }
 }

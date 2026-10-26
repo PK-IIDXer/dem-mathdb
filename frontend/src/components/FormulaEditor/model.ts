@@ -1,4 +1,6 @@
 import type { Symbol, Token } from '../../api/types'
+import type { WorkspaceInfo } from '../../api/workspace'
+import { SYMBOL_TYPE } from '../../constants/symbolTypes'
 
 export interface SymbolNode {
   id: number
@@ -24,6 +26,7 @@ export interface SymbolCompletionItem {
 
 export interface NamespaceSymbolGroup {
   namespace: string
+  label: string
   symbols: Symbol[]
 }
 
@@ -72,7 +75,10 @@ export function buildSymbolCompletionItems(
   })
 }
 
-export function groupSymbolsByNamespace(symbols: Symbol[]): NamespaceSymbolGroup[] {
+export function groupSymbolsByNamespace(
+  symbols: Symbol[],
+  workspace: WorkspaceInfo | null = null,
+): NamespaceSymbolGroup[] {
   const grouped = new Map<string, Symbol[]>()
   for (const symbol of symbols) {
     grouped.set(symbol.namespace_name, [...(grouped.get(symbol.namespace_name) ?? []), symbol])
@@ -81,6 +87,9 @@ export function groupSymbolsByNamespace(symbols: Symbol[]): NamespaceSymbolGroup
     .sort(([left], [right]) => left.localeCompare(right))
     .map(([namespace, items]) => ({
       namespace,
+      label: namespace === workspace?.local_namespace_name
+        ? workspace.title ? `${workspace.title} workspace` : 'ローカル workspace'
+        : namespace,
       symbols: [...items].sort((left, right) => left.name.localeCompare(right.name) || left.id - right.id),
     }))
 }
@@ -175,8 +184,8 @@ function isAtomic(node: EditorNode | null): boolean {
 }
 
 /** True when `node` is an infix application of `symbolId` sitting in the right
- * operand slot of the same symbol, i.e. the right-nesting that the encoding
- * uses for `∧`, `∨` and `→`.
+ * operand slot of the same logical symbol, i.e. the right-nesting that the
+ * encoding uses for `∧`, `∨` and `→`.
  *
  * Such an operand may drop its parentheses: the *left* operand is still
  * parenthesized whenever it is not atomic, so `φ ∧ ψ ∧ ρ` can only have come
@@ -184,14 +193,16 @@ function isAtomic(node: EditorNode | null): boolean {
  * Chains of the same connective are common (a 5-conjunct antecedent nests four
  * deep) and the parentheses carried no information.
  * See docs/design/content/proof-step-reduction.md §15.6. */
-function isRightAssociativeChain(
+function isRightAssociativeLogicalChain(
   node: EditorNode | null,
   symbolId: number,
   symbolsById: Map<number, Symbol>,
 ): boolean {
   if (node === null || node.kind !== 'symbol' || node.symbolId !== symbolId) return false
   const symbol = symbolsById.get(node.symbolId)
-  return symbol?.notation_kind === 'infix' && node.children.length === 2
+  return symbol?.notation_kind === 'infix'
+    && symbol.symbol_type.name === SYMBOL_TYPE.logical
+    && node.children.length === 2
 }
 
 /** Renders an infix operand, adding parentheses whenever it is not atomic.
@@ -218,11 +229,16 @@ function renderInfixOperand(
  * variable) — regardless of precedence — so that the display never collapses
  * two differently-grouped formulas into the same ambiguous text.
  *
- * The one exception is the right operand repeating the same symbol: `φ → (ψ →
- * χ)` renders as `φ → ψ → χ`, which stays distinct from `(φ → ψ) → χ` because
- * the left operand keeps its parentheses (`isRightAssociativeChain`).
+ * The one exception is the right operand repeating the same logical symbol:
+ * `φ → (ψ → χ)` renders as `φ → ψ → χ`, which stays distinct from `(φ → ψ) → χ`
+ * because the left operand keeps its parentheses. Non-logical infix operators
+ * keep parentheses on either same-precedence operand so DSS remains unambiguous.
  */
-export function renderPreview(
+export function renderPreview(node: EditorNode | null, symbolsById: Map<number, Symbol>, binderNames: string[] = [], avoidNames?: Set<string>): string {
+  try { return renderPreviewUnsafe(node, symbolsById, binderNames, avoidNames) } catch { return '表示できない式' }
+}
+
+function renderPreviewUnsafe(
   node: EditorNode | null,
   symbolsById: Map<number, Symbol>,
   binderNames: string[] = [],
@@ -241,7 +257,7 @@ export function renderPreview(
       binderNames.length,
       new Set([...avoid, ...binderNames]),
     )
-    const body = renderPreview(
+    const body = renderPreviewUnsafe(
       node.children[0] ?? null,
       symbolsById,
       [...binderNames, varName],
@@ -256,14 +272,14 @@ export function renderPreview(
       node.children[1],
       symbolsById,
       binderNames,
-      isRightAssociativeChain(node.children[1], node.symbolId, symbolsById),
+      isRightAssociativeLogicalChain(node.children[1], node.symbolId, symbolsById),
       avoid,
     )
     return `${left} ${name} ${right}`
   }
 
   if (node.children.length === 0) return name
-  const childStrs = node.children.map((child) => renderPreview(child, symbolsById, binderNames, avoid))
+  const childStrs = node.children.map((child) => renderPreviewUnsafe(child, symbolsById, binderNames, avoid))
   return `(${name} ${childStrs.join(' ')})`
 }
 
@@ -393,7 +409,11 @@ function isSelfDelimiting(node: EditorNode | null, symbolsById: Map<number, Symb
  * otherwise infix operands are parenthesized via the same atomicity rule as
  * `renderPreview`, and other applications use `token(arg, arg, ...)`.
  */
-export function renderLatex(
+export function renderLatex(node: EditorNode | null, symbolsById: Map<number, Symbol>, binderNames: string[] = [], avoidNames?: Set<string>): string {
+  try { return renderLatexUnsafe(node, symbolsById, binderNames, avoidNames) } catch { return '表示できない式' }
+}
+
+function renderLatexUnsafe(
   node: EditorNode | null,
   symbolsById: Map<number, Symbol>,
   binderNames: string[] = [],
@@ -409,7 +429,7 @@ export function renderLatex(
   const token = symbol?.latex_template ?? symbol?.name ?? '?'
 
   const slot = (child: EditorNode | null): TemplateSlot => ({
-    latex: renderLatex(child, symbolsById, binderNames, avoid),
+    latex: renderLatexUnsafe(child, symbolsById, binderNames, avoid),
     selfContained: isAtomic(child) || isSelfDelimiting(child, symbolsById),
   })
 
@@ -419,7 +439,7 @@ export function renderLatex(
       new Set([...avoid, ...binderNames]),
     )
     const varName = displayNameToLatex(displayVarName)
-    const body = renderLatex(
+    const body = renderLatexUnsafe(
       node.children[0] ?? null,
       symbolsById,
       [...binderNames, displayVarName],
@@ -442,23 +462,24 @@ export function renderLatex(
 
   if (symbol?.notation_kind === 'infix' && node.children.length === 2) {
     const wrap = (child: EditorNode | null, chained = false) => {
-      const rendered = renderLatex(child, symbolsById, binderNames, avoid)
+      const rendered = renderLatexUnsafe(child, symbolsById, binderNames, avoid)
       const bare = chained || isAtomic(child) || isSelfDelimiting(child, symbolsById)
       return bare ? rendered : `\\left(${rendered}\\right)`
     }
     const right = node.children[1]
     return `${wrap(node.children[0])} ${token} ${wrap(
       right,
-      isRightAssociativeChain(right, node.symbolId, symbolsById),
+      isRightAssociativeLogicalChain(right, node.symbolId, symbolsById),
     )}`
   }
 
   if (node.children.length === 0) return token
-  const args = node.children.map((c) => renderLatex(c, symbolsById, binderNames, avoid))
+  const args = node.children.map((c) => renderLatexUnsafe(c, symbolsById, binderNames, avoid))
   return `${token}\\left(${args.join(', ')}\\right)`
 }
 
 export type TreeBuildError =
+  | { kind: 'display-error'; position: number }
   | { kind: 'unexpected-end'; position: number }
   | { kind: 'unknown-symbol'; position: number; symbolId: number }
   | { kind: 'invalid-token'; position: number }
@@ -474,7 +495,7 @@ export type TokensToTreeResult =
  * symbols, missing children, malformed tokens, and trailing tokens are
  * reported without returning the plausible-looking partial tree. Node ids are
  * synthetic and are not meant for validation highlighting. */
-export function tokensToTree(tokens: Token[], symbolsById: Map<number, Symbol>): TokensToTreeResult {
+function tokensToTreeUnsafe(tokens: Token[], symbolsById: Map<number, Symbol>): TokensToTreeResult {
   let cursor = 0
   let error: TreeBuildError | null = null
 
@@ -528,4 +549,10 @@ export function tokensToTree(tokens: Token[], symbolsById: Map<number, Symbol>):
     }
   }
   return { ok: true, tree, consumed: cursor }
+}
+
+export function tokensToTree(tokens: Token[], symbolsById: Map<number, Symbol>): TokensToTreeResult {
+  try { return tokensToTreeUnsafe(tokens, symbolsById) } catch {
+    return { ok: false, tree: null, consumed: 0, error: { kind: 'display-error', position: 0 } }
+  }
 }

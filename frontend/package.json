@@ -14,7 +14,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.101.2",
     "@tanstack/react-virtual": "^3.13.12",
-    "katex": "^0.17.0",
+    "katex": "^0.18.9",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1"

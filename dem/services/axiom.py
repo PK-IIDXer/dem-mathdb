@@ -10,12 +10,19 @@ from sqlalchemy.orm import Session
 from dem.db.models.definition import Definition
 from dem.db.models.foundation_records import AxiomRecord
 from dem.db.models.inference import Axiom, AxiomSystem, AxiomSystemMember
-from dem.db.models.language import Formula
+from dem.db.models.language import Formula, Namespace
 from dem.db.seed_labels import axiom_lookup_names, axiom_system_lookup_names
 from dem.db.models.tag import AxiomTag
 from dem.db.models.theorem import Proof, ProofStep, Theorem
 from dem.errors import ConflictError, NotFoundError, ValidationError
-from dem.identity import DEFAULT_NAMESPACE_NAME, ensure_namespace, new_entity_public_id
+from dem.identity import (
+    ImportedPublicId,
+    DEFAULT_NAMESPACE_NAME,
+    ensure_namespace,
+    new_entity_public_id,
+    split_qualified_name,
+)
+from dem.services.system_tags import visible_theorem_clause
 from dem.services.used_axioms import (
     load_definition_axioms,
     load_proof_edges,
@@ -35,7 +42,7 @@ class AxiomService:
         description: str | None = None,
         remarks: str | None = None,
         namespace: str = DEFAULT_NAMESPACE_NAME,
-        public_id_key: str | None = None,
+        public_id_key: str | ImportedPublicId | None = None,
     ) -> Axiom:
         """Register a primitive axiom.
 
@@ -66,11 +73,21 @@ class AxiomService:
             raise NotFoundError("Axiom", public_id)
         return row
 
-    def get_by_name(self, name: str) -> Axiom:
-        row = self._session.scalar(select(Axiom).where(Axiom.name.in_(axiom_lookup_names(name))))
-        if row is None:
+    def get_by_name(self, name: str, namespace: str | None = None) -> Axiom:
+        name, namespace = split_qualified_name(name, namespace)
+        stmt = select(Axiom).where(Axiom.name.in_(axiom_lookup_names(name)))
+        if namespace is not None:
+            stmt = stmt.join(Namespace).where(Namespace.name == namespace)
+        rows = list(self._session.scalars(stmt.limit(2)))
+        if not rows:
             raise NotFoundError("Axiom", name)
-        return row
+        if len(rows) > 1:
+            raise ValidationError(
+                f"axiom name {name!r} is ambiguous",
+                code="axiom.ambiguous_name",
+                details={"name": name},
+            )
+        return rows[0]
 
     def list_axioms(
         self, search: str | None = None, tag_ids: list[int] | None = None
@@ -110,15 +127,42 @@ class AxiomService:
         if not theorem_ids:
             return []
         return list(
-            self._session.scalars(select(Theorem).where(Theorem.id.in_(theorem_ids)).order_by(Theorem.id))
+            self._session.scalars(
+                select(Theorem)
+                .where(Theorem.id.in_(theorem_ids), visible_theorem_clause(Theorem.id))
+                .order_by(Theorem.id)
+            )
         )
 
-    def register_system(self, name: str, remarks: str | None = None) -> AxiomSystem:
-        existing = self._session.scalar(select(AxiomSystem).where(AxiomSystem.name == name))
+    def register_system(
+        self,
+        name: str,
+        remarks: str | None = None,
+        namespace: str = DEFAULT_NAMESPACE_NAME,
+        public_id_key: str | ImportedPublicId | None = None,
+    ) -> AxiomSystem:
+        """Register a system; explicit birth keys are for seed/package import only."""
+        namespace_row = ensure_namespace(self._session, namespace)
+        public_id = new_entity_public_id(
+            "axiom_system", namespace_row.name, name, public_id_key
+        )
+        existing = self._session.scalar(
+            select(AxiomSystem).where(
+                AxiomSystem.namespace_id == namespace_row.id,
+                AxiomSystem.name == name,
+            )
+        )
         if existing is not None:
             raise ConflictError("AxiomSystem", "name", name)
 
-        system = AxiomSystem(name=name, remarks=remarks)
+        if public_id_key is not None and self._session.scalar(
+            select(AxiomSystem.id).where(AxiomSystem.public_id == public_id)
+        ) is not None:
+            raise ConflictError("AxiomSystem", "public_id", public_id)
+
+        system = AxiomSystem(
+            public_id=public_id, namespace_id=namespace_row.id, name=name, remarks=remarks
+        )
         self._session.add(system)
         self._session.flush()
         return system
@@ -181,13 +225,33 @@ class AxiomService:
             raise NotFoundError("AxiomSystem", id)
         return row
 
-    def get_system_by_name(self, name: str) -> AxiomSystem:
+    def get_system_by_public_id(self, public_id: str) -> AxiomSystem:
         row = self._session.scalar(
-            select(AxiomSystem).where(AxiomSystem.name.in_(axiom_system_lookup_names(name)))
+            select(AxiomSystem).where(AxiomSystem.public_id == public_id)
         )
         if row is None:
-            raise NotFoundError("AxiomSystem", name)
+            raise NotFoundError("AxiomSystem", public_id)
         return row
+
+    def get_system_by_name(
+        self, name: str, namespace: str | None = None
+    ) -> AxiomSystem:
+        name, namespace = split_qualified_name(name, namespace)
+        stmt = select(AxiomSystem).where(
+            AxiomSystem.name.in_(axiom_system_lookup_names(name))
+        )
+        if namespace is not None:
+            stmt = stmt.join(Namespace).where(Namespace.name == namespace)
+        rows = list(self._session.scalars(stmt.limit(2)))
+        if not rows:
+            raise NotFoundError("AxiomSystem", name)
+        if len(rows) > 1:
+            raise ValidationError(
+                f"axiom system name {name!r} is ambiguous",
+                code="axiom_system.ambiguous_name",
+                details={"name": name},
+            )
+        return rows[0]
 
     def list_systems(self) -> list[AxiomSystem]:
         return list(self._session.scalars(select(AxiomSystem).order_by(AxiomSystem.id)))
@@ -282,7 +346,7 @@ class AxiomService:
         definition_id: int,
         remarks: str | None = None,
         namespace: str = DEFAULT_NAMESPACE_NAME,
-        public_id_key: str | None = None,
+        public_id_key: str | ImportedPublicId | None = None,
     ) -> Axiom:
         if self._session.get(Definition, definition_id) is None:
             raise NotFoundError("Definition", definition_id)
@@ -305,14 +369,18 @@ class AxiomService:
         remarks: str | None,
         description: str | None = None,
         namespace: str = DEFAULT_NAMESPACE_NAME,
-        public_id_key: str | None = None,
+        public_id_key: str | ImportedPublicId | None = None,
     ) -> Axiom:
         namespace_row = ensure_namespace(self._session, namespace)
         public_id = new_entity_public_id(
             "axiom", namespace_row.name, name, public_id_key
         )
         formula = self._get_proposition_formula(formula_id, "axiom formula must be a proposition")
-        existing = self._session.scalar(select(Axiom).where(Axiom.name == name))
+        existing = self._session.scalar(
+            select(Axiom).where(
+                Axiom.namespace_id == namespace_row.id, Axiom.name == name
+            )
+        )
         if existing is not None:
             raise ConflictError("Axiom", "name", name)
         if public_id_key is not None and self._session.scalar(

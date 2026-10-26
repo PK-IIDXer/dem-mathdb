@@ -178,7 +178,7 @@ def test_structural_search_schema_root_arity_measurement(api, capsys):
 @pytest.mark.timing_sensitive
 def test_structural_search_response_time_and_pagination(api, capsys):
     dem, post = api
-    assert dem.session.scalar(select(func.count()).select_from(Formula)) == 8
+    assert dem.session.scalar(select(func.count()).select_from(Formula)) == 20
     request = {"pattern": "φ → ψ", "context": {}, "limit": 50}
     assert post(request)[0] == 200  # warm SQLite pages and service caches
     samples = []

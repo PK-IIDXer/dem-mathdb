@@ -5,3 +5,16 @@ Some design documents refer to historical experiments, future-work notes, or int
 References to omitted material also remain in code comments, docstrings, and test docstrings. They may appear as document names such as `trust-boundary.md`, section markers such as `§9.5`, or internal work-queue identifiers such as `N11-C` and `Phase 3`. These references are intentionally retained because they preserve useful context about why a decision was made, even though their targets are not available in this snapshot.
 
 The current implementation and the retained design documents are authoritative for this snapshot. Even when a referenced document is unavailable, the implemented behavior can be verified from the code and tests.
+
+## Scope of this snapshot
+
+Omitted documents include source-text research and attribution records,
+foundation-specific development notes, corpus measurements, private release
+reviews and work queues, and infrastructure or operational records. Retained
+operations documentation describes the generic anonymous beta procedure.
+
+Tests that require omitted foundations, imported external mathematics, corpus
+names or exact corpus counts, source-specific display fixtures, and corpus
+ranking thresholds are also omitted. Public tests cover the retained logical
+core, independent demonstrations and applicable API, database and beta guards.
+They do not establish coverage or performance for omitted mathematical data.

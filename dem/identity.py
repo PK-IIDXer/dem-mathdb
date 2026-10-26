@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 from uuid import UUID, uuid4, uuid5
 
 from sqlalchemy import select
@@ -12,6 +13,17 @@ from dem.errors import ValidationError
 PUBLIC_ID_NAMESPACE = UUID("a5643d59-43f3-5ce2-9c31-633b24415486")
 DEFAULT_NAMESPACE_NAME = "dem.foundation.logic"
 _NAMESPACE_RE = re.compile(r"^[a-z0-9-]+(?:\.[a-z0-9-]+){1,4}$")
+
+
+@dataclass(frozen=True)
+class ImportedPublicId:
+    """Python-only package identity; never a REST request field or birth key."""
+
+    value: str
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.value, str) or str(UUID(self.value)) != self.value:
+            raise ValueError("package public ID must be a canonical UUID")
 
 
 def new_public_id() -> str:
@@ -40,11 +52,13 @@ def public_id_from_key(entity_kind: str, key: str) -> str:
 
 
 def new_entity_public_id(
-    entity_kind: str, namespace: str, name: str, key: str | None
+    entity_kind: str, namespace: str, name: str, key: str | ImportedPublicId | None
 ) -> str:
     """The public ID of a new row: from its explicit birth key when one is
     given (seed data and package import only), otherwise from the namespace
     and name it is created with."""
+    if isinstance(key, ImportedPublicId):
+        return key.value
     if key is None:
         return deterministic_public_id(entity_kind, f"{namespace}::{name}")
     try:
@@ -60,6 +74,29 @@ def validate_namespace_name(name: str) -> str:
             "namespace must contain 2-5 lowercase alphanumeric/hyphen segments"
         )
     return normalized
+
+
+def split_qualified_name(
+    name: str, namespace: str | None = None
+) -> tuple[str, str | None]:
+    """Split ``<namespace>::<name>`` while preserving unqualified lookups."""
+    if namespace is not None:
+        return name, validate_namespace_name(namespace)
+    qualified_namespace, separator, local_name = name.partition("::")
+    if not separator:
+        return name, None
+    if not local_name or "::" in local_name:
+        raise ValidationError(
+            "qualified name must be '<namespace>::<name>'",
+            code="identity.invalid_qualified_name",
+        )
+    try:
+        normalized = validate_namespace_name(qualified_namespace)
+    except ValueError as exc:
+        raise ValidationError(
+            str(exc), code="identity.invalid_qualified_name"
+        ) from exc
+    return local_name, normalized
 
 
 def ensure_namespace(session: Session, name: str = DEFAULT_NAMESPACE_NAME):

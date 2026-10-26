@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Annotated, Literal
 
-from pydantic import AliasPath, BaseModel, Field, PlainSerializer, model_validator
+from pydantic import AliasPath, BaseModel, ConfigDict, Field, PlainSerializer, model_validator
 
 from dem.types import Token
 
@@ -265,8 +265,12 @@ class AxiomCreate(BaseModel):
 
 class AxiomSystemOut(BaseModel):
     id: int
+    public_id: str
+    namespace_id: int
+    namespace_name: str = Field(validation_alias=AliasPath("namespace", "name"))
     name: str
     remarks: str | None
+    comparison_rank: int | None
     created_at: ApiDateTime
 
     model_config = {"from_attributes": True}
@@ -285,6 +289,53 @@ class IsSubsetOut(BaseModel):
     is_subset: bool
 
 
+class AxiomComparisonOut(BaseModel):
+    """A foundation's own comparison of axiom dependencies (public-phase1 §15).
+
+    ``lean_axiom`` is the source system's axiom the statement depends on and
+    ``dem_unused_axiom`` the DEM axiom the foundation maps it to; the texts are
+    that foundation's wording.  The application names none of them.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    lean: str
+    lean_axiom: str
+    lean_axiom_note: str
+    dem: str
+    dem_unused_axiom: str
+
+
+class ExternalCheckOut(BaseModel):
+    source_system: str
+    library: str
+    library_version: str
+    library_commit: str
+    declaration: str
+    module: str
+    file: str
+    line: int
+    check_model: str
+    check_roundtrip: str
+    check_toolchain: str | None
+    checked_at: ApiDateTime | None
+    license: str
+    copyright: str | None
+    authors: str | None
+    upstream_origin: str
+    source_axioms: list[str] = Field(default_factory=list)
+    axiom_comparison: AxiomComparisonOut | None = None
+
+
+class ExternalSourceOut(BaseModel):
+    library: str
+    library_version: str
+    library_commit: str
+    license: str
+    imported_statements: int
+    notice_status: Literal["absent", "present", "not_checked"]
+
+
 class TheoremOut(BaseModel):
     id: int
     public_id: str
@@ -296,6 +347,7 @@ class TheoremOut(BaseModel):
     status: str
     description: str | None
     tags: list[TagOut] = Field(default_factory=list)
+    external_checks: list[ExternalCheckOut] = Field(default_factory=list)
     remarks: str | None
     created_at: ApiDateTime
     updated_at: ApiDateTime
@@ -435,6 +487,33 @@ class ProofOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class ExplorationCreate(BaseModel):
+    name: str
+    premise_formula_ids: list[int] = Field(default_factory=list)
+
+
+class ExplorationOut(BaseModel):
+    theorem: TheoremOut
+    proof: ProofOut
+    premises: list[FormulaOut]
+    step_count: int
+    updated_at: ApiDateTime
+
+
+class ExplorationDependenciesOut(BaseModel):
+    axioms: list[AxiomOut]
+    theorems: list[TheoremOut]
+
+
+class ExplorationPromotionCreate(BaseModel):
+    name: str
+
+
+class ExplorationPromotionOut(BaseModel):
+    theorem: TheoremOut
+    proof: ProofOut
+
+
 class LemmaDependencyOut(BaseModel):
     # The proof the step pinned (always verified), so a client can expand the
     # lemma's own dependencies from it without first listing the theorem's proofs.
@@ -446,6 +525,7 @@ class DirectDependenciesOut(BaseModel):
     axioms: list[AxiomOut]
     lemmas: list[LemmaDependencyOut]
     applied_proofs: dict[int, int] = Field(default_factory=dict)
+    applied_proof_public_ids: dict[int, str] = Field(default_factory=dict)
 
 
 class ProofCreate(BaseModel):
@@ -565,6 +645,8 @@ class ComputeGenTokensRequest(BaseModel):
 class DefinitionOut(BaseModel):
     id: int
     public_id: str
+    namespace_id: int
+    namespace_name: str = Field(validation_alias=AliasPath("namespace", "name"))
     name: str
     kind: str
     new_symbol: SymbolOut
@@ -577,6 +659,11 @@ class DefinitionOut(BaseModel):
     created_at: ApiDateTime
 
     model_config = {"from_attributes": True}
+
+
+class WorkspaceInfoOut(BaseModel):
+    title: str | None
+    local_namespace_name: str
 
 
 class DefinitionCreate(BaseModel):

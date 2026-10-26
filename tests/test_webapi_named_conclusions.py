@@ -11,7 +11,7 @@ from dem.errors import NotFoundError
 from webapi.routers.formulas import named_conclusions
 from webapi.schemas import NamedConclusionsOut
 
-SEED_PHASE = "l0"
+SEED_PHASE = "public_core"
 
 
 def test_named_conclusions_match_exact_formula_id(seeded_session: Session) -> None:

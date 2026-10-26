@@ -711,6 +711,8 @@ class ProofService:
         theorem_id: int,
         name: str | None = None,
         remarks: str | None = None,
+        *,
+        import_identity_ordinal: int | None = None,
     ) -> Proof:
         theorem = self._session.get(Theorem, theorem_id)
         if theorem is None:
@@ -721,7 +723,11 @@ class ProofService:
             self._session.add(sequence)
             self._session.flush()
         ordinal = sequence.next_ordinal
-        sequence.next_ordinal += 1
+        if import_identity_ordinal is not None:
+            if type(import_identity_ordinal) is not int or import_identity_ordinal < ordinal:
+                raise ValidationError("package proof ordinal must be an unused nonnegative integer")
+            ordinal = import_identity_ordinal
+        sequence.next_ordinal = ordinal + 1
         proof = Proof(
             public_id=deterministic_public_id(
                 "proof", f"{theorem.public_id}::{ordinal}"
@@ -741,6 +747,22 @@ class ProofService:
             via=self._authoring_via,
         )
         return proof
+
+    def reserve_import_identity_sequence(self, theorem_id: int, next_ordinal: int) -> None:
+        """Preserve deleted-proof identity history during offline package import."""
+        if type(next_ordinal) is not int or next_ordinal < 0:
+            raise ValidationError("package next proof ordinal must be nonnegative")
+        if self._session.get(Theorem, theorem_id) is None:
+            raise NotFoundError("Theorem", theorem_id)
+        sequence = self._session.get(ProofIdentitySequence, theorem_id)
+        if sequence is None:
+            sequence = ProofIdentitySequence(theorem_id=theorem_id, next_ordinal=next_ordinal)
+            self._session.add(sequence)
+        else:
+            if next_ordinal < sequence.next_ordinal:
+                raise ValidationError("package proof identity sequence would reuse an ordinal")
+            sequence.next_ordinal = next_ordinal
+        self._session.flush()
 
     def get(self, id: int) -> Proof:
         row = self._session.get(Proof, id)

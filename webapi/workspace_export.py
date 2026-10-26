@@ -6,22 +6,40 @@ import re
 import tempfile
 from collections.abc import Iterable
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
-from sqlalchemy import text
+from sqlalchemy import inspect, select, text
 from sqlalchemy.engine.interfaces import Dialect
 from sqlalchemy.orm import Session
 
 from dem import __version__ as dem_version
+from dem.db.models import ImportRecord
+from dem.db.models.definition import Definition
+from dem.db.models.inference import Axiom
+from dem.db.models.language import Formula
+from dem.db.models.tag import Tag, TheoremTag
+from dem.db.models.theorem import (
+    Proof,
+    ProofStep,
+    ProofStepSubstProp,
+    ProofStepSubstTerm,
+    Theorem,
+    TheoremPremise,
+)
 from dem.db.ordering import compile_utf8_sort_key
+from dem.services.system_tags import EXPLORATION_TAG, visible_theorem_clause
 
 
-EXPORT_SCHEMA_VERSION = 1
+EXPORT_SCHEMA_VERSION = 2
 WORKSPACE_EXPORT_VERSION = "0.0.0"
 _ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 _UTF8_SORT_TOKEN = re.compile(r"\[\[utf8:([A-Za-z_][A-Za-z0-9_.]*)\]\]")
+_VISIBLE_THEOREM_TOKEN = re.compile(
+    r"\[\[visible_theorem:([A-Za-z_][A-Za-z0-9_.]*)\]\]"
+)
 
 
 @dataclass(frozen=True)
@@ -34,6 +52,10 @@ class WorkspaceExportMetadata:
 class WorkspaceExportResult:
     path: Path
     row_counts: dict[str, int]
+
+
+class WorkspaceExportSchemaError(RuntimeError):
+    """The workspace schema is too old for a complete export."""
 
 
 @dataclass(frozen=True)
@@ -208,20 +230,24 @@ _JSONL_EXPORTS = (
     _JsonlExport(
         "axiom_systems.jsonl",
         """
-        SELECT name, remarks
-        FROM axiom_system
-        ORDER BY [[utf8:name]]
+        SELECT system.public_id AS public_id, namespace.name AS namespace,
+               system.name AS name, system.remarks AS remarks,
+               system.comparison_rank AS comparison_rank
+        FROM axiom_system AS system
+        JOIN namespace ON namespace.id = system.namespace_id
+        ORDER BY [[utf8:system.public_id]]
         """,
     ),
     _JsonlExport(
         "axiom_system_members.jsonl",
         """
         SELECT system.name AS axiom_system,
+               system.public_id AS axiom_system_public_id,
                axiom.public_id AS axiom_public_id
         FROM axiom_system_member AS member
         JOIN axiom_system AS system ON system.id = member.axiom_system_id
         JOIN axiom ON axiom.id = member.axiom_id
-        ORDER BY [[utf8:system.name]], [[utf8:axiom.public_id]]
+        ORDER BY [[utf8:system.public_id]], [[utf8:axiom.public_id]]
         """,
     ),
     _JsonlExport(
@@ -237,6 +263,7 @@ _JSONL_EXPORTS = (
         FROM theorem
         JOIN namespace ON namespace.id = theorem.namespace_id
         JOIN formula ON formula.id = theorem.conclusion_formula_id
+        WHERE [[visible_theorem:theorem.id]]
         ORDER BY [[utf8:theorem.public_id]]
         """,
     ),
@@ -249,13 +276,54 @@ _JSONL_EXPORTS = (
         FROM theorem_premise AS premise
         JOIN theorem ON theorem.id = premise.theorem_id
         JOIN formula ON formula.id = premise.formula_id
+        WHERE [[visible_theorem:theorem.id]]
         ORDER BY [[utf8:theorem.public_id]], premise.ord
+        """,
+    ),
+    _JsonlExport(
+        "import_records.jsonl",
+        """
+        SELECT theorem.public_id AS theorem_public_id,
+               record.source_system AS source_system,
+               record.source_system_version AS source_system_version,
+               record.library AS library,
+               record.library_version AS library_version,
+               record.library_commit AS library_commit,
+               record.declaration AS declaration,
+               record.module AS module,
+               record.file AS file,
+               record.line AS line,
+               record.license AS license,
+               record.copyright AS copyright,
+               record.authors AS authors,
+               record.upstream_origin AS upstream_origin,
+               record.source_statement AS source_statement,
+               record.source_statement_hash AS source_statement_hash,
+               record.universe_params AS universe_params,
+               record.source_axioms AS source_axioms,
+               record.translator_version AS translator_version,
+               record.mapping_table_version AS mapping_table_version,
+               record.prop_encoding AS prop_encoding,
+               record.check_model AS check_model,
+               record.check_roundtrip AS check_roundtrip,
+               record.check_toolchain AS check_toolchain,
+               record.check_artifact_hash AS check_artifact_hash,
+               record.checked_at AS checked_at,
+               record.retrieved_at AS retrieved_at,
+               record.axiom_comparison AS axiom_comparison,
+               'translated into a DEM formula' AS modification
+        FROM import_record AS record
+        JOIN theorem ON theorem.id = record.theorem_id
+        WHERE [[visible_theorem:theorem.id]]
+        ORDER BY [[utf8:theorem.public_id]], [[utf8:record.library_commit]],
+                 [[utf8:record.declaration]]
         """,
     ),
     _JsonlExport(
         "tags.jsonl",
         """
         SELECT name FROM tag
+        WHERE name <> 'system:exploration'
         ORDER BY [[utf8:name]]
         """,
     ),
@@ -266,7 +334,20 @@ _JSONL_EXPORTS = (
         FROM theorem_tag
         JOIN theorem ON theorem.id = theorem_tag.theorem_id
         JOIN tag ON tag.id = theorem_tag.tag_id
+        WHERE [[visible_theorem:theorem.id]]
+          AND tag.name <> 'system:exploration'
         ORDER BY [[utf8:theorem.public_id]], [[utf8:tag.name]]
+        """,
+    ),
+    _JsonlExport(
+        "proof_identity_sequences.jsonl",
+        """
+        SELECT theorem.public_id AS theorem_public_id,
+               sequence.next_ordinal AS next_ordinal
+        FROM proof_identity_sequence AS sequence
+        JOIN theorem ON theorem.id = sequence.theorem_id
+        WHERE [[visible_theorem:theorem.id]]
+        ORDER BY [[utf8:theorem.public_id]]
         """,
     ),
     _JsonlExport(
@@ -280,6 +361,7 @@ _JSONL_EXPORTS = (
                proof.remarks AS remarks
         FROM proof
         JOIN theorem ON theorem.id = proof.theorem_id
+        WHERE [[visible_theorem:theorem.id]]
         ORDER BY [[utf8:proof.public_id]]
         """,
     ),
@@ -303,6 +385,7 @@ _JSONL_EXPORTS = (
         LEFT JOIN proof AS applied_proof ON applied_proof.id = step.applied_proof_id
         LEFT JOIN inference_rule ON inference_rule.id = step.inference_rule_id
         LEFT JOIN symbol AS gen_symbol ON gen_symbol.id = step.gen_variable_symbol_id
+        WHERE [[visible_theorem:proof.theorem_id]]
         ORDER BY [[utf8:proof.public_id]], step.ord
         """,
     ),
@@ -315,6 +398,7 @@ _JSONL_EXPORTS = (
                arg.referenced_step_ord AS referenced_step_ord
         FROM proof_step_arg AS arg
         JOIN proof ON proof.id = arg.proof_id
+        WHERE [[visible_theorem:proof.theorem_id]]
         ORDER BY [[utf8:proof.public_id]], arg.step_ord, arg.arg_ord
         """,
     ),
@@ -329,6 +413,7 @@ _JSONL_EXPORTS = (
         JOIN proof ON proof.id = subst.proof_id
         JOIN symbol AS source ON source.id = subst.source_symbol_id
         JOIN formula AS target ON target.id = subst.target_formula_id
+        WHERE [[visible_theorem:proof.theorem_id]]
         ORDER BY [[utf8:proof.public_id]], subst.step_ord, [[utf8:source.public_id]]
         """,
     ),
@@ -343,6 +428,7 @@ _JSONL_EXPORTS = (
         JOIN proof ON proof.id = subst.proof_id
         JOIN symbol AS source ON source.id = subst.source_symbol_id
         JOIN formula AS body ON body.id = subst.body_formula_id
+        WHERE [[visible_theorem:proof.theorem_id]]
         ORDER BY [[utf8:proof.public_id]], subst.step_ord, [[utf8:source.public_id]]
         """,
     ),
@@ -358,6 +444,7 @@ _JSONL_EXPORTS = (
         JOIN proof ON proof.id = param.proof_id
         JOIN symbol AS source ON source.id = param.source_symbol_id
         JOIN symbol AS formal ON formal.id = param.formal_param_symbol_id
+        WHERE [[visible_theorem:proof.theorem_id]]
         ORDER BY [[utf8:proof.public_id]], param.step_ord, [[utf8:source.public_id]], param.ord
         """,
     ),
@@ -388,19 +475,27 @@ def _json_bytes(value: Any) -> bytes:
     )
 
 
-def _manifest(metadata: WorkspaceExportMetadata) -> dict[str, object]:
+def _manifest(
+    metadata: WorkspaceExportMetadata,
+    imported_licenses: list[str],
+) -> dict[str, object]:
     major, minor, *_ = (int(part) for part in dem_version.split("."))
+    entity_license = " AND ".join(imported_licenses) if imported_licenses else None
     return {
         "schema_version": EXPORT_SCHEMA_VERSION,
         "package": metadata.package,
         "version": WORKSPACE_EXPORT_VERSION,
         "dem_runtime": f">={dem_version},<{major}.{minor + 1}.0",
         "depends": {},
-        "license": None,
+        "license": entity_license,
+        "license_scope": "imported_entities_only" if entity_license else None,
         "description": metadata.description,
         "empty_field_reasons": {
             "depends": "Package dependency tracking starts in Phase 5-6.",
-            "license": "The workspace model does not yet store license metadata.",
+            "license": (
+                "The workspace model does not yet store a workspace-wide license. "
+                "When present, license covers only the imported entities named in NOTICE."
+            ),
         },
         "identity": {
             "entities": "public_id",
@@ -414,8 +509,55 @@ def _manifest(metadata: WorkspaceExportMetadata) -> dict[str, object]:
     }
 
 
+def _imported_licenses(session: Session) -> list[str]:
+    return sorted(
+        set(
+            session.scalars(
+                select(ImportRecord.license)
+                .join(Theorem, Theorem.id == ImportRecord.theorem_id)
+                .where(visible_theorem_clause(Theorem.id))
+            )
+        )
+    )
+
+
+def _notice(session: Session) -> str | None:
+    rows = list(
+        session.execute(
+            select(ImportRecord, Theorem.public_id)
+            .join(Theorem, Theorem.id == ImportRecord.theorem_id)
+            .where(visible_theorem_clause(Theorem.id))
+            .order_by(Theorem.public_id, ImportRecord.library_commit, ImportRecord.declaration)
+        )
+    )
+    if not rows:
+        return None
+    lines = [
+        "DEM workspace imported-content NOTICE",
+        "",
+        "Each item below was translated into a DEM formula and is therefore marked as modified.",
+    ]
+    for record, theorem_public_id in rows:
+        lines.extend(
+            [
+                "",
+                f"Theorem: {theorem_public_id}",
+                f"Source: {record.library} {record.library_version} "
+                f"({record.library_commit}) / {record.declaration}",
+                f"File: {record.file}:{record.line}",
+                f"License: {record.license}",
+                f"Copyright: {record.copyright or 'not recorded'}",
+                f"Authors: {record.authors or 'not recorded'}",
+                "Modification: translated into a DEM formula",
+            ]
+        )
+    return "\n".join(lines) + "\n"
+
+
 def _iter_rows(
-    session: Session, item: _JsonlExport
+    session: Session,
+    item: _JsonlExport,
+    hidden_formula_public_ids: frozenset[str],
 ) -> Iterable[dict[str, object]]:
     query = _compile_export_query(item.query, session.get_bind().dialect)
     result = session.execute(
@@ -423,19 +565,165 @@ def _iter_rows(
     )
     for row in result.mappings():
         record = dict(row)
+        formula_public_id = (
+            record.get("public_id")
+            if item.filename == "formulas.jsonl"
+            else record.get("formula_public_id")
+            if item.filename == "formula_tokens.jsonl"
+            else None
+        )
+        if formula_public_id in hidden_formula_public_ids:
+            continue
+        if item.filename == "import_records.jsonl":
+            for field in ("checked_at", "retrieved_at"):
+                value = record[field]
+                if value is not None:
+                    value = datetime.fromisoformat(value) if isinstance(value, str) else value
+                    if value.tzinfo is None:
+                        value = value.replace(tzinfo=timezone.utc)
+                    record[field] = value.astimezone(timezone.utc).isoformat(timespec="microseconds")
         for field in item.boolean_fields:
             record[field] = bool(record[field])
         yield record
 
 
 def _compile_export_query(query: str, dialect: Dialect) -> str:
+    query = _VISIBLE_THEOREM_TOKEN.sub(
+        lambda match: _visible_theorem_sql(match.group(1)),
+        query,
+    )
     query = _UTF8_SORT_TOKEN.sub(
         lambda match: compile_utf8_sort_key(match.group(1), dialect),
         query,
     )
-    if _UTF8_SORT_TOKEN.search(query):
-        raise ValueError("unresolved UTF-8 ordering token")
+    if (
+        _UTF8_SORT_TOKEN.search(query)
+        or _VISIBLE_THEOREM_TOKEN.search(query)
+    ):
+        raise ValueError("unresolved export query token")
     return query
+
+
+def _hidden_theorem_sql(theorem_id: str) -> str:
+    return (
+        "EXISTS (SELECT 1 FROM theorem_tag AS exploration_tt "
+        "JOIN tag AS exploration_tag ON exploration_tag.id = exploration_tt.tag_id "
+        f"WHERE exploration_tt.theorem_id = {theorem_id} "
+        "AND exploration_tag.name = 'system:exploration')"
+    )
+
+
+def _visible_theorem_sql(theorem_id: str) -> str:
+    return f"NOT ({_hidden_theorem_sql(theorem_id)})"
+
+
+def _exploration_only_formula_public_ids(session: Session) -> frozenset[str]:
+    """Formula values referenced only by hidden exploration graph rows.
+
+    The candidate set is normally empty, so ordinary exports pay one indexed
+    tag lookup.  When notes exist, the small candidate set is resolved once
+    before streaming instead of repeating correlated subqueries for every one
+    of the (potentially millions of) formula-token rows.
+    """
+    hidden_theorem_ids = set(
+        session.scalars(
+            select(TheoremTag.theorem_id)
+            .join(Tag, Tag.id == TheoremTag.tag_id)
+            .where(Tag.name == EXPLORATION_TAG)
+        )
+    )
+    if not hidden_theorem_ids:
+        return frozenset()
+
+    hidden_proof_ids = set(
+        session.scalars(
+            select(Proof.id).where(Proof.theorem_id.in_(hidden_theorem_ids))
+        )
+    )
+    candidates = set(
+        session.scalars(
+            select(Theorem.conclusion_formula_id).where(
+                Theorem.id.in_(hidden_theorem_ids)
+            )
+        )
+    )
+    candidates.update(
+        session.scalars(
+            select(TheoremPremise.formula_id).where(
+                TheoremPremise.theorem_id.in_(hidden_theorem_ids)
+            )
+        )
+    )
+    if hidden_proof_ids:
+        for model, column in (
+            (ProofStep, ProofStep.conclusion_formula_id),
+            (ProofStepSubstTerm, ProofStepSubstTerm.target_formula_id),
+            (ProofStepSubstProp, ProofStepSubstProp.body_formula_id),
+        ):
+            candidates.update(
+                session.scalars(
+                    select(column).where(model.proof_id.in_(hidden_proof_ids))
+                )
+            )
+    if not candidates:
+        return frozenset()
+
+    visible: set[int] = set()
+    visible.update(
+        session.scalars(select(Axiom.formula_id).where(Axiom.formula_id.in_(candidates)))
+    )
+    visible.update(
+        value
+        for value in session.scalars(
+            select(Definition.display_formula_id).where(
+                Definition.display_formula_id.in_(candidates)
+            )
+        )
+        if value is not None
+    )
+    visible.update(
+        session.scalars(
+            select(Theorem.conclusion_formula_id).where(
+                Theorem.id.not_in(hidden_theorem_ids),
+                Theorem.conclusion_formula_id.in_(candidates),
+            )
+        )
+    )
+    visible.update(
+        session.scalars(
+            select(TheoremPremise.formula_id).where(
+                TheoremPremise.theorem_id.not_in(hidden_theorem_ids),
+                TheoremPremise.formula_id.in_(candidates),
+            )
+        )
+    )
+    for model, column in (
+        (ProofStep, ProofStep.conclusion_formula_id),
+        (ProofStepSubstTerm, ProofStepSubstTerm.target_formula_id),
+        (ProofStepSubstProp, ProofStepSubstProp.body_formula_id),
+    ):
+        visible.update(
+            session.scalars(
+                select(column)
+                .join(Proof, Proof.id == model.proof_id)
+                .where(
+                    Proof.theorem_id.not_in(hidden_theorem_ids),
+                    column.in_(candidates),
+                )
+            )
+        )
+    hidden_ids = candidates - visible
+    return frozenset(
+        session.scalars(select(Formula.public_id).where(Formula.id.in_(hidden_ids)))
+    )
+
+
+def _require_export_schema(session: Session) -> None:
+    if not inspect(session.connection()).has_table("import_record"):
+        raise WorkspaceExportSchemaError(
+            "workspace schema is older than 20260923_0002; "
+            "upgrade before export (missing import_record table)"
+        )
 
 
 def write_workspace_export(
@@ -444,8 +732,10 @@ def write_workspace_export(
     metadata: WorkspaceExportMetadata,
 ) -> WorkspaceExportResult:
     """Write one portable, deterministic, disk-streamed workspace archive."""
+    _require_export_schema(session)
     destination.parent.mkdir(parents=True, exist_ok=True)
     row_counts: dict[str, int] = {}
+    hidden_formula_public_ids = _exploration_only_formula_public_ids(session)
     with ZipFile(
         destination,
         mode="w",
@@ -453,11 +743,18 @@ def write_workspace_export(
         compresslevel=6,
         allowZip64=True,
     ) as archive:
-        archive.writestr(_zip_info("manifest.json"), _json_bytes(_manifest(metadata)))
+        imported_licenses = _imported_licenses(session)
+        archive.writestr(
+            _zip_info("manifest.json"),
+            _json_bytes(_manifest(metadata, imported_licenses)),
+        )
+        notice = _notice(session)
+        if notice is not None:
+            archive.writestr(_zip_info("NOTICE"), notice.encode("utf-8"))
         for item in _JSONL_EXPORTS:
             count = 0
             with archive.open(_zip_info(item.filename), mode="w", force_zip64=True) as member:
-                for record in _iter_rows(session, item):
+                for record in _iter_rows(session, item, hidden_formula_public_ids):
                     member.write(_json_bytes(record))
                     count += 1
             row_counts[item.filename] = count

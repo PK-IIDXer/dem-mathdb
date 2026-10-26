@@ -1,0 +1,9 @@
+[Unit]
+Description=Deliver beta contacts and operational alerts
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/dem-beta notify
+TimeoutStartSec=2min
+UMask=0077

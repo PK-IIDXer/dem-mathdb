@@ -1,3 +1,4 @@
+import { UserSymbolNotice } from './BetaIdentity'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { theoremsApi } from '../api/theorems'
@@ -44,6 +45,7 @@ export function TheoremStatement({ theoremId, context = {} }: {
 
   return (
     <div className="overflow-x-auto rounded border border-slate-100 bg-white px-4 py-5">
+      <UserSymbolNotice formulaIds={formulaIds} />
       {combined ? (
         <Latex display>{combined}</Latex>
       ) : (

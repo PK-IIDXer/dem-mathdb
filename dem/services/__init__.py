@@ -1,5 +1,6 @@
 from dem.services.axiom import AxiomService
 from dem.services.definition import DefinitionService
+from dem.services.exploration import ExplorationService
 from dem.services.formula import FormulaService, compute_hash, validate_tokens
 from dem.services.proof import ProofService
 from dem.services.symbol import SymbolService
@@ -9,6 +10,7 @@ from dem.services.theorem import TheoremService
 __all__ = [
     "AxiomService",
     "DefinitionService",
+    "ExplorationService",
     "FormulaService",
     "ProofService",
     "SymbolService",

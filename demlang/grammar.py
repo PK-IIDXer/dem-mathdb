@@ -15,6 +15,8 @@ class _Expr:
     formula_type: FormulaTypeName
     infix_symbol_id: int | None = None
     precedence: int | None = None
+    infix_position: int | None = None
+    parenthesized: bool = False
 
 
 class _Parser:
@@ -23,8 +25,6 @@ class _Parser:
         text: str,
         table: SymbolTable,
         context: Mapping[str, int],
-        *,
-        convenience: bool,
     ) -> None:
         self.text = text
         self.table = table
@@ -32,7 +32,6 @@ class _Parser:
         self.items = Lexer(table).tokenize(text)
         self.index = 0
         self.scope: list[str] = []
-        self.convenience = convenience
 
     @property
     def current(self) -> Lexeme:
@@ -48,8 +47,6 @@ class _Parser:
 
     def _infix(self, minimum: int) -> _Expr:
         left = self._atom()
-        chain_precedence: int | None = None
-        chain_symbol: int | None = None
         while True:
             operator = self._symbol_for(self.current)
             if operator is None or operator.notation_kind != "infix":
@@ -57,19 +54,21 @@ class _Parser:
             precedence = operator.precedence
             if precedence is None or precedence < minimum:
                 break
-            if (
-                not self.convenience
-                and chain_precedence == precedence
-                and chain_symbol != operator.id
-            ):
-                raise DemlangSyntaxError(
-                    "operators with the same precedence require parentheses",
-                    self.current.position,
-                    expected_type=operator.meta.input_formula_type,
-                )
             operator_position = self.current.position
             self.index += 1
             right = self._infix(precedence)
+            if operator.meta.symbol_type_name != SymbolTypeName.LOGICAL:
+                self._reject_unparenthesized_same_precedence(
+                    left, precedence, operator_position, operator
+                )
+                self._reject_unparenthesized_same_precedence(
+                    right,
+                    precedence,
+                    right.infix_position
+                    if right.infix_position is not None
+                    else operator_position,
+                    operator,
+                )
             expected = operator.meta.input_formula_type
             self._expect_type(left, expected, operator_position)
             self._expect_type(right, expected, operator_position)
@@ -78,9 +77,8 @@ class _Parser:
                 operator.meta.output_formula_type,
                 infix_symbol_id=operator.id,
                 precedence=precedence,
+                infix_position=operator_position,
             )
-            chain_precedence = precedence
-            chain_symbol = operator.id
         return left
 
     def _atom(self) -> _Expr:
@@ -89,6 +87,7 @@ class _Parser:
             self.index += 1
             expr = self._infix(0)
             self._take("rparen", "expected ')' after formula")
+            expr.parenthesized = True
             return expr
 
         if item.kind not in {"word", "symbol"}:
@@ -193,13 +192,36 @@ class _Parser:
                 expected_type=expected,
             )
 
+    def _reject_unparenthesized_same_precedence(
+        self,
+        operand: _Expr,
+        precedence: int,
+        position: int,
+        operator: SurfaceSymbol,
+    ) -> None:
+        if (
+            operand.parenthesized
+            or operand.precedence != precedence
+            or operand.infix_symbol_id is None
+        ):
+            return
+        nested = self.table.get(operand.infix_symbol_id)
+        if nested.meta.symbol_type_name == SymbolTypeName.LOGICAL:
+            return
+        raise DemlangSyntaxError(
+            "non-logical operators with the same precedence require parentheses",
+            position,
+            expected_type=operator.meta.input_formula_type,
+            code="formula.same_precedence_infix",
+        )
+
 
 def parse_core(
     text: str,
     table: SymbolTable,
     context: Mapping[str, int] | None = None,
 ) -> list[Token]:
-    return _Parser(text, table, context or {}, convenience=False).parse()
+    return _Parser(text, table, context or {}).parse()
 
 
 def parse_convenience(
@@ -207,4 +229,4 @@ def parse_convenience(
     table: SymbolTable,
     context: Mapping[str, int] | None = None,
 ) -> list[Token]:
-    return _Parser(text, table, context or {}, convenience=True).parse()
+    return _Parser(text, table, context or {}).parse()

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from dem.db.models.definition import Definition, DefinitionFormalParam
 from dem.db.models.inference import Axiom
-from dem.db.models.language import Formula, FormulaToken, Symbol
+from dem.db.models.language import Formula, FormulaToken, Namespace, Symbol
 from dem.db.models.theorem import Proof, Theorem, TheoremPremise
 from dem.db.seed_labels import (
     axiom_lookup_names,
@@ -18,7 +18,13 @@ from dem.db.seed_labels import (
 from dem.db.models.tag import DefinitionTag
 from dem.errors import ConflictError, NotFoundError, ValidationError
 from dem.services.authoring_provenance import AuthoringVia, record_authoring_provenance
-from dem.identity import DEFAULT_NAMESPACE_NAME, new_entity_public_id
+from dem.identity import (
+    ImportedPublicId,
+    DEFAULT_NAMESPACE_NAME,
+    ensure_namespace,
+    new_entity_public_id,
+    split_qualified_name,
+)
 from dem.services.axiom import AxiomService
 from dem.services.formula import FormulaService
 from dem.services.proof import ProofService, abstract_and_quantify_pure, apply_substitution_pure
@@ -67,9 +73,9 @@ class DefinitionPublicIdKeys:
     definition lives in a namespace other than the one it was born in; the
     REST API never does (``dem.identity.public_id_from_key``)."""
 
-    symbol: str
-    definition: str
-    axiom: str
+    symbol: str | ImportedPublicId
+    definition: str | ImportedPublicId
+    axiom: str | ImportedPublicId
 
 
 class DefinitionService:
@@ -95,7 +101,8 @@ class DefinitionService:
         public_id_keys: DefinitionPublicIdKeys | None = None,
     ) -> Definition:
         spec = self._spec_for(definition_input)
-        self._ensure_name_available(spec.name)
+        namespace_row = ensure_namespace(self._session, namespace)
+        self._ensure_name_available(spec.name, namespace_row.id)
         self._validate_body_and_params(spec)
 
         symbol_type = self._symbol_svc.get_symbol_type_by_name(spec.symbol_type_name.value)
@@ -106,7 +113,7 @@ class DefinitionService:
             is_primitive=False,
             latex_template=spec.latex_template,
             remarks=spec.remarks,
-            namespace=namespace,
+            namespace_id=namespace_row.id,
             public_id_key=public_id_keys.symbol if public_id_keys else None,
         )
         public_id = new_entity_public_id(
@@ -128,6 +135,7 @@ class DefinitionService:
 
         definition = Definition(
             public_id=public_id,
+            namespace_id=namespace_row.id,
             name=spec.name,
             kind=spec.kind,
             new_symbol_id=new_symbol.id,
@@ -180,11 +188,21 @@ class DefinitionService:
             raise NotFoundError("Definition", public_id)
         return row
 
-    def get_by_name(self, name: str) -> Definition:
-        row = self._session.scalar(select(Definition).where(Definition.name == name))
-        if row is None:
+    def get_by_name(self, name: str, namespace: str | None = None) -> Definition:
+        name, namespace = split_qualified_name(name, namespace)
+        stmt = select(Definition).where(Definition.name == name)
+        if namespace is not None:
+            stmt = stmt.join(Namespace).where(Namespace.name == namespace)
+        rows = list(self._session.scalars(stmt.limit(2)))
+        if not rows:
             raise NotFoundError("Definition", name)
-        return row
+        if len(rows) > 1:
+            raise ValidationError(
+                f"definition name {name!r} is ambiguous",
+                code="definition.ambiguous_name",
+                details={"name": name},
+            )
+        return rows[0]
 
     def list_all(
         self, search: str | None = None, tag_ids: list[int] | None = None
@@ -333,9 +351,9 @@ class DefinitionService:
         body_tokens = self._tokens_for_formula(body_formula_id)
         imp = self._symbol_svc.get_by_role("implication")
         eq = self._symbol_svc.get_by_role("equality")
-        and_ = self._symbol_svc.get_by_name("∧")
+        and_ = self._symbol_svc.get_by_name("∧", namespace=DEFAULT_NAMESPACE_NAME)
         forall = self._symbol_svc.get_by_role("universal_quantifier")
-        exists = self._symbol_svc.get_by_name("∃")
+        exists = self._symbol_svc.get_by_name("∃", namespace=DEFAULT_NAMESPACE_NAME)
 
         symbol_meta = self._formula_svc._load_symbol_meta(
             [
@@ -523,20 +541,29 @@ class DefinitionService:
             )
         raise TypeError(f"unsupported definition input: {type(definition_input)!r}")
 
-    def _ensure_name_available(self, name: str) -> None:
-        existing_symbol = self._session.scalar(select(Symbol).where(Symbol.name == name))
+    def _ensure_name_available(self, name: str, namespace_id: int) -> None:
+        existing_symbol = self._session.scalar(
+            select(Symbol).where(
+                Symbol.namespace_id == namespace_id, Symbol.name == name
+            )
+        )
         if existing_symbol is not None:
             raise ConflictError("Symbol", "name", name)
 
         existing_definition = self._session.scalar(
-            select(Definition).where(Definition.name == name)
+            select(Definition).where(
+                Definition.namespace_id == namespace_id, Definition.name == name
+            )
         )
         if existing_definition is not None:
             raise ConflictError("Definition", "name", name)
 
         axiom_name = definition_axiom_name(name)
         existing_axiom = self._session.scalar(
-            select(Axiom).where(Axiom.name.in_(axiom_lookup_names(axiom_name)))
+            select(Axiom).where(
+                Axiom.namespace_id == namespace_id,
+                Axiom.name.in_(axiom_lookup_names(axiom_name)),
+            )
         )
         if existing_axiom is not None:
             raise ConflictError("Axiom", "name", axiom_name)

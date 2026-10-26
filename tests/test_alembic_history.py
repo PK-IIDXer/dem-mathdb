@@ -289,7 +289,7 @@ def test_empty_sqlite_database_upgrades_to_head(tmp_path: Path) -> None:
             version = connection.scalar(
                 text("SELECT version_num FROM alembic_version")
             )
-            assert version == "20260923_0003"
+            assert version == "20261019_0002"
             tables = set(inspect(connection).get_table_names())
             expected = {
                 "authoring_provenance",
@@ -311,7 +311,7 @@ def test_empty_sqlite_database_upgrades_to_head(tmp_path: Path) -> None:
         with engine.connect() as connection:
             assert connection.scalar(
                 text("SELECT version_num FROM alembic_version")
-            ) == "20260923_0003"
+            ) == "20261019_0002"
     finally:
         engine.dispose()
 

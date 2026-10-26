@@ -1,3 +1,6 @@
+import { EntityBadge } from '../components/BetaIdentity'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { PublicIdRoute } from '../components/PublicIdRoute'
 import { Link, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { symbolsApi } from '../api/symbols'
@@ -5,9 +8,15 @@ import { Latex } from '../components/Latex'
 import { renderTemplateSample } from '../components/FormulaEditor/model'
 
 export function SymbolDetailPage() {
+  return <PublicIdRoute><SymbolDetailPageContent /></PublicIdRoute>
+}
+
+function SymbolDetailPageContent() {
   const { id } = useParams<{ id: string }>()
   const symbolRef = id ?? ''
   const { data: symbol } = useQuery({ queryKey: ['symbols', symbolRef], queryFn: () => symbolsApi.get(symbolRef) })
+
+  usePageTitle(symbol?.name ?? '記号')
 
   if (!symbol) return <p className="text-sm text-slate-400">読み込み中…</p>
 
@@ -18,7 +27,7 @@ export function SymbolDetailPage() {
       </Link>
       <section className="space-y-3 rounded-lg border border-slate-200 p-4 text-sm">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-base text-slate-800">{symbol.name}</span>
+          <span className="font-mono text-base text-slate-800">{symbol.name}</span> <EntityBadge namespace={symbol.namespace_name} detail />
           {symbol.latex_template && (
             <div className="rounded border border-slate-100 bg-white px-3 py-1 text-lg">
               <Latex>{renderTemplateSample(symbol.latex_template, symbol.symbol_type.is_quantifier)}</Latex>

@@ -12,6 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from dem.db.engine import make_engine
+from dem.db.package_triggers import PUBLISHED_GUARDS
 from dem.db.triggers import (
     SQLITE_TIER_B_TRIGGER_SPECS,
     TIER_A_TRIGGER_SPECS,
@@ -416,6 +417,7 @@ def test_workspace_template_contains_working_tier_a_guards(tmp_path: Path) -> No
                 len(TIER_A_TRIGGER_SPECS)
                 + len(SQLITE_TIER_B_TRIGGER_SPECS)
                 + len(TIER_B_IMMUTABILITY_TRIGGER_SPECS)
+                + len(PUBLISHED_GUARDS)
             )
             proposition_type_id = connection.scalar(
                 text("SELECT id FROM formula_type WHERE code = 'proposition'")

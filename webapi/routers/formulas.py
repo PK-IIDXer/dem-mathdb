@@ -12,6 +12,7 @@ from dem.types import FormulaTypeName
 from dem.db.models.language import Formula, FormulaToken, FormulaType
 from dem.db.models.inference import Axiom
 from dem.db.models.theorem import Theorem
+from dem.services.system_tags import visible_theorem_clause
 from webapi.deps import dem_services
 from webapi.pagination import Cursor, Limit, decode_cursor, encode_cursor, read_page
 from webapi.schemas import (
@@ -34,12 +35,17 @@ router = APIRouter(tags=["formulas"])
 
 
 @router.get("/formulas/{id}/named-conclusions", response_model=NamedConclusionsOut)
-def named_conclusions(id: int, dem: DemServices = Depends(dem_services)) -> NamedConclusionsOut:
+def named_conclusions(id: int, dem: DemServices = Depends(dem_services, scope="function")) -> NamedConclusionsOut:
     """Names whose stored conclusion is exactly this formula, for display only."""
     dem.formulas.get(id)  # Preserve the ordinary formula lookup's 404 behavior.
     axioms = dem.session.scalars(select(Axiom).where(Axiom.formula_id == id).order_by(Axiom.id))
     theorems = dem.session.scalars(
-        select(Theorem).where(Theorem.conclusion_formula_id == id).order_by(Theorem.id)
+        select(Theorem)
+        .where(
+            Theorem.conclusion_formula_id == id,
+            visible_theorem_clause(Theorem.id),
+        )
+        .order_by(Theorem.id)
     )
     return NamedConclusionsOut(
         axioms=[{"public_id": item.public_id, "name": item.name, "description": item.description} for item in axioms],
@@ -49,7 +55,7 @@ def named_conclusions(id: int, dem: DemServices = Depends(dem_services)) -> Name
 
 @router.post("/formulas/search", response_model=FormulaSearchOut)
 def search_formulas(
-    body: FormulaSearchRequest, dem: DemServices = Depends(dem_services)
+    body: FormulaSearchRequest, dem: DemServices = Depends(dem_services, scope="function")
 ) -> FormulaSearchOut:
     pattern, _ = dem.formulas.parse_text(body.pattern, body.context)
     matches = dem.formulas.search(
@@ -94,7 +100,7 @@ def search_formulas(
 
 @router.post("/formulas/parse", response_model=FormulaParseOut)
 def parse_formula(
-    body: FormulaParseRequest, dem: DemServices = Depends(dem_services)
+    body: FormulaParseRequest, dem: DemServices = Depends(dem_services, scope="function")
 ) -> FormulaParseOut:
     tokens, formula_id = dem.formulas.parse_text(body.text, body.context)
     return FormulaParseOut(
@@ -108,7 +114,7 @@ def parse_formula(
 
 @router.post("/formulas/print", response_model=FormulaPrintOut)
 def print_formula(
-    body: FormulaPrintRequest, dem: DemServices = Depends(dem_services)
+    body: FormulaPrintRequest, dem: DemServices = Depends(dem_services, scope="function")
 ) -> FormulaPrintOut:
     return FormulaPrintOut(
         text=dem.formulas.print_text([token.to_domain() for token in body.tokens])
@@ -204,7 +210,7 @@ def formula_details(session: Session, formula_ids: Iterable[int] | ColumnElement
 
 @router.post("/formulas/validate")
 def validate_formula(
-    body: FormulaValidateRequest, dem: DemServices = Depends(dem_services)
+    body: FormulaValidateRequest, dem: DemServices = Depends(dem_services, scope="function")
 ) -> dict[str, bool]:
     dem.formulas.validate([token.to_domain() for token in body.tokens])
     return {"valid": True}
@@ -212,7 +218,7 @@ def validate_formula(
 
 @router.post("/formulas", response_model=FormulaDetailOut, status_code=status.HTTP_201_CREATED)
 def register_formula(
-    body: FormulaCreate, dem: DemServices = Depends(dem_services)
+    body: FormulaCreate, dem: DemServices = Depends(dem_services, scope="function")
 ) -> FormulaDetailOut:
     formula = dem.formulas.register(
         [token.to_domain() for token in body.tokens], remarks=body.remarks
@@ -223,7 +229,7 @@ def register_formula(
 @router.get("/formulas", response_model=list[FormulaOut])
 def list_formulas(
     response: Response,
-    dem: DemServices = Depends(dem_services),
+    dem: DemServices = Depends(dem_services, scope="function"),
     limit: Limit = None,
     cursor: Cursor = None,
     type: Literal["proposition", "term"] | None = None,
@@ -261,7 +267,7 @@ BATCH_MAX_IDS = 500
 @router.get("/formulas/batch", response_model=list[FormulaDetailOut])
 def get_formulas_batch(
     ids: Annotated[str, Query(pattern=r"^[1-9]\d{0,17}(,[1-9]\d{0,17})*$")],
-    dem: DemServices = Depends(dem_services),
+    dem: DemServices = Depends(dem_services, scope="function"),
 ) -> list[FormulaDetailOut]:
     """The given formulas with their tokens, e.g. `?ids=3,1,2`.
 
@@ -280,13 +286,13 @@ def get_formulas_batch(
 
 
 @router.get("/formulas/by-hash/{hash}", response_model=FormulaDetailOut)
-def get_formula_by_hash(hash: str, dem: DemServices = Depends(dem_services)) -> FormulaDetailOut:
+def get_formula_by_hash(hash: str, dem: DemServices = Depends(dem_services, scope="function")) -> FormulaDetailOut:
     formula = dem.formulas.get_by_hash(hash)
     return formula_detail(formula, dem.formulas.get_tokens(formula.id))
 
 
 @router.get("/formulas/{ref}", response_model=FormulaDetailOut)
-def get_formula(ref: str, dem: DemServices = Depends(dem_services)) -> FormulaDetailOut:
+def get_formula(ref: str, dem: DemServices = Depends(dem_services, scope="function")) -> FormulaDetailOut:
     formula = (
         dem.formulas.get(int(ref))
         if ref.isdigit()
@@ -297,7 +303,7 @@ def get_formula(ref: str, dem: DemServices = Depends(dem_services)) -> FormulaDe
 
 @router.get("/formulas/public/{public_id}", response_model=FormulaDetailOut)
 def get_formula_by_public_id(
-    public_id: str, dem: DemServices = Depends(dem_services)
+    public_id: str, dem: DemServices = Depends(dem_services, scope="function")
 ) -> FormulaDetailOut:
     formula = dem.formulas.get_by_public_id(public_id)
     return formula_detail(formula, dem.formulas.get_tokens(formula.id))

@@ -24,7 +24,7 @@ from dem.errors import ConflictError, ValidationError
 from dem.identity import deterministic_public_id, public_id_from_key
 from dem.services.definition import DefinitionPublicIdKeys
 from dem.types import LogicalDefinitionInput, SymbolTypeName, Token
-from webapi.deps import dem_services
+from webapi.deps import LOCAL_WORKSPACE_NAMESPACE, dem_services
 from webapi.main import app
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -230,7 +230,9 @@ def test_a_rest_request_cannot_claim_a_birth_key(rest) -> None:
         {"name": "RestClaim", "symbol_type_id": kind, "arity": 0, "public_id_key": claimed},
     )
     assert status == 201
-    assert symbol["public_id"] == deterministic_public_id("symbol", f"{BIRTH}::RestClaim")
+    assert symbol["public_id"] == deterministic_public_id(
+        "symbol", f"{LOCAL_WORKSPACE_NAMESPACE}::RestClaim"
+    )
     assert symbol["public_id"] != deterministic_public_id("symbol", claimed)
 
     status, theorem = post(
@@ -238,4 +240,6 @@ def test_a_rest_request_cannot_claim_a_birth_key(rest) -> None:
         {"name": "RestClaim", "conclusion_formula_id": formula_id, "public_id_key": claimed},
     )
     assert status == 201
-    assert theorem["public_id"] == deterministic_public_id("theorem", f"{BIRTH}::RestClaim")
+    assert theorem["public_id"] == deterministic_public_id(
+        "theorem", f"{LOCAL_WORKSPACE_NAMESPACE}::RestClaim"
+    )

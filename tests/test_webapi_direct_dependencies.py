@@ -18,7 +18,7 @@ from dem.types import AxiomStepInput
 from dem.errors import NotFoundError
 from webapi.routers.proofs import list_direct_dependencies, list_proof_steps
 
-SEED_PHASE = "l2"
+SEED_PHASE = "public_core"
 
 
 def test_matches_the_per_step_derivation(seeded_session: Session) -> None:
@@ -50,6 +50,9 @@ def test_matches_the_per_step_derivation(seeded_session: Session) -> None:
 
     applied_proof_ids = {step.applied_proof_id for step in steps if step.step_kind == "theorem"}
     assert set(result.applied_proofs) == applied_proof_ids
+    assert result.applied_proof_public_ids == {
+        proof_id: dem.proofs.get(proof_id).public_id for proof_id in applied_proof_ids
+    }
     for lemma in result.lemmas:
         assert lemma.proof_id in applied_proof_ids
         applied = dem.proofs.get(lemma.proof_id)

@@ -15,6 +15,7 @@ from uuid import UUID
 
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.engine import make_url
+from dem.db.package_triggers import PUBLISHED_GUARDS
 
 from dem.db.triggers import (
     INCOMPLETE_FORMULAS_SQL,
@@ -38,6 +39,7 @@ EXPECTED_SQLITE_TRIGGERS = frozenset(
         *TIER_A_TRIGGER_SPECS,
         *SQLITE_TIER_B_TRIGGER_SPECS,
         *TIER_B_IMMUTABILITY_TRIGGER_SPECS,
+        *PUBLISHED_GUARDS,
     )
 )
 

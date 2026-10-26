@@ -8,6 +8,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.orm import Session, SessionTransaction, joinedload
 
 from dem.db.models.language import Formula, FormulaToken, FormulaType, Symbol, SymbolAlias, SymbolType
+from dem.db.models.package import PackageRelease
 from dem.errors import FormulaValidationError, NotFoundError, ValidationError
 from dem.services.authoring_provenance import AuthoringVia, record_authoring_provenance
 from dem.identity import deterministic_public_id
@@ -16,6 +17,13 @@ from demlang.match import MatchResult, match_formula
 
 
 _PENDING_SYMBOL_USAGE_KEY = "_pending_symbol_usage_counts"
+
+
+def symbol_is_published():
+    return select(PackageRelease.id).where(
+        PackageRelease.id == Symbol.release_id,
+        PackageRelease.published_at.is_not(None),
+    ).exists()
 
 
 def flush_pending_symbol_usage_counts(
@@ -28,6 +36,7 @@ def flush_pending_symbol_usage_counts(
     statement = (
         update(Symbol.__table__)
         .where(Symbol.__table__.c.id == bindparam("usage_symbol_id"))
+        .where(~symbol_is_published())
         .values(
             usage_count=(
                 Symbol.__table__.c.usage_count + bindparam("usage_count_delta")

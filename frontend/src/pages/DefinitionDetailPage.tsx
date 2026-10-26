@@ -1,3 +1,6 @@
+import { EntityBadge } from '../components/BetaIdentity'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { PublicIdRoute } from '../components/PublicIdRoute'
 import { Link, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { definitionsApi } from '../api/definitions'
@@ -7,6 +10,10 @@ import { TagEditor } from '../components/TagEditor'
 import { buildDefinitionFormulaSections } from './definitionFormulaSections'
 
 export function DefinitionDetailPage() {
+  return <PublicIdRoute><DefinitionDetailPageContent /></PublicIdRoute>
+}
+
+function DefinitionDetailPageContent() {
   const { id } = useParams<{ id: string }>()
   const definitionRef = id ?? ''
   const queryClient = useQueryClient()
@@ -40,6 +47,8 @@ export function DefinitionDetailPage() {
     onSuccess: invalidate,
   })
 
+  usePageTitle(definition?.name ?? '定義')
+
   if (!definition) return <p className="text-sm text-slate-400">読み込み中…</p>
 
   const formulaSections = buildDefinitionFormulaSections(
@@ -54,7 +63,7 @@ export function DefinitionDetailPage() {
       </Link>
       <section className="space-y-4 rounded-lg border border-slate-200 p-4">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-base text-slate-800">{definition.name}</span>
+          <span className="font-mono text-base text-slate-800">{definition.name}</span> <EntityBadge namespace={definition.namespace_name} detail />
           <span className="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{definition.kind}</span>
         </div>
         <div className="text-sm">
@@ -79,9 +88,9 @@ export function DefinitionDetailPage() {
                 <>
                   {section.role === 'combined' ? 'readable definition / defining axiom: ' : 'defining axiom: '}
                   {axiom && (
-                    <Link to={`/axioms/${axiom.public_id}`} className="text-indigo-600 hover:underline">
+                    <><Link to={`/axioms/${axiom.public_id}`} className="text-indigo-600 hover:underline">
                       {axiom.name}
-                    </Link>
+                    </Link> <EntityBadge namespace={axiom.namespace_name} /></>
                   )}
                 </>
               )}

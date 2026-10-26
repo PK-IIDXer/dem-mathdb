@@ -19,7 +19,7 @@ from dem.services.proof import ProofService
 from scripts.backtest.check_axioms import parse_lean_output, used_axioms_from_database
 from scripts.backtest.dem_db import DemDatabase
 
-SEED_PHASE = "l0"
+SEED_PHASE = "public_core"
 SEED_DATABASE = "sqlite"
 
 

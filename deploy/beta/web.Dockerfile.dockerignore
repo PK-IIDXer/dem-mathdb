@@ -1,0 +1,11 @@
+**
+!frontend/
+!frontend/**
+!deploy/
+!deploy/beta/
+!deploy/beta/Caddyfile
+!deploy/beta/maintenance.html
+frontend/node_modules/
+frontend/dist/
+**/.env
+**/.env.*

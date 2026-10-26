@@ -11,6 +11,7 @@ from dem.services.definition import DefinitionService
 from dem.services.formula import FormulaService
 from dem.services.symbol import SymbolService
 from dem.types import SymbolTypeName, Token
+from demlang import parse_convenience
 
 
 def make_session() -> Session:
@@ -18,6 +19,8 @@ def make_session() -> Session:
     Base.metadata.create_all(engine)
     session = Session(engine)
     seed_language(session)
+    symbols = SymbolService(session)
+    symbols.register("∈", symbols.get_symbol_type_by_name(SymbolTypeName.PREDICATE.value).id, 2, notation_kind="infix", precedence=50)
     return session
 
 
@@ -71,13 +74,37 @@ def test_seed_language_repairs_existing_primitive_symbol_display_metadata() -> N
         expected = {
             "∨": ("infix", 30, r"\vee"),
             "↔": ("infix", 10, r"\iff"),
-            "=": ("infix", 100, "="),
+            "=": ("infix", 50, "="),
         }
         for name, (notation_kind, precedence, latex_template) in expected.items():
             symbol = symbols.get_by_name(name)
             assert symbol.notation_kind == notation_kind
             assert symbol.precedence == precedence
             assert symbol.latex_template == latex_template
+
+
+@pytest.mark.parametrize("predicate", ("=", "∈"))
+def test_logical_predicates_bind_looser_than_a_term_operator(predicate: str) -> None:
+    with make_session() as session:
+        symbols = SymbolService(session)
+        term_variable = symbols.get_symbol_type_by_name(
+            SymbolTypeName.FREE_TERM_VAR.value
+        )
+        function = symbols.get_symbol_type_by_name(SymbolTypeName.FUNCTION.value)
+        for name in ("x", "y", "z"):
+            symbols.register(name, term_variable.id, 0)
+        symbols.register(
+            "∪ₛ",
+            function.id,
+            2,
+            notation_kind="infix",
+            precedence=55,
+        )
+        table = FormulaService(session).surface_symbol_table()
+
+        assert parse_convenience(f"x ∪ₛ y {predicate} z", table) == parse_convenience(
+            f"(x ∪ₛ y) {predicate} z", table
+        )
 
 
 def test_formula_registration_deduplicates_by_hash() -> None:

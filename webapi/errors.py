@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from sqlalchemy.exc import DBAPIError
 
 from dem.errors import DemError, ConflictError, NotFoundError, ProofValidationError, ValidationError
 
@@ -26,6 +27,30 @@ def _error_context(exc: DemError) -> dict:
 
 
 def register_exception_handlers(app: FastAPI) -> None:
+    from webapi.beta import BetaReject, reject_response
+    from webapi.db_guards import known_guard
+
+    @app.exception_handler(RecursionError)
+    async def _formula_too_deep(request: Request, exc: RecursionError) -> JSONResponse:
+        return JSONResponse(status_code=422, content={
+            "detail": "Formula processing exceeded the supported recursion depth",
+            "code": "formula.too_deep",
+        })
+
+    @app.exception_handler(BetaReject)
+    async def _beta_rejected(request: Request, exc: BetaReject) -> JSONResponse:
+        return reject_response(exc, getattr(request.state, "beta_route", "<unmatched>"),
+                               getattr(request.state, "beta_category", "write"))
+
+    @app.exception_handler(DBAPIError)
+    async def _db_guard(request: Request, exc: DBAPIError) -> JSONResponse:
+        guard = known_guard(exc)
+        if guard is None:
+            raise exc
+        return JSONResponse(status_code=409, content={
+            "detail": "Database guard rejected the operation", "code": "db.guard_rejected",
+        })
+
     @app.exception_handler(NotFoundError)
     async def _not_found(request: Request, exc: NotFoundError) -> JSONResponse:
         return JSONResponse(

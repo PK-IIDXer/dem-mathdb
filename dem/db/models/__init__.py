@@ -1,3 +1,4 @@
+from dem.db.models.package import Package, PackageRelease, ReleaseDependency, ReleaseLockEntry, InstalledRelease
 from dem.db.base import Base
 from dem.db.models.authoring_provenance import AuthoringProvenance
 from dem.db.models.language import (
@@ -27,6 +28,7 @@ from dem.db.models.theorem import (
 from dem.db.models.tag import AxiomTag, DefinitionTag, Tag, TheoremTag
 
 __all__ = [
+    "Package", "PackageRelease", "ReleaseDependency", "ReleaseLockEntry", "InstalledRelease",
     "AuthoringProvenance",
     "Axiom",
     "AxiomRecord",

@@ -14,7 +14,7 @@ export const axiomsApi = {
 
   listSystems: (signal?: AbortSignal) => api.get<AxiomSystem[]>('/axiom-systems', { signal }),
   registerSystem: (body: AxiomSystemCreate) => api.post<AxiomSystem>('/axiom-systems', body),
-  getSystem: (id: number) => api.get<AxiomSystem>(`/axiom-systems/${id}`),
+  getSystem: (id: number | string) => api.get<AxiomSystem>(`/axiom-systems/${id}`),
   listSystemMembers: (systemId: number) => api.get<Axiom[]>(`/axiom-systems/${systemId}/members`),
   addSystemMember: (systemId: number, axiomId: number) =>
     api.post<void>(`/axiom-systems/${systemId}/members`, { axiom_id: axiomId }),

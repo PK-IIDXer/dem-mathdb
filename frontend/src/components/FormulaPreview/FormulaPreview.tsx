@@ -1,3 +1,4 @@
+import { UserSymbolNotice } from '../BetaIdentity'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { formulasApi } from '../../api/formulas'
@@ -35,6 +36,7 @@ export function FormulaPreview({ formulaId, showTextPreview = true }: { formulaI
   if (!tree) return <span className="text-red-700">この式は木で表示できません</span>
   return (
     <span>
+      <UserSymbolNotice formulaIds={[formulaId]} />
       <Latex>{latex ?? ''}</Latex>
       {showTextPreview && <span className="ml-2 text-xs text-slate-400">{preview}</span>}
     </span>

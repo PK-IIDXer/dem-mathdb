@@ -1,3 +1,4 @@
+import { usePageTitle } from '../hooks/usePageTitle'
 import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useSearchParams } from 'react-router-dom'
@@ -11,6 +12,7 @@ import { OnboardingCoach } from '../components/OnboardingCoach'
 import { ONBOARDING_FORMULA, onboardingQuery } from '../onboarding'
 
 export function FormulasPage() {
+  usePageTitle('論理式')
   const readOnly = useReadOnly()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()

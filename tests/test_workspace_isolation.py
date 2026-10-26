@@ -19,6 +19,8 @@ from sqlalchemy.orm import Session
 from starlette.requests import Request
 
 from dem.api import DemApi
+from dem.db.seeds._aliases import apply_builtin_aliases
+from dem.db.seeds.public_packages import MODELS, assign_public_releases as assign_seed_releases
 from dem.types import SymbolTypeName, Token
 from scripts.build_workspace_template import build_workspace_template
 from webapi.deps import (
@@ -340,8 +342,8 @@ def test_workspace_template_is_the_documented_public_layer(workspace_template: P
             "SELECT version_num FROM alembic_version"
         ).fetchone()[0]
 
-    assert counts == {"symbol": 17, "formula": 8, "theorem": 0, "proof": 0}
-    assert verified == 0
+    assert counts == {"symbol": 18, "formula": 20, "theorem": 5, "proof": 6}
+    assert verified == 6
     assert revision == content_schema_head()
 
 
@@ -535,6 +537,59 @@ def test_workspace_content_is_structurally_isolated(managed_workspaces):
     assert "alpha_only_theorem" not in {row["name"] for row in json.loads(beta_body)}
 
 
+def test_same_user_theorem_has_workspace_specific_namespace_and_public_id(
+    managed_workspaces,
+):
+    alpha_id, beta_id, _ = managed_workspaces
+    created = []
+    for workspace_id, title in ((alpha_id, "Alpha"), (beta_id, "Beta")):
+        status, info = _http_json("GET", "/workspace/info", workspace_id)
+        assert status == 200
+        assert info == {
+            "title": title,
+            "local_namespace_name": f"local.ws-{workspace_id.hex}",
+        }
+        status, symbol_types = _http_json("GET", "/symbol-types", workspace_id)
+        assert status == 200
+        prop_type_id = next(
+            row["id"]
+            for row in symbol_types
+            if row["name"] == SymbolTypeName.FREE_PROP_VAR.value
+        )
+        status, symbol = _http_json(
+            "POST",
+            "/symbols",
+            workspace_id,
+            {
+                "name": "same_workspace_name",
+                "symbol_type_id": prop_type_id,
+                "arity": 0,
+            },
+        )
+        assert status == 201
+        status, formula = _http_json(
+            "POST",
+            "/formulas",
+            workspace_id,
+            {"tokens": [{"symbol_id": symbol["id"]}]},
+        )
+        assert status == 201
+        status, theorem = _http_json(
+            "POST",
+            "/theorems",
+            workspace_id,
+            {
+                "name": "same_workspace_theorem",
+                "conclusion_formula_id": formula["id"],
+            },
+        )
+        assert status == 201
+        assert theorem["namespace_name"] == f"local.ws-{workspace_id.hex}"
+        created.append(theorem)
+
+    assert created[0]["public_id"] != created[1]["public_id"]
+
+
 def test_session_and_engine_never_span_workspaces(managed_workspaces):
     alpha_id, beta_id, _ = managed_workspaces
     account = RequestAccount(DEVELOPMENT_ACCOUNT_ID)
@@ -615,6 +670,12 @@ def test_legacy_single_database_deployment_without_management_db(
 
     assert status == 200
     assert json.loads(body)
+    info_status, info_body = _http_get("/workspace/info")
+    assert info_status == 200
+    assert json.loads(info_body) == {
+        "title": None,
+        "local_namespace_name": "local.workspace",
+    }
     engine = get_dem_api(
         Request({"type": "http", "method": "GET", "path": "/", "headers": []}),
         RequestAccount(DEVELOPMENT_ACCOUNT_ID),

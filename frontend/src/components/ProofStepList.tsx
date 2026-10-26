@@ -20,6 +20,8 @@ interface ProofStepListProps {
   renderJustification: (step: ProofStep, symbolsById: Map<number, Symbol>) => ReactNode
   symbolsById: Map<number, Symbol>
   onUseRule?: (ord: number) => void
+  selectedOrd?: number | null
+  onSelect?: (ord: number) => void
 }
 
 /** A variable-height virtual list for proof steps.
@@ -31,7 +33,7 @@ interface ProofStepListProps {
  */
 export const ProofStepList = forwardRef<ProofStepListHandle, ProofStepListProps>(
   function ProofStepList(
-    { proofId, steps, highlightOrd, renderFormula, renderJustification, symbolsById, onUseRule },
+    { proofId, steps, highlightOrd, renderFormula, renderJustification, symbolsById, onUseRule, selectedOrd, onSelect },
     ref,
   ) {
     const { density } = useDisplaySettings()
@@ -46,7 +48,7 @@ export const ProofStepList = forwardRef<ProofStepListHandle, ProofStepListProps>
       getScrollElement: () => scrollRef.current,
       estimateSize: () => estimatedStepHeight,
       getItemKey: (index) => steps[index]?.ord ?? index,
-      overscan: 6,
+      overscan: 1,
       initialRect: { width: 960, height: VISIBLE_LIST_HEIGHT },
     })
 
@@ -84,7 +86,9 @@ export const ProofStepList = forwardRef<ProofStepListHandle, ProofStepListProps>
                 className={`absolute left-0 top-0 flex min-h-8 w-full flex-wrap items-baseline border-b border-slate-100 px-3 transition-colors ${
                   density === 'compact' ? 'gap-x-2 gap-y-0 py-1' : 'gap-x-3 gap-y-1 py-2'
                 } ${
-                  highlightOrd === step.ord ? 'bg-amber-50' : 'bg-white'
+                  highlightOrd === step.ord
+                    ? 'bg-amber-50'
+                    : selectedOrd === step.ord ? 'bg-indigo-50' : 'bg-white'
                 }`}
                 style={{ transform: `translateY(${virtualRow.start}px)` }}
               >
@@ -94,6 +98,15 @@ export const ProofStepList = forwardRef<ProofStepListHandle, ProofStepListProps>
                   {renderJustification(step, symbolsById)}
                 </span>
                 {onUseRule && <button type="button" onClick={() => onUseRule(step.ord)} className="text-xs text-indigo-700 hover:underline">この step に推論定理を使う</button>}
+                {onSelect && (
+                  <button
+                    type="button"
+                    onClick={() => onSelect(step.ord)}
+                    className="text-xs font-semibold text-indigo-700 hover:underline"
+                  >
+                    {selectedOrd === step.ord ? '選択中' : 'この行を選ぶ'}
+                  </button>
+                )}
               </li>
             )
           })}

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from sqlalchemy import Connection, event, text
+from sqlalchemy import Connection, event, inspect, text
 from sqlalchemy.schema import MetaData
 
 
@@ -86,7 +86,13 @@ POSTGRES_TIER_B_TRIGGER_SPECS = (
     ),
 )
 
+PUBLIC_ID_IMMUTABILITY_TRIGGER_SPECS = tuple(
+    TriggerSpec(f"{table}_identity_immutable_update", table, "UPDATE")
+    for table in ("axiom_system", "axiom", "definition", "theorem", "proof")
+)
+
 TIER_B_IMMUTABILITY_TRIGGER_SPECS = (
+    *PUBLIC_ID_IMMUTABILITY_TRIGGER_SPECS,
     TriggerSpec("formula_identity_immutable_update", "formula", "UPDATE"),
     TriggerSpec("formula_no_delete_completed", "formula", "DELETE"),
     TriggerSpec(
@@ -646,6 +652,10 @@ def drop_tier_b_wellformed_gate(connection: Connection) -> None:
 
 
 _SQLITE_TIER_B_IMMUTABILITY_GUARDS = {
+    **{
+        spec.name: ("NEW.public_id IS NOT OLD.public_id", f"{spec.table} identity is immutable")
+        for spec in PUBLIC_ID_IMMUTABILITY_TRIGGER_SPECS
+    },
     "formula_identity_immutable_update": (
         "NEW.public_id IS NOT OLD.public_id "
         "OR NEW.formula_type_id IS NOT OLD.formula_type_id "
@@ -715,6 +725,15 @@ BEGIN
            OR NEW.token_count IS DISTINCT FROM OLD.token_count
            OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN
             RAISE EXCEPTION 'formula identity is immutable' USING ERRCODE = '23514';
+        END IF;
+    ELSIF TG_NAME IN ('axiom_system_identity_immutable_update',
+                     'axiom_identity_immutable_update',
+                     'definition_identity_immutable_update',
+                     'theorem_identity_immutable_update',
+                     'proof_identity_immutable_update') THEN
+        IF NEW.public_id IS DISTINCT FROM OLD.public_id THEN
+            RAISE EXCEPTION USING MESSAGE = TG_TABLE_NAME || ' identity is immutable',
+                                  ERRCODE = '23514';
         END IF;
     ELSIF TG_NAME = 'formula_no_delete_completed' THEN
         IF (
@@ -794,9 +813,19 @@ $$
 
 def create_tier_b_immutability_triggers(connection: Connection) -> None:
     """Install guards that keep accepted formulas and symbol shapes stable."""
+    # Historical migrations call this before axiom_system gains its public ID.
+    # Install every applicable guard now; the identity migration installs the rest.
+    system_has_identity = any(
+        column["name"] == "public_id"
+        for column in inspect(connection).get_columns("axiom_system")
+    )
+    specs = tuple(
+        spec for spec in TIER_B_IMMUTABILITY_TRIGGER_SPECS
+        if spec.table != "axiom_system" or system_has_identity
+    )
     dialect = connection.dialect.name
     if dialect == "sqlite":
-        for spec in TIER_B_IMMUTABILITY_TRIGGER_SPECS:
+        for spec in specs:
             condition, message = _SQLITE_TIER_B_IMMUTABILITY_GUARDS[spec.name]
             connection.exec_driver_sql(
                 f"""
@@ -811,7 +840,7 @@ def create_tier_b_immutability_triggers(connection: Connection) -> None:
         return
     if dialect == "postgresql":
         connection.exec_driver_sql(_POSTGRES_TIER_B_IMMUTABILITY_FUNCTION)
-        for spec in TIER_B_IMMUTABILITY_TRIGGER_SPECS:
+        for spec in specs:
             connection.exec_driver_sql(
                 f"""
                 DO $dem_trigger$
@@ -951,6 +980,9 @@ def _create_metadata_triggers(
     create_tier_a_triggers(connection)
     create_tier_b_wellformed_gate(connection)
     create_tier_b_immutability_triggers(connection)
+
+    from dem.db.package_triggers import create_published_triggers
+    create_published_triggers(connection)
 
 
 def register_metadata_triggers(metadata: MetaData) -> None:

@@ -93,7 +93,7 @@ export function proofTreeRuleLabel(node: ProofTreeNode): string {
     case 'axiom':
       return `公理 ${step.axiom?.name ?? '?'}`
     case 'theorem':
-      return `既証明 Proof #${step.applied_proof_id ?? '?'}`
+      return '引用した証明'
     case 'rule':
       if (step.inference_rule?.kind === 'modus_ponens') return 'MP'
       if (step.inference_rule?.kind === 'generalization') return 'Gen'

@@ -53,7 +53,83 @@ def test_round_trip_all_formulas(all_seeded_session: Session) -> None:
         assert parse_core(rendered, table) == tokens, formula_id
         assert parse_convenience(rendered, table) == tokens, formula_id
         formula_count += 1
-    assert formula_count == 8
+    assert formula_count == 20
+
+
+@pytest.mark.parametrize("parser", (parse_core, parse_convenience))
+def test_nonlogical_same_precedence_infix_requires_parentheses(
+    all_seeded_session: Session,
+    parser,
+) -> None:
+    table = FormulaService(all_seeded_session).surface_symbol_table()
+    text = "y ◇ z ◆ w"
+
+    with pytest.raises(DemlangSyntaxError) as caught:
+        parser(text, table)
+
+    assert caught.value.code == "formula.same_precedence_infix"
+    assert caught.value.position == text.index("◆")
+    left_grouped = parser("(y ◇ z) ◆ w", table)
+    right_grouped = parser("y ◇ (z ◆ w)", table)
+    assert left_grouped != right_grouped
+
+
+def test_nonlogical_right_nesting_prints_parentheses_and_round_trips(
+    all_seeded_session: Session,
+) -> None:
+    symbols = SymbolService(all_seeded_session)
+    table = FormulaService(all_seeded_session).surface_symbol_table()
+    difference = symbols.get_by_name("☆")
+    y = symbols.get_by_name("y")
+    z = symbols.get_by_name("z")
+    w = symbols.get_by_name("w")
+    tokens = [
+        Token(symbol_id=difference.id),
+        Token(symbol_id=y.id),
+        Token(symbol_id=difference.id),
+        Token(symbol_id=z.id),
+        Token(symbol_id=w.id),
+    ]
+
+    rendered = print_dss(tokens, table)
+
+    assert rendered == "y ☆ (z ☆ w)"
+    assert parse_core(rendered, table) == tokens
+    assert parse_convenience(rendered, table) == tokens
+
+
+@pytest.mark.parametrize(
+    ("text", "canonical"),
+    (
+        ("φ → ψ → ρ", "φ → ψ → ρ"),
+        ("φ ∧ ψ ∧ ρ", "φ ∧ ψ ∧ ρ"),
+        ("φ ∨ ψ ∧ ρ", "φ ∨ (ψ ∧ ρ)"),
+    ),
+)
+def test_logical_infix_reading_and_printing_are_unchanged(
+    all_seeded_session: Session,
+    text: str,
+    canonical: str,
+) -> None:
+    table = FormulaService(all_seeded_session).surface_symbol_table()
+
+    core = parse_core(text, table)
+    convenience = parse_convenience(text, table)
+
+    assert core == convenience
+    assert print_dss(core, table) == canonical
+
+
+@pytest.mark.parametrize("predicate", ("=", "∈"))
+def test_logical_predicates_bind_looser_than_term_operators(
+    all_seeded_session: Session,
+    predicate: str,
+) -> None:
+    table = FormulaService(all_seeded_session).surface_symbol_table()
+    unparenthesized = parse_convenience(f"x ◆ y {predicate} z", table)
+    parenthesized = parse_convenience(f"(x ◆ y) {predicate} z", table)
+
+    assert unparenthesized == parenthesized
 
 
 def test_printer_avoids_shadowing(all_seeded_session: Session) -> None:
@@ -200,4 +276,16 @@ def test_builtin_aliases_and_public_variables(all_seeded_session: Session) -> No
             .where(SymbolType.name == SymbolTypeName.FREE_TERM_VAR.value)
         )
     }
-    assert variable_names == {"t", "x", "y"}
+    assert variable_names == {"t", "x", "y", "z", "w"}
+
+
+@pytest.fixture(scope="module", autouse=True)
+def synthetic_operator_vocabulary(all_seeded_session):
+    symbols = SymbolService(all_seeded_session)
+    for name in ("y", "z", "w"):
+        if all_seeded_session.scalar(select(Symbol.id).where(Symbol.name == name)) is None:
+            symbols.register(name, symbols.get_symbol_type_by_name(SymbolTypeName.FREE_TERM_VAR.value).id, 0)
+    symbols.register("ρ", symbols.get_symbol_type_by_name(SymbolTypeName.FREE_PROP_VAR.value).id, 0)
+    for name in ("◇", "◆", "☆"):
+        symbols.register(name, symbols.get_symbol_type_by_name(SymbolTypeName.FUNCTION.value).id, 2, notation_kind="infix", precedence=70)
+    symbols.register("∈", symbols.get_symbol_type_by_name(SymbolTypeName.PREDICATE.value).id, 2, notation_kind="infix", precedence=50)

@@ -6,7 +6,16 @@
 
 	handle {
 		root * /srv
-		try_files {path} /index.html
-		file_server
+		encode gzip
+		try_files {path}/index.html {path} /index.html
+		@xml path /sitemap.xml
+		header @xml Content-Type application/xml
+		@robots path /robots.txt
+		header @robots Content-Type "text/plain; charset=utf-8"
+		@json path /public-data/*.json
+		header @json Content-Type application/json
+		file_server {
+			precompressed gzip
+		}
 	}
 }

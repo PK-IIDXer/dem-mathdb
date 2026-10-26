@@ -1,24 +1,26 @@
 import { api, buildListQuery, type ListFilter } from './client'
 import { tagsApi } from './tags'
-import type { ApplicableTheorem, Tag, Theorem, TheoremCreate, TheoremPremise } from './types'
+import type { ApplicableTheorem, ExternalSource, Tag, Theorem, TheoremCreate, TheoremPremise } from './types'
 import { ONBOARDING_TAG_NAME } from '../onboarding'
+import { EXPLORATION_TAG_NAME } from '../exploration'
 
 export const theoremsApi = {
   list: (filter?: ListFilter, signal?: AbortSignal) => api.get<Theorem[]>(`/theorems${buildListQuery(filter)}`, { signal }),
+  listExternalSources: () => api.get<ExternalSource[]>('/external-sources'),
   listRules: (signal?: AbortSignal) => api.get<Theorem[]>('/theorems/rules', { signal }),
-  /** `loadTags` finds the onboarding tag to exclude. Callers that run this per
+  /** `loadTags` finds hidden system tags to exclude. Callers that run this per
    * search should pass one that goes through the ['tags'] query (e.g.
    * `queryClient.fetchQuery`), so a fresh cached list is reused and an
    * invalidated one is refetched; the tag list is large, and fetching it again
    * for each search is wasted. */
   listVisible: async (filter?: ListFilter, loadTags: () => Promise<Tag[]> = tagsApi.list) => {
     const tags = await loadTags()
-    const onboardingTagId = tags.find((tag) => tag.name === ONBOARDING_TAG_NAME)?.id
+    const hiddenTagIds = tags
+      .filter((tag) => tag.name === ONBOARDING_TAG_NAME || tag.name === EXPLORATION_TAG_NAME)
+      .map((tag) => tag.id)
     return api.get<Theorem[]>(`/theorems${buildListQuery({
       ...filter,
-      excludeTagIds: onboardingTagId == null
-        ? filter?.excludeTagIds
-        : [...(filter?.excludeTagIds ?? []), onboardingTagId],
+      excludeTagIds: [...(filter?.excludeTagIds ?? []), ...hiddenTagIds],
     })}`)
   },
   register: (body: TheoremCreate) => api.post<Theorem>('/theorems', body),

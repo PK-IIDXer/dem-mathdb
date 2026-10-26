@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 class Axiom(Base):
     __tablename__ = "axiom"
     __table_args__ = (
+        UniqueConstraint("namespace_id", "name"),
         CheckConstraint(
             "origin_kind IN ('primitive', 'definition_derived')",
             name="known_origin_kind",
@@ -31,10 +32,11 @@ class Axiom(Base):
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    release_id: Mapped[int | None] = mapped_column(ForeignKey("package_release.id"))
     public_id: Mapped[str] = mapped_column(
         Text, nullable=False, unique=True, default=new_public_id
     )
-    name: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
+    name: Mapped[str] = mapped_column(Text, nullable=False)
     namespace_id: Mapped[int] = mapped_column(ForeignKey("namespace.id"), nullable=False)
     formula_id: Mapped[int] = mapped_column(ForeignKey("formula.id"), nullable=False)
     origin_kind: Mapped[str] = mapped_column(Text, nullable=False)
@@ -60,13 +62,26 @@ class Axiom(Base):
 
 class AxiomSystem(Base):
     __tablename__ = "axiom_system"
+    __table_args__ = (UniqueConstraint("namespace_id", "name"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
+    release_id: Mapped[int | None] = mapped_column(ForeignKey("package_release.id"))
+    public_id: Mapped[str] = mapped_column(
+        Text, nullable=False, unique=True, default=new_public_id
+    )
+    namespace_id: Mapped[int] = mapped_column(ForeignKey("namespace.id"), nullable=False)
+    name: Mapped[str] = mapped_column(Text, nullable=False)
     remarks: Mapped[str | None] = mapped_column(Text)
+    # Display data, not validation: a non-null rank puts the system in the
+    # theorem panel's default "valid in which system" comparison, ordered by
+    # rank.  The foundation's seed data sets it, so no application code names
+    # a system.  Unique so the order never depends on a tie-break.
+    comparison_rank: Mapped[int | None] = mapped_column(Integer, unique=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+
+    namespace: Mapped[Namespace] = relationship(lazy="joined")
 
     members: Mapped[list[AxiomSystemMember]] = relationship(
         back_populates="axiom_system",

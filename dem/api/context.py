@@ -11,6 +11,7 @@ from dem.db.engine import make_engine, make_session_factory
 from dem.db.seed import seed_inference_rules, seed_language
 from dem.services.axiom import AxiomService
 from dem.services.definition import DefinitionService
+from dem.services.exploration import ExplorationService
 from dem.services.formula import FormulaService
 from dem.services.proof import ProofService
 from dem.services.symbol import SymbolService
@@ -29,6 +30,7 @@ class DemServices:
         self.theorems = TheoremService(session, authoring_via="manual")
         self.proofs = ProofService(session, authoring_via="manual")
         self.definitions = DefinitionService(session, authoring_via="manual")
+        self.explorations = ExplorationService(session, authoring_via="manual")
         self.tags = TagService(session)
 
 

@@ -28,7 +28,7 @@ export function DescriptionEditor({ value, onSave, isSaving }: Props) {
       <textarea
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
-        placeholder="自然言語での説明 (例: 空集合の存在公理)"
+        placeholder="自然言語での説明 (例: P ならば P)"
         rows={2}
         className="w-full rounded border border-slate-300 px-2 py-1 text-sm"
       />

@@ -1,3 +1,6 @@
+import { EntityBadge } from '../components/BetaIdentity'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { PublicIdRoute } from '../components/PublicIdRoute'
 import { useMemo } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -12,6 +15,7 @@ import { DependencyGraph } from '../components/DependencyGraph'
 import { useReadOnly } from '../ReadOnlyContext'
 import { theoremVariableContext } from '../theoremContext'
 import { OnboardingCoach } from '../components/OnboardingCoach'
+import { ExternalChecksPanel } from '../components/ExternalChecksPanel'
 import { onboardingQuery } from '../onboarding'
 import { tagsApi } from '../api/tags'
 
@@ -25,6 +29,10 @@ const STATUS_BADGE: Record<string, string> = {
 }
 
 export function TheoremDetailPage() {
+  return <PublicIdRoute><TheoremDetailPageContent /></PublicIdRoute>
+}
+
+function TheoremDetailPageContent() {
   const readOnly = useReadOnly()
   const { id, proofId: proofIdParam } = useParams<{ id: string; proofId?: string }>()
   const theoremRef = id ?? ''
@@ -44,7 +52,7 @@ export function TheoremDetailPage() {
     enabled: theorem != null,
   })
   const selectedProof = proofs.find(
-    (proof) => proof.public_id === proofIdParam || String(proof.id) === proofIdParam,
+    (proof) => proof.public_id === proofIdParam,
   )
   const proofId = selectedProof?.id ?? null
   const verifiedProof = proofs.find((proof) => proof.status === 'verified')
@@ -86,6 +94,8 @@ export function TheoremDetailPage() {
     },
   })
 
+  usePageTitle(theorem ? `${theorem.name}${proofIdParam ? 'の証明' : ''}` : '定理')
+
   if (!theorem) return <p className="text-sm text-slate-400">読み込み中…</p>
 
   return (
@@ -96,9 +106,9 @@ export function TheoremDetailPage() {
 
       <section className="space-y-4 rounded-lg border border-slate-200 p-4">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-base text-slate-800">{theorem.name}</span>
+          <span className="font-mono text-base text-slate-800">{theorem.name}</span> <EntityBadge namespace={theorem.namespace_name} detail />
           <span className={`rounded px-2 py-0.5 text-xs font-semibold ${STATUS_BADGE[theorem.status] ?? ''}`}>
-            {STATUS_LABEL[theorem.status] ?? theorem.status}
+            DEM: {STATUS_LABEL[theorem.status] ?? theorem.status}
           </span>
         </div>
 
@@ -108,6 +118,8 @@ export function TheoremDetailPage() {
             変数: {Object.keys(variableContext).join(', ')}
           </div>
         )}
+
+        <ExternalChecksPanel theorem={theorem} verifiedProofId={verifiedProof?.id ?? null} />
 
         <div>
           <div className="mb-1 text-xs text-slate-500">description</div>
@@ -154,7 +166,7 @@ export function TheoremDetailPage() {
           )}
         </div>
         <div className="flex flex-wrap gap-2">
-          {proofs.map((proof) => (
+          {proofs.map((proof, index) => (
             <Link
               key={proof.id}
               to={`/theorems/${theorem.public_id}/proofs/${proof.public_id}`}
@@ -162,7 +174,7 @@ export function TheoremDetailPage() {
                 proofId === proof.id ? 'bg-indigo-600 text-white' : 'bg-slate-100 hover:bg-slate-200'
               }`}
             >
-              #{proof.id} {proof.name ?? '(no name)'} — {proof.status}
+              証明 {index + 1} {proof.name ?? ''} — {proof.status}
             </Link>
           ))}
           {proofs.length === 0 && <span className="text-xs text-slate-400">まだありません</span>}
@@ -170,12 +182,14 @@ export function TheoremDetailPage() {
       </section>
 
       <section className="rounded-lg border border-slate-200 p-4">
-        <h3 className="mb-2 text-sm font-semibold text-slate-700">依存関係</h3>
+        <h3 id="dependencies" className="mb-2 text-sm font-semibold text-slate-700">依存関係</h3>
         <DependencyGraph theoremId={theoremId} />
       </section>
 
       {proofId != null && (
         <ProofDetail
+          theoremName={theorem.name}
+          proofNumber={proofs.length > 1 ? proofs.findIndex((proof) => proof.id === proofId) + 1 : undefined}
           proofId={proofId}
           theoremId={theoremId}
           context={variableContext}
@@ -191,7 +205,7 @@ export function TheoremDetailPage() {
               to={`/theorems/${theorem.public_id}/proofs/${verifiedProof.public_id}${onboardingQuery()}`}
               className="inline-block rounded bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white"
             >
-              検証済みの Proof #{verifiedProof.id} を見る
+              検証済みの証明を見る
             </Link>
           )}
         </OnboardingCoach>

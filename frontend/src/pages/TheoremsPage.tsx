@@ -1,10 +1,13 @@
-import { useMemo, useRef, useState } from 'react'
+import { EntityBadge } from '../components/BetaIdentity'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { memo, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { theoremsApi } from '../api/theorems'
 import { FormulaPicker } from '../components/FormulaPicker'
 import { SearchFilterBar } from '../components/SearchFilterBar'
 import { ApiError } from '../api/client'
+import type { Theorem } from '../api/types'
 import { useReadOnly } from '../ReadOnlyContext'
 import { symbolsApi } from '../api/symbols'
 import { SYMBOL_TYPE } from '../constants/symbolTypes'
@@ -12,8 +15,10 @@ import { tagsApi } from '../api/tags'
 import { OnboardingCoach } from '../components/OnboardingCoach'
 import { ONBOARDING_TAG_NAME, onboardingQuery } from '../onboarding'
 import { useCommand } from '../commands/CommandProvider'
+import { hasPassedExternalCheck, theoremValidationCounts } from '../externalChecks'
 
 export function TheoremsPage() {
+  usePageTitle('定理')
   const readOnly = useReadOnly()
   const formRef = useRef<HTMLFormElement>(null)
   const queryClient = useQueryClient()
@@ -239,7 +244,7 @@ export function TheoremsPage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
-              placeholder="例: ある集合Eが存在して、任意のxに対して、xはEの元ではない"
+              placeholder="例: P ならば P"
               className="rounded border border-slate-300 px-2 py-1 text-sm"
             />
           </label>
@@ -271,52 +276,67 @@ export function TheoremsPage() {
         onToggleTag={toggleTag}
       />
 
-      <section>
-        <h2 className="mb-2 text-sm font-semibold text-slate-700">登録済みの定理 ({theorems.length})</h2>
-        <table className="w-full text-left text-sm">
-          <thead className="text-xs text-slate-500">
-            <tr>
-              <th className="py-1 pr-3">id</th>
-              <th className="py-1 pr-3">name / 説明 / タグ</th>
-              <th className="py-1 pr-3">status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {theorems.map((theorem) => (
-              <tr
-                key={theorem.id}
-                className="border-t border-slate-100 hover:bg-slate-50"
-              >
-                <td className="py-1 pr-3 align-top">{theorem.id}</td>
-                <td className="py-1 pr-3">
-                  <Link
-                    to={`/theorems/${theorem.public_id}`}
-                    className="font-mono text-indigo-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  >
-                    {theorem.name}
-                  </Link>
-                  {theorem.description && (
-                    <div className="text-xs text-slate-500">{theorem.description}</div>
-                  )}
-                  {theorem.tags.length > 0 && (
-                    <div className="mt-0.5 flex flex-wrap gap-1">
-                      {theorem.tags.map((tag) => (
-                        <span
-                          key={tag.id}
-                          className="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] text-indigo-700"
-                        >
-                          {tag.name}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </td>
-                <td className="py-1 pr-3 align-top text-slate-500">{theorem.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+      <TheoremTable theorems={theorems} />
     </div>
   )
 }
+
+/** Memoized so a keystroke in the registration form, which re-renders the
+ * page, leaves the theorem rows alone until the list itself changes. */
+const TheoremTable = memo(function TheoremTable({ theorems }: { theorems: Theorem[] }) {
+  const validationCounts = theoremValidationCounts(theorems)
+  return (
+    <section>
+      <h2 className="mb-2 text-sm font-semibold text-slate-700">登録済みの定理 ({theorems.length})</h2>
+      <p className="mb-2 text-xs text-slate-500">
+        DEM で証明済み: {validationCounts.demProven} ／ Lean でのみ確認済み: {validationCounts.leanOnly}
+      </p>
+      <table className="w-full text-left text-sm">
+        <thead className="text-xs text-slate-500">
+          <tr>
+            <th className="py-1 pr-3">name / 説明 / タグ</th>
+            <th className="py-1 pr-3">status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {theorems.map((theorem) => (
+            <tr
+              key={theorem.id}
+              className="border-t border-slate-100 hover:bg-slate-50"
+            >
+              <td className="py-1 pr-3">
+                <Link
+                  to={`/theorems/${theorem.public_id}`}
+                  className="font-mono text-indigo-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  {theorem.name}
+                </Link> <EntityBadge namespace={theorem.namespace_name} />
+                {theorem.description && (
+                  <div className="text-xs text-slate-500">{theorem.description}</div>
+                )}
+                {theorem.tags.length > 0 && (
+                  <div className="mt-0.5 flex flex-wrap gap-1">
+                    {theorem.tags.map((tag) => (
+                      <span
+                        key={tag.id}
+                        className="rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] text-indigo-700"
+                      >
+                        {tag.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </td>
+              <td className="py-1 pr-3 align-top text-slate-500">
+                <div>DEM: {theorem.status === 'proven' ? '証明済み' : '未証明'}</div>
+                {hasPassedExternalCheck(theorem) && (
+                  <div className="text-indigo-700">Lean: 翻訳検査済み</div>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  )
+})

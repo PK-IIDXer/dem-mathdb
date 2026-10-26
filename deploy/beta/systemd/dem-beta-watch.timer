@@ -1,0 +1,7 @@
+[Unit]
+Description=Anonymous beta disk and transfer checks
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=10min
+[Install]
+WantedBy=timers.target

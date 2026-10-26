@@ -1,0 +1,77 @@
+{
+    admin off
+    servers {
+        timeouts {
+            read_header 10s
+            read_body 30s
+            idle 60s
+        }
+    }
+}
+{$DEM_BETA_DOMAIN} {
+    root * /srv
+    log {
+        output file /var/log/caddy/access.log {
+            mode 0600
+            roll_size 10MiB
+            roll_keep 100
+            roll_keep_for 720h
+        }
+        format json
+    }
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        X-Content-Type-Options nosniff
+        Referrer-Policy strict-origin-when-cross-origin
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'"
+    }
+    @noindex expression "{$DEM_BETA_NOINDEX:1} == 1"
+    header @noindex X-Robots-Tag noindex
+    @robots path /robots.txt
+    handle @robots {
+        @blocked expression "{$DEM_BETA_NOINDEX:1} == 1"
+        respond @blocked <<ROBOTS
+            User-agent: *
+            Disallow: /
+            ROBOTS 200
+        respond <<ROBOTS
+            User-agent: *
+            Disallow:
+            ROBOTS 200
+    }
+    @api path /api /api/*
+    handle @api {
+        request_body {
+            max_size 262144
+        }
+        uri strip_prefix /api
+        reverse_proxy api:8000 {
+            transport http {
+                dial_timeout 5s
+                response_header_timeout 30s
+                read_timeout 30s
+            }
+        }
+    }
+    handle /assets/* {
+        encode zstd gzip
+        header Cache-Control "public, max-age=31536000, immutable"
+        file_server
+    }
+    handle {
+        encode zstd gzip
+        header Cache-Control "no-cache, no-store, must-revalidate"
+        try_files {path} /index.html
+        file_server
+    }
+    handle_errors {
+        @maintenance expression "{err.status_code} in [502, 503]"
+        handle @maintenance {
+            root * /maintenance
+            rewrite * /maintenance.html
+            header Cache-Control no-store
+            file_server
+        }
+    }
+}

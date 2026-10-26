@@ -1,4 +1,5 @@
 import type { Symbol } from '../../api/types'
+import type { WorkspaceInfo } from '../../api/workspace'
 import { createBoundNode, createSymbolNode, groupSymbolsByNamespace, type EditorNode } from './model'
 
 interface NodeEditorProps {
@@ -7,6 +8,7 @@ interface NodeEditorProps {
   symbols: Symbol[]
   symbolsById: Map<number, Symbol>
   highlightedId: number | null
+  workspace: WorkspaceInfo | null
   onChange: (node: EditorNode | null) => void
 }
 
@@ -16,10 +18,11 @@ export function NodeEditor({
   symbols,
   symbolsById,
   highlightedId,
+  workspace,
   onChange,
 }: NodeEditorProps) {
   if (node === null) {
-    return <EmptySlot depth={depth} symbols={symbols} onChange={onChange} />
+    return <EmptySlot depth={depth} symbols={symbols} workspace={workspace} onChange={onChange} />
   }
 
   const isHighlighted = node.id === highlightedId
@@ -79,6 +82,7 @@ export function NodeEditor({
               symbols={symbols}
               symbolsById={symbolsById}
               highlightedId={highlightedId}
+              workspace={workspace}
               onChange={(next) => {
                 const children = [...node.children]
                 children[index] = next
@@ -95,13 +99,15 @@ export function NodeEditor({
 function EmptySlot({
   depth,
   symbols,
+  workspace,
   onChange,
 }: {
   depth: number
   symbols: Symbol[]
+  workspace: WorkspaceInfo | null
   onChange: (node: EditorNode) => void
 }) {
-  const groups = groupSymbolsByNamespace(symbols)
+  const groups = groupSymbolsByNamespace(symbols, workspace)
   return (
     <span className="inline-flex items-center gap-1 rounded border border-dashed border-slate-400 bg-white px-2 py-1 text-sm">
       <select
@@ -116,7 +122,7 @@ function EmptySlot({
           記号を選択…
         </option>
         {groups.map((group) => (
-          <optgroup key={group.namespace} label={group.namespace}>
+          <optgroup key={group.namespace} label={group.label}>
             {group.symbols.map((symbol) => (
               <option key={symbol.id} value={symbol.id}>
                 {symbol.name} ({symbol.symbol_type.name}, arity {symbol.arity})

@@ -31,7 +31,8 @@ SYMBOL_TYPE_SEEDS = [
 
 PRIMITIVE_SYMBOL_SEEDS = [
     # name, symbol_type, arity, notation_kind, precedence, latex_template, remarks
-    # precedence order (higher binds tighter): ∧(40) > ∨(30) > →(20) > ↔(10)
+    # precedence order (higher binds tighter): term operators (55--70) >
+    # predicates =/∈ (50) > ∧(40) > ∨(30) > →(20) > ↔(10)
     #
     # The public language keeps these connectives primitive. Their semantics
     # are supplied only by axioms explicitly selected for an axiom system.
@@ -59,7 +60,7 @@ PRIMITIVE_SYMBOL_SEEDS = [
         "整形式な項すべてを走る全称量化",
     ),
     ("∃", SymbolTypeName.QUANT_PROP, 1, "prefix", None, r"\exists", "整形式な項すべてを走る存在量化"),
-    ("=", SymbolTypeName.PREDICATE, 2, "infix", 100, "=", "等号"),
+    ("=", SymbolTypeName.PREDICATE, 2, "infix", 50, "=", "等号"),
 ]
 
 ROLE_SEEDS = {
@@ -91,6 +92,12 @@ INFERENCE_RULE_SEEDS = [
 
 def seed_language(session: Session) -> None:
     """Insert Phase 1 enum rows, primitive symbols, and roles."""
+    seed_language_catalog(session)
+    _seed_language_symbols(session)
+
+
+def seed_language_catalog(session: Session) -> None:
+    """Install runtime syntax without choosing a foundation's symbols."""
 
     for name, code, remarks in FORMULA_TYPE_SEEDS:
         existing = session.scalar(select(FormulaType).where(FormulaType.name == name))
@@ -126,6 +133,7 @@ def seed_language(session: Session) -> None:
         )
     session.flush()
 
+def _seed_language_symbols(session: Session) -> None:
     symbol_types = {
         SymbolTypeName(row.name): row
         for row in session.scalars(select(SymbolType)).all()
@@ -173,6 +181,15 @@ def seed_language(session: Session) -> None:
     _seed_symbol_roles(session, ROLE_SEEDS)
     from dem.db.seeds._aliases import apply_builtin_aliases
     apply_builtin_aliases(session)
+
+
+def refresh_primitive_symbol_notation(session: Session) -> None:
+    """Re-apply primitive notation metadata to an existing partial or full DB."""
+    symbols = SymbolService(session)
+    for name, _, _, notation_kind, precedence, _, _ in PRIMITIVE_SYMBOL_SEEDS:
+        symbol = session.scalar(select(Symbol).where(Symbol.name == name))
+        if symbol is not None:
+            symbols.set_notation(symbol.id, notation_kind, precedence)
 
 
 def _seed_symbol_roles(session: Session, role_seeds: dict[str, str]) -> None:

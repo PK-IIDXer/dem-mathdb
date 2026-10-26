@@ -100,6 +100,7 @@ export interface Axiom {
   id: number
   public_id: string
   name: string
+  namespace_name: string
   formula_id: number
   formula: Formula
   origin_kind: string
@@ -119,8 +120,12 @@ export interface AxiomCreate {
 
 export interface AxiomSystem {
   id: number
+  public_id: string
+  namespace_id: number
+  namespace_name: string
   name: string
   remarks: string | null
+  comparison_rank: number | null
   created_at: string
 }
 
@@ -140,6 +145,7 @@ export interface Theorem {
   status: string
   description: string | null
   tags: Tag[]
+  external_checks: ExternalCheck[]
   remarks: string | null
   created_at: string
   updated_at: string
@@ -203,6 +209,7 @@ export interface Proof {
 export interface LemmaDependency {
   /** The verified proof the citing step pinned. */
   proof_id: number
+  proof_public_id?: string
   theorem: Theorem
 }
 
@@ -210,6 +217,7 @@ export interface LemmaDependency {
     axioms: Axiom[]
     lemmas: LemmaDependency[]
     applied_proofs?: Record<string, number>
+    applied_proof_public_ids?: Record<string, string>
   }
 
 export interface ProofCreate {
@@ -345,6 +353,8 @@ export type DefinitionCreateKind = 'predicate' | 'function' | 'logical' | 'quant
 export interface Definition {
   id: number
   public_id: string
+  namespace_id: number
+  namespace_name: string
   name: string
   kind: DefinitionKind
   new_symbol: Symbol
@@ -366,4 +376,62 @@ export interface DefinitionCreate {
   requires_uniqueness_proof?: boolean
   latex_template?: string | null
   remarks?: string | null
+}
+
+export interface ExplorationNote {
+  theorem: Theorem
+  proof: Proof
+  premises: Formula[]
+  step_count: number
+  updated_at: string
+}
+
+export interface ExplorationDependencies {
+  axioms: Axiom[]
+  theorems: Theorem[]
+}
+
+export interface ExplorationPromotion {
+  theorem: Theorem
+  proof: Proof
+}
+
+export interface ExternalCheck {
+  source_system: string
+  library: string
+  library_version: string
+  library_commit: string
+  declaration: string
+  module: string
+  file: string
+  line: number
+  check_model: string
+  check_roundtrip: string
+  check_toolchain: string | null
+  checked_at: string | null
+  license: string
+  copyright: string | null
+  authors: string | null
+  upstream_origin: string
+  source_axioms: string[]
+  axiom_comparison: AxiomComparison | null
+}
+
+// The foundation's own Lean/DEM axiom-dependency comparison for one imported
+// statement (import_record.axiom_comparison). The panel names no axiom itself.
+export interface AxiomComparison {
+  lean: string
+  lean_axiom: string
+  lean_axiom_note: string
+  dem: string
+  dem_unused_axiom: string
+}
+
+export interface ExternalSource {
+  library: string
+  library_version: string
+  library_commit: string
+  license: string
+  imported_statements: number
+  notice_status: 'absent' | 'present' | 'not_checked'
 }

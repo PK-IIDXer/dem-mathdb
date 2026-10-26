@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from dem.db.models.authoring_provenance import AuthoringProvenance
 
 
-AuthoringVia: TypeAlias = Literal["manual", "seed"]
+AuthoringVia: TypeAlias = Literal["manual", "seed", "import"]
 
 
 def record_authoring_provenance(

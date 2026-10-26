@@ -1,7 +1,8 @@
-"""The axiom-introduction record and the import record (lean-import-design §2.8, §3.4)."""
+"""Generic introduction/import metadata constraints and read-only transport guards."""
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pytest
@@ -15,6 +16,24 @@ from dem.db.seed import seed_language
 from dem.types import SymbolTypeName, Token
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+THEOREM_OUTPUT = REPO_ROOT / "webapi" / "theorem_output.py"
+WORKSPACE_EXPORT = REPO_ROOT / "webapi" / "workspace_export.py"
+WORKSPACE_IMPORT = REPO_ROOT / "scripts" / "workspace_import.py"
+PACKAGE_EXPORT = REPO_ROOT / "webapi" / "package_export.py"
+PACKAGE_IMPORT = REPO_ROOT / "scripts" / "package_import.py"
+READ_ONLY_IMPORT_RECORD_FILES = {THEOREM_OUTPUT, WORKSPACE_EXPORT, WORKSPACE_IMPORT, PACKAGE_EXPORT, PACKAGE_IMPORT}
+
+_IMPORT_RECORD_WRITE_PATTERNS = {
+    "ImportRecord construction": re.compile(r"\bImportRecord\s*\("),
+    "ImportRecord insert": re.compile(r"\binsert\s*\(\s*ImportRecord\b"),
+    "ImportRecord update": re.compile(r"\bupdate\s*\(\s*ImportRecord\b"),
+    "ImportRecord delete": re.compile(r"\bdelete\s*\(\s*ImportRecord\b"),
+    "ImportRecord table write": re.compile(r"\bImportRecord\s*\.\s*__table__\b"),
+    "raw import_record write": re.compile(
+        r"\b(?:insert\s+into|update|delete\s+from)\s+import_record\b",
+        re.IGNORECASE,
+    ),
+}
 
 _IMPORT_ROW = {
     "source_system": "example-prover",
@@ -69,6 +88,16 @@ def _insert_import(dem: DemServices, theorem_id: int, **overrides: object) -> No
         dem.session.execute(text(f"INSERT INTO import_record ({columns}) VALUES ({values})"), row)
 
 
+def _assert_import_record_reference_is_read_only(source: str) -> None:
+    """Permit ORM reads while rejecting every supported import-record write shape."""
+    violations = [
+        label
+        for label, pattern in _IMPORT_RECORD_WRITE_PATTERNS.items()
+        if pattern.search(source)
+    ]
+    assert violations == []
+
+
 @pytest.mark.parametrize(
     "overrides",
     [
@@ -95,14 +124,34 @@ def test_import_record_is_unique_per_source_and_goes_with_its_conjecture(dem: De
     assert dem.session.scalar(text("SELECT COUNT(*) FROM import_record")) == 0
 
 
-def test_nothing_writes_an_import_record_yet() -> None:
-    """The importer is stage B; until then no production code names the table."""
+def test_public_kernel_and_api_do_not_write_import_records() -> None:
+    """Keep the new write path isolated from DEM's kernel and API."""
     offenders = []
     for root in ("dem", "webapi", "scripts", "demlang"):
         for path in (REPO_ROOT / root).rglob("*.py"):
             if path.name == "foundation_records.py" or path.parts[-2:] == ("models", "__init__.py"):
                 continue
             source = path.read_text(encoding="utf-8")
+            if path in READ_ONLY_IMPORT_RECORD_FILES:
+                _assert_import_record_reference_is_read_only(source)
+                continue
             if "import_record" in source or "ImportRecord" in source:
                 offenders.append(str(path.relative_to(REPO_ROOT)))
     assert offenders == []
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "ImportRecord(theorem_id=1)",
+        "insert(ImportRecord)",
+        "update(ImportRecord)",
+        "delete(ImportRecord)",
+        "ImportRecord.__table__",
+        'text("INSERT INTO import_record VALUES (...)")',
+    ],
+)
+def test_import_record_read_guard_rejects_writes(mutation: str) -> None:
+    source = "select(ImportRecord).where(ImportRecord.theorem_id == theorem_id)"
+    with pytest.raises(AssertionError):
+        _assert_import_record_reference_is_read_only(f"{source}\n{mutation}\n")

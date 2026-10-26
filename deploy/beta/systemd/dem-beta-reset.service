@@ -1,0 +1,8 @@
+[Unit]
+Description=Reset anonymous beta after verifying a prepared database
+Requires=docker.service
+After=docker.service network-online.target
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/dem-beta reset
+TimeoutStartSec=20min

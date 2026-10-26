@@ -13,7 +13,7 @@ from dem.types import (
     QuantPropDefinitionInput,
     QuantTermDefinitionInput,
 )
-from webapi.deps import dem_services
+from webapi.deps import dem_services, get_local_namespace_name
 from webapi.pagination import Cursor, Limit, named_query, read_page
 from webapi.schemas import (
     AxiomOut,
@@ -83,7 +83,7 @@ def list_definitions(
     search: str | None = None,
     tag_id: list[int] | None = Query(default=None),
     exclude_tag_id: list[int] | None = Query(default=None),
-    dem: DemServices = Depends(dem_services),
+    dem: DemServices = Depends(dem_services, scope="function"),
     limit: Limit = None,
     cursor: Cursor = None,
 ) -> list[DefinitionOut]:
@@ -101,22 +101,24 @@ def list_definitions(
 
 @router.post("/definitions", response_model=DefinitionOut, status_code=status.HTTP_201_CREATED)
 def register_definition(
-    body: DefinitionCreate, dem: DemServices = Depends(dem_services)
+    body: DefinitionCreate,
+    dem: DemServices = Depends(dem_services, scope="function"),
+    namespace: str = Depends(get_local_namespace_name, scope="function"),
 ) -> DefinitionOut:
     definition_input = _to_definition_input(body)
-    return dem.definitions.register(definition_input)
+    return dem.definitions.register(definition_input, namespace=namespace)
 
 
 @router.patch("/definitions/{id}/description", response_model=DefinitionOut)
 def update_definition_description(
-    id: int, body: DescriptionUpdate, dem: DemServices = Depends(dem_services)
+    id: int, body: DescriptionUpdate, dem: DemServices = Depends(dem_services, scope="function")
 ) -> DefinitionOut:
     return dem.definitions.set_description(id, body.description)
 
 
 @router.post("/definitions/{id}/tags", response_model=DefinitionOut)
 def add_definition_tag(
-    id: int, body: TagAttach, dem: DemServices = Depends(dem_services)
+    id: int, body: TagAttach, dem: DemServices = Depends(dem_services, scope="function")
 ) -> DefinitionOut:
     dem.tags.attach("definition", id, body.tag_id)
     return dem.definitions.get(id)
@@ -124,19 +126,19 @@ def add_definition_tag(
 
 @router.delete("/definitions/{id}/tags/{tag_id}", response_model=DefinitionOut)
 def remove_definition_tag(
-    id: int, tag_id: int, dem: DemServices = Depends(dem_services)
+    id: int, tag_id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> DefinitionOut:
     dem.tags.detach("definition", id, tag_id)
     return dem.definitions.get(id)
 
 
 @router.get("/definitions/by-name/{name}", response_model=DefinitionOut)
-def get_definition_by_name(name: str, dem: DemServices = Depends(dem_services)) -> DefinitionOut:
+def get_definition_by_name(name: str, dem: DemServices = Depends(dem_services, scope="function")) -> DefinitionOut:
     return dem.definitions.get_by_name(name)
 
 
 @router.get("/definitions/{ref}", response_model=DefinitionOut)
-def get_definition(ref: str, dem: DemServices = Depends(dem_services)) -> DefinitionOut:
+def get_definition(ref: str, dem: DemServices = Depends(dem_services, scope="function")) -> DefinitionOut:
     return (
         dem.definitions.get(int(ref))
         if ref.isdigit()
@@ -146,23 +148,23 @@ def get_definition(ref: str, dem: DemServices = Depends(dem_services)) -> Defini
 
 @router.get("/definitions/public/{public_id}", response_model=DefinitionOut)
 def get_definition_by_public_id(
-    public_id: str, dem: DemServices = Depends(dem_services)
+    public_id: str, dem: DemServices = Depends(dem_services, scope="function")
 ) -> DefinitionOut:
     return dem.definitions.get_by_public_id(public_id)
 
 
 @router.get("/definitions/{id}/symbol", response_model=SymbolOut)
-def get_definition_symbol(id: int, dem: DemServices = Depends(dem_services)) -> SymbolOut:
+def get_definition_symbol(id: int, dem: DemServices = Depends(dem_services, scope="function")) -> SymbolOut:
     return dem.definitions.get_symbol(id)
 
 
 @router.get("/definitions/{id}/axiom", response_model=AxiomOut)
-def get_definition_axiom(id: int, dem: DemServices = Depends(dem_services)) -> AxiomOut:
+def get_definition_axiom(id: int, dem: DemServices = Depends(dem_services, scope="function")) -> AxiomOut:
     return dem.definitions.get_axiom(id)
 
 
 @router.get("/definitions/{id}/formal-params", response_model=list[SymbolOut])
 def list_definition_formal_params(
-    id: int, dem: DemServices = Depends(dem_services)
+    id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> list[SymbolOut]:
     return dem.definitions.list_formal_params(id)

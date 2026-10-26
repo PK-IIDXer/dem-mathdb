@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { symbolsApi } from '../../api/symbols'
 import { formulasApi } from '../../api/formulas'
+import { workspaceApi } from '../../api/workspace'
 import { ApiError } from '../../api/client'
 import type { FormulaDetail, FormulaParseResult, Symbol, Token } from '../../api/types'
 import { Latex } from '../Latex'
@@ -89,6 +90,11 @@ export function FormulaEditor({
   const { data: formulaTypes = [] } = useQuery({
     queryKey: ['formula-types'],
     queryFn: () => symbolsApi.listFormulaTypes(),
+  })
+  const { data: workspace = null } = useQuery({
+    queryKey: ['workspace', 'info'],
+    queryFn: () => workspaceApi.info(),
+    staleTime: Infinity,
   })
   const symbolsById = useMemo(() => new Map(symbols.map((symbol) => [symbol.id, symbol])), [symbols])
   const displaySymbolsById = useMemo(() => {
@@ -399,6 +405,7 @@ export function FormulaEditor({
                 symbols={symbols}
                 symbolsById={displaySymbolsById}
                 highlightedId={null}
+                workspace={workspace}
                 onChange={changeTree}
               />
             </div>

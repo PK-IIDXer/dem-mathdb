@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './index.css'
 import 'katex/dist/katex.min.css'
 import App from './App.tsx'
+import { startPublicData } from './api/publicData'
+
+startPublicData()
 
 const queryClient = new QueryClient()
 

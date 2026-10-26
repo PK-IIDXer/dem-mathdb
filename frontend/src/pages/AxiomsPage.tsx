@@ -1,3 +1,5 @@
+import { EntityBadge } from '../components/BetaIdentity'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -8,6 +10,7 @@ import { ApiError } from '../api/client'
 import { useReadOnly } from '../ReadOnlyContext'
 
 export function AxiomsPage() {
+  usePageTitle('公理')
   return (
     <div className="space-y-8">
       <AxiomSection />
@@ -87,7 +90,7 @@ function AxiomSection() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
-              placeholder="例: 空集合の存在公理"
+              placeholder="例: 含意の推移律"
               className="rounded border border-slate-300 px-2 py-1 text-sm"
             />
           </label>
@@ -115,7 +118,6 @@ function AxiomSection() {
         <table className="w-full text-left text-sm">
           <thead className="text-xs text-slate-500">
             <tr>
-              <th className="py-1 pr-3">id</th>
               <th className="py-1 pr-3">name / 説明 / タグ</th>
               <th className="py-1 pr-3">origin_kind</th>
             </tr>
@@ -126,14 +128,13 @@ function AxiomSection() {
                 key={axiom.id}
                 className="border-t border-slate-100 hover:bg-slate-50"
               >
-                <td className="py-1 pr-3 align-top">{axiom.id}</td>
                 <td className="py-1 pr-3">
                   <Link
                     to={`/axioms/${axiom.public_id}`}
                     className="font-mono text-indigo-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     {axiom.name}
-                  </Link>
+                  </Link> <EntityBadge namespace={axiom.namespace_name} />
                   {axiom.description && (
                     <div className="text-xs text-slate-500">{axiom.description}</div>
                   )}
@@ -256,9 +257,10 @@ function AxiomSystemSection() {
                   aria-pressed={selectedSystemId === system.id}
                   className="rounded text-left hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  #{system.id} {system.name}
+                  {system.name}
                 </button>
-                <Link to={`/axiom-systems/${system.id}`} className="text-xs text-indigo-600 hover:underline">
+                <EntityBadge namespace={system.namespace_name} />
+                <Link to={`/axiom-systems/${system.public_id}`} className="text-xs text-indigo-600 hover:underline">
                   詳細
                 </Link>
               </li>
@@ -276,7 +278,7 @@ function AxiomSystemSection() {
                 {members.map((axiom) => (
                   <li key={axiom.id} className="flex items-center justify-between rounded bg-slate-50 px-2 py-1">
                     <span>
-                      #{axiom.id} {axiom.name}
+                      {axiom.name}
                     </span>
                     {!readOnly && (
                       <button
@@ -303,7 +305,7 @@ function AxiomSystemSection() {
                     </option>
                     {axioms.map((axiom) => (
                       <option key={axiom.id} value={axiom.id}>
-                        #{axiom.id} {axiom.name}
+                        {axiom.name}
                       </option>
                     ))}
                   </select>

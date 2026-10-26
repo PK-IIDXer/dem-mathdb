@@ -1,0 +1,7 @@
+[Unit]
+Description=Weekly anonymous beta reset
+[Timer]
+OnCalendar=@RESET_CALENDAR@
+Persistent=true
+[Install]
+WantedBy=timers.target

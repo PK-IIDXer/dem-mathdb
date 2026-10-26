@@ -1,3 +1,6 @@
+import { EntityBadge } from '../components/BetaIdentity'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { PublicIdRoute } from '../components/PublicIdRoute'
 import { Link, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { axiomsApi } from '../api/axioms'
@@ -7,6 +10,10 @@ import { TagEditor } from '../components/TagEditor'
 import { UsedInTheoremsSection } from '../components/UsedInTheoremsSection'
 
 export function AxiomDetailPage() {
+  return <PublicIdRoute><AxiomDetailPageContent /></PublicIdRoute>
+}
+
+function AxiomDetailPageContent() {
   const { id } = useParams<{ id: string }>()
   const axiomRef = id ?? ''
   const queryClient = useQueryClient()
@@ -27,6 +34,8 @@ export function AxiomDetailPage() {
     onSuccess: invalidate,
   })
 
+  usePageTitle(axiom?.name ?? '公理')
+
   if (!axiom) return <p className="text-sm text-slate-400">読み込み中…</p>
 
   return (
@@ -36,7 +45,7 @@ export function AxiomDetailPage() {
       </Link>
       <section className="space-y-4 rounded-lg border border-slate-200 p-4">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-base text-slate-800">{axiom.name}</span>
+          <span className="font-mono text-base text-slate-800">{axiom.name}</span> <EntityBadge namespace={axiom.namespace_name} detail />
           <span className="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{axiom.origin_kind}</span>
         </div>
         <div className="overflow-x-auto rounded border border-slate-100 bg-white px-4 py-4 text-base">

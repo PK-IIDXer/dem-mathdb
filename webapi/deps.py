@@ -39,6 +39,8 @@ WORKSPACE_ENGINE_CACHE_MAX_SIZE = 16
 DEVELOPMENT_ACCOUNT_ID = UUID("00000000-0000-0000-0000-000000000001")
 DEVELOPMENT_EXTERNAL_SUBJECT = "development:single-account"
 _LEGACY_WORKSPACE_KEY = "legacy-single-database"
+LOCAL_WORKSPACE_NAMESPACE = "local.workspace"
+_API_LOCAL_NAMESPACE_KEY = "api_local_namespace"
 
 
 def _database_url() -> str:
@@ -77,7 +79,8 @@ class WorkspaceRequestContext:
 
     workspace_id: UUID
     slug: str
-    title: str
+    title: str | None
+    local_namespace_name: str
     api: DemApi
 
 
@@ -249,7 +252,8 @@ def get_workspace_request_context(
         return WorkspaceRequestContext(
             workspace_id=UUID(int=0),
             slug="export",
-            title="DEM workspace",
+            title=None,
+            local_namespace_name=LOCAL_WORKSPACE_NAMESPACE,
             api=_workspace_api_cache.get(_LEGACY_WORKSPACE_KEY, _database_url()),
         )
 
@@ -285,6 +289,7 @@ def get_workspace_request_context(
         workspace_id=workspace_id,
         slug=slug,
         title=title,
+        local_namespace_name=f"local.ws-{workspace_id.hex}",
         api=api,
     )
 
@@ -303,6 +308,7 @@ def initialize_on_startup() -> None:
     A management DB is upgraded through its dedicated Alembic history and gets the
     fixed Phase 3 development account. Without one, the legacy SQLite path still
     creates the content schema and seeds it idempotently.
+    Beta instead checks an already prepared single database without bootstrapping.
 
     Content-database Tier A immutability triggers are installed by both Alembic
     and ``Base.metadata.create_all()`` from the shared definitions in
@@ -310,6 +316,26 @@ def initialize_on_startup() -> None:
     """
     global _deployment_lock
     management_url = _management_database_url()
+    from webapi.beta import enabled
+
+    if enabled():
+        # Beta databases are prepared offline by their owner. Never bootstrap
+        # them with the restricted runtime role, including a misconfigured
+        # management deployment.
+        try:
+            if management_url is not None:
+                raise RuntimeError("beta requires a single prepared database")
+            api = _workspace_api_cache.get(_LEGACY_WORKSPACE_KEY, _database_url())
+            with api.engine.connect() as connection:
+                connection.execute(text("SELECT 1"))
+                revisions = list(connection.scalars(text("SELECT version_num FROM alembic_version")))
+                if revisions != [content_schema_head()]:
+                    raise RuntimeError("schema is not ready")
+                if connection.execute(text(INCOMPLETE_FORMULAS_SQL)).first() is not None:
+                    raise RuntimeError("formulas are not complete")
+        except Exception:
+            raise RuntimeError("Beta database startup check failed") from None
+        return
     # Only management-DB deployments have workspace DBs that the schema updater
     # rewrites.  The legacy single-database mode has nothing for the updater to
     # touch, so it takes no deployment lock.
@@ -347,10 +373,35 @@ def initialize_on_startup() -> None:
         raise
 
 
-def dem_services(api: DemApi = Depends(get_dem_api)) -> Iterator[DemServices]:
-    """Per-request session bound to one transaction: commit on success, rollback on error."""
-    with api.transaction() as dem:
+def dem_services(
+    request: Request,
+    context: WorkspaceRequestContext = Depends(get_workspace_request_context),
+) -> Iterator[DemServices]:
+    """One request transaction; callers use function scope to commit before send.
+
+    Keep the transaction around endpoint execution and response serialization.
+    Deferred database guards must finish before any successful response is sent.
+    """
+    with context.api.transaction() as dem:
+        dem.session.info[_API_LOCAL_NAMESPACE_KEY] = context.local_namespace_name
+        from webapi.beta import BetaReject, SESSION_KEY, enabled, settings, write_state
+        if enabled():
+            limits = settings(request.app)
+            dem.session.info[SESSION_KEY] = limits
+            if getattr(request.state, "beta_category", "read") == "write":
+                state = write_state(context.api.engine, limits)
+                if state != "open":
+                    raise BetaReject(503, f"beta.{state}", f"Beta write state: {state}")
         yield dem
+
+
+def get_local_namespace_name(
+    dem: DemServices = Depends(dem_services, scope="function"),
+) -> str:
+    """The namespace for entities authored by this API request."""
+    return str(
+        dem.session.info.get(_API_LOCAL_NAMESPACE_KEY, LOCAL_WORKSPACE_NAMESPACE)
+    )
 
 
 def close_database_connections() -> None:

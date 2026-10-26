@@ -84,3 +84,7 @@ class ImportRecord(Base):
     authors: Mapped[str | None] = mapped_column(Text)
     upstream_origin: Mapped[str] = mapped_column(Text, nullable=False)
     retrieved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    # JSON object or NULL: the foundation's own comparison of Lean's axiom
+    # dependency with the DEM proof's (public-phase1 §15).  Written after a DEM
+    # proof exists; display-only like every column here.
+    axiom_comparison: Mapped[str | None] = mapped_column(Text)

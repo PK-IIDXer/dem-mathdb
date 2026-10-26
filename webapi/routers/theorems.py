@@ -8,10 +8,12 @@ from dem.db.models.theorem import Theorem
 from dem.db.models.theorem import Proof
 from dem.db.models.tag import Tag, TheoremTag
 from dem.errors import ValidationError
-from webapi.deps import dem_services
+from dem.services.system_tags import HIDDEN_THEOREM_TAGS, visible_theorem_clause
+from webapi.deps import dem_services, get_local_namespace_name
 from webapi.pagination import Cursor, Limit, named_query, read_page
 from webapi.schemas import (
     DescriptionUpdate,
+    ExternalSourceOut,
     ApplicableTheoremOut,
     FormulaOut,
     TagAttach,
@@ -19,6 +21,7 @@ from webapi.schemas import (
     TheoremOut,
     TheoremPremiseOut,
 )
+from webapi.theorem_output import external_sources, theorem_output, theorem_outputs
 
 router = APIRouter(tags=["theorems"])
 RULE_TAG = "system:rule"
@@ -38,22 +41,24 @@ def _check_rule_tag(dem: DemServices, theorem_id: int, tag_id: int) -> None:
 
 
 @router.get("/theorems/rules", response_model=list[TheoremOut])
-def list_rule_theorems(dem: DemServices = Depends(dem_services)) -> list[TheoremOut]:
+def list_rule_theorems(dem: DemServices = Depends(dem_services, scope="function")) -> list[TheoremOut]:
     """Resolve the display marker against current proof state on every request."""
     stmt = (
         select(Theorem)
         .join(TheoremTag, TheoremTag.theorem_id == Theorem.id)
         .join(Tag, Tag.id == TheoremTag.tag_id)
-        .where(Tag.name == RULE_TAG, Theorem.status == "proven")
+        .where(
+            Tag.name == RULE_TAG,
+            Theorem.status == "proven",
+            visible_theorem_clause(Theorem.id, HIDDEN_THEOREM_TAGS),
+        )
         .where(exists(select(Proof.id).where(
             Proof.theorem_id == Theorem.id, Proof.status == "verified"
         )))
         .order_by(Theorem.id)
     )
-    return [
-        theorem for theorem in dem.session.scalars(stmt)
-        if all(tag.name != "system:onboarding" for tag in theorem.tags)
-    ]
+    theorems = list(dem.session.scalars(stmt))
+    return theorem_outputs(dem.session, theorems)
 
 
 @router.get("/theorems/applicable", response_model=list[ApplicableTheoremOut])
@@ -62,7 +67,7 @@ def list_applicable_theorems(
     proof_id: int | None = None,
     arg_step_ords: list[str] | None = Query(default=None),
     limit: int = Query(default=20, ge=1, le=100),
-    dem: DemServices = Depends(dem_services),
+    dem: DemServices = Depends(dem_services, scope="function"),
 ) -> list[ApplicableTheoremOut]:
     parsed_arg_ords: list[int] = []
     for value in arg_step_ords or []:
@@ -74,7 +79,7 @@ def list_applicable_theorems(
             raise ValidationError("arg_step_ords must contain integers") from exc
     return [
         ApplicableTheoremOut(
-            theorem=TheoremOut.model_validate(theorem, from_attributes=True),
+            theorem=theorem_output(dem.session, theorem),
             is_schematic=is_schematic,
             score=score,
         )
@@ -94,81 +99,102 @@ def list_theorems(
     tag_id: list[int] | None = Query(default=None),
     exclude_tag_id: list[int] | None = Query(default=None),
     status: str | None = None,
-    dem: DemServices = Depends(dem_services),
+    dem: DemServices = Depends(dem_services, scope="function"),
     limit: Limit = None,
     cursor: Cursor = None,
 ) -> list[TheoremOut]:
     if limit is None and cursor is None and not exclude_tag_id:
-        return dem.theorems.list_all(search=search, tag_ids=tag_id, status=status)
-    stmt = named_query(Theorem, search, tag_id, exclude_tag_id)
+        return theorem_outputs(
+            dem.session,
+            dem.theorems.list_all(search=search, tag_ids=tag_id, status=status),
+        )
+    stmt = named_query(Theorem, search, tag_id, exclude_tag_id).where(
+        visible_theorem_clause(Theorem.id)
+    )
     if status:
         stmt = stmt.where(Theorem.status == status)
-    return read_page(dem.session, Theorem, stmt, response, limit, cursor)
+    return theorem_outputs(
+        dem.session,
+        read_page(dem.session, Theorem, stmt, response, limit, cursor),
+    )
 
 
 @router.post("/theorems", response_model=TheoremOut, status_code=status.HTTP_201_CREATED)
-def register_theorem(body: TheoremCreate, dem: DemServices = Depends(dem_services)) -> TheoremOut:
+def register_theorem(
+    body: TheoremCreate,
+    dem: DemServices = Depends(dem_services, scope="function"),
+    namespace: str = Depends(get_local_namespace_name, scope="function"),
+) -> TheoremOut:
     theorem = dem.theorems.register(
         name=body.name,
         conclusion_formula_id=body.conclusion_formula_id,
         premise_formula_ids=body.premise_formula_ids,
         description=body.description,
         remarks=body.remarks,
+        namespace=namespace,
     )
     for tag_id in body.tag_ids:
         _check_rule_tag(dem, theorem.id, tag_id)
         dem.tags.attach("theorem", theorem.id, tag_id)
-    return theorem
+    return theorem_output(dem.session, theorem)
 
 
 @router.patch("/theorems/{id}/description", response_model=TheoremOut)
 def update_theorem_description(
-    id: int, body: DescriptionUpdate, dem: DemServices = Depends(dem_services)
+    id: int, body: DescriptionUpdate, dem: DemServices = Depends(dem_services, scope="function")
 ) -> TheoremOut:
-    return dem.theorems.set_description(id, body.description)
+    return theorem_output(dem.session, dem.theorems.set_description(id, body.description))
 
 
 @router.post("/theorems/{id}/tags", response_model=TheoremOut)
 def add_theorem_tag(
-    id: int, body: TagAttach, dem: DemServices = Depends(dem_services)
+    id: int, body: TagAttach, dem: DemServices = Depends(dem_services, scope="function")
 ) -> TheoremOut:
     _check_rule_tag(dem, id, body.tag_id)
     dem.tags.attach("theorem", id, body.tag_id)
-    return dem.theorems.get(id)
+    return theorem_output(dem.session, dem.theorems.get(id))
 
 
 @router.delete("/theorems/{id}/tags/{tag_id}", response_model=TheoremOut)
 def remove_theorem_tag(
-    id: int, tag_id: int, dem: DemServices = Depends(dem_services)
+    id: int, tag_id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> TheoremOut:
     dem.tags.detach("theorem", id, tag_id)
-    return dem.theorems.get(id)
+    return theorem_output(dem.session, dem.theorems.get(id))
+
+
+@router.get("/external-sources", response_model=list[ExternalSourceOut])
+def list_external_sources(
+    dem: DemServices = Depends(dem_services, scope="function"),
+) -> list[ExternalSourceOut]:
+    return external_sources(dem.session)
 
 
 @router.get("/theorems/by-name/{name}", response_model=TheoremOut)
-def get_theorem_by_name(name: str, dem: DemServices = Depends(dem_services)) -> TheoremOut:
-    return dem.theorems.get_by_name(name)
+def get_theorem_by_name(name: str, dem: DemServices = Depends(dem_services, scope="function")) -> TheoremOut:
+    return theorem_output(dem.session, dem.theorems.get_by_name(name))
 
 
 @router.get("/theorems/{ref}", response_model=TheoremOut)
-def get_theorem(ref: str, dem: DemServices = Depends(dem_services)) -> TheoremOut:
-    return (
+def get_theorem(ref: str, dem: DemServices = Depends(dem_services, scope="function")) -> TheoremOut:
+    theorem = (
         dem.theorems.get(int(ref))
         if ref.isdigit()
         else dem.theorems.get_by_public_id(ref)
     )
+    return theorem_output(dem.session, theorem)
 
 
 @router.get("/theorems/public/{public_id}", response_model=TheoremOut)
 def get_theorem_by_public_id(
-    public_id: str, dem: DemServices = Depends(dem_services)
+    public_id: str, dem: DemServices = Depends(dem_services, scope="function")
 ) -> TheoremOut:
-    return dem.theorems.get_by_public_id(public_id)
+    return theorem_output(dem.session, dem.theorems.get_by_public_id(public_id))
 
 
 @router.get("/theorems/{id}/premises", response_model=list[TheoremPremiseOut])
 def list_theorem_premises(
-    id: int, dem: DemServices = Depends(dem_services)
+    id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> list[TheoremPremiseOut]:
     # list_premises() returns list[tuple[ord, Formula]]; a plain tuple has no
     # named attributes for from_attributes-style coercion, so each item is
@@ -181,6 +207,6 @@ def list_theorem_premises(
 
 @router.get("/theorems/{id}/used-in-theorems", response_model=list[TheoremOut])
 def list_theorem_used_in_theorems(
-    id: int, dem: DemServices = Depends(dem_services)
+    id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> list[TheoremOut]:
-    return dem.theorems.list_used_in_theorems(id)
+    return theorem_outputs(dem.session, dem.theorems.list_used_in_theorems(id))

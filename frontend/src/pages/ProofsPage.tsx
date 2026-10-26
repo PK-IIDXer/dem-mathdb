@@ -1,3 +1,4 @@
+import { usePageTitle } from '../hooks/usePageTitle'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -6,6 +7,7 @@ import { proofsApi } from '../api/proofs'
 import { useReadOnly } from '../ReadOnlyContext'
 
 export function ProofsPage() {
+  usePageTitle('証明')
   const readOnly = useReadOnly()
   const navigate = useNavigate()
   const { data: theorems = [] } = useQuery({ queryKey: ['theorems'], queryFn: () => theoremsApi.listVisible() })
@@ -58,13 +60,13 @@ export function ProofsPage() {
           <div className="mt-3">
             <div className="mb-1 text-xs text-slate-500">既存の Proof ({proofs.length})</div>
             <div className="flex flex-wrap gap-2">
-              {proofs.map((proof) => (
+              {proofs.map((proof, index) => (
                 <Link
                   key={proof.id}
                   to={`/theorems/${selectedTheorem?.public_id}/proofs/${proof.public_id}`}
                   className="rounded bg-slate-100 px-2 py-1 text-xs hover:bg-slate-200"
                 >
-                  #{proof.id} {proof.name ?? '(no name)'} — {proof.status}
+                  証明 {index + 1} {proof.name ?? '(no name)'} — {proof.status}
                 </Link>
               ))}
               {proofs.length === 0 && <span className="text-xs text-slate-400">まだありません</span>}

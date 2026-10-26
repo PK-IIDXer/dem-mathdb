@@ -1,0 +1,8 @@
+[Unit]
+Description=Back up anonymous beta
+Requires=docker.service
+After=docker.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/dem-beta backup
+TimeoutStartSec=10min

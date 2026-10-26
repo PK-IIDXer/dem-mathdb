@@ -1,8 +1,8 @@
 """Public A-only seed orchestration.
 
 The public seed deliberately contains only the generic language, the three
-kernel inference rules, and the eight reviewed Hilbert schemas. It registers
-no derived theorem or proof corpus.
+kernel inference rules, the eight reviewed Hilbert schemas, and independently
+constructed introductory demonstrations, owned by two public packages.
 """
 
 from __future__ import annotations
@@ -52,7 +52,7 @@ def refresh_symbol_display(session: Session) -> None:
     apply_builtin_aliases(session)
 
 
-def seed_all(session: Session) -> PublicSeedSummary:
+def seed_public_core(session: Session) -> PublicSeedSummary:
     """Create the complete public A-only seed."""
     seed_language(session)
     seed_inference_rules(session)
@@ -65,4 +65,17 @@ def seed_all(session: Session) -> PublicSeedSummary:
             HILBERT_CORE_AXIOM_SYSTEM_NAME,
             HILBERT_CLASSICAL_AXIOM_SYSTEM_NAME,
         ),
+    )
+
+
+def seed_all(session: Session) -> PublicSeedSummary:
+    from dem.db.seeds.public_demo import seed_public_demo, DEMO_NAMES
+    from dem.db.seeds.public_packages import assign_public_releases
+    seed_public_core(session)
+    seed_public_demo(session)
+    assign_public_releases(session)
+    return PublicSeedSummary(
+        axiom_names=(*HILBERT_CORE_AXIOM_NAMES, *HILBERT_CLASSICAL_AXIOM_NAMES),
+        axiom_system_names=(HILBERT_CORE_AXIOM_SYSTEM_NAME, HILBERT_CLASSICAL_AXIOM_SYSTEM_NAME),
+        theorem_names=DEMO_NAMES,
     )
