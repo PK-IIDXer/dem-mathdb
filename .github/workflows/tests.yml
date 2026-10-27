@@ -17,13 +17,19 @@ jobs:
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
-          python-version: "3.13"
+          python-version: "3.13.7"
 
-      - name: Install Python dependencies
-        run: python -m pip install -e ".[dev,webapi]"
+      - name: Install locked runtime dependencies
+        run: python -m pip install --no-deps -r deploy/beta/requirements.lock
+
+      - name: Install development dependencies without changing the runtime lock
+        run: python -c "import subprocess, sys, tomllib; dev = tomllib.load(open('pyproject.toml', 'rb'))['project']['optional-dependencies']['dev']; subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--constraint', 'deploy/beta/requirements.lock', *dev])"
+
+      - name: Install DEM without resolving runtime dependencies
+        run: python -m pip install --no-deps -e .
 
       - name: Run Python tests
-        run: python -m pytest -q --durations=15
+        run: python -m pytest -q --durations=15 --basetemp=.ci-pytest-tmp
 
   frontend:
     runs-on: ubuntu-latest
@@ -35,7 +41,7 @@ jobs:
 
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
-          node-version: "20"
+          node-version: "22.15.0"
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
