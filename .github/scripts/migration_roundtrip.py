@@ -38,6 +38,8 @@ SYMBOL_TYPES = {
 # (id, name) and symbol id -> (symbol_type id, arity).
 SYMBOLS = [(1, "p"), (2, "q"), (3, "r"), (4, "and"), (5, "all")]
 SYMBOL_SHAPES = {1: (1, 0), 2: (1, 0), 3: (2, 1), 4: (3, 2), 5: (4, 1)}
+DEFINED_SYMBOL_ID = 4
+DEFINITION_NAME = dict(SYMBOLS)[DEFINED_SYMBOL_ID]
 # formula id -> tokens; an int is a symbol id, ("B", n) a bound index (a term).
 FORMULAS = {
     1: [1],  # p
@@ -76,7 +78,7 @@ def seed(connection) -> None:
         "usage_count, created_at) VALUES (:id, :name, :type, :arity, :prim, 'prefix', 0, :now)",
         [
             {"id": i, "name": n, "type": SYMBOL_SHAPES[i][0], "arity": SYMBOL_SHAPES[i][1],
-             "prim": True}
+             "prim": i != DEFINED_SYMBOL_ID}
             for i, n in SYMBOLS
         ],
     )
@@ -106,8 +108,13 @@ def seed(connection) -> None:
     run(
         "INSERT INTO definition (id, name, kind, new_symbol_id, requires_existence_proof, "
         "requires_uniqueness_proof, created_at) "
-        "VALUES (1, 'def_and', 'logical', 4, :no, :no, :now)",
-        [{"no": False}],
+        "VALUES (1, :name, 'logical', :symbol, :no, :no, :now)",
+        [{"name": DEFINITION_NAME, "symbol": DEFINED_SYMBOL_ID, "no": False}],
+    )
+    run(
+        "INSERT INTO definition_formal_param (definition_id, ord, param_symbol_id) "
+        "VALUES (1, :ord, :symbol)",
+        [{"ord": 0, "symbol": 1}, {"ord": 1, "symbol": 2}],
     )
     run(
         "INSERT INTO axiom (id, name, formula_id, origin_kind, created_at) "
@@ -161,8 +168,14 @@ def check_head(connection) -> None:
         2: deterministic_public_id("axiom", f"{ns}::ax_b"),
     }
     assert dict(_scalars(connection, "SELECT id, public_id FROM definition")) == {
-        1: deterministic_public_id("definition", f"{ns}::def_and")
+        1: deterministic_public_id("definition", f"{ns}::{DEFINITION_NAME}")
     }
+    assert _scalars(connection, "SELECT d.name, s.name, d.namespace_id, s.namespace_id, "
+                    "s.is_primitive FROM definition d JOIN symbol s ON s.id = d.new_symbol_id") == [
+        (DEFINITION_NAME, DEFINITION_NAME, 2, 2, False)
+    ]
+    assert _scalars(connection, "SELECT definition_id, ord, param_symbol_id "
+                    "FROM definition_formal_param ORDER BY definition_id, ord") == [(1, 0, 1), (1, 1, 2)]
     theorem_public = {
         i: deterministic_public_id("theorem", f"{ns}::{n}") for i, n, _ in THEOREMS
     }
@@ -208,6 +221,10 @@ def check_base(connection) -> None:
         f: _expected_hash(t, {i: i for i, _ in SYMBOLS}) for f, t in FORMULAS.items()
     }
     assert {r[0] for r in _scalars(connection, "SELECT namespace_id FROM symbol")} == {2}
+    assert _scalars(connection, "SELECT d.name, s.name, s.is_primitive FROM definition d "
+                    "JOIN symbol s ON s.id = d.new_symbol_id") == [(DEFINITION_NAME, DEFINITION_NAME, False)]
+    assert _scalars(connection, "SELECT definition_id, ord, param_symbol_id "
+                    "FROM definition_formal_param ORDER BY definition_id, ord") == [(1, 0, 1), (1, 1, 2)]
 
 
 def main() -> None:

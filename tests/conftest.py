@@ -31,7 +31,6 @@ import sqlalchemy
 from alembic import command
 from alembic.config import Config
 from filelock import FileLock, Timeout
-from psycopg.errors import InvalidCatalogName
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.engine.url import URL, make_url
@@ -89,6 +88,12 @@ def pytest_configure(config: pytest.Config) -> None:
     )
     configured_database = os.environ.get(_TEST_DATABASE_ENV, "sqlite").lower()
     if configured_database == "postgresql":
+        try:
+            import psycopg
+        except ImportError as error:
+            raise pytest.UsageError(
+                "DEM_TEST_DATABASE=postgresql requires psycopg; install the postgres-dev extra"
+            ) from error
         # pytest_configure runs in the controller before xdist starts workers, so
         # they inherit one run id while retaining distinct worker ids.
         os.environ.setdefault(_POSTGRES_RUN_ID_ENV, uuid.uuid4().hex[:8])
@@ -696,6 +701,8 @@ class PostgreSQLSeedSnapshotFactory:
             )
 
     def _drop_database_best_effort(self, name: str, purpose: str) -> None:
+        from psycopg.errors import InvalidCatalogName
+
         try:
             self._drop_database(name)
         except BaseException as error:
