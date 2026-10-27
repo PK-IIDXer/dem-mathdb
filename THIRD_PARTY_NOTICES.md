@@ -31,7 +31,10 @@ installed for testing, are separate artifacts with their own notices.
 
 ## Beta Python runtime lock
 
-The installed distribution metadata matched every locked version when reviewed.
+The lock targets Linux x86_64 CPython 3.13.7. Installed distribution metadata
+matched the locally available locked packages; uvloop metadata came from its
+reviewed target wheel, recorded in `deploy/beta/requirements.target-metadata.json`.
+The target CI must also match that metadata against the installed distribution.
 Licenses below are the packages' declared identifiers (or license classifiers).
 
 | Package | Locked version | Declared license |
@@ -41,7 +44,6 @@ Licenses below are the packages' declared identifiers (or license classifiers).
 | `annotated-types` | 0.7.0 | MIT |
 | `anyio` | 4.14.1 | MIT |
 | `click` | 8.4.2 | BSD-3-Clause |
-| `colorama` | 0.4.6 | BSD-3-Clause |
 | `fastapi` | 0.139.0 | MIT |
 | `greenlet` | 3.5.3 | MIT AND PSF-2.0 |
 | `h11` | 0.16.0 | MIT |
@@ -59,8 +61,8 @@ Licenses below are the packages' declared identifiers (or license classifiers).
 | `starlette` | 1.3.1 | BSD-3-Clause |
 | `typing-extensions` | 4.16.0 | PSF-2.0 |
 | `typing-inspection` | 0.4.2 | MIT |
-| `tzdata` | 2026.4 | Apache-2.0 |
 | `uvicorn` | 0.50.1 | BSD-3-Clause |
+| `uvloop` | 0.23.0 | MIT / Apache-2.0 (dual license) |
 | `watchfiles` | 1.2.0 | MIT |
 | `websockets` | 16.0 | BSD-3-Clause |
 
@@ -68,8 +70,12 @@ Licenses below are the packages' declared identifiers (or license classifiers).
 libraries. Their bundled license files are part of the required review of the
 actual platform wheel; the Python package's LGPL identifier does not describe
 all embedded libraries. See the [Psycopg installation documentation](https://www.psycopg.org/psycopg3/docs/basic/install.html).
-`tzdata` packages also include time-zone data and upstream notices. Preserve
-all distribution license and notice files.
+uvloop's wheel metadata declares MIT and Apache license classifiers and includes
+`LICENSE-MIT` and `LICENSE-APACHE`; preserve both upstream files when
+redistributing the wheel or an image containing it. Windows-only `colorama`
+and `tzdata` are outside this deployment lock. The deployment's system time-zone
+database must be checked separately. Preserve all distribution license and
+notice files, including bundled native library notices.
 
 ## Deployment containers
 

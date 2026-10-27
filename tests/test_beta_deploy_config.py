@@ -113,6 +113,7 @@ def test_only_fixed_caddy_ip_is_trusted():
 
 
 def test_runtime_lock_matches_test_environment():
+    """Off target, wheel authenticity is checked in the deployment environment (CI)."""
     generator_spec = importlib.util.spec_from_file_location("beta_lock", DEPLOY / "lock_requirements.py")
     generator = importlib.util.module_from_spec(generator_spec)
     generator_spec.loader.exec_module(generator)
@@ -120,9 +121,11 @@ def test_runtime_lock_matches_test_environment():
     assert all(re.fullmatch(r"[a-z0-9-]+==[^=\s]+", line) for line in lines)
     pinned = dict(line.split("==") for line in lines)
     assert len(pinned) == len(lines)
-    assert pinned == generator.runtime_versions()
-    assert {"fastapi", "starlette", "psycopg", "psycopg-binary", "httptools"} <= pinned.keys()
-    assert not {"pytest", "pytest-xdist", "pytest-postgresql", "filelock"} & pinned.keys()
+    checked = generator.verify_runtime_lock()
+    assert pinned == checked["versions"]
+    assert {"fastapi", "starlette", "psycopg", "psycopg-binary", "httptools", "uvloop"} <= pinned.keys()
+    assert not {"pytest", "pytest-xdist", "pytest-postgresql", "filelock", "colorama", "tzdata"} & pinned.keys()
+    assert f"FROM {generator.TARGET_BASE_IMAGE}\n" == (DEPLOY / "api.Dockerfile").read_text().splitlines()[0] + "\n"
 
 
 def test_docker_installs_only_locked_runtime():

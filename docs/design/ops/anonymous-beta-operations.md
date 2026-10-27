@@ -70,11 +70,14 @@ API 起動は SELECT だけで接続・head revision・未完成式 0 を確認�
 base は接続不可に封印し、API は live だけに接続する。起動時 migration や seed は行わない。
 
 Python の実行時依存は `deploy/beta/requirements.lock` の試験済み版を使い、DEM 自身も `--no-deps` で入れる。
-更新時は試験用 `.venv` で `python deploy/beta/lock_requirements.py` を実行し、両方言の回帰確認と一緒に lock をコミットする。
-全体の pip freeze ではなく、pyproject の基本 + webapi と psycopg[binary] からインストール済み metadata の依存をたどる。
-Windows の試験環境で選ばれる colorama / tzdata も固定する。Linux で未試験の uvloop を追加解決しないよう、
-lock インストールも `--no-deps`、uvicorn は明示的に `--loop asyncio`。
-配布 wheel の hash は取得・検証していないので、今回は版の固定のみ。実 image の Linux build / import は staging で確認する。
+更新時は先に `python deploy/beta/lock_requirements.py --prepare-only` で、Linux x86_64 / CPython 3.13.7 の固定 marker による閉包と不足を確認する。
+全体の pip freeze ではなく、pyproject の基本 + webapi と psycopg[binary] からインストール済み metadata をたどる。
+配備先だけの package の不足は、レビュー側が許可を得て manylinux x86_64 / cp313 の wheel を取得して補う。取得前に版や license を推測しない。
+生成器で lock と requirements.target-metadata.json を同時に再生成し、回帰確認と一緒にコミットする。
+後者には wheel から読んだ name / version / Requires-Dist / license と wheel 名 / sha256 を残し、CI でインストールされた metadata と照合する。
+Windows では target-metadata による不足の補完を明示し、lock の名前集合と手元の版をすべて照合する。実物 wheel の確認を代用しない。
+Linux の閉包には uvloop を含め、Windows 専用の colorama / tzdata は含めない。起動設定は `--loop asyncio`、lock インストールは `--no-deps` のまま。
+カーネル版を参照する依存 marker は拒否する。実 image の Linux build / import・zoneinfo は staging で確認する。
 
 ## staging の確認表（全項目、この機械では未実行）
 
@@ -96,6 +99,7 @@ lock インストールも `--no-deps`、uvicorn は明示的に `--loop asyncio
 | ROLE | 実 API 資格情報で current_user が所有者と異なり SELECT 成功。DISABLE TRIGGER、CREATE TABLE、DROP TRIGGER、ALTER TABLE ADD、TRUNCATE が **すべて 42501**。公開済み symbol UPDATE は published の **23514**。新規下書きの正当な DML は成功。両 timeout 設定も実接続で確認。probe 不合格なら base / next を採用しない。 |
 | LOAD | β1 の上限付近の大規模 DB 計測を、固定 Python / PG と実際の 2 GB Compose で再実行。全体の重い処理 1 本、export 無効を保持し、時間・メモリ・応答と DB 件数/サイズを記録。手元の値を配備機の結果に代用しない。 |
 | OPS | systemd-analyze calendar と status の next_reset_at が同じ。日次 backup は reset の 2 時間後、watch は 10 分。disk 85% freeze / 90% 名前限定 prune、tx 累積・月替わり・再起動・上限時 web 停止、日次ログ回転・30 日削除、日次スナップショットも確認。 |
+| TZ | 承認 B で、最終の β API/tools image 内に `/usr/share/zoneinfo/Asia/Tokyo` があり、Python の `ZoneInfo("Asia/Tokyo")` と `scripts.beta_admin.next_reset` が動くことを確認する。ホスト Ubuntu は別に system の zoneinfo と `deploy/beta/host.py` の日付設定の検査を確認する。どちらかが欠ければ配備を止める。β6-fix7 の offline 点検では base image の実物と公式 Dockerfile が手元に無く、配備先での可用性は未確認。 |
 
 Caddy の `validate` / `adapt`、image 内の pg_dump / pg_restore の版、Compose の補間、mount の UID/権限、
 実際のリセット・再起動・CSP / noindex / メンテナンス応答は上表で実測する。静的 pytest の合格をこれらの代わりにしない。
