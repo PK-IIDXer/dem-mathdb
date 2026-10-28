@@ -108,3 +108,13 @@ packages changed; all declare MIT in the npm registry metadata and lock:
 `vite` 8.1.6, `vitest` and `@vitest/{expect,mocker,pretty-format,runner,snapshot,spy,utils}`
 4.1.12, `undici` 7.30.1, `rolldown` and its `@rolldown/binding-*` platform packages
 1.1.5, and `@oxc-project/types` 0.139.0. Retain their upstream license files.
+
+
+## Caddy HTTP/2 dependency update
+
+Caddy v2.11.7 is built without extra modules, with xcaddy replacing only
+`golang.org/x/net` with v0.62.0 for the HTTP/2 server security fixes. That module
+is licensed under BSD-3-Clause, copyright The Go Authors. Its upstream
+[LICENSE](https://github.com/golang/net/blob/v0.62.0/LICENSE), copyright notice,
+conditions and disclaimer must be retained when redistributing the binary.
+The Go checksum database remains enabled during the build.

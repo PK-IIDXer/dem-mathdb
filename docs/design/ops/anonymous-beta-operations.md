@@ -307,14 +307,14 @@ URLを漏らしたときは、Slack Appの管理画面で対象Webhookを無効�
 - [PGDG Debian 公式手順](https://www.postgresql.org/download/linux/debian/)（bookworm-pgdg と client-18）
 - [PostgreSQL 公式 image](https://github.com/docker-library/docs/blob/master/postgres/README.md)（18 の volume は /var/lib/postgresql）
 - [Docker Ubuntu 公式手順](https://docs.docker.com/engine/install/ubuntu/)
-- [Caddy の timeout 構文・固定版ソース](https://github.com/caddyserver/caddy/blob/v2.10.2/caddyconfig/httpcaddyfile/serveroptions.go)
+- [Caddy の timeout 構文・固定版ソース](https://github.com/caddyserver/caddy/blob/v2.11.7/caddyconfig/httpcaddyfile/serveroptions.go)
 - [Caddy のログ](https://caddyserver.com/docs/caddyfile/directives/log)、[respond](https://caddyserver.com/docs/caddyfile/directives/respond)
 
 
-## 公開時の DNS と継続的な security 更新（追加手順は staging 未確認）
+## 公開時の DNS と継続的な security 更新
 
 公開する際は A と同時に CAA `0 issue "letsencrypt.org"` と `0 issuewild ";"` を作る。AAAA は作らない。
-CAA で既定の予備発行元も制限されるため、Let's Encrypt の発行に失敗したら公開を待つ。
+CAA で既定の予備発行元も制限されるため、Let's Encrypt の発行に失敗したら公開を待つ。この DNS 手順は staging 未確認。
 
 週 1 回、ホストの利用可能な更新、自動 security 更新の結果、再起動の要否を確認する。
 image の OS package 一覧と Caddy / Go / Python / PostgreSQL の実際の版を取り出し、
@@ -327,3 +327,29 @@ security release が出たら一次情報で適用対象と互換性を確認し
 Caddy / Go / CA、DB の reset・backup・restore、S1〜S10・IP・CSP・INDEX・MAINT を再確認する。
 失敗時は公開を進めず、既存の復旧手順で戻す。新しい版によるこの更新手順は staging 未確認。
 配備の Python 目標は CPython 3.13.18 / Linux x86_64 / Debian bookworm。
+
+
+### Caddy binary の週次点検（staging 確認済み、§83.2）
+
+稼働中の web の `/usr/bin/caddy` を取り出し、使い捨ての digest 固定 builder container で
+`go install golang.org/x/vuln/cmd/govulncheck@v1.9.0` の後に
+`govulncheck -mode=binary -json /scan/caddy` を実行する。配備 image に検査用の道具を入れない。
+例えば、ホストの `/opt/dem-beta` で次を行う (JSON は消さずに点検記録へ保存する)。
+
+```bash
+scan_dir="$(mktemp -d)"
+web_container="$(sudo docker compose --env-file deploy/beta/.env -f deploy/beta/compose.yml ps -q web)"
+test -n "$web_container"
+sudo docker cp "$web_container:/usr/bin/caddy" "$scan_dir/caddy"
+scan_status=0
+sudo docker run --rm -v "$scan_dir:/scan:ro" \
+  caddy:2.11.7-builder@sha256:bf6a7d38add2508b7d2e3e3f40cf2af399214f143c0fa3daa51f254e01f8d293 \
+  sh -ec 'go install golang.org/x/vuln/cmd/govulncheck@v1.9.0; govulncheck -mode=binary -json /scan/caddy' \
+  > "$scan_dir/govulncheck.json" || scan_status=$?
+printf 'govulncheck status=%s, report=%s\n' "$scan_status" "$scan_dir/govulncheck.json"
+```
+
+JSON stream の `config.db_last_modified` (DB の日付)、`config.db`、scanner の版、実行時刻、
+対象の公開 commit と binary の hash を一緒に記録する。終了コード・解析エラーと findings を必ず読み、
+非 0 終了を合格として扱わない。symbol が binary に含まれるか、Caddy の経路に関わるかを各項目で判断する。
+§83.2 は DB 2026-10-27 版で実行した確認記録であり、週次点検では毎回の DB の日付を記録する。

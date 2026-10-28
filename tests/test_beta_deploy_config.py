@@ -353,7 +353,7 @@ def test_watch_thresholds_and_counter_failure(shell_host, stats, failure, frozen
 def test_web_security_build_gates():
     source = (DEPLOY / "web.Dockerfile").read_text()
     assert "ENV GOTOOLCHAIN=local" in source
-    assert "xcaddy build v2.11.7 --output /usr/bin/caddy" in source
+    assert "xcaddy build v2.11.7 --replace golang.org/x/net=golang.org/x/net@v0.62.0 --output /usr/bin/caddy" in source
     assert "--with" not in source
     assert "go version -m /usr/bin/caddy" in source and "caddy build-info" in source
     assert "verify-web-security go" in source
@@ -392,3 +392,83 @@ def test_ca_bundle_parse_failure_is_rejected(tmp_path):
     bundle.write_text("not a certificate")
     result = subprocess.run([BASH, str(DEPLOY / "verify-web-security.sh"), "ca", str(bundle)], capture_output=True)
     assert result.returncode != 0
+
+
+# Go 1.27.3 BuildInfo.String omits the original checksum when replaced.
+# Parse both legitimate 3-field and 4-field rows; the version is mandatory.
+_BUILD_HEADER = "/usr/bin/caddy: go1.27.3\n\tpath\tcommand-line-arguments\n"
+_CADDY_DEP = "\tdep\tgithub.com/caddyserver/caddy/v2\tv2.11.7\th1:test\n"
+
+
+def _net_dep(version):
+    return f"\tdep\tgolang.org/x/net\t{version}\th1:test\n"
+
+
+def _net_replacement(version, path="golang.org/x/net"):
+    return f"\t=>\t{path}\t{version}\th1:test\n"
+
+
+@pytest.mark.parametrize("rows,accepted", [
+    (_net_dep("v0.59.0"), False),
+    (_net_dep("v0.62.0") + _net_replacement("v0.59.0"), False),
+    ("", False),
+    (_net_dep("(devel)"), False),
+    (_net_dep("v0.60.0-rc"), False),
+    (_net_dep("v0.59.0") + _net_replacement("v0.60.0-rc"), False),
+    (_net_dep("v0.59.0") + _net_replacement("(devel)"), False),
+    (_net_dep("v0.59.0").replace("\th1:test", "") + _net_replacement("v0.62.0"), True),
+    (_net_dep("v0.60.0").replace("\th1:test", ""), True),
+    (_net_dep("v0.62.0"), True),
+    (_net_dep("v1.0.0"), True),
+    (_net_dep("v0.62.0") + _net_dep("v0.62.0"), False),
+    (_net_dep("v0.59.0") + _net_replacement("v0.62.0", "example.invalid/net"), False),
+    (_net_replacement("v0.62.0"), False),
+    (_net_dep("v0.59.0") + "\n" + _net_replacement("v0.62.0"), False),
+    (_net_dep("v0.62.0") + _net_replacement("v0.62.0") + _net_replacement("v0.62.0"), False),
+    (_net_dep("v0.062.0"), False),
+    (_net_dep("v0.62.0").replace("\tv0.62.0", ""), False),
+    (_net_dep("v0.62.0") + "\tdep\texample.invalid/other\tv0.1.0\th1:test\n" + _net_replacement("v0.59.0", "example.invalid/other"), True),
+])
+def test_linked_xnet_security_floor(tmp_path, rows, accepted):
+    info = tmp_path / "build-info.txt"
+    info.write_text(_BUILD_HEADER + _CADDY_DEP + rows)
+    result = subprocess.run([BASH, str(DEPLOY / "verify-web-security.sh"), "build-info", str(info), "v2.11.7"], capture_output=True)
+    assert (result.returncode == 0) is accepted, result.stderr
+
+
+@pytest.mark.parametrize("rows", [
+    "",
+    _CADDY_DEP.replace("v2.11.7", "v2.11.6"),
+    _CADDY_DEP + "\t=>\tgithub.com/caddyserver/caddy/v2\tv2.11.6\th1:test\n",
+    _CADDY_DEP.replace("v2.11.7", "(devel)"),
+    _CADDY_DEP + _CADDY_DEP,
+])
+def test_build_rejects_wrong_or_ambiguous_caddy(tmp_path, rows):
+    info = tmp_path / "build-info.txt"
+    info.write_text(_BUILD_HEADER + rows + _net_dep("v0.62.0"))
+    result = subprocess.run([BASH, str(DEPLOY / "verify-web-security.sh"), "build-info", str(info), "v2.11.7"], capture_output=True)
+    assert result.returncode != 0
+
+
+def test_linked_module_build_gate_and_sumdb():
+    source = (DEPLOY / "web.Dockerfile").read_text()
+    assert source.count("--replace ") == 1
+    assert "--replace golang.org/x/net=golang.org/x/net@v0.62.0" in source
+    assert "verify-web-security build-info /tmp/caddy-build-info v2.11.7" in source
+    assert "GOSUMDB=sum.golang.org" in source
+    assert "GOPROXY=https://proxy.golang.org" in source
+    assert not re.search(r"(?:GONOSUMDB|GONOSUMCHECK|GOINSECURE|GOPRIVATE|GOFLAGS)\s*=", source)
+
+
+def test_patched_runtime_packages_and_openssl_removal():
+    source = (DEPLOY / "web.Dockerfile").read_text()
+    for name, minimum in [("curl", "8.23.0-r0"), ("libcurl", "8.23.0-r0"), ("brotli-libs", "1.2.1-r0")]:
+        assert f"'{name}>={minimum}'" in source
+        assert f"apk info -v {name} |" in source
+        assert re.search(r"apk version -t[^\n]+" + re.escape(minimum), source)
+    assert " libssl3 libcrypto3 openssl" in source
+    assert source.index("verify-web-security ca /etc/ssl/certs/ca-certificates.crt") < source.index("apk del --no-cache openssl") < source.index("&& caddy version")
+    assert "! apk info -e openssl" in source and "! command -v openssl" in source
+    for library in ["libssl3", "libcrypto3"]:
+        assert f"apk info -e {library}" in source
+    assert "apk del --no-cache curl" not in source
