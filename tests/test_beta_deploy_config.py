@@ -67,7 +67,7 @@ def test_only_web_has_external_network():
 
 def test_versions_volumes_profiles_and_logging():
     config = compose()
-    assert config["services"]["db"]["image"] == "postgres:18.2"
+    assert config["services"]["db"]["image"] == "postgres:18.6"
     assert config["services"]["db"]["volumes"] == ["pgdata:/var/lib/postgresql"]
     for name, svc in config["services"].items():
         assert svc["logging"] == {"driver": "json-file", "options": {"max-size": "10m", "max-file": "5"}}
@@ -79,11 +79,12 @@ def test_versions_volumes_profiles_and_logging():
             assert svc["image"] == config["services"]["api"]["image"]
         else:
             assert svc["restart"] == "unless-stopped"
-        assert svc["image"] == "postgres:18.2" or svc["image"].endswith(":${DEM_BETA_COMMIT:?set full commit}")
+        assert svc["image"] == "postgres:18.6" or svc["image"].endswith(":${DEM_BETA_COMMIT:?set full commit}")
     api = (DEPLOY / "api.Dockerfile").read_text()
     web = (DEPLOY / "web.Dockerfile").read_text()
     images = re.findall(r"^FROM (\S+)", api + web, re.M)
-    assert images == ["python:3.13.7-slim-bookworm", "node:22.15.0-alpine", "caddy:2.10.2-alpine"]
+    assert [image.split("@")[0] for image in images] == ["python:3.13.18-slim-bookworm", "node:22.23.4-alpine", "caddy:2.11.7-builder", "caddy:2.11.7-alpine"]
+    assert all(re.search(r"@sha256:[0-9a-f]{64}$", image) for image in images[1:])
     assert all(re.search(r":\d+\.\d+\.\d+", image) for image in images)
     assert "postgresql-client-18" in api and "https://apt.postgresql.org" in api
     assert "USER 10001:10001" in api
@@ -347,3 +348,47 @@ def test_watch_thresholds_and_counter_failure(shell_host, stats, failure, frozen
     assert (home / "flags/read_only").exists() == frozen
     calls = (directory / "calls").read_text() if (directory / "calls").exists() else ""
     assert ("stop web" in calls) == stopped
+
+
+def test_web_security_build_gates():
+    source = (DEPLOY / "web.Dockerfile").read_text()
+    assert "ENV GOTOOLCHAIN=local" in source
+    assert "xcaddy build v2.11.7 --output /usr/bin/caddy" in source
+    assert "--with" not in source
+    assert "go version -m /usr/bin/caddy" in source and "caddy build-info" in source
+    assert "verify-web-security go" in source
+    assert "COPY --from=caddy-build /usr/bin/caddy /usr/bin/caddy" in source
+    assert "verify-web-security ca /etc/ssl/certs/ca-certificates.crt" in source
+    for name in ["ca-certificates", "ca-certificates-bundle"]:
+        assert f"'{name}>=20261020-r0'" in source
+        assert f"apk info -v {name}" in source
+    assert "!deploy/beta/verify-web-security.sh" in (DEPLOY / "web.Dockerfile.dockerignore").read_text()
+    assert "pip==26.2.2" in (DEPLOY / "api.Dockerfile").read_text()
+
+
+@pytest.mark.parametrize("version,accepted", [
+    ("1.25.13", False), ("1.26.9", False), ("1.26.10", True),
+    ("1.27.2", False), ("1.27.3", True), ("1.28.0", True),
+    ("", False), ("devel", False), ("1.28.", False), ("1.27.3rc1", False),
+])
+def test_go_toolchain_security_floor(version, accepted):
+    result = subprocess.run([BASH, str(DEPLOY / "verify-web-security.sh"), "go", version], capture_output=True)
+    assert (result.returncode == 0) is accepted, result.stderr
+
+
+@pytest.mark.parametrize("subject,accepted", [("DEM unit test root", True), ("emSign ECC Root CA - G3", False)])
+def test_ca_bundle_inspects_certificate_subjects(tmp_path, subject, accepted):
+    # Real PEM certificates with no readable name comments in the bundle.
+    bundle, key = tmp_path / "ca.pem", tmp_path / "key.pem"
+    subprocess.run([BASH, "-c", 'openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -nodes -days 1 -subj "$1" -keyout "$2" -out "$3"',
+                    "_", "/CN=" + subject, str(key), str(bundle)], check=True, capture_output=True, env=dict(os.environ, MSYS2_ARG_CONV_EXCL="*"))
+    assert subject not in bundle.read_text()
+    result = subprocess.run([BASH, str(DEPLOY / "verify-web-security.sh"), "ca", str(bundle)], capture_output=True)
+    assert (result.returncode == 0) is accepted, result.stderr
+
+
+def test_ca_bundle_parse_failure_is_rejected(tmp_path):
+    bundle = tmp_path / "invalid.pem"
+    bundle.write_text("not a certificate")
+    result = subprocess.run([BASH, str(DEPLOY / "verify-web-security.sh"), "ca", str(bundle)], capture_output=True)
+    assert result.returncode != 0

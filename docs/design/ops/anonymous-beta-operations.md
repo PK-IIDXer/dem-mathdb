@@ -309,3 +309,21 @@ URLを漏らしたときは、Slack Appの管理画面で対象Webhookを無効�
 - [Docker Ubuntu 公式手順](https://docs.docker.com/engine/install/ubuntu/)
 - [Caddy の timeout 構文・固定版ソース](https://github.com/caddyserver/caddy/blob/v2.10.2/caddyconfig/httpcaddyfile/serveroptions.go)
 - [Caddy のログ](https://caddyserver.com/docs/caddyfile/directives/log)、[respond](https://caddyserver.com/docs/caddyfile/directives/respond)
+
+
+## 公開時の DNS と継続的な security 更新（追加手順は staging 未確認）
+
+公開する際は A と同時に CAA `0 issue "letsencrypt.org"` と `0 issuewild ";"` を作る。AAAA は作らない。
+CAA で既定の予備発行元も制限されるため、Let's Encrypt の発行に失敗したら公開を待つ。
+
+週 1 回、ホストの利用可能な更新、自動 security 更新の結果、再起動の要否を確認する。
+image の OS package 一覧と Caddy / Go / Python / PostgreSQL の実際の版を取り出し、
+Python・frontend の lock とともに OSV の package 名・版の照合を行う（security 点検記録 §79.1 の方法）。
+CA bundle は証明書の subject を調べ、emSign ECC Root CA - G3 がないことを確認する。
+この週次手順の一連の実行は staging 未確認。
+
+security release が出たら一次情報で適用対象と互換性を確認し、版・digest・lock・CI の目標を同時に更新する。
+試験に合格した候補を既存の backup → build → 配備の手順で staging に入れ、
+Caddy / Go / CA、DB の reset・backup・restore、S1〜S10・IP・CSP・INDEX・MAINT を再確認する。
+失敗時は公開を進めず、既存の復旧手順で戻す。新しい版によるこの更新手順は staging 未確認。
+配備の Python 目標は CPython 3.13.18 / Linux x86_64 / Debian bookworm。

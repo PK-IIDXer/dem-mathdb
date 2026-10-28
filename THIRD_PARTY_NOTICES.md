@@ -31,7 +31,7 @@ installed for testing, are separate artifacts with their own notices.
 
 ## Beta Python runtime lock
 
-The lock targets Linux x86_64 CPython 3.13.7. Installed distribution metadata
+The lock targets Linux x86_64 CPython 3.13.18. Installed distribution metadata
 matched the locally available locked packages; uvloop metadata came from its
 reviewed target wheel, recorded in `deploy/beta/requirements.target-metadata.json`.
 The target CI must also match that metadata against the installed distribution.
@@ -42,7 +42,7 @@ Licenses below are the packages' declared identifiers (or license classifiers).
 | `alembic` | 1.18.5 | MIT |
 | `annotated-doc` | 0.0.4 | MIT |
 | `annotated-types` | 0.7.0 | MIT |
-| `anyio` | 4.14.1 | MIT |
+| `anyio` | 4.14.2 | MIT |
 | `click` | 8.4.2 | BSD-3-Clause |
 | `fastapi` | 0.139.0 | MIT |
 | `greenlet` | 3.5.3 | MIT AND PSF-2.0 |
@@ -83,8 +83,8 @@ notice files, including bundled native library notices.
 | --- | --- |
 | Generic API / database | `python:3.12-slim`, `postgres:16` |
 | Generic frontend build / serving | `node:20-alpine`, `caddy:2-alpine` |
-| Beta API / database | `python:3.13.7-slim-bookworm`, `postgres:18.2` |
-| Beta frontend build / serving | `node:22.15.0-alpine`, `caddy:2.10.2-alpine` |
+| Beta API / database | `python:3.13.18-slim-bookworm`, `postgres:18.6` |
+| Beta frontend build / serving | `node:22.23.4-alpine`, `caddy:2.11.7-alpine / caddy:2.11.7-builder` |
 
 These images are fetched at build/deployment time, not bundled in the source
 snapshot. Locally built `dem-beta-api` and `dem-beta-web` images inherit their
@@ -99,3 +99,12 @@ explains that additional software in images has its own terms. Retain license,
 notice and copyright material from the actual images, wheels and frontend
 packages when distributing binaries. This source inventory is not a completed
 license inventory of a built multi-platform image.
+
+
+## Frontend build/test security update
+
+The distributed dependency records remain unchanged. The following development
+packages changed; all declare MIT in the npm registry metadata and lock:
+`vite` 8.1.6, `vitest` and `@vitest/{expect,mocker,pretty-format,runner,snapshot,spy,utils}`
+4.1.12, `undici` 7.30.1, `rolldown` and its `@rolldown/binding-*` platform packages
+1.1.5, and `@oxc-project/types` 0.139.0. Retain their upstream license files.

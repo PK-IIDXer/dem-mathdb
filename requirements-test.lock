@@ -2,7 +2,7 @@
 # Upgrade intentionally, after full-suite checks with the proposed versions.
 pytest==9.1.1
 pytest-xdist==3.8.0
-filelock==4.0.0
+filelock==4.2.1
 iniconfig==2.3.0
 packaging==26.2
 pluggy==1.6.0

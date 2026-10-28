@@ -43,6 +43,9 @@ it.each(pages)('renders $path with approved bilingual text, language and title',
     const actual = Array.from(main.querySelectorAll(`section[lang="${language}"] h2, section[lang="${language}"] h3, section[lang="${language}"] p, section[lang="${language}"] li`))
       .map(element => element.textContent).filter(value => value !== 'English').join(' ')
     expect(normalize(actual)).toBe(normalize(expected))
+    expect(main.querySelector(`section[lang="${language}"]`)!.textContent).toContain('2026-10-29')
+    expect(main.querySelector(`section[lang="${language}"]`)!.textContent).not.toContain('YYYY-MM-DD')
+
     if (language === 'ja') {
       // A stray space inside a Japanese sentence shows on screen, so the page itself must not have one.
       for (const element of main.querySelectorAll('section[lang="ja"] h2, section[lang="ja"] h3, section[lang="ja"] p, section[lang="ja"] li')) {
@@ -72,4 +75,11 @@ it.each(pages)('renders $path with approved bilingual text, language and title',
     ['利用規約', '/terms'], ['プライバシーポリシー', '/privacy'],
     ['免責事項', '/disclaimer'], ['出典とライセンス', '/sources-licenses'],
   ])
+})
+
+it('uses the approved real enactment date', () => {
+  expect(LEGAL_ESTABLISHED_DATE).not.toBe('YYYY-MM-DD')
+  expect(LEGAL_ESTABLISHED_DATE).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+  expect(new Date(LEGAL_ESTABLISHED_DATE + 'T00:00:00Z').toISOString().slice(0, 10)).toBe(LEGAL_ESTABLISHED_DATE)
+  expect(LEGAL_ESTABLISHED_DATE).toBe('2026-10-29')
 })

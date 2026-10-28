@@ -22,11 +22,11 @@ from packaging.utils import parse_wheel_filename
 
 ROOT = Path(__file__).resolve().parents[2]
 TARGET_ENVIRONMENT = {
-    "implementation_name": "cpython", "implementation_version": "3.13.7",
+    "implementation_name": "cpython", "implementation_version": "3.13.18",
     "os_name": "posix", "platform_machine": "x86_64",
     "platform_python_implementation": "CPython", "platform_release": "",
     "platform_system": "Linux", "platform_version": "",
-    "python_full_version": "3.13.7", "python_version": "3.13", "sys_platform": "linux",
+    "python_full_version": "3.13.18", "python_version": "3.13", "sys_platform": "linux",
 }
 TARGET_BASE_IMAGE = f"python:{TARGET_ENVIRONMENT['python_full_version']}-slim-bookworm"
 # A Docker tag does not fix the host kernel. Normalize these two variables on
@@ -178,7 +178,9 @@ def prepare(wheel_directory=None):
     removed = previous.keys() - result["versions"].keys()
     # Missing metadata makes the closure incomplete. Refuse any unknown change
     # even before writing, then repeat this check once every wheel is available.
-    if changed or added - {"uvloop"} or removed - {"colorama", "tzdata"} - result["missing"].keys():
+    reviewed_updates = {"anyio": ("4.14.1", "4.14.2")}  # Reviewed security fixes; no unrelated upgrades.
+    unexpected = {name for name in changed if (previous[name], result["versions"][name]) != reviewed_updates.get(name)}
+    if unexpected or added - {"uvloop"} or removed - {"colorama", "tzdata"} - result["missing"].keys():
         raise ValueError(f"Unexpected runtime delta: changed={sorted(changed)}, added={sorted(added)}, removed={sorted(removed)}")
     result.update(status="needs target wheels" if result["missing"] else "ready",
                   target_environment=TARGET_ENVIRONMENT, base_image=TARGET_BASE_IMAGE,

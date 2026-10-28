@@ -3,6 +3,7 @@
 !frontend/**
 !deploy/
 !deploy/beta/
+!deploy/beta/verify-web-security.sh
 !deploy/beta/Caddyfile
 !deploy/beta/maintenance.html
 frontend/node_modules/
