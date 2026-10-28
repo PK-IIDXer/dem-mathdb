@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from sqlalchemy.exc import DBAPIError
+from sqlalchemy.exc import DBAPIError, TimeoutError as PoolTimeoutError
 
 from dem.errors import DemError, ConflictError, NotFoundError, ProofValidationError, ValidationError
 
@@ -50,6 +50,17 @@ def register_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(status_code=409, content={
             "detail": "Database guard rejected the operation", "code": "db.guard_rejected",
         })
+
+    @app.exception_handler(PoolTimeoutError)
+    async def _pool_busy(request: Request, exc: PoolTimeoutError) -> JSONResponse:
+        from webapi.beta import enabled
+        # SQLAlchemy QueuePool._do_get raises 3o7r before returning a connection.
+        # Do not disguise other timeout errors or change the non-beta response.
+        if not enabled() or exc.code != "3o7r":
+            raise exc
+        return reject_response(BetaReject(503, "beta.database_busy", "Database connections are busy", 2),
+                               getattr(request.state, "beta_route", "<unmatched>"),
+                               getattr(request.state, "beta_category", "read"))
 
     @app.exception_handler(NotFoundError)
     async def _not_found(request: Request, exc: NotFoundError) -> JSONResponse:

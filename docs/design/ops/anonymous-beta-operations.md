@@ -154,6 +154,11 @@ Docker ログは各サービス 10 MB × 5。月 1 回は Bills と Cost Explore
   `swapped` / `failed_restored` で token が合うなら、確認後 `docker compose ... run --rm tools reset finish`。
   prepare 失敗だけなら unfreeze は不要。別の理由で既存 freeze があるときは、その理由を確認してから解除する。
   未処理 next / old を推測で削除しない。
+- reset swap の入口で失敗し、phase が `prepared` のままの場合: まず失敗の原因を除く。
+  **API を止める前に** `state/prepared.json` の phase が `prepared` であり、その token が `flags/read_only` の tools の停止印と一致することを確認する。
+  一致を確認してから API を停止 → `docker compose ... run --rm tools reset swap` → API を起動し healthy を待つ →
+  `docker compose ... run --rm tools reset finish` の順に復旧する。`reset-error.json` は次の正常な `dem-beta reset` で消す。
+  未処理の next / old を推測で削除しない。この順序は閉じた staging で実際に確認した手順。
 - DB 復元: `sudo dem-beta restore dem-beta-backup-<timestamp>-<id>.dump`。
   ファイルは `/var/lib/dem-beta/backups` に UID 10001 が読める状態で置く（引数は basename のみ）。
   **API を止めてから** tools restore が next を構築・検査・切替し、API 起動 → healthy → finish。
@@ -161,6 +166,45 @@ Docker ログは各サービス 10 MB × 5。月 1 回は Bills と Cost Explore
   検査に通らなければトリガを緩めず、原因確認後に現在の base から reset する。
 - サーバー喪失: 日次スナップショットから新規インスタンスを作り、static IP を付け替える。
   firewall・IPv6・timer・API / DB・counter の復帰を確認し、古いインスタンスが二重稼働しないようにする。
+
+## 接続元 IP の緊急遮断（staging で確認するまで未確認）
+
+大量の一斉送信で uvicorn の L=128 を瞬間的に超えると、他の利用者にも plain text の503が返る。この可用性の危険は受け入れる。
+検証の結果を偽装したり、基本の内容・DBの整合のガードを迂回したりできるという意味ではない。
+対応は以下の手動遮断と、必要に応じた `dem-beta freeze`、web の停止。Lightsail の firewall は許可ルールであり、特定sourceの拒否はホストで行う。
+この手順は installer に常設せず、自動でIPを選んで遮断もしない。
+
+root の対話端末で `/opt/dem-beta` に移動し、`python3 deploy/beta/access_log.py summary --minutes 5` を実行する。
+`/var/lib/dem-beta/logs/access.log` の直近5分の remote_ip ごとの件数と状態コードだけを表示する。
+ローテートをまたぐ場合は必要なファイルを `--log FILE` の繰返しで指定する（gzipにも対応）。同じファイルを重複指定しない。
+URLやlog原文は出力しない。IPを含む出力を保存・転送・共有しない。道具はroot以外や端末でないstdoutへの出力を拒否し、ネットワーク送信しない。
+件数だけで攻撃と決めず、時刻・状態コード・負荷と対応させて判断する。CGNATのIPには複数の正当な利用者が含まれ得る。
+
+運用者のIPとLightsailブラウザSSHの経路を取り違えないこと。DOCKER-USERはforward用で通常のホストSSHのINPUTとは異なるが、他chainやSSHの規則を一緒に変更しない。
+`ip route show default` と設定の DEM_BETA_INTERFACE を照合し、外向きinterfaceを確認する。
+以下のIPは文書用の例なので、実際の対象のIPv4に置き換える。必ず1個の `/32` だけを扱い、hostname・CIDR・余計な文字は道具が拒否する。
+`/32`以外への拡大はこの手順の範囲外。影響する利用者と復旧経路を別に確認し、安易に `/24` 等へ広げない。
+
+```bash
+# root の対話端末。実際の設定に合わせて入力する。
+export DEM_BETA_INTERFACE=eth0
+BLOCK_IP=198.51.100.23
+python3 deploy/beta/access_log.py block-commands --ip "$BLOCK_IP" --interface "$DEM_BETA_INTERFACE"
+iptables -n -L DOCKER-USER
+# chain が無ければ止める。INPUT/UFWで代用したりbackendを切り替えたりしない。
+iptables -I DOCKER-USER 1 -i "$DEM_BETA_INTERFACE" -s "$BLOCK_IP/32" -j DROP
+iptables -C DOCKER-USER -i "$DEM_BETA_INTERFACE" -s "$BLOCK_IP/32" -j DROP
+iptables -n -v -L DOCKER-USER --line-numbers
+# 解除: 登録した同じsource/interfaceの規則だけを消す。
+iptables -D DOCKER-USER -i "$DEM_BETA_INTERFACE" -s "$BLOCK_IP/32" -j DROP
+iptables -C DOCKER-USER -i "$DEM_BETA_INTERFACE" -s "$BLOCK_IP/32" -j DROP
+# 最後の-Cがexit 1なら、その規則は無い。別の規則を番号で推測して消さない。
+```
+
+道具は検査済みのargv一覧を表示するだけで、iptablesもshellも実行しない。上の操作は運用者が行う。
+同じ規則を重複挿入しない。OS再起動でこの一時規則は消える。Dockerの再起動等でも規則が残ると仮定しない。
+再起動後は確認し、攻撃が続いていれば意図して付け直し、終わっていれば消えたままにする。iptables-persistent等へ保存しない。
+stagingではスマートフォンのIPの遮断・解除、他sourceの継続利用、再起動で消えることをレビュー側が確認する。
 
 ## 新しい公開 commit の配備（この機械では未実行）
 

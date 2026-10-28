@@ -108,7 +108,10 @@ def test_only_fixed_caddy_ip_is_trusted():
     assert value("--workers") == "1"
     assert value("--loop") == "asyncio"
     assert "--proxy-headers" in command
-    assert value("--limit-concurrency") == "32"
+    from webapi.beta import Limits, PROXY_IDLE_CONNECTION_BUDGET, INTERNAL_CONNECTION_BUDGET
+    limits = Limits()
+    lower = 2 * (limits.concurrent + limits.source_waiters) + PROXY_IDLE_CONNECTION_BUDGET + INTERNAL_CONNECTION_BUDGET
+    assert lower <= int(value("--limit-concurrency")) <= 128
     assert value("--timeout-keep-alive") == "5"
 
 

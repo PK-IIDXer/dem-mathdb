@@ -95,11 +95,18 @@ def health() -> dict[str, str]:
 @app.get("/health/ready", include_in_schema=False)
 def ready(request: Request):
     from sqlalchemy import text
+    from sqlalchemy.exc import TimeoutError as PoolTimeoutError
     from webapi.deps import get_workspace_request_context, resolve_request_account
     try:
         context = get_workspace_request_context(request, resolve_request_account(request))
         with context.api.engine.connect() as connection:
             connection.execute(text("SELECT 1"))
+    except PoolTimeoutError as exc:
+        from webapi.beta import enabled
+        if enabled() and exc.code == "3o7r":
+            return JSONResponse(status_code=503, content={"status": "unavailable", "code": "beta.database_busy"},
+                                headers={"Retry-After": "2"})
+        return JSONResponse(status_code=503, content={"status": "unavailable"})
     except Exception:
         return JSONResponse(status_code=503, content={"status": "unavailable"})
     return {"status": "ok"}

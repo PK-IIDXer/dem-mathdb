@@ -32,6 +32,10 @@ log = logging.getLogger("webapi.beta")
 SESSION_KEY = "beta_limits"
 PROOF_ID = TypeAdapter(int)
 PURE_POSTS = frozenset({"/formulas/parse", "/formulas/print"})
+# Transport assumptions, verified again in staging; these are not Limits.
+PROXY_IDLE_CONNECTION_BUDGET = 32
+INTERNAL_CONNECTION_BUDGET = 4
+BETA_POOL_TIMEOUT_SECONDS = 2.0
 HEAVY_ROUTES = frozenset({
     "/proofs/{id}/steps/suggest", "/proofs/{id}/steps/suggest-backward",
     "/theorems/applicable", "/proofs/{id}/validate", "/formulas/search",

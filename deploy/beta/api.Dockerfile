@@ -20,4 +20,4 @@ COPY deploy/beta/requirements.lock ./requirements.lock
 RUN pip install --no-cache-dir --no-deps -r requirements.lock \
     && pip install --no-cache-dir --no-deps .
 USER 10001:10001
-CMD ["uvicorn", "webapi.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--loop", "asyncio", "--proxy-headers", "--forwarded-allow-ips", "172.30.42.2", "--limit-concurrency", "32", "--timeout-keep-alive", "5"]
+CMD ["uvicorn", "webapi.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--loop", "asyncio", "--proxy-headers", "--forwarded-allow-ips", "172.30.42.2", "--limit-concurrency", "128", "--timeout-keep-alive", "5"]

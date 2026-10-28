@@ -119,7 +119,13 @@ class WorkspaceApiCache:
             connect_args = (
                 {"check_same_thread": False} if _is_sqlite(storage_uri) else {}
             )
-            api = DemApi.from_url(storage_uri, connect_args=connect_args)
+            from sqlalchemy.engine import make_url
+            from webapi.beta import enabled, BETA_POOL_TIMEOUT_SECONDS
+            # In-memory SQLite uses SingletonThreadPool, which has no checkout
+            # wait timeout. File SQLite and PostgreSQL use QueuePool by default.
+            queue_pool = not _is_sqlite(storage_uri) or make_url(storage_uri).database not in (None, "", ":memory:")
+            pool_options = {"pool_timeout": BETA_POOL_TIMEOUT_SECONDS} if enabled() and queue_pool else {}
+            api = DemApi.from_url(storage_uri, connect_args=connect_args, **pool_options)
             try:
                 with api.engine.connect() as connection:
                     if required_revision is not None:
