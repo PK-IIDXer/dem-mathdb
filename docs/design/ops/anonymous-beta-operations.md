@@ -167,7 +167,9 @@ Docker ログは各サービス 10 MB × 5。月 1 回は Bills と Cost Explore
 - サーバー喪失: 日次スナップショットから新規インスタンスを作り、static IP を付け替える。
   firewall・IPv6・timer・API / DB・counter の復帰を確認し、古いインスタンスが二重稼働しないようにする。
 
-## 接続元 IP の緊急遮断（staging で確認するまで未確認）
+## 接続元 IP の緊急遮断
+
+staging で遮断・解除・再起動による規則の消失と、遮断中の SSH 利用を確認済み（確認記録 §74.6）。例の `eth0` は実際の interface に置き換える。
 
 大量の一斉送信で uvicorn の L=128 を瞬間的に超えると、他の利用者にも plain text の503が返る。この可用性の危険は受け入れる。
 検証の結果を偽装したり、基本の内容・DBの整合のガードを迂回したりできるという意味ではない。
@@ -208,11 +210,11 @@ stagingではスマートフォンのIPの遮断・解除、他sourceの継続�
 
 ## 新しい公開 commit の配備（この機械では未実行）
 
-まず backup。公開 tag を確認して checkout し、`.env` の COMMIT を完全な SHA に更新、image を build する。
+まず backup。公開 tag を確認して checkout し、`.env` の `DEM_BETA_COMMIT` を完全な SHA に更新、image を build する。
 既存 API は切替まで稼働できる。新 image の tools で `dem-beta build-base` → `dem-beta reset` → `dem-beta up`。
 古いコード用 compose の API が使われないよう、**reset 前に** `docker compose ... create --force-recreate api` を実施する。
 これにより旧 API は停止するため、その直前に freeze し、API 停止を確認してから、確認済み手順で停止印を外して reset prepare に渡す。
-無停止配備は目指さない。base build 失敗なら旧 live を維持し、新旧 image / COMMIT を取り違えて起動しない。
+無停止配備は目指さない。base build 失敗なら旧 live を維持し、新旧 image / DEM_BETA_COMMIT を取り違えて起動しない。
 install / unit の変更もある場合は installer を再実行し、S1 / S7 / S8 / S9 と各公開ヘッダを再確認する。
 旧 base の dump は新 base に復元できるとは限らないので、旧 commit と base 情報を復旧判断用に保持する。
 
@@ -225,7 +227,7 @@ cd /opt/dem-beta
 sudo dem-beta backup
 sudo git fetch --tags origin
 sudo git checkout --detach <approved-public-tag>
-# git rev-parse HEAD の完全な SHA を COMMIT に設定。パスワードは変更しない。
+# git rev-parse HEAD の完全な SHA を DEM_BETA_COMMIT に設定。パスワードは変更しない。
 sudoedit deploy/beta/.env
 sudo docker compose --env-file deploy/beta/.env -f deploy/beta/compose.yml build
 sudo dem-beta build-base

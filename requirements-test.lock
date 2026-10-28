@@ -1,0 +1,11 @@
+# Test-tool constraints for CPython 3.13; deliberately separate from the API lock.
+# Upgrade intentionally, after full-suite checks with the proposed versions.
+pytest==9.1.1
+pytest-xdist==3.8.0
+filelock==4.0.0
+iniconfig==2.3.0
+packaging==26.2
+pluggy==1.6.0
+pygments==2.20.0
+execnet==2.1.2
+colorama==0.4.6

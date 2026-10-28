@@ -16,6 +16,7 @@ from dem.db.models.theorem import ProofStep, Theorem
 from dem.types import AssumptionStepInput, SymbolTypeName, Token
 from webapi import beta, deps
 from webapi.main import app
+from beta_state import patch_state
 from beta_http import asgi_request
 
 from beta_fixture import base_phase
@@ -23,14 +24,14 @@ SEED_PHASE = base_phase()
 
 
 @pytest.fixture
-def boundary(fresh_seeded_session, monkeypatch):
+def boundary(request, fresh_seeded_session, monkeypatch):
     session = fresh_seeded_session
     monkeypatch.setenv("DEM_BETA", "1")
     monkeypatch.delenv("DEM_READ_ONLY", raising=False)
     monkeypatch.delenv("DEM_BETA_FLAG_DIR", raising=False)
     monkeypatch.delenv("DEM_BETA_STATUS_FILE", raising=False)
     monkeypatch.setattr(beta, "runtime", beta.Runtime())
-    monkeypatch.setattr(app.state, "beta_limits", beta.Limits(), raising=False)
+    request.addfinalizer(patch_state(app.state, "beta_limits", beta.Limits()))
     bind = session.get_bind()
     engine = bind.engine if hasattr(bind, "engine") else bind
 

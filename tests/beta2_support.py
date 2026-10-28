@@ -12,6 +12,7 @@ from dem.api import DemApi
 from scripts.beta_base import archive_digests, publish_all
 from webapi import beta, deps
 from webapi.main import app
+from beta_state import patch_state
 from beta_http import asgi_request
 
 
@@ -48,7 +49,7 @@ def base_api(request, fresh_seeded_session, seed_snapshot_factory, monkeypatch):
     for variable in ("DEM_READ_ONLY", "DEM_BETA", "DEM_BETA_FLAG_DIR"):
         monkeypatch.delenv(variable, raising=False)
     monkeypatch.setattr(beta, "runtime", beta.Runtime())
-    monkeypatch.setattr(app.state, "beta_limits", beta.Limits(), raising=False)
+    request.addfinalizer(patch_state(app.state, "beta_limits", beta.Limits()))
     try:
         yield api
     finally:

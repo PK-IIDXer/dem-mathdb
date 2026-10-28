@@ -5,6 +5,7 @@ import pytest
 
 from webapi import beta
 from webapi.main import app
+from beta_state import patch_state
 from beta_http import asgi_request
 from test_webapi_request_failures import live_api
 
@@ -13,12 +14,12 @@ SEED_PHASE = base_phase()
 
 
 @pytest.fixture
-def beta_runtime(monkeypatch):
+def beta_runtime(request, monkeypatch):
     monkeypatch.setenv("DEM_BETA", "1")
     monkeypatch.delenv("DEM_READ_ONLY", raising=False)
     monkeypatch.delenv("DEM_BETA_FLAG_DIR", raising=False)
     monkeypatch.setattr(beta, "runtime", beta.Runtime())
-    monkeypatch.setattr(app.state, "beta_limits", beta.Limits(), raising=False)
+    request.addfinalizer(patch_state(app.state, "beta_limits", beta.Limits()))
     return beta.runtime
 
 

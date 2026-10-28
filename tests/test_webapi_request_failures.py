@@ -19,13 +19,14 @@ from dem.services.formula import compute_hash
 from dem.types import SymbolTypeName, Token
 from webapi import beta, deps
 from webapi.main import app
+from beta_state import patch_state
 from beta_http import asgi_request
 
 SEED_PHASE = "public_core"
 
 
 @pytest.fixture
-def live_api(fresh_seeded_session, seed_snapshot_factory, monkeypatch):
+def live_api(request, fresh_seeded_session, seed_snapshot_factory, monkeypatch):
     """Real top-level transactions, including PostgreSQL deferred COMMIT guards."""
     bind = fresh_seeded_session.get_bind()
     engine = bind.engine if hasattr(bind, "engine") else bind
@@ -43,7 +44,7 @@ def live_api(fresh_seeded_session, seed_snapshot_factory, monkeypatch):
     monkeypatch.delenv("DEM_BETA", raising=False)
     monkeypatch.delenv("DEM_BETA_FLAG_DIR", raising=False)
     monkeypatch.setattr(beta, "runtime", beta.Runtime())
-    monkeypatch.setattr(app.state, "beta_limits", beta.Limits(), raising=False)
+    request.addfinalizer(patch_state(app.state, "beta_limits", beta.Limits()))
     try:
         yield api
     finally:
