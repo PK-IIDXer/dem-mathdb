@@ -3,11 +3,14 @@ import argparse
 from contextlib import contextmanager
 from datetime import datetime, timezone
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
 import re
 import shutil
+import subprocess
+import sys
 import tempfile
 import urllib.request
 from urllib.parse import urlsplit
@@ -164,6 +167,69 @@ def delivery_lock(path):
         yield
 
 
+def traffic_module():
+    spec = importlib.util.spec_from_file_location("beta_traffic_host", Path(__file__).with_name("traffic.py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def analyze_traffic(home, now):
+    # Hard process timeout also covers directory scans, blocked I/O and gzip.
+    return traffic_module().run_analysis(home, now.timestamp())
+
+
+def traffic_notifications(home, webhook, now):
+    # This function runs only after all ready contacts have been delivered.
+    traffic = traffic_module()
+    stamp = now.timestamp()
+    path = home / "host-state/traffic-state.json"
+    try:
+        try:
+            state = traffic.load_state(path)
+        except Exception:
+            state = traffic.empty_state()
+            result = {"failure": True}
+        else:
+            try:
+                result = analyze_traffic(home, now)
+            except Exception:
+                result = {"failure": True}
+        day = traffic.previous_day(stamp)
+        try:
+            day_result = traffic.run_analysis(home, stamp, daily=True) if state["daily_sent"] != day else None
+        except Exception:
+            day_result = {"failure": True}
+        try:
+            conditions, alerts, summary = traffic.prepare(state, stamp, result, day_result)
+        except Exception:
+            # No exception text or partially parsed input enters an alert.
+            result = {"failure": True}
+            conditions, alerts, summary = traffic.prepare(state, stamp, result)
+        atomic_json(path, state)
+        delivered = 0
+        success = True
+        if summary is not None:
+            delivered += 1
+            if post(webhook, payload(summary)):
+                state["daily_sent"] = day
+                atomic_json(path, state)
+            else:
+                # Daily delivery must not hold back current traffic alerts.
+                success = False
+        for record, phase, text in alerts[:traffic.TRAFFIC_BATCH - delivered]:
+            if not post(webhook, payload(text)):
+                return False
+            record["last_sent"] = stamp
+            if phase == "resolved":
+                record["recovery_sent"] = stamp
+            atomic_json(path, state)
+        return success
+    except Exception:
+        print("dem-beta notify: traffic processing failed")
+        return False
+
+
 def deliver(home, webhook, now=None):
     now = now or datetime.now(timezone.utc)
     directory = home / "contacts"
@@ -221,7 +287,7 @@ def deliver(home, webhook, now=None):
         if not post(webhook, payload(text)):
             return False
         path.replace(sent / path.name)
-    return True
+    return traffic_notifications(home, webhook, now)
 
 
 def main():

@@ -1,5 +1,5 @@
 [Unit]
-Description=Deliver beta contacts and operational alerts
+Description=Deliver beta contacts, operational and count-only traffic alerts
 After=network-online.target
 Wants=network-online.target
 [Service]

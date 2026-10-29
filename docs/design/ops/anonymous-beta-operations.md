@@ -353,3 +353,111 @@ JSON stream の `config.db_last_modified` (DB の日付)、`config.db`、scanner
 対象の公開 commit と binary の hash を一緒に記録する。終了コード・解析エラーと findings を必ず読み、
 非 0 終了を合格として扱わない。symbol が binary に含まれるか、Caddy の経路に関わるかを各項目で判断する。
 §83.2 は DB 2026-10-27 版で実行した確認記録であり、週次点検では毎回の DB の日付を記録する。
+
+
+## アクセスログの異常通知（staging で確認するまで未確認）
+
+既存の5分ごとの notify timer が Caddy の現行・回転済み gzip ログを集計する。
+Slack・状態ファイル・確認用表示には件数、割合、固定の区分名と UTC 時刻だけを出す。
+接続元は実行中だけ数え、IP・その hash・URL・header・log 原文は残さない。
+通知は `Beta traffic:` で始まる英語の plain text。件数だけで攻撃と決めない。
+CGNAT 等で利用者が同じ接続元を共有する場合もある。自動の遮断・freeze・web 停止は行わない。
+
+| 種類 | 通知する条件 |
+| --- | --- |
+| api_errors | 直近5分の API 5xx が10件以上 |
+| rate_limited | 直近5分の429が300件以上 |
+| source_volume | 直近5分の1接続元が3,000件以上 |
+| total_volume | 直近5分の全体が10,000件以上 |
+| writes | 直近60分の API 書き込み成功が全体500件以上、または1接続元150件以上 |
+| log_unreadable | 現行ログの欠落・非通常ファイル・symlink・読取不可、回転ログの読取失敗、または不正行20件以上かつ読んだ全行の1%以上 |
+| analysis_failed | 例外・直近集計20秒／日次集計15秒の時間制限・各集計の容量上限等で完了しなかった |
+
+初回に開始、継続中は送信成功から60分以上後、条件を30分続けて満たさなくなったら解消を通知する。
+直近の集計失敗・ログ読取不能の間は、他の異常を解消せず、clear の継続時間をリセットする。古い件数による継続も送らない。
+読めた範囲だけで閾値を超えるものは開始・継続を送る。復帰後に成功した集計で30分の clear を観測してから解消する。
+送信失敗は次回に再送する。問い合わせを先に配信し、traffic は1回につき最大3通とするため、複数の異常は次の実行に回る場合がある。
+状態は root 専用 `host-state/traffic-state.json` に atomic に保存する。既存の notify 状態とは別で、DB 操作の lock を取らない。
+UTC 0時（日本時間9時）後、前日分が未送信のときだけ別の子 process で日次集計し、要約を送る。失敗時は前日分だけ再試行し、2日以上前は送らない。
+日次の失敗も analysis_failed で知らせるが、直近の観測不能とは扱わず、5分・60分の判定は続ける。日次要約の送信失敗も現在の異常通知を止めない。
+要約には状態コード class、429・5xx、API 区分、上位5接続元の割合、固定の探り pattern に合う件数と接続元数、異常の開始回数を含む。
+開始時刻までログが残らない場合や読取失敗があれば `partially missing` と表示する。
+`complete` は読み取れた最古の時刻による推定であり、途中のログ消失まで検知する保証ではない。
+
+例（固定の文・数値のみ）:
+
+```text
+Beta traffic: api_errors started
+UTC: 2026-10-30T00:05:00Z
+Started UTC: 2026-10-30T00:05:00Z
+count: 10
+total: 100
+sources: 2
+Inspect counts in a root interactive terminal with:
+python3 deploy/beta/access_log.py summary --minutes 5
+```
+
+受信したら root の対話端末で `/opt/dem-beta` に移動して、まず案内の `access_log.py summary` を実行する。
+回転境界をまたぐ場合は既存 summary に対象を `--log FILE` で明示する。
+UTC 時刻・状態コード・ホスト負荷と照合し、必要なら既存の「接続元 IP の緊急遮断」、`dem-beta freeze`、web 停止の順に判断する。
+IP を含む summary の出力を Slack に貼らない。`log_unreadable` はファイル・権限・回転、不正行の増加を調べ、
+`analysis_failed` は処理量・時間・容量と unit の終了状態を確認する。ログ原文を journal や通知へ転記しない。
+
+送信しない確認（root の対話端末だけ、状態も更新しない）:
+
+```bash
+cd /opt/dem-beta
+sudo dem-beta traffic --dry-run
+sudo dem-beta traffic --dry-run --log /root/traffic-test.log --log /root/traffic-test.log.gz --now 2026-10-30T00:05:00Z
+```
+
+`--log` は繰返し指定できる。明示しない場合、通常は現行と直近60分に必要な回転ログ、開始をまたぐ境界の1ファイルまでを読む。
+回転名の時刻（他の形は mtime）で古いファイルを開く前に絞り、境界が不正行だけ・読取不能でもその先の古い日には進まない。
+前日分は未送信のときだけ独立した日次 worker が前日の開始と境界まで読む。送信済みなら日次のファイルを開かない。
+同一行のファイル間の重複を除き、同じファイル内の同一行の回数は保持する。回転ログの時系列を前提とする。
+64 KiB 超の行は小さな chunk で読み飛ばして不正1行とする。時刻・状態コード・IPv4 が不正な行や60秒以上未来の行も除く。
+不正率の分母は直近60分のために選んだファイルと境界ファイルから読んだ全行（境界内の窓より古い行も含む）で、日次の行を混ぜない。
+直近の子 process は20秒、日次は独立して15秒で打ち切る。容量は直近20万・日次25万の異なる行キーと接続元数を上限とする。
+重複行キーを2つの一時辞書に持つ場合も容量の分母に二重計上しない。日次の容量超過は日次だけを再試行する。
+最悪の送信枠は既存の運用通知7通×5秒=35秒、問い合わせ5通×5秒=25秒、直近集計20秒、日次15秒、traffic3通×5秒=15秒で計110秒。
+2分の service 上限に対し残り10秒を読み書き・起動等の余裕とする。新しい timeout や容量上限でも未完了を正常とは扱わない。
+API 経由の推定は response の Via を使い、無いものは edge_or_unknown とする。成功書き込みは Via 付き2xxだけ。
+停止中の書き込み503は Via と既知の短い maintenance JSON の Content-Type / Content-Length、Retry-After・Content-Encoding 無しが揃うものだけ除く。
+本文の code はログに無いのでこれは応答の形による推定である。同じ形の別の503は区別できない。
+既知の beta.full・pool（Retry-After 有り）・uvicorn（plain text）や形の不明な503は除かない。
+実際の Via と maintenance の形は staging で必ず確かめ、不一致なら適用を止める。
+
+### ホスト側だけの更新（staging で確認するまで未確認）
+
+今回の更新は image・DB・Caddy 設定を変更しない。既存の通常更新の reset 手順を使わず、以下だけを行う。
+先に承認済み公開 tag を取得済みであること、作業ツリーが clean であることを確認する。
+`DEM_BETA_COMMIT` は **今稼働中の image に対応する既存の SHA のまま** とする。
+checkout する新 tag はホスト道具の版であり、稼働 image の版とは独立する。image を実際に更新する別作業でだけ同値を変更する。
+`.env` の表示・再生成はしない。Web/DB/API コンテナ、live/base、問い合わせ、停止印を保持する。
+
+```bash
+sudo systemctl stop dem-beta-notify.timer
+# 実行中の oneshot があれば完了まで待つ。service の stop で配信を中断しない。
+sudo systemctl show dem-beta-notify.service -p ActiveState -p SubState
+# inactive/failed になったことを確認してから進む。
+cd /opt/dem-beta
+sudo git checkout --detach <approved-public-tag>
+sudo install -o root -g root -m 0755 deploy/beta/bin/dem-beta /usr/local/sbin/dem-beta
+sudo install -o root -g root -m 0644 deploy/beta/systemd/dem-beta-notify.service /etc/systemd/system/dem-beta-notify.service
+sudo stat -c '%U %G %a' /var/lib/dem-beta/host-state
+# root root 700 を確認。既存の状態を削除・置換しない。
+sudo systemctl daemon-reload
+sudo dem-beta traffic --dry-run
+sudo systemctl start dem-beta-notify.timer
+sudo systemctl list-timers dem-beta-notify.timer
+```
+
+新しい Python module は checkout 先から読まれるので別の install は不要。
+全体の installer（apt/Docker を含む）は再実行しない。build・build-base・reset・up・コンテナ再作成も行わない。
+失敗時は timer を止め、oneshot 完了後に以前の承認済み tag と wrapper / unit だけに戻し、reload する。
+新しい traffic-state は root 専用のまま保持する。次の更新で再利用できる。
+
+レビュー側は staging で、Ubuntu Python 3.12、権限と2分の unit 制限、DB lock 中の実行、reset 無しの更新とデータ保持を確認する。
+作成したログ（gzip・回転境界・不正行・未来・各閾値・停止中/停止外503）で dry-run を行い、canary の IP・URL・header が出ないことを確かめる。
+実際の攻撃や負荷を起こして試さない。既存の承認された Webhook で件数だけの試験通知・日次要約・失敗後の再送と重複防止を確認し、
+問い合わせ配信が継続することも確認する。実通知はレビュー側が行い、この実装作業では送信していない。

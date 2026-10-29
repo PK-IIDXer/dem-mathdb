@@ -44,6 +44,7 @@ def receiver():
 
 @pytest.fixture
 def home(tmp_path, monkeypatch):
+    monkeypatch.setattr(notify, "traffic_notifications", lambda *args: True)
     for name in ("contacts", "status", "host-state"):
         (tmp_path / name).mkdir()
     monkeypatch.setattr(notify.shutil, "disk_usage", lambda _: SimpleNamespace(used=10, total=100))
