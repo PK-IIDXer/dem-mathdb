@@ -1,3 +1,9 @@
+import { beforeEach } from 'vitest'
+import { setLanguage } from '../i18n/language'
+
+setLanguage('ja')
+beforeEach(() => { setLanguage('ja') })
+
 // Vitest setup shared by every test file (see `test.setupFiles` in vite.config.ts).
 
 if (typeof document !== 'undefined') {

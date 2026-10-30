@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { EntityBadge } from '../components/BetaIdentity'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { PublicIdRoute } from '../components/PublicIdRoute'
@@ -8,23 +10,26 @@ import { Latex } from '../components/Latex'
 import { renderTemplateSample } from '../components/FormulaEditor/model'
 
 export function SymbolDetailPage() {
+  useLanguage()
+
   return <PublicIdRoute><SymbolDetailPageContent /></PublicIdRoute>
 }
 
 function SymbolDetailPageContent() {
+  useLanguage()
+
   const { id } = useParams<{ id: string }>()
   const symbolRef = id ?? ''
   const { data: symbol } = useQuery({ queryKey: ['symbols', symbolRef], queryFn: () => symbolsApi.get(symbolRef) })
 
-  usePageTitle(symbol?.name ?? '記号')
+  usePageTitle(symbol?.name ?? t("SymbolDetailPage_714"))
 
-  if (!symbol) return <p className="text-sm text-slate-400">読み込み中…</p>
+  if (!symbol) return <p className="text-sm text-slate-400">{t("BetaGettingStarted_109")}</p>
 
   return (
     <div className="space-y-4">
       <Link to="/symbols" className="text-xs text-indigo-600 hover:underline">
-        ← 記号一覧に戻る
-      </Link>
+        {t("SymbolDetailPage_716")}</Link>
       <section className="space-y-3 rounded-lg border border-slate-200 p-4 text-sm">
         <div className="flex items-center justify-between">
           <span className="font-mono text-base text-slate-800">{symbol.name}</span> <EntityBadge namespace={symbol.namespace_name} detail />
@@ -39,8 +44,8 @@ function SymbolDetailPageContent() {
           <div>arity: {symbol.arity}</div>
           <div>is_primitive: {symbol.is_primitive ? '✓' : '—'}</div>
           <div>
-            表示形式: {symbol.notation_kind}
-            {symbol.notation_kind === 'infix' && symbol.precedence != null ? ` (優先順位 ${symbol.precedence})` : ''}
+            {t("SymbolDetailPage_717")}{symbol.notation_kind}
+            {symbol.notation_kind === 'infix' && symbol.precedence != null ? t("SymbolDetailPage_718", symbol.precedence) : ''}
           </div>
         </div>
         {symbol.remarks && <div className="text-slate-600">{symbol.remarks}</div>}

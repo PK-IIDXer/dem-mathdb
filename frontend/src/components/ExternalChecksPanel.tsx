@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { SystemValidityNote } from './BetaIdentity'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { axiomsApi } from '../api/axioms'
@@ -17,6 +19,8 @@ export function ExternalChecksPanel({
   theorem: Theorem
   verifiedProofId: number | null
 }) {
+  useLanguage()
+
   const checks = theorem.external_checks ?? []
   const { data: usedAxioms = [] } = useQuery({
     queryKey: ['proofs', verifiedProofId, 'used-axioms'],
@@ -39,10 +43,10 @@ export function ExternalChecksPanel({
 
   return (
     <section aria-labelledby="external-checks-heading" className="space-y-3 rounded border border-slate-200 bg-slate-50 p-3">
-      <h3 id="external-checks-heading" className="text-sm font-semibold text-slate-800">状態と外部の検査</h3>
+      <h3 id="external-checks-heading" className="text-sm font-semibold text-slate-800">{t("ExternalChecksPanel_139")}</h3>
       <p className="text-sm text-slate-700">
         <span className="font-semibold">DEM:</span>{' '}
-        {theorem.status === 'proven' ? '証明済み' : '未証明（予想）'}
+        {theorem.status === 'proven' ? t("DependencyGraph_126") : t("ExternalChecksPanel_141")}
       </p>
 
       {checks.map((check) => {
@@ -54,23 +58,22 @@ export function ExternalChecksPanel({
           <article key={`${check.library_commit}:${check.declaration}`} className="space-y-2 rounded border border-indigo-100 bg-white p-3 text-sm">
             <p>
               <span className="font-semibold">Lean:</span>{' '}
-              {sourceLabel(check)} から翻訳。{passed ? '模型と逆翻訳を確認済み' : '翻訳の検査は未了'}
+              {sourceLabel(check)} {t("ExternalChecksPanel_142")}{passed ? t("ExternalChecksPanel_143") : t("ExternalChecksPanel_144")}
             </p>
             <dl className="grid grid-cols-[8rem_1fr] gap-x-2 gap-y-1 text-xs text-slate-600">
-              <dt>出典</dt><dd>{check.file}:{check.line}（{check.module}）</dd>
-              <dt>toolchain</dt><dd>{check.check_toolchain ?? '記録なし'}</dd>
-              <dt>検査日時</dt><dd>{check.checked_at ?? '記録なし'}</dd>
-              <dt>ライセンス</dt><dd>{check.license}</dd>
-              <dt>著作権</dt><dd>{check.copyright ?? '記録なし'}</dd>
-              <dt>著者</dt><dd>{check.authors ?? '記録なし'}</dd>
+              <dt>{t("ExternalChecksPanel_145")}</dt><dd>{check.file}:{check.line}（{check.module}）</dd>
+              <dt>toolchain</dt><dd>{check.check_toolchain ?? t("ExternalChecksPanel_146")}</dd>
+              <dt>{t("ExternalChecksPanel_147")}</dt><dd>{check.checked_at ?? t("ExternalChecksPanel_146")}</dd>
+              <dt>{t("ExternalChecksPanel_149")}</dt><dd>{check.license}</dd>
+              <dt>{t("ExternalChecksPanel_150")}</dt><dd>{check.copyright ?? t("ExternalChecksPanel_146")}</dd>
+              <dt>{t("ExternalChecksPanel_152")}</dt><dd>{check.authors ?? t("ExternalChecksPanel_146")}</dd>
             </dl>
             <p className="rounded bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-900">
-              DEM の式へ翻訳した改変物です。
-            </p>
+              {t("ExternalChecksPanel_154")}</p>
 
             {comparison && (
-              <div className="space-y-2 rounded border border-violet-200 bg-violet-50 p-3" aria-label="Lean と DEM の公理依存の比較">
-                <h4 className="font-semibold text-violet-900">公理依存の比較</h4>
+              <div className="space-y-2 rounded border border-violet-200 bg-violet-50 p-3" aria-label={t("ExternalChecksPanel_155")}>
+                <h4 className="font-semibold text-violet-900">{t("ExternalChecksPanel_156")}</h4>
                 <p>
                   <span className="font-semibold">Lean:</span> {comparison.lean}
                   {check.source_axioms.includes(comparison.lean_axiom) && `（${comparison.lean_axiom}。${comparison.lean_axiom_note}）`}
@@ -81,13 +84,13 @@ export function ExternalChecksPanel({
                   {usedAxioms.length > 0 && `（${usedAxioms.map((axiom) => axiom.name).join('、')}）`}
                 </p>
                 {!usedAxioms.some((axiom) => axiom.name === comparison.dem_unused_axiom) && (
-                  <p className="text-xs font-semibold text-green-800">{comparison.dem_unused_axiom}を使いません。</p>
+                  <p className="text-xs font-semibold text-green-800">{comparison.dem_unused_axiom}{t("ExternalChecksPanel_157")}</p>
                 )}
                 <ul className="space-y-1 text-xs text-violet-900">
                   {comparisonSystems.map((system, index) => (
                     <li key={system.id}>
                       <SystemValidityNote namespace={system.namespace_name} />
-                      {system.name}: {systemChecks[index]?.data == null ? '確認中…' : systemChecks[index].data.is_subset ? '真' : '偽'}
+                      {system.name}: {systemChecks[index]?.data == null ? t("ExternalChecksPanel_158") : systemChecks[index].data.is_subset ? t("ExternalChecksPanel_159") : t("ExternalChecksPanel_160")}
                     </li>
                   ))}
                 </ul>
@@ -98,7 +101,7 @@ export function ExternalChecksPanel({
       })}
 
       {checks.length === 0 && (
-        <p className="text-xs text-slate-500">外部の検査記録はありません。</p>
+        <p className="text-xs text-slate-500">{t("ExternalChecksPanel_161")}</p>
       )}
     </section>
   )

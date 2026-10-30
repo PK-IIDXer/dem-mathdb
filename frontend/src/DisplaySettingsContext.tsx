@@ -1,3 +1,4 @@
+import { useLanguage } from "./i18n/useLanguage"
 /* oxlint-disable react/only-export-components -- provider and hook share one persisted setting */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { useCommand } from './commands/CommandProvider'
@@ -43,6 +44,8 @@ const DisplaySettingsContext = createContext<DisplaySettingsValue>({
 })
 
 export function DisplaySettingsProvider({ children }: { children: ReactNode }) {
+  useLanguage()
+
   const [settings, setSettings] = useState(readDisplaySettings)
   const toggleDensity = () => setSettings((current) => ({
     ...current,

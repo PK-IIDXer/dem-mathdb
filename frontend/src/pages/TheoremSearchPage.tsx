@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { EntityBadge } from '../components/BetaIdentity'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { memo, useCallback, useEffect, useState } from 'react'
@@ -26,9 +28,9 @@ function parseTagIds(value: string | null): number[] {
 }
 
 const STATUS_OPTIONS: { value: string; label: string }[] = [
-  { value: '', label: 'すべて' },
-  { value: 'conjecture', label: '未証明' },
-  { value: 'proven', label: '証明済み' },
+  { value: '', get label() { return t("TheoremSearchPage_795") } },
+  { value: 'conjecture', get label() { return t("DependencyGraph_125") } },
+  { value: 'proven', get label() { return t("DependencyGraph_126") } },
 ]
 
 const STATUS_BADGE: Record<string, string> = {
@@ -37,12 +39,14 @@ const STATUS_BADGE: Record<string, string> = {
 }
 
 const STATUS_LABEL: Record<string, string> = {
-  conjecture: '未証明',
-  proven: '証明済み',
+  get conjecture() { return t("DependencyGraph_125") },
+  get proven() { return t("DependencyGraph_126") },
 }
 
 export function TheoremSearchPage() {
-  usePageTitle('定理を探す')
+  useLanguage()
+
+  usePageTitle(t("TheoremSearchPage_800"))
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -84,14 +88,14 @@ export function TheoremSearchPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold text-slate-800">定理を探す</h2>
+      <h2 className="text-lg font-semibold text-slate-800">{t("TheoremSearchPage_800")}</h2>
 
       <SearchFilterBar
         search={search}
         onSearchChange={setSearch}
         selectedTagIds={selectedTagIds}
         onToggleTag={toggleTag}
-        placeholder="検索 (name / 説明)"
+        placeholder={t("SearchFilterBar_363")}
       />
 
       <div className="flex gap-2">
@@ -125,6 +129,8 @@ const TheoremResults = memo(function TheoremResults({
   theorems: Theorem[]
   navigate: NavigateFunction
 }) {
+  useLanguage()
+
   // One request for the conclusions not cached yet, instead of one FormulaPreview
   // fetch per card. Called here rather than in the page so the memo still holds.
   const formulasWaiting = usePrimeFormulas(theorems.map((theorem) => theorem.conclusion_formula_id))
@@ -132,8 +138,8 @@ const TheoremResults = memo(function TheoremResults({
   return (
     <>
       <div className="text-xs text-slate-500">
-        <span>{counts.total} 件</span>
-        <span>（DEM で証明済み: {counts.demProven} ／ Lean でのみ確認済み: {counts.leanOnly}）</span>
+        <span>{counts.total} {t("InferenceRulePicker_230")}</span>
+        <span>{t("TheoremSearchPage_804")}{counts.demProven} {t("TheoremSearchPage_805")}{counts.leanOnly}）</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -152,8 +158,7 @@ const TheoremResults = memo(function TheoremResults({
                 </span>
                 {hasPassedExternalCheck(theorem) && (
                   <span className="rounded bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold text-indigo-800">
-                    Lean: 翻訳検査済み
-                  </span>
+                    {t("TheoremSearchPage_806")}</span>
                 )}
               </span>
             </div>
@@ -161,7 +166,7 @@ const TheoremResults = memo(function TheoremResults({
               {/* Only cards whose formula is in the pending batch wait; cached ones
                   stay on screen while the next result's formulas load. */}
               {formulasWaiting.has(theorem.conclusion_formula_id) ? (
-                <span className="text-slate-400">読み込み中…</span>
+                <span className="text-slate-400">{t("BetaGettingStarted_109")}</span>
               ) : (
                 <FormulaPreview formulaId={theorem.conclusion_formula_id} />
               )}
@@ -184,7 +189,7 @@ const TheoremResults = memo(function TheoremResults({
           </button>
         ))}
         {theorems.length === 0 && (
-          <p className="col-span-2 text-sm text-slate-400">条件に一致する定理がありません</p>
+          <p className="col-span-2 text-sm text-slate-400">{t("TheoremSearchPage_808")}</p>
         )}
       </div>
     </>

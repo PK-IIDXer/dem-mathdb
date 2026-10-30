@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { useId, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { tagsApi } from '../api/tags'
@@ -17,6 +19,8 @@ interface Props {
 const NO_TAGS: Tag[] = []
 
 export function SearchFilterBar({ search, onSearchChange, selectedTagIds, onToggleTag, placeholder }: Props) {
+  useLanguage()
+
   const searchRef = useRef<HTMLInputElement>(null)
   const { data: tags = NO_TAGS } = useQuery({ queryKey: ['tags'], queryFn: () => tagsApi.list() })
   useCommand('search.focus', () => searchRef.current?.focus())
@@ -27,10 +31,10 @@ export function SearchFilterBar({ search, onSearchChange, selectedTagIds, onTogg
         ref={searchRef}
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
-        placeholder={placeholder ?? '検索 (name / 説明)'}
+        placeholder={placeholder ?? t("SearchFilterBar_363")}
         className="w-full rounded border border-slate-300 px-2 py-1 text-sm"
       />
-      <span className="block text-right text-[10px] text-slate-400">検索へ移動 <kbd>/</kbd></span>
+      <span className="block text-right text-[10px] text-slate-400">{t("SearchFilterBar_364")}<kbd>/</kbd></span>
       <TagPicker tags={tags} selectedTagIds={selectedTagIds} onToggleTag={onToggleTag} />
     </div>
   )
@@ -45,6 +49,8 @@ function TagPicker({
   selectedTagIds: number[]
   onToggleTag: (tagId: number) => void
 }) {
+  useLanguage()
+
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
@@ -67,14 +73,13 @@ function TagPicker({
         onClick={() => setOpen((value) => !value)}
         className="rounded border border-slate-300 px-2.5 py-1 text-xs text-slate-700 hover:bg-slate-50"
       >
-        タグを絞り込む{selectedTagIds.length > 0 ? ` (${selectedTagIds.length} 件選択)` : ''}
+        {t("SearchFilterBar_365")}{selectedTagIds.length > 0 ? t("SearchFilterBar_366", selectedTagIds.length) : ''}
       </button>
       {selectedTags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5" aria-label="選択中のタグ">
+        <div className="flex flex-wrap gap-1.5" aria-label={t("SearchFilterBar_367")}>
           {selectedTags.map((tag) => (
             <button key={tag.id} type="button" onClick={() => onToggleTag(tag.id)} className="rounded-full bg-indigo-600 px-2.5 py-0.5 text-xs text-white">
-              {tag.name} を解除
-            </button>
+              {tag.name} {t("SearchFilterBar_368")}</button>
           ))}
         </div>
       )}
@@ -83,7 +88,7 @@ function TagPicker({
           <input
             autoFocus
             role="combobox"
-            aria-label="タグを検索"
+            aria-label={t("SearchFilterBar_369")}
             aria-expanded="true"
             aria-controls={listboxId}
             aria-activedescendant={availableTags[activeIndex] ? `${listboxId}-${availableTags[activeIndex].id}` : undefined}
@@ -109,7 +114,7 @@ function TagPicker({
             }}
             className="w-full rounded border border-slate-300 px-2 py-1 text-sm"
           />
-          <div id={listboxId} role="listbox" aria-label="タグ" aria-multiselectable="true" className="mt-1 max-h-48 overflow-y-auto">
+          <div id={listboxId} role="listbox" aria-label={t("SearchFilterBar_370")} aria-multiselectable="true" className="mt-1 max-h-48 overflow-y-auto">
             {availableTags.map((tag, index) => (
               <div
                 id={`${listboxId}-${tag.id}`}
@@ -124,7 +129,7 @@ function TagPicker({
                 {tag.name}{selectedTagIds.includes(tag.id) ? ' ✓' : ''}
               </div>
             ))}
-            {availableTags.length === 0 && <div className="px-2 py-1 text-xs text-slate-400">一致するタグはありません</div>}
+            {availableTags.length === 0 && <div className="px-2 py-1 text-xs text-slate-400">{t("SearchFilterBar_371")}</div>}
           </div>
         </div>
       )}

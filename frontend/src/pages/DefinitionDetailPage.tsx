@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { EntityBadge } from '../components/BetaIdentity'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { PublicIdRoute } from '../components/PublicIdRoute'
@@ -10,10 +12,14 @@ import { TagEditor } from '../components/TagEditor'
 import { buildDefinitionFormulaSections } from './definitionFormulaSections'
 
 export function DefinitionDetailPage() {
+  useLanguage()
+
   return <PublicIdRoute><DefinitionDetailPageContent /></PublicIdRoute>
 }
 
 function DefinitionDetailPageContent() {
+  useLanguage()
+
   const { id } = useParams<{ id: string }>()
   const definitionRef = id ?? ''
   const queryClient = useQueryClient()
@@ -47,9 +53,9 @@ function DefinitionDetailPageContent() {
     onSuccess: invalidate,
   })
 
-  usePageTitle(definition?.name ?? '定義')
+  usePageTitle(definition?.name ?? t("DefinitionDetailPage_560"))
 
-  if (!definition) return <p className="text-sm text-slate-400">読み込み中…</p>
+  if (!definition) return <p className="text-sm text-slate-400">{t("BetaGettingStarted_109")}</p>
 
   const formulaSections = buildDefinitionFormulaSections(
     definition.display_formula?.id ?? null,
@@ -59,8 +65,7 @@ function DefinitionDetailPageContent() {
   return (
     <div className="space-y-4">
       <Link to="/definitions" className="text-xs text-indigo-600 hover:underline">
-        ← 定義一覧に戻る
-      </Link>
+        {t("DefinitionDetailPage_562")}</Link>
       <section className="space-y-4 rounded-lg border border-slate-200 p-4">
         <div className="flex items-center justify-between">
           <span className="font-mono text-base text-slate-800">{definition.name}</span> <EntityBadge namespace={definition.namespace_name} detail />
@@ -106,8 +111,8 @@ function DefinitionDetailPageContent() {
         ))}
         {(definition.requires_existence_proof || definition.requires_uniqueness_proof) && (
           <div className="text-xs text-amber-600">
-            {definition.requires_existence_proof && '要 存在性証明 '}
-            {definition.requires_uniqueness_proof && '要 一意性証明'}
+            {definition.requires_existence_proof && t("DefinitionDetailPage_563")}
+            {definition.requires_uniqueness_proof && t("DefinitionDetailPage_564")}
           </div>
         )}
         <div>

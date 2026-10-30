@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { UserSymbolNotice } from './BetaIdentity'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -12,6 +14,8 @@ export function TheoremStatement({ theoremId, context = {} }: {
   theoremId: number
   context?: Record<string, number>
 }) {
+  useLanguage()
+
   const { data: theorem } = useQuery({
     queryKey: ['theorems', theoremId],
     queryFn: () => theoremsApi.get(theoremId),
@@ -30,7 +34,7 @@ export function TheoremStatement({ theoremId, context = {} }: {
   )
   const latexList = useFormulaLatexList(formulaIds, context)
 
-  if (!theorem) return <span className="text-sm text-slate-400">読み込み中…</span>
+  if (!theorem) return <span className="text-sm text-slate-400">{t("BetaGettingStarted_109")}</span>
 
   const premiseCount = premises?.length ?? 0
   const premiseLatex = latexList.slice(0, premiseCount)
@@ -49,7 +53,7 @@ export function TheoremStatement({ theoremId, context = {} }: {
       {combined ? (
         <Latex display>{combined}</Latex>
       ) : (
-        <span className="text-sm text-slate-400">数式を読み込み中…</span>
+        <span className="text-sm text-slate-400">{t("TheoremStatement_433")}</span>
       )}
     </div>
   )

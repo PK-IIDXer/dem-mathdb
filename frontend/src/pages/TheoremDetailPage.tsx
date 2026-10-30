@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { EntityBadge } from '../components/BetaIdentity'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { PublicIdRoute } from '../components/PublicIdRoute'
@@ -20,8 +22,8 @@ import { onboardingQuery } from '../onboarding'
 import { tagsApi } from '../api/tags'
 
 const STATUS_LABEL: Record<string, string> = {
-  conjecture: '未証明',
-  proven: '証明済み',
+  get conjecture() { return t("DependencyGraph_125") },
+  get proven() { return t("DependencyGraph_126") },
 }
 const STATUS_BADGE: Record<string, string> = {
   conjecture: 'bg-slate-200 text-slate-700',
@@ -29,10 +31,14 @@ const STATUS_BADGE: Record<string, string> = {
 }
 
 export function TheoremDetailPage() {
+  useLanguage()
+
   return <PublicIdRoute><TheoremDetailPageContent /></PublicIdRoute>
 }
 
 function TheoremDetailPageContent() {
+  useLanguage()
+
   const readOnly = useReadOnly()
   const { id, proofId: proofIdParam } = useParams<{ id: string; proofId?: string }>()
   const theoremRef = id ?? ''
@@ -94,15 +100,14 @@ function TheoremDetailPageContent() {
     },
   })
 
-  usePageTitle(theorem ? `${theorem.name}${proofIdParam ? 'の証明' : ''}` : '定理')
+  usePageTitle(theorem ? t("TheoremDetailPage_774", theorem.name, proofIdParam ? t("BetaGettingStarted_105") : '') : t("ProofDetail_234"))
 
-  if (!theorem) return <p className="text-sm text-slate-400">読み込み中…</p>
+  if (!theorem) return <p className="text-sm text-slate-400">{t("BetaGettingStarted_109")}</p>
 
   return (
     <div className="space-y-6">
       <Link to="/search" className="text-xs text-indigo-600 hover:underline">
-        ← 検索に戻る
-      </Link>
+        {t("TheoremDetailPage_778")}</Link>
 
       <section className="space-y-4 rounded-lg border border-slate-200 p-4">
         <div className="flex items-center justify-between">
@@ -115,7 +120,7 @@ function TheoremDetailPageContent() {
         <TheoremStatement theoremId={theoremId} context={variableContext} />
         {Object.keys(variableContext).length > 0 && (
           <div className="text-xs text-slate-500">
-            変数: {Object.keys(variableContext).join(', ')}
+            {t("TheoremDetailPage_779")}{Object.keys(variableContext).join(', ')}
           </div>
         )}
 
@@ -137,15 +142,15 @@ function TheoremDetailPageContent() {
             onRemove={(tagId) => removeTagMutation.mutate(tagId)}
             allowRuleTag={theorem.status === 'proven' && verifiedProof != null}
           />
-          {markedAsRule && <p className="mt-1 text-xs text-indigo-700">推論定理の印あり{verifiedProof == null ? '（verified proof がないため候補には表示しません）' : ''}</p>}
+          {markedAsRule && <p className="mt-1 text-xs text-indigo-700">{t("TheoremDetailPage_780")}{verifiedProof == null ? t("TheoremDetailPage_781") : ''}</p>}
           {!readOnly && theorem.status === 'proven' && verifiedProof != null && (
             <button type="button" disabled={toggleRuleMutation.isPending} onClick={() => toggleRuleMutation.mutate()} className="mt-2 rounded border border-indigo-300 px-2 py-1 text-xs text-indigo-700 disabled:opacity-40">
-              {markedAsRule ? '推論定理の印を外す' : '推論定理として印を付ける'}
+              {markedAsRule ? t("TheoremDetailPage_782") : t("TheoremDetailPage_783")}
             </button>
           )}
         </div>
         <UsedInTheoremsSection
-          title="この定理を補題として使っている定理"
+          title={t("TheoremDetailPage_784")}
           queryKey={['theorems', theoremId, 'used-in-theorems']}
           queryFn={() => theoremsApi.listUsedInTheorems(theoremId)}
         />
@@ -161,8 +166,7 @@ function TheoremDetailPageContent() {
               onClick={() => createProofMutation.mutate()}
               className="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white disabled:opacity-40"
             >
-              新規 Proof を作成
-            </button>
+              {t("ProofsPage_700")}</button>
           )}
         </div>
         <div className="flex flex-wrap gap-2">
@@ -174,15 +178,15 @@ function TheoremDetailPageContent() {
                 proofId === proof.id ? 'bg-indigo-600 text-white' : 'bg-slate-100 hover:bg-slate-200'
               }`}
             >
-              証明 {index + 1} {proof.name ?? ''} — {proof.status}
+              {t("ProofsPage_702")}{index + 1} {proof.name ?? ''} — {proof.status}
             </Link>
           ))}
-          {proofs.length === 0 && <span className="text-xs text-slate-400">まだありません</span>}
+          {proofs.length === 0 && <span className="text-xs text-slate-400">{t("AxiomSystemDetailPage_505")}</span>}
         </div>
       </section>
 
       <section className="rounded-lg border border-slate-200 p-4">
-        <h3 id="dependencies" className="mb-2 text-sm font-semibold text-slate-700">依存関係</h3>
+        <h3 id="dependencies" className="mb-2 text-sm font-semibold text-slate-700">{t("TheoremDetailPage_788")}</h3>
         <DependencyGraph theoremId={theoremId} />
       </section>
 
@@ -198,23 +202,22 @@ function TheoremDetailPageContent() {
       )}
 
       {onboarding && proofId == null && onboardingComplete && (
-        <OnboardingCoach step={3} title="検証されました">
-          <p className="font-semibold text-green-700">✓ この定理はすでに証明済みです。</p>
+        <OnboardingCoach step={3} title={t("ProofDetail_283")}>
+          <p className="font-semibold text-green-700">{t("TheoremDetailPage_790")}</p>
           {verifiedProof && (
             <Link
               to={`/theorems/${theorem.public_id}/proofs/${verifiedProof.public_id}${onboardingQuery()}`}
               className="inline-block rounded bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white"
             >
-              検証済みの証明を見る
-            </Link>
+              {t("TheoremDetailPage_791")}</Link>
           )}
         </OnboardingCoach>
       )}
 
       {onboarding && proofId == null && !onboardingComplete && (
-        <OnboardingCoach step={3} title="証明する">
-          <p>表示されている結論が「あと何を示すか」です。［新規 Proof を作成］を押してください。</p>
-          <p>作成後もこの実物の定理画面で、公理検索と MP の提案を使って証明します。</p>
+        <OnboardingCoach step={3} title={t("ProofDetail_275")}>
+          <p>{t("TheoremDetailPage_793")}</p>
+          <p>{t("TheoremDetailPage_794")}</p>
         </OnboardingCoach>
       )}
 

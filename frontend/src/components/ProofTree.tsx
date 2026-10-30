@@ -1,3 +1,6 @@
+import { useDisplayError } from "../i18n/useDisplayError"
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { FormulaPreview } from './FormulaPreview'
 import { PropositionExplanation } from './PropositionExplanation'
@@ -13,9 +16,11 @@ interface ProofTreeProps {
 }
 
 export function ProofTree({ proofId, steps, onSelectStep, symbolsById, lemmas }: ProofTreeProps) {
+  useLanguage()
+
   const tree = useMemo(() => buildProofTree(steps), [steps])
   const exportRef = useRef<HTMLDivElement>(null)
-  const [exportError, setExportError] = useState<string | null>(null)
+  const [exportError, setExportError] = useDisplayError()
   const [isExporting, setIsExporting] = useState(false)
 
   async function downloadSvg() {
@@ -32,14 +37,14 @@ export function ProofTree({ proofId, steps, onSelectStep, symbolsById, lemmas }:
       link.click()
       window.setTimeout(() => URL.revokeObjectURL(url), 1000)
     } catch (error) {
-      setExportError(error instanceof Error ? error.message : '画像を書き出せませんでした')
+      setExportError(() => (error instanceof Error ? error.message : t("ProofTree_301")))
     } finally {
       setIsExporting(false)
     }
   }
 
   if (!tree.root) {
-    return <p className="rounded-lg border border-slate-200 px-3 py-4 text-sm text-slate-400">まだステップがありません</p>
+    return <p className="rounded-lg border border-slate-200 px-3 py-4 text-sm text-slate-400">{t("ProofStepList_297")}</p>
   }
 
   return (
@@ -51,16 +56,15 @@ export function ProofTree({ proofId, steps, onSelectStep, symbolsById, lemmas }:
           disabled={isExporting}
           className="rounded border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
         >
-          {isExporting ? '画像を作成中…' : 'SVG画像をダウンロード'}
+          {isExporting ? t("ProofTree_303") : t("ProofTree_304")}
         </button>
         <button
           type="button"
           onClick={() => window.print()}
           className="rounded border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
         >
-          PDFとして印刷
-        </button>
-        <span className="text-xs text-slate-400">PDFは印刷画面で「PDFに保存」を選択してください。</span>
+          {t("ProofTree_305")}</button>
+        <span className="text-xs text-slate-400">{t("ProofTree_306")}</span>
       </div>
 
       {exportError && <p className="text-xs text-red-700">{exportError}</p>}
@@ -73,8 +77,7 @@ export function ProofTree({ proofId, steps, onSelectStep, symbolsById, lemmas }:
 
       {tree.omittedStepOrds.length > 0 && (
         <p className="text-xs text-slate-400">
-          最終ステップから参照されないステップ ({tree.omittedStepOrds.join(', ')}) は証明図から省略しています。
-        </p>
+          {t("ProofTree_307")}{tree.omittedStepOrds.join(', ')}{t("ProofTree_308")}</p>
       )}
     </div>
   )
@@ -91,6 +94,8 @@ function ProofTreeNodeView({
   symbolsById: Map<number, Symbol>
   lemmas: Map<number, LemmaDependency>
 }) {
+  useLanguage()
+
   const label = proofTreeRuleLabel(node)
   const nodeRef = useRef<HTMLDivElement>(null)
   const conclusionRef = useRef<HTMLDivElement>(null)
@@ -162,9 +167,9 @@ function ProofTreeNodeView({
           ))}
         </div>
       )}
-      {node.isReference && <div className="proof-tree-source">⋮ (ステップ {node.step.ord})</div>}
+      {node.isReference && <div className="proof-tree-source">{t("ProofTree_309")}{node.step.ord})</div>}
       {node.step.step_kind === 'theorem' && node.children.length === 0 && !node.isReference && (
-        <div className="proof-tree-source">⋮ ({lemmas.get(node.step.applied_proof_id ?? -1)?.theorem.name ?? '引用した証明'})</div>
+        <div className="proof-tree-source">⋮ ({lemmas.get(node.step.applied_proof_id ?? -1)?.theorem.name ?? t("ProofStepJustification_293")})</div>
       )}
       <div ref={conclusionRef} className="proof-tree-conclusion">
         <span className="proof-tree-inference-line" aria-hidden="true" />
@@ -173,8 +178,8 @@ function ProofTreeNodeView({
           type="button"
           title={
             node.isDischarged
-              ? `ステップ (${node.step.ord}) を一覧で表示（解消済みの仮定）`
-              : `ステップ (${node.step.ord}) を一覧で表示`
+              ? t("ProofTree_311", node.step.ord)
+              : t("ProofTree_312", node.step.ord)
           }
           onClick={() => onSelectStep?.(node.step.ord)}
           className="proof-tree-formula"
@@ -184,7 +189,7 @@ function ProofTreeNodeView({
           {node.isDischarged && <span className="proof-tree-bracket">]</span>}
         </button>
         <PropositionExplanation step={node.step} symbolsById={symbolsById} lemmas={lemmas}
-          trigger="説明" onShowInList={onSelectStep} className="proof-tree-explanation ml-2 text-xs text-indigo-700 hover:underline" />
+          trigger={t("ProofTree_313")} onShowInList={onSelectStep} className="proof-tree-explanation ml-2 text-xs text-indigo-700 hover:underline" />
         <sub className="proof-tree-step-number">({node.step.ord})</sub>
       </div>
     </div>
@@ -194,7 +199,7 @@ function ProofTreeNodeView({
 function renderElementToSvg(element: HTMLElement): string {
   const width = Math.ceil(element.scrollWidth)
   const height = Math.ceil(element.scrollHeight)
-  if (width === 0 || height === 0) throw new Error('空の証明図は書き出せません')
+  if (width === 0 || height === 0) throw new Error(t("ProofTree_314"))
 
   const clone = element.cloneNode(true) as HTMLElement
   clone.style.width = `${width}px`

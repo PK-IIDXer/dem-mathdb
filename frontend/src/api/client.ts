@@ -23,6 +23,7 @@ export class ApiError extends Error {
     this.status = status
     this.body = body
     this.position = extractPosition(body)
+    Object.defineProperty(this, 'message', { configurable: true, get: () => errorGuidance(this.status, this.body, this.retryAfter) ?? extractMessage(this.body) })
   }
 }
 

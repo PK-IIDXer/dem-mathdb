@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { usePageTitle } from '../hooks/usePageTitle'
 import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -12,7 +14,9 @@ import { OnboardingCoach } from '../components/OnboardingCoach'
 import { ONBOARDING_FORMULA, findOnboardingPredicate, onboardingQuery } from '../onboarding'
 
 export function FormulasPage() {
-  usePageTitle('論理式')
+  useLanguage()
+
+  usePageTitle(t("FormulasPage_649"))
   const readOnly = useReadOnly()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -36,7 +40,7 @@ export function FormulasPage() {
     <div className="space-y-6">
       {!readOnly && (
       <section>
-        <h2 className="mb-2 text-sm font-semibold text-slate-700">論理式を登録</h2>
+        <h2 className="mb-2 text-sm font-semibold text-slate-700">{t("FormulasPage_650")}</h2>
         <div className={onboarding ? 'rounded-xl ring-4 ring-indigo-200' : ''}>
           <FormulaEditor
             context={onboardingPredicate ? { P: onboardingPredicate.id } : undefined}
@@ -55,7 +59,7 @@ export function FormulasPage() {
       <section className="grid grid-cols-2 gap-4">
         <div>
           <h2 className="mb-2 text-sm font-semibold text-slate-700">
-            登録済みの論理式 ({formulas.length})
+            {t("FormulasPage_651")}{formulas.length})
           </h2>
           <table className="w-full text-left text-sm">
             <thead className="text-xs text-slate-500">
@@ -82,7 +86,7 @@ export function FormulasPage() {
                       className="rounded font-medium text-indigo-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                       {formula.id}
-                      <span className="sr-only"> の詳細を表示</span>
+                      <span className="sr-only"> {t("FormulasPage_652")}</span>
                     </button>
                   </td>
                   <td className="py-1 pr-3">{formula.formula_type.name}</td>
@@ -95,20 +99,20 @@ export function FormulasPage() {
         </div>
 
         <div>
-          <h2 className="mb-2 text-sm font-semibold text-slate-700">詳細</h2>
+          <h2 className="mb-2 text-sm font-semibold text-slate-700">{t("AxiomsPage_489")}</h2>
           {selectedId != null ? (
             <FormulaDetailView id={selectedId} />
           ) : (
-            <p className="text-sm text-slate-400">一覧から論理式を選んでください</p>
+            <p className="text-sm text-slate-400">{t("FormulasPage_654")}</p>
           )}
         </div>
       </section>
 
       {onboarding && (
-        <OnboardingCoach step={1} title="式を書いてみる">
-          <p>下の欄へ次の式をそのまま入力してください。</p>
+        <OnboardingCoach step={1} title={t("FormulasPage_655")}>
+          <p>{t("FormulasPage_656")}</p>
           <code className="block rounded bg-slate-100 px-2 py-1">{ONBOARDING_FORMULA}</code>
-          <p>数式表示で「任意の x について P(x) なら P(x)」という解釈を確認し、［確認して登録する］を押します。</p>
+          <p>{t("FormulasPage_657")}</p>
         </OnboardingCoach>
       )}
     </div>
@@ -116,6 +120,8 @@ export function FormulasPage() {
 }
 
 function FormulaDetailView({ id }: { id: number }) {
+  useLanguage()
+
   const { data: formula } = useQuery({
     queryKey: ['formulas', id],
     queryFn: () => formulasApi.get(id),
@@ -133,7 +139,7 @@ function FormulaDetailView({ id }: { id: number }) {
   const latex = useMemo(() => (tree ? renderLatex(tree, symbolsById) : ''), [tree, symbolsById])
   const preview = useMemo(() => (tree ? renderPreview(tree, symbolsById) : ''), [tree, symbolsById])
 
-  if (!formula) return <p className="text-sm text-slate-400">読み込み中…</p>
+  if (!formula) return <p className="text-sm text-slate-400">{t("BetaGettingStarted_109")}</p>
 
   return (
     <div className="space-y-2 rounded-lg border border-slate-200 p-4 text-sm">

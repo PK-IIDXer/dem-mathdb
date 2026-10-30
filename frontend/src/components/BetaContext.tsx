@@ -1,12 +1,14 @@
+import { locale } from '../i18n/language'
+import { t } from "../i18n/translate"
 import { createContext, useContext } from 'react'
 import type { BetaConfig } from '../api/config'
 
 export const BetaContext = createContext<BetaConfig | null>(null)
 export const useBeta = () => useContext(BetaContext)
 
-export const MAINTENANCE = 'メンテナンス中のため、書き込みを止めています。少し待って再読み込みしてください。'
-export const FULL = '容量の上限に達したため、次のリセットまで書き込めません。'
+export const MAINTENANCE = t("errorGuidance_021")
+export const FULL = t("errorGuidance_022")
 export function localTime(value: string | null): string {
-  if (!value || Number.isNaN(Date.parse(value))) return '未定'
-  return new Date(value).toLocaleString()
+  if (!value || Number.isNaN(Date.parse(value))) return t("BetaContext_100")
+  return new Date(value).toLocaleString(locale())
 }

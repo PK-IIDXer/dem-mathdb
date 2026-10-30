@@ -1,10 +1,12 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import type { Theorem } from '../api/types'
 
 const STATUS_LABEL: Record<string, string> = {
-  conjecture: '未証明',
-  proven: '証明済み',
+  get conjecture() { return t("DependencyGraph_125") },
+  get proven() { return t("DependencyGraph_126") },
 }
 const STATUS_BADGE: Record<string, string> = {
   conjecture: 'bg-slate-200 text-slate-700',
@@ -23,6 +25,8 @@ interface Props {
  * AxiomService.list_used_in_theorems / TheoremService.list_used_in_theorems
  * on the backend). */
 export function UsedInTheoremsSection({ title, queryKey, queryFn }: Props) {
+  useLanguage()
+
   const { data: theorems = [] } = useQuery({ queryKey, queryFn })
 
   return (
@@ -30,9 +34,9 @@ export function UsedInTheoremsSection({ title, queryKey, queryFn }: Props) {
       <div className="mb-1 text-xs text-slate-500">
         {title} ({theorems.length})
       </div>
-      <p className="mb-1 text-xs text-slate-500">練習の定理と推論ノートを除いた表示です。</p>
+      <p className="mb-1 text-xs text-slate-500">{t("UsedInTheoremsSection_471")}</p>
       {theorems.length === 0 ? (
-        <p className="text-xs text-slate-400">表示対象はまだありません</p>
+        <p className="text-xs text-slate-400">{t("UsedInTheoremsSection_472")}</p>
       ) : (
         <ul className="space-y-1 text-sm">
           {theorems.map((theorem) => (

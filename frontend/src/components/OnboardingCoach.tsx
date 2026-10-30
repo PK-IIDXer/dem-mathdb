@@ -1,3 +1,4 @@
+import { useLanguage } from "../i18n/useLanguage"
 import type { ReactNode } from 'react'
 
 export function OnboardingCoach({ step, title, children }: {
@@ -5,6 +6,8 @@ export function OnboardingCoach({ step, title, children }: {
   title: string
   children: ReactNode
 }) {
+  useLanguage()
+
   return (
     <aside className="fixed bottom-5 right-5 z-30 w-[min(24rem,calc(100vw-2.5rem))] rounded-xl border border-indigo-300 bg-white p-4 shadow-xl">
       <div className="mb-2 flex items-center justify-between gap-3">

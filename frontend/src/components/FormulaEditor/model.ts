@@ -1,3 +1,4 @@
+import { t } from "../../i18n/translate"
 import type { Symbol, Token } from '../../api/types'
 import type { WorkspaceInfo } from '../../api/workspace'
 import { SYMBOL_TYPE } from '../../constants/symbolTypes'
@@ -87,9 +88,9 @@ export function groupSymbolsByNamespace(
     .sort(([left], [right]) => left.localeCompare(right))
     .map(([namespace, items]) => ({
       namespace,
-      label: namespace === workspace?.local_namespace_name
-        ? workspace.title ? `${workspace.title} workspace` : 'ローカル workspace'
-        : namespace,
+      get label() { return namespace === workspace?.local_namespace_name
+        ? workspace.title ? `${workspace.title} workspace` : t("model_179")
+        : namespace },
       symbols: [...items].sort((left, right) => left.name.localeCompare(right.name) || left.id - right.id),
     }))
 }
@@ -235,7 +236,7 @@ function renderInfixOperand(
  * keep parentheses on either same-precedence operand so DSS remains unambiguous.
  */
 export function renderPreview(node: EditorNode | null, symbolsById: Map<number, Symbol>, binderNames: string[] = [], avoidNames?: Set<string>): string {
-  try { return renderPreviewUnsafe(node, symbolsById, binderNames, avoidNames) } catch { return '表示できない式' }
+  try { return renderPreviewUnsafe(node, symbolsById, binderNames, avoidNames) } catch { return t("model_180") }
 }
 
 function renderPreviewUnsafe(
@@ -410,7 +411,7 @@ function isSelfDelimiting(node: EditorNode | null, symbolsById: Map<number, Symb
  * `renderPreview`, and other applications use `token(arg, arg, ...)`.
  */
 export function renderLatex(node: EditorNode | null, symbolsById: Map<number, Symbol>, binderNames: string[] = [], avoidNames?: Set<string>): string {
-  try { return renderLatexUnsafe(node, symbolsById, binderNames, avoidNames) } catch { return '表示できない式' }
+  try { return renderLatexUnsafe(node, symbolsById, binderNames, avoidNames) } catch { return t("model_180") }
 }
 
 function renderLatexUnsafe(

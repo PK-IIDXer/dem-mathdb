@@ -1,3 +1,5 @@
+import { useLanguage } from "../../i18n/useLanguage"
+import { t } from "../../i18n/translate"
 import { UserSymbolNotice } from '../BetaIdentity'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -12,6 +14,8 @@ import { renderLatex, renderPreview, tokensToTree } from '../FormulaEditor/model
  * Formula (no tokens), so a human-readable preview needs a follow-up fetch
  * for the token list. */
 export function FormulaPreview({ formulaId, showTextPreview = true }: { formulaId: number; showTextPreview?: boolean }) {
+  useLanguage()
+
   const { data: formula } = useQuery({
     queryKey: ['formulas', formulaId],
     queryFn: () => formulasApi.get(formulaId),
@@ -32,8 +36,8 @@ export function FormulaPreview({ formulaId, showTextPreview = true }: { formulaI
   )
   const latex = useMemo(() => (tree ? renderLatex(tree, symbolsById) : null), [tree, symbolsById])
   const preview = useMemo(() => (tree ? renderPreview(tree, symbolsById) : null), [tree, symbolsById])
-  if (!formula) return <span className="text-slate-400">読み込み中…</span>
-  if (!tree) return <span className="text-red-700">この式は木で表示できません</span>
+  if (!formula) return <span className="text-slate-400">{t("BetaGettingStarted_109")}</span>
+  if (!tree) return <span className="text-red-700">{t("FormulaEditor_168")}</span>
   return (
     <span>
       <UserSymbolNotice formulaIds={[formulaId]} />

@@ -1,4 +1,5 @@
 import type { Symbol, Token } from '../../api/types'
+import { getLanguage, type Language } from '../../i18n/language'
 import { SYMBOL_TYPE } from '../../constants/symbolTypes'
 import { freshBoundVarDisplayName, tokensToTree, type EditorNode } from '../FormulaEditor/model'
 
@@ -10,7 +11,7 @@ import { freshBoundVarDisplayName, tokensToTree, type EditorNode } from '../Form
  * already holds, never sent anywhere, and never consulted by validation.
  *
  * Where a symbol's reading comes from, in order:
- * 1. `COMMON_READINGS`: the 9 symbols of the public logical core, keyed by public ID.
+ * 1. `COMMON_READINGS`: the 10 symbols of the shared logical core, keyed by public ID.
  * 2. The symbol's `remarks`, when it starts with `Name(p1,p2,...): meaning`
  *    and the parameters can be substituted safely (`parseRemarkTemplate`),
  *    or, for a binder, `Name x. φ: sentence` (`parseBinderTemplate`).
@@ -25,11 +26,11 @@ import { freshBoundVarDisplayName, tokensToTree, type EditorNode } from '../Form
 
 type CommonReading =
   | { kind: 'bot' | 'not' | 'and' | 'or' | 'imp' | 'iff' }
-  | { kind: 'relation'; read: (left: string, right: string) => string }
+  | { kind: 'relation'; read: (left: string, right: string) => string; readEnglish: (left: string, right: string) => string }
   | { kind: 'forall'; domain: string }
   | { kind: 'exists'; domain: string; unique: boolean }
 
-/** The public logical core (`⊥ ¬ ∨ ∧ → ↔ ∀ ∃ =`), keyed by
+/** The shared logical core (`⊥ ¬ ∨ ∧ → ↔ ∀ ∃ = ∈`), keyed by
  * the public ID so a renamed or same-named user symbol never picks up a
  * logical reading. */
 export const COMMON_READINGS: ReadonlyMap<string, CommonReading> = new Map<string, CommonReading>([
@@ -42,7 +43,8 @@ export const COMMON_READINGS: ReadonlyMap<string, CommonReading> = new Map<strin
   // ∀ / ∃ run over every well-formed term.
   ['893f7c1c-3e22-564f-a976-0a8e8e241f62', { kind: 'forall', domain: '項' }], // ∀
   ['b299df13-8ca1-5327-9b4c-f08b1231a678', { kind: 'exists', domain: '項', unique: false }], // ∃
-  ['9c6f5697-7475-52bd-b600-b981e924af62', { kind: 'relation', read: (a, b) => `${a} と ${b} が等しい` }], // =
+  ['9c6f5697-7475-52bd-b600-b981e924af62', { kind: 'relation', read: (a, b) => `${a} と ${b} が等しい`, readEnglish: (a, b) => `${a} equals ${b}` }], // =
+  ['2267b6f1-547f-5692-a001-4f67db673389', { kind: 'relation', read: (a, b) => `${a} が ${b} の元である`, readEnglish: (a, b) => `${a} is an element of ${b}` }], // ∈
 ])
 
 // ---------------------------------------------------------------------------
@@ -253,7 +255,7 @@ export function classifySymbol(symbol: Symbol, propositionTypeId: number): Symbo
 // Reading tree
 
 type Read =
-  | { t: 'atom'; text: string; bare: boolean }
+  | { t: 'atom'; text: string; englishText?: string; bare: boolean }
   | { t: 'bot' }
   | { t: 'not'; body: Read }
   | { t: 'and' | 'or'; items: Read[] }
@@ -271,6 +273,8 @@ export interface ReadingBlock {
 }
 
 export interface FormulaReading {
+  language?: Language
+  japaneseSentence?: string
   /** The whole reading as one sentence. */
   sentence: string
   /** The same reading split into items when it is long. */
@@ -282,6 +286,7 @@ export interface FormulaReading {
 }
 
 export interface ReadingOptions {
+  language?: Language
   /** A reading longer than this many characters is split into items. */
   splitLength?: number
   /** How many levels of items may nest. */
@@ -338,9 +343,18 @@ function readFormulaUnsafe(
   const tree = readProposition(root, ctx, [])
   const splitLength = options.splitLength ?? READING_SPLIT_LENGTH
   const maxDepth = options.maxDepth ?? READING_MAX_DEPTH
+  // Every symbol, including symbols inside terms, must be core or a variable.
+  // One foundation symbol selects Japanese for the entire reading.
+  const english = (options.language ?? getLanguage()) === 'en' && ctx.seen.every(id => {
+    const symbol = symbolsById.get(id)!
+    return COMMON_READINGS.has(symbol.public_id) || FREE_VARIABLE_TYPES.has(symbol.symbol_type.name)
+  })
+  const japaneseSentence = linear(tree)
   return {
-    sentence: linear(tree),
-    block: layout(tree, splitLength, maxDepth),
+    language: english ? 'en' : 'ja',
+    japaneseSentence,
+    sentence: english ? linearEnglish(tree) : japaneseSentence,
+    block: english ? { text: linearEnglish(tree) } : layout(tree, splitLength, maxDepth),
     nameFallbackSymbolIds: [...ctx.fallback],
     symbolIds: ctx.seen,
   }
@@ -427,6 +441,7 @@ function readProposition(node: EditorNode, ctx: Context, scope: string[]): Read 
         return {
           t: 'atom',
           text: common.read(printArgument(child(0), ctx, scope), printArgument(child(1), ctx, scope)),
+          englishText: common.readEnglish(printArgument(child(0), ctx, scope), printArgument(child(1), ctx, scope)),
           bare: false,
         }
     }
@@ -598,6 +613,23 @@ function linear(read: Read): string {
   }
 }
 
+/** Used only for trees containing core symbols and variables. */
+function linearEnglish(read: Read): string {
+  const quote = (node: Read) => `“${linearEnglish(node)}”`
+  switch (read.t) {
+    case 'atom': return read.englishText ?? read.text
+    case 'bot': return 'contradiction'
+    case 'not': return `it is not the case that ${quote(read.body)}`
+    case 'and': return read.items.map(quote).join(' and ')
+    case 'or': return read.items.map(quote).join(' or ')
+    case 'imp': return `if ${read.antecedents.map(quote).join(' and ')}, then ${quote(read.consequent)}`
+    case 'iff': return `${quote(read.left)} if and only if ${quote(read.right)}`
+    case 'forall': return `for every term ${read.vars.join(', ')}, ${linearEnglish(read.body)}`
+    case 'exists': return `there exists ${read.unique ? 'exactly one term' : 'a term'} ${read.vars.join(', ')} such that ${linearEnglish(read.body)}`
+    case 'binder': return linear(read) // Unreachable for a core-only tree.
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Items for long readings
 
@@ -659,9 +691,14 @@ export function itemMarker(index: number): string {
 
 /** A theorem read with its premises: 「P1」と「P2」が成り立つなら、「C」が成り立つ. */
 export function readTheoremSentence(premises: FormulaReading[], conclusion: FormulaReading): string {
-  const c = `「${conclusion.sentence}」が成り立つ`
+  const all = [...premises, conclusion]
+  if (getLanguage() === 'en' && all.every(reading => reading.language === 'en')) {
+    const c = `“${conclusion.sentence}” holds`
+    return premises.length === 0 ? c : `if ${premises.map(reading => `“${reading.sentence}” holds`).join(' and ')}, then ${c}`
+  }
+  const c = `「${conclusion.japaneseSentence ?? conclusion.sentence}」が成り立つ`
   if (premises.length === 0) return c
-  return `${premises.map((premise) => `「${premise.sentence}」`).join('と')}が成り立つなら、${c}`
+  return `${premises.map((premise) => `「${premise.japaneseSentence ?? premise.sentence}」`).join('と')}が成り立つなら、${c}`
 }
 
 // Reading is display-only; an unrenderable formula never changes API validity.

@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 /* oxlint-disable react/only-export-components -- provider hooks and keyboard predicates share one command runtime */
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import { useLocation } from 'react-router-dom'
@@ -45,6 +47,8 @@ export function eventBinding(event: KeyboardEvent): string | null {
 }
 
 export function CommandProvider({ children }: { children: ReactNode }) {
+  useLanguage()
+
   const readOnly = useReadOnly()
   const { pathname } = useLocation()
   const environment = useMemo(() => ({ pathname, readOnly }), [pathname, readOnly])
@@ -158,7 +162,7 @@ export function CommandProvider({ children }: { children: ReactNode }) {
   )
   const inspect = useCallback((referenceElement: Element | null = document.activeElement) => available().map((definition) => {
     const enabled = resolveCommand(definition, referenceElement) != null
-    return { definition, enabled, disabledReason: enabled ? undefined : '現在の画面では利用できません' }
+    return { definition, enabled, disabledReason: enabled ? undefined : t("CommandProvider_048") }
   }), [available, resolveCommand])
 
   useEffect(() => {

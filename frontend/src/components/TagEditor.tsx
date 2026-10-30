@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { tagsApi } from '../api/tags'
@@ -12,6 +14,8 @@ interface Props {
 }
 
 export function TagEditor({ tags, onAdd, onRemove, allowRuleTag = true }: Props) {
+  useLanguage()
+
   const readOnly = useReadOnly()
   const queryClient = useQueryClient()
   const { data: allTags = [] } = useQuery({ queryKey: ['tags'], queryFn: () => tagsApi.list() })
@@ -49,7 +53,7 @@ export function TagEditor({ tags, onAdd, onRemove, allowRuleTag = true }: Props)
             )}
           </span>
         ))}
-        {tags.length === 0 && <span className="text-xs text-slate-400">タグなし</span>}
+        {tags.length === 0 && <span className="text-xs text-slate-400">{t("TagEditor_428")}</span>}
       </div>
       {!readOnly && (
         <div className="flex items-center gap-1.5">
@@ -58,7 +62,7 @@ export function TagEditor({ tags, onAdd, onRemove, allowRuleTag = true }: Props)
             onChange={(e) => e.target.value && onAdd(Number(e.target.value))}
             className="rounded border border-slate-300 px-1.5 py-0.5 text-xs"
           >
-            <option value="">既存タグを追加…</option>
+            <option value="">{t("TagEditor_429")}</option>
             {candidates.map((tag) => (
               <option key={tag.id} value={tag.id}>
                 {tag.name}
@@ -68,7 +72,7 @@ export function TagEditor({ tags, onAdd, onRemove, allowRuleTag = true }: Props)
           <input
             value={newTagName}
             onChange={(e) => setNewTagName(e.target.value)}
-            placeholder="新規タグ名"
+            placeholder={t("TagEditor_430")}
             className="w-28 rounded border border-slate-300 px-1.5 py-0.5 text-xs"
           />
           <button
@@ -77,8 +81,7 @@ export function TagEditor({ tags, onAdd, onRemove, allowRuleTag = true }: Props)
             onClick={() => createMutation.mutate(newTagName.trim())}
             className="rounded bg-slate-600 px-2 py-0.5 text-xs text-white disabled:opacity-40"
           >
-            + 作成して追加
-          </button>
+            {t("TagEditor_431")}</button>
         </div>
       )}
     </div>

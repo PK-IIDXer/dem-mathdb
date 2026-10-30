@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { useMemo } from 'react'
 import { useBeta } from './BetaContext'
 import { renderDisplayLatex } from './latexDisplay'
@@ -10,6 +12,8 @@ interface LatexProps {
 /** Renders a LaTeX string via KaTeX. Parse errors render as KaTeX's inline
  * error markup instead of throwing, since templates are free-form user input. */
 export function Latex({ children, display = false }: LatexProps) {
+  useLanguage()
+
   const beta = !!useBeta()
   // React compares dangerouslySetInnerHTML by object identity, so a fresh
   // object would re-assign innerHTML (and re-parse the KaTeX markup) on every
@@ -22,5 +26,5 @@ export function Latex({ children, display = false }: LatexProps) {
     [children, display, beta],
   )
   return markup ? <span className="inline-block max-w-full overflow-x-auto align-middle" dangerouslySetInnerHTML={markup} />
-    : <span className="text-xs text-slate-500">表示できない式</span>
+    : <span className="text-xs text-slate-500">{t("model_180")}</span>
 }

@@ -1,0 +1,308 @@
+[
+  {
+    "file": "commands/commands.ts",
+    "kind": "StringLiteral",
+    "literal": "'推論定理'",
+    "reason": "Existing Japanese search keywords are retained in both languages."
+  },
+  {
+    "file": "commands/commands.ts",
+    "kind": "StringLiteral",
+    "literal": "'推論定理'",
+    "reason": "Existing Japanese search keywords are retained in both languages."
+  },
+  {
+    "file": "commands/commands.ts",
+    "kind": "StringLiteral",
+    "literal": "'説明'",
+    "reason": "Existing Japanese search keywords are retained in both languages."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'項'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'項'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateMiddle",
+    "literal": "} と ${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "} が等しい`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateMiddle",
+    "literal": "} が ${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "} の元である`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'、すなわち'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'こと'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'が'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "}である`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "} である`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'項型自由変数記号'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'命題型自由変数記号'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'である'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "}ではない`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "}」ではない`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'であるような'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "}ような`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "}ような`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "}」が成り立つような`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'がただ一つある'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'がある'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'矛盾'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'かつ'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'または'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'かつ'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'ならば'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'と'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'が同値である'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateHead",
+    "literal": "`すべての${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateMiddle",
+    "literal": "} について、${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateHead",
+    "literal": "`次の ${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "} つがすべて成り立つ`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateHead",
+    "literal": "`次の ${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "} つのうち少なくとも 1 つが成り立つ`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'次の 2 つが同値である'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'① が成り立つならば、② が成り立つ'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateHead",
+    "literal": "`次の ${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateMiddle",
+    "literal": "} つがすべて成り立つならば、${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateHead",
+    "literal": "`すべての${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateMiddle",
+    "literal": "} について、${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateMiddle",
+    "literal": "}ような${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "LastTemplateToken",
+    "literal": "}」が成り立つ`",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "StringLiteral",
+    "literal": "'と'",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "components/FormulaReading/reading.ts",
+    "kind": "TemplateMiddle",
+    "literal": "}が成り立つなら、${",
+    "reason": "Existing Japanese reading grammar and DB type-name keys; never UI translation keys."
+  },
+  {
+    "file": "constants/symbolTypes.ts",
+    "kind": "StringLiteral",
+    "literal": "'論理記号'",
+    "reason": "Exact DB type-name keys; translating these changes branching."
+  },
+  {
+    "file": "constants/symbolTypes.ts",
+    "kind": "StringLiteral",
+    "literal": "'項型自由変数記号'",
+    "reason": "Exact DB type-name keys; translating these changes branching."
+  },
+  {
+    "file": "constants/symbolTypes.ts",
+    "kind": "StringLiteral",
+    "literal": "'命題型自由変数記号'",
+    "reason": "Exact DB type-name keys; translating these changes branching."
+  }
+]

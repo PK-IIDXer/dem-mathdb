@@ -1,3 +1,6 @@
+import { useDisplayError } from "../../i18n/useDisplayError"
+import { useLanguage } from "../../i18n/useLanguage"
+import { t } from "../../i18n/translate"
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { proofsApi } from '../../api/proofs'
@@ -28,21 +31,23 @@ interface StepFormProps {
 }
 
 const COMMANDS: { kind: StepKind; label: string }[] = [
-  { kind: 'premise', label: '前提を使う' },
-  { kind: 'assumption', label: '仮定する' },
-  { kind: 'axiom', label: '公理を使う' },
-  { kind: 'theorem', label: '補題を使う' },
-  { kind: 'mp', label: '含意から導く' },
-  { kind: 'gen', label: '任意の変数に広げる' },
-  { kind: 'imp_intro', label: '仮定を閉じる' },
+  { kind: 'premise', get label() { return t("StepForm_372") } },
+  { kind: 'assumption', get label() { return t("StepForm_373") } },
+  { kind: 'axiom', get label() { return t("StepForm_374") } },
+  { kind: 'theorem', get label() { return t("StepForm_375") } },
+  { kind: 'mp', get label() { return t("StepForm_376") } },
+  { kind: 'gen', get label() { return t("StepForm_377") } },
+  { kind: 'imp_intro', get label() { return t("StepForm_378") } },
 ]
 
 export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}, initialRuleStepOrd = null, showRules = true }: StepFormProps) {
+  useLanguage()
+
   const formRef = useRef<HTMLDivElement>(null)
   const [kind, setKind] = useState<StepKind>('premise')
   const [ruleMode, setRuleMode] = useState(false)
   const [assumptionConclusionId, setAssumptionConclusionId] = useState<number | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useDisplayError()
   const [premiseOrd, setPremiseOrd] = useState<number | ''>('')
   const [axiomId, setAxiomId] = useState<number | ''>('')
   const [appliedTheoremId, setAppliedTheoremId] = useState<number | ''>('')
@@ -162,7 +167,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
       }
       setError(null)
     },
-    onError: (err) => setError(err instanceof ApiError ? err.message : '候補を計算できませんでした'),
+    onError: (err) => setError(() => (err instanceof ApiError ? err.message : t("StepForm_379"))),
   })
 
   useEffect(() => {
@@ -215,7 +220,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
       setSuggestion(null)
       setError(null)
     },
-    onError: (err) => setError(err instanceof ApiError ? err.message : 'ステップを追加できませんでした'),
+    onError: (err) => setError(() => (err instanceof ApiError ? err.message : t("StepForm_380"))),
   })
 
   function buildStepInput(): ProofStepCreate | null {
@@ -297,7 +302,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
       onChange={(event) => change(Number(event.target.value))}
       className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
     >
-      <option value="" disabled>選択…</option>
+      <option value="" disabled>{t("StepForm_381")}</option>
       {priorSteps.map((step) => <option key={step.ord} value={step.ord}>#{step.ord}</option>)}
     </select>
   )
@@ -305,7 +310,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
   return (
     <div ref={formRef} data-step-form data-rule-enabled={showRules} className="space-y-4 rounded-lg border border-slate-200 p-4">
       <div>
-        <div className="mb-2 text-xs font-medium text-slate-500">何をしますか？</div>
+        <div className="mb-2 text-xs font-medium text-slate-500">{t("StepForm_382")}</div>
         <div className="flex flex-wrap gap-2">
           {COMMANDS.map((command) => (
             <button
@@ -317,21 +322,20 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
               {command.label}
             </button>
           ))}
-          {showRules && <button type="button" onClick={() => { setKind('theorem'); setRuleMode(true) }} className={`rounded px-3 py-1.5 text-xs ${kind === 'theorem' && ruleMode ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>推論定理を使う</button>}
+          {showRules && <button type="button" onClick={() => { setKind('theorem'); setRuleMode(true) }} className={`rounded px-3 py-1.5 text-xs ${kind === 'theorem' && ruleMode ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>{t("commands_076")}</button>}
         </div>
       </div>
 
       {kind === 'premise' && (
         <label className="block text-xs text-slate-500">
-          使う前提
-          <select
+          {t("StepForm_384")}<select
             value={premiseOrd}
             onChange={(event) => setPremiseOrd(Number(event.target.value))}
             className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
           >
-            <option value="" disabled>選択…</option>
+            <option value="" disabled>{t("StepForm_381")}</option>
             {premises.map((premise) => (
-              <option key={premise.ord} value={premise.ord}>前提 {premise.ord + 1}（式 #{premise.formula.id}）</option>
+              <option key={premise.ord} value={premise.ord}>{t("InferenceRulePicker_229")}{premise.ord + 1}{t("StepForm_387")}{premise.formula.id}）</option>
             ))}
           </select>
         </label>
@@ -339,8 +343,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
 
       {kind === 'axiom' && (
         <label className="block text-xs text-slate-500">
-          使う公理
-          <select
+          {t("StepForm_388")}<select
             value={axiomId}
             onChange={(event) => {
               const id = Number(event.target.value)
@@ -349,7 +352,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
             }}
             className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
           >
-            <option value="" disabled>選択…</option>
+            <option value="" disabled>{t("StepForm_381")}</option>
             {axioms.map((axiom) => <option key={axiom.id} value={axiom.id}>{axiom.name}</option>)}
           </select>
         </label>
@@ -360,8 +363,8 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
           {ruleMode && <InferenceRulePicker testId="step-rule-picker" selectedId={appliedTheoremId} onChoose={(theorem) => chooseLemma(theorem.id)} />}
           {!ruleMode && <>
           <div className="rounded border border-indigo-100 bg-indigo-50 p-3">
-            <div className="text-xs font-medium text-indigo-900">補題候補を絞り込む</div>
-            <div className="mt-2 text-xs text-slate-600">先に使いたいステップを選ぶ</div>
+            <div className="text-xs font-medium text-indigo-900">{t("StepForm_390")}</div>
+            <div className="mt-2 text-xs text-slate-600">{t("StepForm_391")}</div>
             <div className="mt-1 flex flex-wrap gap-2">
               {priorSteps.map((step) => (
                 <label key={step.ord} className="rounded bg-white px-2 py-1 text-xs text-slate-700">
@@ -374,9 +377,9 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
                   #{step.ord}
                 </label>
               ))}
-              {priorSteps.length === 0 && <span className="text-xs text-slate-400">利用できるステップはまだありません</span>}
+              {priorSteps.length === 0 && <span className="text-xs text-slate-400">{t("StepForm_392")}</span>}
             </div>
-            <div className="mt-3 text-xs text-slate-600">または、次に示したい式を書く</div>
+            <div className="mt-3 text-xs text-slate-600">{t("StepForm_393")}</div>
             <div className="mt-1 rounded bg-white p-2">
               <FormulaPicker value={lemmaGoalFormulaId} onChange={setLemmaGoalFormulaId} context={context} />
             </div>
@@ -385,7 +388,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
           {hasLemmaConstraints && (
             <div className="rounded border border-slate-200 p-3">
               <div className="text-xs font-medium text-slate-700">
-                おすすめの補題 {applicableFetching ? '（計算中…）' : `（${applicableTheorems.length} 件）`}
+                {t("StepForm_394")}{applicableFetching ? t("StepForm_395") : t("StepForm_396", applicableTheorems.length)}
               </div>
               <div className="mt-2 space-y-1">
                 {concreteApplicable.map((item) => (
@@ -402,7 +405,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
               </div>
               {schematicApplicable.length > 0 && (
                 <details className="mt-2 text-xs text-slate-600">
-                  <summary className="cursor-pointer">汎用補題（{schematicApplicable.length} 件）</summary>
+                  <summary className="cursor-pointer">{t("StepForm_397")}{schematicApplicable.length} {t("StepForm_398")}</summary>
                   <div className="mt-1 space-y-1 pl-2">
                     {schematicApplicable.map((item) => (
                       <button
@@ -419,17 +422,16 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
                 </details>
               )}
               {!applicableFetching && applicableTheorems.length === 0 && (
-                <p className="mt-2 text-xs text-slate-500">候補がありません。下の定理名検索を使えます。</p>
+                <p className="mt-2 text-xs text-slate-500">{t("StepForm_399")}</p>
               )}
             </div>
           )}
 
           <label className="block text-xs text-slate-500">
-            定理名で検索
-            <input
+            {t("StepForm_400")}<input
               value={lemmaSearch}
               onChange={(event) => setLemmaSearch(event.target.value)}
-              placeholder="定理名で絞り込み"
+              placeholder={t("StepForm_401")}
               className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
             />
             <select
@@ -440,7 +442,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
               }}
               className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
             >
-              <option value="" disabled>選択…</option>
+              <option value="" disabled>{t("StepForm_381")}</option>
               {lemmaOptions.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.name}
@@ -452,8 +454,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
           {suggestion && Array.from({ length: suggestion.premise_count }, (_, index) => (
             <div key={index} className="block text-xs text-slate-500">
               <label>
-              前提 {index + 1} に使うステップ
-              <select
+              {t("InferenceRulePicker_229")}{index + 1} {t("StepForm_404")}<select
                 value={argStepOrds[index] ?? ''}
                 onChange={(event) => {
                   const next = [...argStepOrds]
@@ -470,14 +471,14 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
                 }}
                 className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
               >
-                {ruleMode && <option value={-1} disabled>候補が複数あります。式を確認して選択…</option>}
+                {ruleMode && <option value={-1} disabled>{t("StepForm_405")}</option>}
                 {(suggestion.arg_candidates[index]?.length
                   ? suggestion.arg_candidates[index]
                   : ruleMode ? [] : priorSteps.map((step) => step.ord)
-                ).map((ord) => <option key={ord} value={ord}>#{ord}{ruleMode ? ` — ${priorSteps.find((step) => step.ord === ord)?.conclusion_formula.description ?? '一致候補'}` : ''}</option>)}
+                ).map((ord) => <option key={ord} value={ord}>#{ord}{ruleMode ? t("StepForm_406", priorSteps.find((step) => step.ord === ord)?.conclusion_formula.description ?? t("StepForm_407")) : ''}</option>)}
               </select>
               </label>
-              {ruleMode && (suggestion.arg_candidates[index]?.length ?? 0) > 1 && <p className="mt-1 text-amber-700">複数の step がこの前提の式に一致します。使う step を選んでください。</p>}
+              {ruleMode && (suggestion.arg_candidates[index]?.length ?? 0) > 1 && <p className="mt-1 text-amber-700">{t("StepForm_408")}</p>}
               {ruleMode && <div className="mt-1 space-y-1">
                 {(suggestion.arg_candidates[index] ?? []).map((ord) => {
                   const step = priorSteps.find((item) => item.ord === ord)
@@ -491,22 +492,21 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
 
       {kind === 'mp' && (
         <div className="grid grid-cols-2 gap-3">
-          <label className="text-xs text-slate-500">前件 φ{priorOptions(antecedentOrd, setAntecedentOrd)}</label>
-          <label className="text-xs text-slate-500">含意 φ→ψ{priorOptions(implicationOrd, setImplicationOrd)}</label>
+          <label className="text-xs text-slate-500">{t("StepForm_409")}{priorOptions(antecedentOrd, setAntecedentOrd)}</label>
+          <label className="text-xs text-slate-500">{t("StepForm_410")}{priorOptions(implicationOrd, setImplicationOrd)}</label>
         </div>
       )}
 
       {kind === 'gen' && (
         <div className="grid grid-cols-2 gap-3">
-          <label className="text-xs text-slate-500">広げる式{priorOptions(bodyOrd, setBodyOrd)}</label>
+          <label className="text-xs text-slate-500">{t("StepForm_411")}{priorOptions(bodyOrd, setBodyOrd)}</label>
           <label className="text-xs text-slate-500">
-            変数
-            <select
+            {t("StepForm_412")}<select
               value={genVarId}
               onChange={(event) => setGenVarId(Number(event.target.value))}
               className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
             >
-              <option value="" disabled>選択…</option>
+              <option value="" disabled>{t("StepForm_381")}</option>
               {termVars.map((symbol) => <option key={symbol.id} value={symbol.id}>{symbol.name}</option>)}
             </select>
           </label>
@@ -516,44 +516,41 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
       {kind === 'imp_intro' && (
         <div className="grid grid-cols-2 gap-3">
           <label className="text-xs text-slate-500">
-            閉じる仮定
-            <select
+            {t("StepForm_414")}<select
               value={assumptionOrd}
               onChange={(event) => setAssumptionOrd(Number(event.target.value))}
               className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
             >
-              <option value="" disabled>選択…</option>
+              <option value="" disabled>{t("StepForm_381")}</option>
               {priorSteps.filter((step) => step.step_kind === 'assumption').map((step) => (
                 <option key={step.ord} value={step.ord}>#{step.ord}</option>
               ))}
             </select>
           </label>
-          <label className="text-xs text-slate-500">仮定の下で得た式{priorOptions(bodyOrd, setBodyOrd)}</label>
+          <label className="text-xs text-slate-500">{t("StepForm_416")}{priorOptions(bodyOrd, setBodyOrd)}</label>
         </div>
       )}
 
       {kind === 'assumption' && (
         <div>
-          <div className="mb-1 text-xs text-slate-500">仮定する式</div>
+          <div className="mb-1 text-xs text-slate-500">{t("StepForm_417")}</div>
           <FormulaPicker value={assumptionConclusionId} onChange={setAssumptionConclusionId} context={context} />
         </div>
       )}
 
       {suggestion && (
         <div className="rounded bg-indigo-50 px-3 py-2 text-xs text-indigo-800">
-          {suggestion.defaulted_to_identity.length + suggestion.subst.term_substs.length + suggestion.subst.prop_substs.length + suggestion.undetermined.length} 件中
-          {' '}{suggestion.defaulted_to_identity.length + suggestion.subst.term_substs.length + suggestion.subst.prop_substs.length} 件を自動決定
-        </div>
+          {suggestion.defaulted_to_identity.length + suggestion.subst.term_substs.length + suggestion.subst.prop_substs.length + suggestion.undetermined.length} {t("StepForm_418")}{' '}{suggestion.defaulted_to_identity.length + suggestion.subst.term_substs.length + suggestion.subst.prop_substs.length} {t("StepForm_419")}</div>
       )}
       {suggestedConclusionLatex && (
         <div className="rounded border border-indigo-100 bg-white px-3 py-2">
-          <div className="mb-1 text-xs text-slate-500">追加される結論</div>
+          <div className="mb-1 text-xs text-slate-500">{t("StepForm_420")}</div>
           <Latex display>{suggestedConclusionLatex}</Latex>
         </div>
       )}
       {suggestion && suggestion.undetermined.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs text-amber-700">決められなかった変数だけ入力してください。</p>
+          <p className="text-xs text-amber-700">{t("StepForm_421")}</p>
           <SubstitutionEditor
             value={subst}
             onChange={setSubst}
@@ -569,7 +566,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
         onClick={() => runCommit()}
         className="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white disabled:opacity-40"
       >
-        このステップを追加 <kbd aria-hidden="true" className="ml-1 text-xs">Ctrl/⌘ Enter</kbd>
+        {t("StepForm_422")}<kbd aria-hidden="true" className="ml-1 text-xs">Ctrl/⌘ Enter</kbd>
       </button>
       {error && <p className="text-sm text-red-700">{error}</p>}
     </div>

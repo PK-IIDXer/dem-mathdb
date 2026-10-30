@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { usePageTitle } from '../hooks/usePageTitle'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -7,7 +9,9 @@ import { proofsApi } from '../api/proofs'
 import { useReadOnly } from '../ReadOnlyContext'
 
 export function ProofsPage() {
-  usePageTitle('証明')
+  useLanguage()
+
+  usePageTitle(t("ProofDetail_248"))
   const readOnly = useReadOnly()
   const navigate = useNavigate()
   const { data: theorems = [] } = useQuery({ queryKey: ['theorems'], queryFn: () => theoremsApi.listVisible() })
@@ -28,7 +32,7 @@ export function ProofsPage() {
   return (
     <div className="space-y-6">
       <section className="rounded-lg border border-slate-200 p-4">
-        <h2 className="mb-3 text-sm font-semibold text-slate-700">対象の定理を選ぶ</h2>
+        <h2 className="mb-3 text-sm font-semibold text-slate-700">{t("ProofsPage_698")}</h2>
         <div className="flex items-center gap-2">
           <select
             value={theoremId}
@@ -36,8 +40,7 @@ export function ProofsPage() {
             className="rounded border border-slate-300 px-2 py-1 text-sm"
           >
             <option value="" disabled>
-              選択…
-            </option>
+              {t("StepForm_381")}</option>
             {theorems.map((theorem) => (
               <option key={theorem.id} value={theorem.id}>
                 {theorem.name} ({theorem.status})
@@ -51,14 +54,13 @@ export function ProofsPage() {
               onClick={() => createProofMutation.mutate()}
               className="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white disabled:opacity-40"
             >
-              新規 Proof を作成
-            </button>
+              {t("ProofsPage_700")}</button>
           )}
         </div>
 
         {theoremId !== '' && (
           <div className="mt-3">
-            <div className="mb-1 text-xs text-slate-500">既存の Proof ({proofs.length})</div>
+            <div className="mb-1 text-xs text-slate-500">{t("ProofsPage_701")}{proofs.length})</div>
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof, index) => (
                 <Link
@@ -66,10 +68,10 @@ export function ProofsPage() {
                   to={`/theorems/${selectedTheorem?.public_id}/proofs/${proof.public_id}`}
                   className="rounded bg-slate-100 px-2 py-1 text-xs hover:bg-slate-200"
                 >
-                  証明 {index + 1} {proof.name ?? '(no name)'} — {proof.status}
+                  {t("ProofsPage_702")}{index + 1} {proof.name ?? '(no name)'} — {proof.status}
                 </Link>
               ))}
-              {proofs.length === 0 && <span className="text-xs text-slate-400">まだありません</span>}
+              {proofs.length === 0 && <span className="text-xs text-slate-400">{t("AxiomSystemDetailPage_505")}</span>}
             </div>
           </div>
         )}

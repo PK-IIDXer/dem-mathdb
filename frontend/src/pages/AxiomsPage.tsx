@@ -1,3 +1,6 @@
+import { useDisplayError } from "../i18n/useDisplayError"
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { EntityBadge } from '../components/BetaIdentity'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { useState } from 'react'
@@ -10,7 +13,9 @@ import { ApiError } from '../api/client'
 import { useReadOnly } from '../ReadOnlyContext'
 
 export function AxiomsPage() {
-  usePageTitle('公理')
+  useLanguage()
+
+  usePageTitle(t("ProofStepJustification_291"))
   return (
     <div className="space-y-8">
       <AxiomSection />
@@ -20,6 +25,8 @@ export function AxiomsPage() {
 }
 
 function AxiomSection() {
+  useLanguage()
+
   const readOnly = useReadOnly()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -37,7 +44,7 @@ function AxiomSection() {
   const [name, setName] = useState('')
   const [formulaId, setFormulaId] = useState<number | null>(null)
   const [description, setDescription] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useDisplayError()
 
   const registerMutation = useMutation({
     mutationFn: () =>
@@ -54,7 +61,7 @@ function AxiomSection() {
       setError(null)
       navigate(`/axioms/${axiom.public_id}`)
     },
-    onError: (err) => setError(err instanceof ApiError ? err.message : 'unknown error'),
+    onError: (err) => setError(() => (err instanceof ApiError ? err.message : 'unknown error')),
   })
 
   return (
@@ -63,7 +70,7 @@ function AxiomSection() {
 
       {!readOnly && (
       <div className="rounded-lg border border-slate-200 p-4">
-        <h3 className="mb-3 text-sm font-semibold text-slate-700">公理を登録</h3>
+        <h3 className="mb-3 text-sm font-semibold text-slate-700">{t("AxiomsPage_481")}</h3>
         <form
           className="space-y-3"
           onSubmit={(e) => {
@@ -85,12 +92,11 @@ function AxiomSection() {
             <FormulaPicker value={formulaId} onChange={setFormulaId} />
           </div>
           <label className="flex flex-col text-xs text-slate-500">
-            description (自然言語での説明)
-            <textarea
+            {t("AxiomsPage_482")}<textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
-              placeholder="例: 含意の推移律"
+              placeholder={t("AxiomsPage_483")}
               className="rounded border border-slate-300 px-2 py-1 text-sm"
             />
           </label>
@@ -99,8 +105,7 @@ function AxiomSection() {
             disabled={!name || formulaId == null || registerMutation.isPending}
             className="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white disabled:opacity-40"
           >
-            登録
-          </button>
+            {t("AxiomsPage_484")}</button>
           {error && <p className="text-sm text-red-700">{error}</p>}
         </form>
       </div>
@@ -114,11 +119,11 @@ function AxiomSection() {
       />
 
       <div>
-        <h3 className="mb-2 text-sm font-semibold text-slate-700">登録済みの公理 ({axioms.length})</h3>
+        <h3 className="mb-2 text-sm font-semibold text-slate-700">{t("AxiomsPage_485")}{axioms.length})</h3>
         <table className="w-full text-left text-sm">
           <thead className="text-xs text-slate-500">
             <tr>
-              <th className="py-1 pr-3">name / 説明 / タグ</th>
+              <th className="py-1 pr-3">{t("AxiomsPage_486")}</th>
               <th className="py-1 pr-3">origin_kind</th>
             </tr>
           </thead>
@@ -162,6 +167,8 @@ function AxiomSection() {
 }
 
 function AxiomSystemSection() {
+  useLanguage()
+
   const readOnly = useReadOnly()
   const queryClient = useQueryClient()
   const { data: systems = [] } = useQuery({
@@ -235,14 +242,13 @@ function AxiomSystemSection() {
           disabled={!systemName || registerSystemMutation.isPending}
           className="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white disabled:opacity-40"
         >
-          公理系を登録
-        </button>
+          {t("AxiomsPage_487")}</button>
       </form>
       )}
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <h3 className="mb-2 text-sm font-semibold text-slate-700">公理系一覧 ({systems.length})</h3>
+          <h3 className="mb-2 text-sm font-semibold text-slate-700">{t("AxiomsPage_488")}{systems.length})</h3>
           <ul className="space-y-1 text-sm">
             {systems.map((system) => (
               <li
@@ -261,17 +267,16 @@ function AxiomSystemSection() {
                 </button>
                 <EntityBadge namespace={system.namespace_name} />
                 <Link to={`/axiom-systems/${system.public_id}`} className="text-xs text-indigo-600 hover:underline">
-                  詳細
-                </Link>
+                  {t("AxiomsPage_489")}</Link>
               </li>
             ))}
           </ul>
         </div>
 
         <div>
-          <h3 className="mb-2 text-sm font-semibold text-slate-700">メンバー管理</h3>
+          <h3 className="mb-2 text-sm font-semibold text-slate-700">{t("AxiomsPage_490")}</h3>
           {selectedSystemId == null ? (
-            <p className="text-sm text-slate-400">左の一覧から公理系を選んでください</p>
+            <p className="text-sm text-slate-400">{t("AxiomsPage_491")}</p>
           ) : (
             <div className="space-y-2">
               <ul className="space-y-1 text-sm">
@@ -291,7 +296,7 @@ function AxiomSystemSection() {
                     )}
                   </li>
                 ))}
-                {members.length === 0 && <li className="text-slate-400">メンバーなし</li>}
+                {members.length === 0 && <li className="text-slate-400">{t("AxiomsPage_492")}</li>}
               </ul>
               {!readOnly && (
                 <div className="flex items-center gap-2">
@@ -301,8 +306,7 @@ function AxiomSystemSection() {
                     className="rounded border border-slate-300 px-2 py-1 text-sm"
                   >
                     <option value="" disabled>
-                      追加する公理を選択…
-                    </option>
+                      {t("AxiomsPage_493")}</option>
                     {axioms.map((axiom) => (
                       <option key={axiom.id} value={axiom.id}>
                         {axiom.name}
@@ -315,8 +319,7 @@ function AxiomSystemSection() {
                     onClick={() => addMemberMutation.mutate()}
                     className="rounded bg-slate-600 px-2 py-1 text-xs text-white disabled:opacity-40"
                   >
-                    追加
-                  </button>
+                    {t("AxiomsPage_494")}</button>
                 </div>
               )}
             </div>
@@ -325,7 +328,7 @@ function AxiomSystemSection() {
       </div>
 
       <div className="rounded-lg border border-slate-200 p-4">
-        <h3 className="mb-2 text-sm font-semibold text-slate-700">包含判定 (child ⊆ parent)</h3>
+        <h3 className="mb-2 text-sm font-semibold text-slate-700">{t("AxiomsPage_495")}</h3>
         <div className="flex items-center gap-2">
           <select
             value={childId}
@@ -368,8 +371,7 @@ function AxiomSystemSection() {
             onClick={() => checkSubsetMutation.mutate()}
             className="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white disabled:opacity-40"
           >
-            判定
-          </button>
+            {t("ProofDetail_272")}</button>
           {subsetResult != null && (
             <span className={`text-sm font-semibold ${subsetResult ? 'text-green-700' : 'text-red-700'}`}>
               {subsetResult ? '✓ true' : '✗ false'}

@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import type { ProofStep, Symbol } from '../api/types'
@@ -36,6 +38,8 @@ export const ProofStepList = forwardRef<ProofStepListHandle, ProofStepListProps>
     { proofId, steps, highlightOrd, renderFormula, renderJustification, symbolsById, onUseRule, selectedOrd, onSelect },
     ref,
   ) {
+  useLanguage()
+
     const { density } = useDisplaySettings()
     const estimatedStepHeight = density === 'compact' ? COMPACT_STEP_HEIGHT : COMFORTABLE_STEP_HEIGHT
     const scrollRef = useRef<HTMLDivElement>(null)
@@ -62,7 +66,7 @@ export const ProofStepList = forwardRef<ProofStepListHandle, ProofStepListProps>
     if (steps.length === 0) {
       return (
         <ol className="rounded-lg border border-slate-200">
-          <li className="px-3 py-2 text-xs text-slate-400">まだステップがありません</li>
+          <li className="px-3 py-2 text-xs text-slate-400">{t("ProofStepList_297")}</li>
         </ol>
       )
     }
@@ -97,14 +101,14 @@ export const ProofStepList = forwardRef<ProofStepListHandle, ProofStepListProps>
                 <span className="ml-auto text-xs text-slate-500">
                   {renderJustification(step, symbolsById)}
                 </span>
-                {onUseRule && <button type="button" onClick={() => onUseRule(step.ord)} className="text-xs text-indigo-700 hover:underline">この step に推論定理を使う</button>}
+                {onUseRule && <button type="button" onClick={() => onUseRule(step.ord)} className="text-xs text-indigo-700 hover:underline">{t("ProofStepList_298")}</button>}
                 {onSelect && (
                   <button
                     type="button"
                     onClick={() => onSelect(step.ord)}
                     className="text-xs font-semibold text-indigo-700 hover:underline"
                   >
-                    {selectedOrd === step.ord ? '選択中' : 'この行を選ぶ'}
+                    {selectedOrd === step.ord ? t("ProofStepList_299") : t("ProofStepList_300")}
                   </button>
                 )}
               </li>

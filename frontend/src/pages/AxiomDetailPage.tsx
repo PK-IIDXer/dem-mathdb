@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { EntityBadge } from '../components/BetaIdentity'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { PublicIdRoute } from '../components/PublicIdRoute'
@@ -10,10 +12,14 @@ import { TagEditor } from '../components/TagEditor'
 import { UsedInTheoremsSection } from '../components/UsedInTheoremsSection'
 
 export function AxiomDetailPage() {
+  useLanguage()
+
   return <PublicIdRoute><AxiomDetailPageContent /></PublicIdRoute>
 }
 
 function AxiomDetailPageContent() {
+  useLanguage()
+
   const { id } = useParams<{ id: string }>()
   const axiomRef = id ?? ''
   const queryClient = useQueryClient()
@@ -34,15 +40,14 @@ function AxiomDetailPageContent() {
     onSuccess: invalidate,
   })
 
-  usePageTitle(axiom?.name ?? '公理')
+  usePageTitle(axiom?.name ?? t("ProofStepJustification_291"))
 
-  if (!axiom) return <p className="text-sm text-slate-400">読み込み中…</p>
+  if (!axiom) return <p className="text-sm text-slate-400">{t("BetaGettingStarted_109")}</p>
 
   return (
     <div className="space-y-4">
       <Link to="/axioms" className="text-xs text-indigo-600 hover:underline">
-        ← 公理一覧に戻る
-      </Link>
+        {t("AxiomDetailPage_478")}</Link>
       <section className="space-y-4 rounded-lg border border-slate-200 p-4">
         <div className="flex items-center justify-between">
           <span className="font-mono text-base text-slate-800">{axiom.name}</span> <EntityBadge namespace={axiom.namespace_name} detail />
@@ -69,7 +74,7 @@ function AxiomDetailPageContent() {
         </div>
         {axiom.remarks && <div className="text-sm text-slate-600">{axiom.remarks}</div>}
         <UsedInTheoremsSection
-          title="この公理を使っている定理"
+          title={t("AxiomDetailPage_479")}
           queryKey={['axioms', axiomId, 'used-in-theorems']}
           queryFn={() => axiomsApi.listUsedInTheorems(axiomId)}
         />

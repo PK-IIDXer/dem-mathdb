@@ -1,3 +1,6 @@
+import { LanguageProvider, LanguageSwitch } from "./i18n/LanguageContext"
+import { useLanguage } from "./i18n/useLanguage"
+import { t } from "./i18n/translate"
 import { useCallback } from 'react'
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom'
 import { ReadOnlyProvider, useReadOnly } from './ReadOnlyContext'
@@ -35,7 +38,10 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   }`
 
 function App() {
+  useLanguage()
+
   return (
+    <LanguageProvider>
     <ReadOnlyProvider>
       <CommandProvider>
         <DisplaySettingsProvider>
@@ -43,10 +49,13 @@ function App() {
         </DisplaySettingsProvider>
       </CommandProvider>
     </ReadOnlyProvider>
+    </LanguageProvider>
   )
 }
 
 function AppShell() {
+  useLanguage()
+
   const readOnly = useReadOnly()
   const beta = useBeta()
   const navigate = useNavigate()
@@ -64,22 +73,20 @@ function AppShell() {
   useCommand('navigate.definitions', () => navigateFromCommand('/definitions'))
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <header className="mb-6 flex items-center justify-between">
+      <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <h1 className="text-lg font-bold text-slate-900">数学DB(仮)</h1>
+          <h1 className="text-lg font-bold text-slate-900">{t("App_026")}</h1>
           {readOnly && (
             <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
-              閲覧専用モード
-            </span>
+              {t("App_027")}</span>
           )}
         </div>
-        <nav className="flex items-center gap-2">
+        <LanguageSwitch />
+        <nav className="flex flex-wrap items-center gap-2">
           <NavLink to="/" end className={navLinkClass}>
-            ホーム
-          </NavLink>
+            {t("App_028")}</NavLink>
           <NavLink to="/search" className={navLinkClass}>
-            検索
-          </NavLink>
+            {t("App_029")}</NavLink>
           <NavLink to="/symbols" className={navLinkClass}>
             Symbols
           </NavLink>
@@ -96,8 +103,7 @@ function AppShell() {
             Proofs
           </NavLink>
           <NavLink to="/explorations" className={navLinkClass}>
-            推論ノート
-          </NavLink>
+            {t("App_030")}</NavLink>
           <NavLink to="/definitions" className={navLinkClass}>
             Definitions
           </NavLink>
@@ -134,19 +140,15 @@ function AppShell() {
       </main>
       <ShortcutHelp />
       <footer className="mt-10 flex justify-center gap-4 border-t border-slate-200 pt-4 text-xs text-slate-400">
-        {beta && <NavLink to="/contact" className="hover:underline">お問い合わせ・削除依頼</NavLink>}
+        {beta && <NavLink to="/contact" className="hover:underline">{t("App_031")}</NavLink>}
         <NavLink to="/terms" className="hover:underline">
-          利用規約
-        </NavLink>
+          {t("App_032")}</NavLink>
         <NavLink to="/privacy" className="hover:underline">
-          プライバシーポリシー
-        </NavLink>
+          {t("App_033")}</NavLink>
         <NavLink to="/disclaimer" className="hover:underline">
-          免責事項
-        </NavLink>
+          {t("App_034")}</NavLink>
         <NavLink to="/sources-licenses" className="hover:underline">
-          出典とライセンス
-        </NavLink>
+          {t("App_035")}</NavLink>
       </footer>
     </div>
   )

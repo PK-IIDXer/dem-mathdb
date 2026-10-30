@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { isPublicId } from '../publicId'
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -30,6 +32,8 @@ function ignoreFailure<T>(promise: Promise<T[]>): Promise<T[]> {
 }
 
 export function CommandPalette() {
+  useLanguage()
+
   const navigate = useNavigate()
   const { execute, inspect } = useCommandApi()
   const [open, setOpen] = useState(false)
@@ -111,9 +115,9 @@ export function CommandPalette() {
           ignoreFailure(theoremsApi.listRules(signal)),
         ])
         if (signal.aborted) return
-        const entityResult = (id: string, label: string, group: string, path: string): PaletteResult => ({
+        const entityResult = (id: string, label: string | (() => string), group: string, path: string): PaletteResult => ({
           id,
-          label,
+          get label() { return typeof label === 'function' ? label() : label },
           group,
           focusAfterRun: 'main',
           run: () => navigate(path),
@@ -129,8 +133,8 @@ export function CommandPalette() {
             .map((item) => entityResult(`theorem-${item.id}`, item.name, 'Theorems', `/theorems/${item.public_id}`)),
           ...rules.filter((item) => document.querySelector('[data-rule-enabled="true"]') && matches(value, [item.name])).map((item): PaletteResult => ({
             id: `rule-${item.id}`,
-            label: `推論定理: ${item.name}`,
-            group: '推論定理',
+            get label() { return t("CommandPalette_036", item.name) },
+            get group() { return t("CommandPalette_037") },
             run: () => window.dispatchEvent(new CustomEvent('dem:choose-rule', {
               detail: { theoremId: item.id, mode: originRef.current?.closest('[data-top-down]') ? 'plan' : 'step' },
             })),
@@ -138,7 +142,7 @@ export function CommandPalette() {
           ...definitions.slice(0, 10)
             .map((item) => entityResult(`definition-${item.id}`, item.name, 'Definitions', `/definitions/${item.public_id}`)),
           ...formulas.map((item) => entityResult(`formula-${item.formula_id}`, `Formula #${item.formula_id}`, 'Formulas', `/formulas?formula=${item.formula_id}`)),
-          ...proofs.map((item) => entityResult(`proof-${item.id}`, `${item.theoremName}の証明`, 'Proofs', `/proofs/${item.public_id}`)),
+          ...proofs.map((item) => entityResult(`proof-${item.id}`, () => t("CommandPalette_038", item.theoremName), 'Proofs', `/proofs/${item.public_id}`)),
         ]
         setEntities(next)
         setLoading(false)
@@ -191,7 +195,7 @@ export function CommandPalette() {
         onClick={() => runOpen()}
         className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50"
       >
-        操作を検索 <kbd aria-hidden="true">Ctrl/⌘ K</kbd>
+        {t("CommandPalette_039")}<kbd aria-hidden="true">Ctrl/⌘ K</kbd>
       </button>
       {open && (
         <div
@@ -215,13 +219,13 @@ export function CommandPalette() {
             }}
           >
             <div className="mb-2 flex items-center justify-between gap-3">
-              <h2 id={headingId} className="font-semibold text-slate-900">操作を検索</h2>
-              <button type="button" onClick={closePalette} aria-label="閉じる" className="rounded px-2 py-1 text-slate-500">Esc</button>
+              <h2 id={headingId} className="font-semibold text-slate-900">{t("CommandPalette_040")}</h2>
+              <button type="button" onClick={closePalette} aria-label={t("CommandPalette_041")} className="rounded px-2 py-1 text-slate-500">Esc</button>
             </div>
             <input
               ref={inputRef}
               role="combobox"
-              aria-label="コマンドまたは項目を検索"
+              aria-label={t("CommandPalette_042")}
               aria-expanded="true"
               aria-controls={listboxId}
               aria-autocomplete="list"
@@ -245,7 +249,7 @@ export function CommandPalette() {
               }}
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
             />
-            <div id={listboxId} role="listbox" aria-label="候補" className="mt-2 max-h-80 overflow-y-auto">
+            <div id={listboxId} role="listbox" aria-label={t("CommandPalette_043")} className="mt-2 max-h-80 overflow-y-auto">
               {results.map((result, index) => (
                 <div
                   id={`${listboxId}-${result.id}`}
@@ -263,10 +267,10 @@ export function CommandPalette() {
               ))}
             </div>
             <div aria-live="polite" className="mt-2 text-xs text-slate-500">
-              {loading ? '検索中' : results.length === 0 ? '候補はありません' : `${results.length} 件`}
+              {loading ? t("CommandPalette_044") : results.length === 0 ? t("CommandPalette_045") : t("CommandPalette_046", results.length)}
               {active?.disabledReason ? `。${active.disabledReason}` : ''}
             </div>
-            <p className="mt-2 border-t border-slate-100 pt-2 text-xs text-slate-400">↑↓ 選択 / Enter 実行 / Esc 閉じる</p>
+            <p className="mt-2 border-t border-slate-100 pt-2 text-xs text-slate-400">{t("CommandPalette_047")}</p>
           </div>
         </div>
       )}

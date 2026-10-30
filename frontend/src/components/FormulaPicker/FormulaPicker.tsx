@@ -1,3 +1,5 @@
+import { useLanguage } from "../../i18n/useLanguage"
+import { t } from "../../i18n/translate"
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { formulasApi } from '../../api/formulas'
@@ -13,6 +15,8 @@ interface FormulaPickerProps {
 }
 
 export function FormulaPicker({ value, onChange, context }: FormulaPickerProps) {
+  useLanguage()
+
   const { data: symbols = [] } = useQuery({
     queryKey: ['symbols'],
     queryFn: () => symbolsApi.listSymbols(),
@@ -41,7 +45,7 @@ export function FormulaPicker({ value, onChange, context }: FormulaPickerProps) 
       <FormulaEditor context={context} onRegistered={(formula) => onChange(formula.id)} />
       {selectedFormula && (
         <div className="rounded border border-indigo-100 bg-indigo-50 p-2 text-xs text-indigo-800">
-          選択中 #{selectedFormula.id}
+          {t("FormulaPicker_185")}{selectedFormula.id}
           <Latex display>{latex}</Latex>
         </div>
       )}

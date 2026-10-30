@@ -1,3 +1,5 @@
+import { useLanguage } from "../../i18n/useLanguage"
+import { t } from "../../i18n/translate"
 import type { Symbol } from '../../api/types'
 import type { WorkspaceInfo } from '../../api/workspace'
 import { createBoundNode, createSymbolNode, groupSymbolsByNamespace, type EditorNode } from './model'
@@ -21,6 +23,8 @@ export function NodeEditor({
   workspace,
   onChange,
 }: NodeEditorProps) {
+  useLanguage()
+
   if (node === null) {
     return <EmptySlot depth={depth} symbols={symbols} workspace={workspace} onChange={onChange} />
   }
@@ -107,6 +111,8 @@ function EmptySlot({
   workspace: WorkspaceInfo | null
   onChange: (node: EditorNode) => void
 }) {
+  useLanguage()
+
   const groups = groupSymbolsByNamespace(symbols, workspace)
   return (
     <span className="inline-flex items-center gap-1 rounded border border-dashed border-slate-400 bg-white px-2 py-1 text-sm">
@@ -119,8 +125,7 @@ function EmptySlot({
         className="rounded border border-slate-300 bg-white px-1 py-0.5 text-sm"
       >
         <option value="" disabled>
-          記号を選択…
-        </option>
+          {t("NodeEditor_182")}</option>
         {groups.map((group) => (
           <optgroup key={group.namespace} label={group.label}>
             {group.symbols.map((symbol) => (
@@ -136,9 +141,9 @@ function EmptySlot({
         type="button"
         onClick={() => onChange(createBoundNode(Math.max(depth - 1, 0)))}
         className="rounded bg-slate-100 px-1.5 py-0.5 text-xs text-slate-600 hover:bg-slate-200"
-        title={`束縛変数を挿入 (現在のスコープ深度: ${depth})`}
+        title={t("NodeEditor_183", depth)}
       >
-        ▢ 束縛変数 (深度 {depth})
+        {t("NodeEditor_184")}{depth})
       </button>
     </span>
   )

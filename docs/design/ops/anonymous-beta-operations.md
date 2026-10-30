@@ -516,3 +516,58 @@ upのbuildは変更の無いimageのcacheを使う予定だが、所要時間は
   配備の実5xxが5分10件以上ならapi_errors開始は観測として正しく、攻撃と決めない。時刻と配備段階に照合する。
   開始した場合は復旧後30分連続clearで1回だけ解消され、観測不能中は解消されないことを確認する。
 - 既存の問い合わせ・日次要約・ログ異常通知も確認する。試験後の練習は次の通常resetで消え、今回追加のresetで利用者の投稿を消さない。
+
+
+## beta-2026-11.13 の通常配備予定（未実行）
+
+日英切り替えの配備予定。英語の法的文書は2026-10-30に利用者承認済み。公開候補のレビュー完了が前提。11/2向けの11.12の予定は変更しない。
+
+実施担当はレビュー側。2026-11-09（月）04:00 JST = 2026-11-08 19:00 UTC の定期resetが
+正常に完了した直後に行う。定期resetから以下の配備resetまでの投稿は失われる。
+これは定期的に戻す共有βの運用であり、今回は通常のbackup / build / build-base / API再作成 / reset / upを使う。
+個別migrationの手作業やデータ移行は追加しない。ホスト側だけの更新手順は今回には使わない。
+
+今回は書き込みを失う間隔を狭めるため、backup直後・build前にfreezeする。
+freezeはbuild約4分を含み、base作成・検査・API再作成・reset・起動確認の時間も加わる。
+時間は実機で未測定。開始・解除のUTC時刻と所要時間をレビュー側が記録する。
+freezeまでに受けた投稿を配備resetが消すことは残る。build失敗時は先へ進まず、既存の段階別復旧手順で判断する。
+
+```bash
+cd /opt/dem-beta
+# 定期resetが成功していることと、現在のtag・image SHA・base情報を記録する。
+sudo dem-beta status
+sudo dem-beta backup
+sudo dem-beta freeze
+sudo git fetch --tags origin
+sudo git checkout --detach beta-2026-11.13
+# 公開候補のレビュー済みtreeとtagを照合する。
+# 今回はimageを更新するので、DEM_BETA_COMMITをこのtagの完全なSHAへ更新する。
+# 資格情報は変更・表示しない。
+sudoedit deploy/beta/.env
+sudo docker compose --env-file deploy/beta/.env -f deploy/beta/compose.yml build
+# 失敗したら進めない。runはservice用portをpublishしない。
+sudo docker compose --env-file deploy/beta/.env -f deploy/beta/compose.yml run --rm --no-deps web caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+sudo dem-beta build-base
+sudo docker compose --env-file deploy/beta/.env -f deploy/beta/compose.yml create --force-recreate api
+sudo docker compose --env-file deploy/beta/.env -f deploy/beta/compose.yml ps -a api
+# 新APIがcreated/stoppedで実行していないことを確認後だけ、停止印をprepareに渡す。
+sudo dem-beta unfreeze
+sudo dem-beta reset
+sudo dem-beta up
+sudo dem-beta status
+```
+
+APIが止まる前にunfreezeしない。resetのprepare / swap / start / finishが失敗したら、通常の復旧手順で止めて確認する。
+upのbuildは変更の無いimageのcacheを使う予定だが、所要時間は未測定。検査不合格を理由にDBのガードを外さない。
+
+配備後の確認（すべてこの修正版では未実行）:
+
+- Homeの任意開始からチュートリアル9操作でverified。通常の定理案内・集計・候補・依存グラフから練習を除き、直接URLと数式は共有すること。
+- maintenance / full / read-only・前提欠落・取得失敗で入口全体が消え、リセット後は前提を再取得すること。
+- 429/503の既存案内と、途中まで保存された公理・Gen・検証の再開。自動リトライで負荷を増やさない。
+- 実URLでh2とh1.1が応答し、Alt-Svcのh3案内が無いこと。UDP443はpublishせずfirewallも変更しない。
+- 既存のS1/S4/S7/S8/S9/S10/IP/CSP/INDEX/MAINT/ROLE/LOAD/OPS/TZと公開ヘッダの確認を再実施する。
+- freeze中の既知のmaintenance503はtrafficのAPIエラーから除外される。API停止中のCaddy502/504や他の503は数える。
+  配備の実5xxが5分10件以上ならapi_errors開始は観測として正しく、攻撃と決めない。時刻と配備段階に照合する。
+  開始した場合は復旧後30分連続clearで1回だけ解消され、観測不能中は解消されないことを確認する。
+- 既存の問い合わせ・日次要約・ログ異常通知も確認する。試験後の練習は次の通常resetで消え、今回追加のresetで利用者の投稿を消さない。

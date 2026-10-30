@@ -1,3 +1,5 @@
+import { useLanguage } from "../../i18n/useLanguage"
+import { t } from "../../i18n/translate"
 import { useQuery } from '@tanstack/react-query'
 import { symbolsApi } from '../../api/symbols'
 import { FormulaPicker } from '../FormulaPicker'
@@ -15,6 +17,8 @@ interface SubstitutionEditorProps {
  * (x -> term formula) and proposition-free-variable substitutions (phi ->
  * (body formula, ordered formal params)). Mirrors PropSubst/TermSubst 1:1. */
 export function SubstitutionEditor({ value, onChange, editableSymbolIds, context }: SubstitutionEditorProps) {
+  useLanguage()
+
   const { data: symbols = [] } = useQuery({
     queryKey: ['symbols'],
     queryFn: () => symbolsApi.listSymbols(),
@@ -42,7 +46,7 @@ export function SubstitutionEditor({ value, onChange, editableSymbolIds, context
     <div className="space-y-3 rounded border border-slate-200 p-2 text-sm">
       <div>
         <div className="mb-1 flex items-center justify-between text-xs text-slate-500">
-          <span>項型自由変数への代入 (term_substs)</span>
+          <span>{t("SubstitutionEditor_423")}</span>
           {editable == null && <button
             type="button"
             className="rounded bg-slate-100 px-2 py-0.5 text-xs hover:bg-slate-200"
@@ -56,8 +60,7 @@ export function SubstitutionEditor({ value, onChange, editableSymbolIds, context
               })
             }
           >
-            + 追加
-          </button>}
+            {t("SubstitutionEditor_424")}</button>}
         </div>
         {visibleTermSubsts.map(({ item, index }) => (
           <div key={index} className="mb-2 flex items-start gap-2">
@@ -95,7 +98,7 @@ export function SubstitutionEditor({ value, onChange, editableSymbolIds, context
 
       <div>
         <div className="mb-1 flex items-center justify-between text-xs text-slate-500">
-          <span>命題型自由変数への代入 (prop_substs)</span>
+          <span>{t("SubstitutionEditor_425")}</span>
           {editable == null && <button
             type="button"
             className="rounded bg-slate-100 px-2 py-0.5 text-xs hover:bg-slate-200"
@@ -109,8 +112,7 @@ export function SubstitutionEditor({ value, onChange, editableSymbolIds, context
               })
             }
           >
-            + 追加
-          </button>}
+            {t("SubstitutionEditor_424")}</button>}
         </div>
         {visiblePropSubsts.map(({ item, index }) => (
           <div key={index} className="mb-2 space-y-1 rounded bg-slate-50 p-2">
@@ -145,7 +147,7 @@ export function SubstitutionEditor({ value, onChange, editableSymbolIds, context
               </button>}
             </div>
             <div className="flex items-center gap-1 pl-1">
-              <span className="text-xs text-slate-400">formal params (順序あり):</span>
+              <span className="text-xs text-slate-400">{t("SubstitutionEditor_427")}</span>
               {item.formal_param_symbol_ids.map((paramId, paramIndex) => (
                 <span key={paramIndex} className="flex items-center gap-0.5">
                   <select

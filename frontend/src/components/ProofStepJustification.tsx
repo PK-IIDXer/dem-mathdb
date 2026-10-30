@@ -1,9 +1,13 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { LemmaDependency, ProofStep, PropSubst, Symbol, TermSubst } from '../api/types'
 import { FormulaPreview } from './FormulaPreview'
 
 export function StepRef({ ord, onJump }: { ord: number; onJump: (ord: number) => void }) {
+  useLanguage()
+
   return (
     <button type="button" onClick={() => onJump(ord)} className="text-indigo-600 hover:underline">
       ({ord})
@@ -12,6 +16,8 @@ export function StepRef({ ord, onJump }: { ord: number; onJump: (ord: number) =>
 }
 
 function StepRefList({ ords, onJump }: { ords: number[]; onJump: (ord: number) => void }) {
+  useLanguage()
+
   return (
     <>
       {ords.map((ord, index) => (
@@ -33,12 +39,14 @@ function SubstSummary({
   propSubsts: PropSubst[]
   symbolsById: Map<number, Symbol>
 }) {
+  useLanguage()
+
   const [open, setOpen] = useState(false)
   if (termSubsts.length === 0 && propSubsts.length === 0) return null
   return (
     <span className="ml-1">
       <button type="button" onClick={() => setOpen((value) => !value)} className="text-slate-400 hover:text-slate-600">
-        [代入 {open ? '▲' : '▼'}]
+        {t("ProofStepJustification_288")}{open ? '▲' : '▼'}]
       </button>
       {open && (
         <span className="ml-1 inline-flex flex-wrap items-center gap-x-2">
@@ -71,15 +79,17 @@ export function StepJustification({
   lemmas: Map<number, LemmaDependency>
   onJump: (ord: number) => void
 }) {
+  useLanguage()
+
   switch (step.step_kind) {
     case 'premise':
-      return <span>前提 #{step.premise_ord}</span>
+      return <span>{t("ProofStepJustification_289")}{step.premise_ord}</span>
     case 'assumption':
-      return <span>仮定（⇒導入で落とす）</span>
+      return <span>{t("ProofStepJustification_290")}</span>
     case 'axiom':
       return (
         <span>
-          公理{' '}
+          {t("ProofStepJustification_291")}{' '}
           {step.axiom ? (
             <Link to={`/axioms/${step.axiom.public_id}`} className="text-indigo-600 hover:underline">
               {step.axiom.name}
@@ -94,12 +104,12 @@ export function StepJustification({
       const lemma = step.applied_proof_id == null ? undefined : lemmas.get(step.applied_proof_id)
       return (
         <span>
-          既証明の適用{' '}
+          {t("ProofStepJustification_292")}{' '}
           {lemma?.proof_public_id ? (
             <Link to={`/proofs/${lemma.proof_public_id}`} className="text-indigo-600 hover:underline">
               {lemma.theorem.name}
             </Link>
-          ) : (lemma?.theorem.name ?? '引用した証明')}
+          ) : (lemma?.theorem.name ?? t("ProofStepJustification_293"))}
           {step.arg_step_ords.length > 0 && (
             <>
               {' '}
@@ -132,9 +142,8 @@ export function StepJustification({
         const [assumptionOrd, bodyOrd] = step.arg_step_ords
         return (
           <span>
-            ⇒導入 (仮定 <StepRefList ords={assumptionOrd != null ? [assumptionOrd] : []} onJump={onJump} /> を{' '}
-            <StepRefList ords={bodyOrd != null ? [bodyOrd] : []} onJump={onJump} /> から落とす)
-          </span>
+            {t("ProofStepJustification_294")}<StepRefList ords={assumptionOrd != null ? [assumptionOrd] : []} onJump={onJump} /> {t("ProofStepJustification_295")}{' '}
+            <StepRefList ords={bodyOrd != null ? [bodyOrd] : []} onJump={onJump} /> {t("ProofStepJustification_296")}</span>
         )
       }
       return <span>{step.inference_rule?.kind ?? 'rule'}</span>

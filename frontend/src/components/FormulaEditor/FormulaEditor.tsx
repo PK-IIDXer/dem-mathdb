@@ -1,3 +1,6 @@
+import { useDisplayError } from "../../i18n/useDisplayError"
+import { useLanguage } from "../../i18n/useLanguage"
+import { t } from "../../i18n/translate"
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { symbolsApi } from '../../api/symbols'
@@ -57,6 +60,8 @@ export function FormulaEditor({
   showAdvanced = true,
   showRemarks = true,
 }: FormulaEditorProps) {
+  useLanguage()
+
   const [text, setText] = useState('')
   const [cursor, setCursor] = useState(0)
   const [remarks, setRemarks] = useState('')
@@ -66,7 +71,7 @@ export function FormulaEditor({
   const [parseError, setParseError] = useState<ApiError | null>(null)
   const [treeConversionError, setTreeConversionError] = useState(false)
   const [treeSyncStatus, setTreeSyncStatus] = useState<'pending' | 'incomplete' | 'error' | null>(null)
-  const [registerError, setRegisterError] = useState<string | null>(null)
+  const [registerError, setRegisterError] = useDisplayError()
   const [recent, setRecent] = useState<number[]>([])
   const [textRevision, setTextRevision] = useState(0)
   const requestSequence = useRef(0)
@@ -197,7 +202,7 @@ export function FormulaEditor({
       setRegisterError(null)
     },
     onError: (error) => setRegisterError(
-      error instanceof ApiError ? error.message : '式を登録できませんでした',
+      () => (error instanceof ApiError ? error.message : t("FormulaEditor_162")),
     ),
   })
 
@@ -293,7 +298,7 @@ export function FormulaEditor({
   return (
     <div ref={editorRef} className="space-y-3 rounded-lg border border-slate-200 p-4">
       <div>
-        <label className="mb-1 block text-xs font-medium text-slate-600">数式を入力</label>
+        <label className="mb-1 block text-xs font-medium text-slate-600">{t("FormulaEditor_163")}</label>
         <textarea
           ref={textRef}
           value={text}
@@ -304,23 +309,23 @@ export function FormulaEditor({
           onClick={(event) => setCursor(event.currentTarget.selectionStart)}
           onKeyUp={(event) => setCursor(event.currentTarget.selectionStart)}
           className={`w-full rounded border px-3 py-2 font-mono text-sm outline-none ${parseError ? 'border-red-300 focus:border-red-500' : 'border-slate-300 focus:border-indigo-500'}`}
-          placeholder="例: forall x. P(x) -> Q(x)"
+          placeholder={t("FormulaEditor_164")}
         />
         <button
           type="button"
           onClick={() => runSymbolPalette()}
           className="mt-1 rounded border border-slate-300 px-2 py-1 text-xs text-slate-600 hover:bg-slate-50"
         >
-          記号を挿入 <kbd aria-hidden="true">Ctrl/⌘ /</kbd>
+          {t("FormulaEditor_165")}<kbd aria-hidden="true">Ctrl/⌘ /</kbd>
         </button>
         {symbolPaletteOpen && (
-          <div role="dialog" aria-modal="true" aria-label="記号を挿入" className="mt-2 rounded-lg border border-indigo-200 bg-white p-3 shadow-lg">
+          <div role="dialog" aria-modal="true" aria-label={t("commands_066")} className="mt-2 rounded-lg border border-indigo-200 bg-white p-3 shadow-lg">
             <div className="flex items-center gap-2">
               <input
                 ref={symbolSearchRef}
                 value={symbolQuery}
                 onChange={(event) => setSymbolQuery(event.target.value)}
-                aria-label="記号を検索"
+                aria-label={t("FormulaEditor_167")}
                 className="min-w-0 flex-1 rounded border border-slate-300 px-2 py-1 text-sm"
               />
               <button type="button" onClick={closeSymbolPalette} className="rounded px-2 py-1 text-xs text-slate-500">Esc</button>
@@ -368,14 +373,13 @@ export function FormulaEditor({
       )}
       {treeConversionError && (
         <p role="alert" className="rounded bg-red-50 px-3 py-2 text-sm text-red-700">
-          この式は木で表示できません
-        </p>
+          {t("FormulaEditor_168")}</p>
       )}
       {treeSyncStatus && (
         <p role="status" className="rounded bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          {treeSyncStatus === 'incomplete' && '未反映：木の未入力部分を埋めてください'}
-          {treeSyncStatus === 'pending' && '未反映：テキストへ反映しています…'}
-          {treeSyncStatus === 'error' && '未反映：テキストへ反映できませんでした'}
+          {treeSyncStatus === 'incomplete' && t("FormulaEditor_169")}
+          {treeSyncStatus === 'pending' && t("FormulaEditor_170")}
+          {treeSyncStatus === 'error' && t("FormulaEditor_171")}
         </p>
       )}
       {registerError && <p className="text-sm text-red-700">{registerError}</p>}
@@ -386,10 +390,10 @@ export function FormulaEditor({
             <Latex display>{treeLatex}</Latex>
           </div>
           {parsed?.formula_id != null && (
-            <p className="text-xs text-indigo-700">↳ 既存の式 #{parsed.formula_id} と同じです</p>
+            <p className="text-xs text-indigo-700">{t("FormulaEditor_172")}{parsed.formula_id} {t("FormulaEditor_173")}</p>
           )}
           {showAdvanced && parsed && <details open={internals === 'on'} className="text-xs text-slate-600">
-            <summary className="cursor-pointer">▸ 内部表現</summary>
+            <summary className="cursor-pointer">{t("FormulaEditor_174")}</summary>
             <div className="mt-2 space-y-1 rounded bg-slate-50 p-2">
               <div>DSS: <code>{dss}</code></div>
               <div>polish: <code>{polish}</code></div>
@@ -397,7 +401,7 @@ export function FormulaEditor({
             </div>
           </details>}
           {showAdvanced && <details className="text-xs text-slate-600">
-            <summary className="cursor-pointer">木で見る</summary>
+            <summary className="cursor-pointer">{t("FormulaEditor_175")}</summary>
             <div className="mt-2 rounded border border-slate-100 bg-slate-50 p-3">
               <NodeEditor
                 node={root}
@@ -414,8 +418,7 @@ export function FormulaEditor({
       )}
 
       {showRemarks && <label className="block text-xs text-slate-500">
-        メモ（任意）
-        <input
+        {t("FormulaEditor_176")}<input
           value={remarks}
           onChange={(event) => setRemarks(event.target.value)}
           className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
@@ -427,7 +430,7 @@ export function FormulaEditor({
         onClick={() => runChooseFormula()}
         className="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white disabled:opacity-40"
       >
-        {parsed?.formula_id != null ? 'この式を選ぶ' : '確認して登録する'} <kbd aria-hidden="true" className="ml-1 text-xs">Ctrl/⌘ Enter</kbd>
+        {parsed?.formula_id != null ? t("FormulaEditor_177") : t("FormulaEditor_178")} <kbd aria-hidden="true" className="ml-1 text-xs">Ctrl/⌘ Enter</kbd>
       </button>
     </div>
   )

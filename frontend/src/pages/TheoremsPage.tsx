@@ -1,3 +1,6 @@
+import { useDisplayError } from "../i18n/useDisplayError"
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { EntityBadge } from '../components/BetaIdentity'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { memo, useMemo, useRef, useState } from 'react'
@@ -18,7 +21,9 @@ import { useCommand } from '../commands/CommandProvider'
 import { hasPassedExternalCheck, theoremValidationCounts } from '../externalChecks'
 
 export function TheoremsPage() {
-  usePageTitle('定理')
+  useLanguage()
+
+  usePageTitle(t("ProofDetail_234"))
   const readOnly = useReadOnly()
   const formRef = useRef<HTMLFormElement>(null)
   const queryClient = useQueryClient()
@@ -51,7 +56,7 @@ export function TheoremsPage() {
   )
   const [premiseIds, setPremiseIds] = useState<(number | null)[]>([])
   const [description, setDescription] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useDisplayError()
   const [variables, setVariables] = useState<{ name: string; symbolId: number }[]>([])
   const localContext = useMemo(
     () => Object.fromEntries(variables.filter((item) => item.name.trim()).map((item) => [item.name.trim(), item.symbolId])),
@@ -86,7 +91,7 @@ export function TheoremsPage() {
       setError(null)
       navigate(`/theorems/${theorem.public_id}${onboarding ? onboardingQuery() : ''}`)
     },
-    onError: (err) => setError(err instanceof ApiError ? err.message : 'unknown error'),
+    onError: (err) => setError(() => (err instanceof ApiError ? err.message : 'unknown error')),
   })
 
   const variableNames = variables.map((item) => item.name.trim())
@@ -122,7 +127,7 @@ export function TheoremsPage() {
     <div className="space-y-6">
       {!readOnly && (
       <section className={`rounded-lg border border-slate-200 p-4 ${onboarding ? 'ring-4 ring-indigo-200' : ''}`}>
-        <h2 className="mb-3 text-sm font-semibold text-slate-700">定理を登録</h2>
+        <h2 className="mb-3 text-sm font-semibold text-slate-700">{t("TheoremsPage_810")}</h2>
         <form
           ref={formRef}
           className="space-y-3"
@@ -143,14 +148,13 @@ export function TheoremsPage() {
 
           <div className="rounded border border-slate-200 p-3">
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-600">この定理で使う変数</span>
+              <span className="text-xs font-medium text-slate-600">{t("TheoremsPage_811")}</span>
               <button
                 type="button"
                 onClick={() => runVariableAdd()}
                 className="rounded bg-slate-100 px-2 py-1 text-xs text-slate-700 hover:bg-slate-200"
               >
-                + 変数
-              </button>
+                {t("TheoremsPage_812")}</button>
             </div>
             <div className="space-y-2">
               {variables.map((variable, index) => (
@@ -159,9 +163,9 @@ export function TheoremsPage() {
                     value={variable.name}
                     onChange={(event) => setVariables((items) => items.map((item, itemIndex) => itemIndex === index ? { ...item, name: event.target.value } : item))}
                     className="rounded border border-slate-300 px-2 py-1 text-sm"
-                    aria-label={`変数 ${index + 1} の名前`}
+                    aria-label={t("TheoremsPage_813", index + 1)}
                   />
-                  <span className="text-xs text-slate-500">: 項</span>
+                  <span className="text-xs text-slate-500">{t("TheoremsPage_814")}</span>
                   <button
                     type="button"
                     onClick={() => setVariables((items) => items.filter((_, itemIndex) => itemIndex !== index))}
@@ -171,9 +175,9 @@ export function TheoremsPage() {
                   </button>
                 </div>
               ))}
-              {variables.length === 0 && <p className="text-xs text-slate-400">必要なときだけ宣言します。</p>}
+              {variables.length === 0 && <p className="text-xs text-slate-400">{t("TheoremsPage_815")}</p>}
               {!variablesAreValid && (
-                <p className="text-xs text-red-600">変数名は空欄や重複のない名前にしてください。</p>
+                <p className="text-xs text-red-600">{t("TheoremsPage_816")}</p>
               )}
             </div>
           </div>
@@ -185,14 +189,13 @@ export function TheoremsPage() {
 
           <div>
             <div className="mb-1 flex items-center justify-between text-xs text-slate-500">
-              <span>premises (順序あり)</span>
+              <span>{t("TheoremsPage_817")}</span>
               <button
                 type="button"
                 onClick={() => runPremiseAdd()}
                 className="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-600 hover:bg-slate-200"
               >
-                + 追加
-              </button>
+                {t("SubstitutionEditor_424")}</button>
             </div>
             <div className="space-y-2">
               {premiseIds.map((premiseId, index) => (
@@ -234,17 +237,16 @@ export function TheoremsPage() {
                   </div>
                 </div>
               ))}
-              {premiseIds.length === 0 && <p className="text-xs text-slate-400">前提なし</p>}
+              {premiseIds.length === 0 && <p className="text-xs text-slate-400">{t("ExplorationsPage_628")}</p>}
             </div>
           </div>
 
           <label className="flex flex-col text-xs text-slate-500">
-            description (自然言語での説明)
-            <textarea
+            {t("AxiomsPage_482")}<textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
-              placeholder="例: P ならば P"
+              placeholder={t("TheoremsPage_821")}
               className="rounded border border-slate-300 px-2 py-1 text-sm"
             />
           </label>
@@ -254,7 +256,7 @@ export function TheoremsPage() {
             disabled={!canSubmit || registerMutation.isPending}
             className="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white disabled:opacity-40"
           >
-            登録 <kbd aria-hidden="true" className="ml-1 text-xs">Ctrl/⌘ Enter</kbd>
+            {t("TheoremsPage_822")}<kbd aria-hidden="true" className="ml-1 text-xs">Ctrl/⌘ Enter</kbd>
           </button>
           {error && <p className="text-sm text-red-700">{error}</p>}
         </form>
@@ -262,10 +264,10 @@ export function TheoremsPage() {
       )}
 
       {onboarding && (
-        <OnboardingCoach step={2} title="定理を宣言する">
-          <p>name に <code>my_first_theorem</code> と入力します。</p>
-          <p>［+ 変数］を1回押して <code>x : 項</code> を宣言してください。結論には前の画面の式が選ばれ、前提は0本です。</p>
-          <p>数式を確認したら［登録］を押します。この練習用定理には非表示用タグが自動で付きます。</p>
+        <OnboardingCoach step={2} title={t("TheoremsPage_823")}>
+          <p>{t("TheoremsPage_824")}<code>my_first_theorem</code> {t("TheoremsPage_825")}</p>
+          <p>{t("TheoremsPage_826")}<code>{t("TheoremsPage_827")}</code> {t("TheoremsPage_828")}</p>
+          <p>{t("TheoremsPage_829")}</p>
         </OnboardingCoach>
       )}
 
@@ -284,17 +286,19 @@ export function TheoremsPage() {
 /** Memoized so a keystroke in the registration form, which re-renders the
  * page, leaves the theorem rows alone until the list itself changes. */
 const TheoremTable = memo(function TheoremTable({ theorems }: { theorems: Theorem[] }) {
+  useLanguage()
+
   const validationCounts = theoremValidationCounts(theorems)
   return (
     <section>
-      <h2 className="mb-2 text-sm font-semibold text-slate-700">登録済みの定理 ({theorems.length})</h2>
+      <h2 className="mb-2 text-sm font-semibold text-slate-700">{t("TheoremsPage_830")}{theorems.length})</h2>
       <p className="mb-2 text-xs text-slate-500">
-        DEM で証明済み: {validationCounts.demProven} ／ Lean でのみ確認済み: {validationCounts.leanOnly}
+        {t("TheoremsPage_831")}{validationCounts.demProven} {t("TheoremSearchPage_805")}{validationCounts.leanOnly}
       </p>
       <table className="w-full text-left text-sm">
         <thead className="text-xs text-slate-500">
           <tr>
-            <th className="py-1 pr-3">name / 説明 / タグ</th>
+            <th className="py-1 pr-3">{t("AxiomsPage_486")}</th>
             <th className="py-1 pr-3">status</th>
           </tr>
         </thead>
@@ -328,9 +332,9 @@ const TheoremTable = memo(function TheoremTable({ theorems }: { theorems: Theore
                 )}
               </td>
               <td className="py-1 pr-3 align-top text-slate-500">
-                <div>DEM: {theorem.status === 'proven' ? '証明済み' : '未証明'}</div>
+                <div>DEM: {theorem.status === 'proven' ? t("DependencyGraph_126") : t("DependencyGraph_125")}</div>
                 {hasPassedExternalCheck(theorem) && (
-                  <div className="text-indigo-700">Lean: 翻訳検査済み</div>
+                  <div className="text-indigo-700">{t("TheoremSearchPage_806")}</div>
                 )}
               </td>
             </tr>

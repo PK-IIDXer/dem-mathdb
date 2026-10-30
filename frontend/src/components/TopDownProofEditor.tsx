@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { axiomsApi } from '../api/axioms'
@@ -51,7 +53,7 @@ interface TopDownProofEditorProps {
 function errorMessage(error: unknown): string {
   return error instanceof ApiError || error instanceof Error
     ? error.message
-    : 'plan を更新できませんでした'
+    : t("TopDownProofEditor_434")
 }
 
 export function TopDownProofEditor({
@@ -63,6 +65,8 @@ export function TopDownProofEditor({
   onOperationDispatch,
   showRules = true,
 }: TopDownProofEditorProps) {
+  useLanguage()
+
   const [state, reduce] = useReducer(proofPlanReducer, proofState.goal_tokens, createProofPlan)
   const editorRef = useRef<HTMLDivElement>(null)
   const [selectedHoleId, setSelectedHoleId] = useState(0)
@@ -186,7 +190,7 @@ export function TopDownProofEditor({
     candidate: BackwardStepSuggestion,
   ): ProofPlanAction {
     if (choice.kind === 'theorem') {
-      if (candidate.applied_proof_id == null) throw new Error('補題に verified proof がありません')
+      if (candidate.applied_proof_id == null) throw new Error(t("TopDownProofEditor_435"))
       return {
         type: 'apply_backward', holeId: choice.holeId,
         application: {
@@ -235,7 +239,7 @@ export function TopDownProofEditor({
         goal_tokens: hole.goalTokens,
       })
       if (result.candidates.length === 0) {
-        dispatch({ type: 'failed', holeId: hole.id, message: 'この goal に一致する backward recipe がありません' })
+        dispatch({ type: 'failed', holeId: hole.id, message: t("TopDownProofEditor_436") })
       } else if (result.candidates.length === 1) {
         await acceptBackwardCandidate(choice, result.candidates[0])
       } else {
@@ -274,7 +278,7 @@ export function TopDownProofEditor({
       const candidate = result.candidates.find(
         (item) => item.match_depth === backwardEdit.candidate.match_depth,
       ) ?? result.candidates[0]
-      if (candidate == null) throw new Error('変更した代入に一致する backward recipe がありません')
+      if (candidate == null) throw new Error(t("TopDownProofEditor_437"))
       const choice = { ...backwardEdit }
       dispatch(backwardAction(choice, candidate))
       setBackwardEdit({ ...backwardEdit, candidate, value })
@@ -289,7 +293,7 @@ export function TopDownProofEditor({
     setPending(true)
     try {
       const step = await proofsApi.addStep(proofId, { kind: 'premise', premise_ord: premiseOrd })
-      await finishOperation({ type: 'fill', holeId: hole.id, label: `前提 ${premiseOrd}`, stepOrd: step.ord })
+      await finishOperation({ type: 'fill', holeId: hole.id, label: t("proofTreeModel_316", premiseOrd), stepOrd: step.ord })
       onAdded()
     } catch (error) {
       dispatch({ type: 'failed', holeId: hole.id, message: errorMessage(error) })
@@ -301,7 +305,7 @@ export function TopDownProofEditor({
   async function fillFromEstablished(hole: PlanHoleNode, stepOrd: number): Promise<void> {
     setPending(true)
     try {
-      await finishOperation({ type: 'fill', holeId: hole.id, label: `ステップ (${stepOrd}) を再利用`, stepOrd })
+      await finishOperation({ type: 'fill', holeId: hole.id, label: t("TopDownProofEditor_439", stepOrd), stepOrd })
     } finally {
       setPending(false)
     }
@@ -341,7 +345,7 @@ export function TopDownProofEditor({
     if (hole.assumptionSelection == null || bodyGoalTokens == null) {
       dispatch({
         type: 'failed', holeId: hole.id,
-        message: 'hole の含意の左辺と同じ式を仮定として選んでください',
+        message: t("TopDownProofEditor_440"),
       })
       return
     }
@@ -400,11 +404,11 @@ export function TopDownProofEditor({
     <div ref={editorRef} data-top-down data-rule-enabled={showRules} className="rounded-lg border border-violet-200 bg-violet-50/40 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h3 className="text-sm font-semibold text-violet-950">目標から組み立てる</h3>
-          <p className="mt-1 text-xs text-violet-800">補題を先に選び、開いた hole を埋めると依存順に step を追加します。</p>
+          <h3 className="text-sm font-semibold text-violet-950">{t("TopDownProofEditor_441")}</h3>
+          <p className="mt-1 text-xs text-violet-800">{t("TopDownProofEditor_442")}</p>
         </div>
         <span ref={planStatusRef} tabIndex={-1} className="rounded bg-white px-2 py-1 text-xs text-violet-800">
-          {isProofPlanComplete(state) ? 'plan 完成' : `未達成 ${holes.length}`}
+          {isProofPlanComplete(state) ? t("TopDownProofEditor_443") : t("TopDownProofEditor_444", holes.length)}
         </span>
       </div>
 
@@ -423,7 +427,7 @@ export function TopDownProofEditor({
 
       {backwardChoice && (
         <div className="mt-3 space-y-2 rounded border border-amber-200 bg-amber-50 p-3">
-          <p className="text-xs font-semibold text-amber-900">backward recipe を選択</p>
+          <p className="text-xs font-semibold text-amber-900">{t("TopDownProofEditor_445")}</p>
           {backwardChoice.candidates.map((candidate, index) => (
             <button
               key={`${candidate.match_depth}-${index}`}
@@ -433,7 +437,7 @@ export function TopDownProofEditor({
               onClick={() => void acceptBackwardCandidate(backwardChoice, candidate)}
               className="mr-2 rounded bg-amber-700 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40"
             >
-              {candidate.match_depth === 0 ? 'MP なし' : `MP ${candidate.match_depth} 回`}
+              {candidate.match_depth === 0 ? t("TopDownProofEditor_446") : t("TopDownProofEditor_447", candidate.match_depth)}
             </button>
           ))}
         </div>
@@ -445,18 +449,18 @@ export function TopDownProofEditor({
           {(backwardEdit.candidate.subst.term_substs.length
             + backwardEdit.candidate.subst.prop_substs.length) > 0 && (
             <p className="text-xs text-indigo-800">
-              自動決定: {[...backwardEdit.candidate.subst.term_substs, ...backwardEdit.candidate.subst.prop_substs]
+              {t("TopDownProofEditor_448")}{[...backwardEdit.candidate.subst.term_substs, ...backwardEdit.candidate.subst.prop_substs]
                 .map((item) => `#${item.source_symbol_id}`).join(', ')}
             </p>
           )}
           {backwardEdit.candidate.defaulted_to_identity.length > 0 && (
             <p className="text-xs text-indigo-800">
-              既定（恒等、変更可）: {backwardEdit.candidate.defaulted_to_identity.map((id) => `#${id}`).join(', ')}
+              {t("TopDownProofEditor_449")}{backwardEdit.candidate.defaulted_to_identity.map((id) => `#${id}`).join(', ')}
             </p>
           )}
           {backwardEdit.candidate.undetermined.length > 0 && (
             <p className="text-xs text-amber-700">
-              必須入力: {backwardEdit.candidate.undetermined.map((item) => item.name).join(', ')}
+              {t("TopDownProofEditor_450")}{backwardEdit.candidate.undetermined.map((item) => item.name).join(', ')}
             </p>
           )}
           <SubstitutionEditor
@@ -473,63 +477,57 @@ export function TopDownProofEditor({
 
       {backwardRequiredIncomplete && (
         <p className="mt-3 rounded bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          必須の代入を入力すると hole の編集を続けられます。
-        </p>
+          {t("TopDownProofEditor_451")}</p>
       )}
 
       {selectedHole && !backwardRequiredIncomplete && (
         <div ref={actionPanelRef} data-hole-actions={selectedHole.id} className="mt-3 space-y-3 rounded border border-violet-100 bg-white p-3">
           <div>
-            <p className="text-xs font-semibold text-violet-900">hole #{selectedHole.id} の goal</p>
+            <p className="text-xs font-semibold text-violet-900">hole #{selectedHole.id} {t("TopDownProofEditor_452")}</p>
             <PlanFormula tokens={selectedHole.goalTokens} symbolsById={symbolsById} />
           </div>
 
           <div className="flex flex-wrap gap-2">
             {proofState.premises.filter((premise) => sameTokens(premise.tokens, selectedHole.goalTokens)).map((premise) => (
               <button data-plan-fill-premise key={`premise-${premise.ord}`} type="button" disabled={pending} onClick={() => void fillFromPremise(selectedHole, premise.ord)} className="rounded bg-slate-700 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40">
-                前提 {premise.ord} で埋める
-              </button>
+                {t("InferenceRulePicker_229")}{premise.ord} {t("TopDownProofEditor_454")}</button>
             ))}
             {proofState.established.filter((step) => sameTokens(step.tokens, selectedHole.goalTokens)).map((step) => (
               <button data-plan-fill-step key={`step-${step.ord}`} type="button" disabled={pending} onClick={() => void fillFromEstablished(selectedHole, step.ord)} className="rounded bg-slate-600 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40">
-                step ({step.ord}) を再利用
-              </button>
+                step ({step.ord}{t("TopDownProofEditor_455")}</button>
             ))}
           </div>
 
           <label className="block text-xs text-slate-600">
-            補題を適用
-            <select data-plan-apply-theorem value="" disabled={pending} onChange={(event) => {
+            {t("TopDownProofEditor_456")}<select data-plan-apply-theorem value="" disabled={pending} onChange={(event) => {
               const theorem = theorems.find((item) => item.id === Number(event.target.value))
               if (theorem) void suggestBackward(selectedHole, 'theorem', theorem)
             }} className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm">
-              <option value="" disabled>補題を選択…</option>
+              <option value="" disabled>{t("TopDownProofEditor_457")}</option>
               {theorems.map((theorem) => <option key={theorem.id} value={theorem.id}>{theorem.name}</option>)}
             </select>
           </label>
           {showRules && <div>
-            <p className="mb-1 text-xs text-slate-600">推論定理を適用</p>
+            <p className="mb-1 text-xs text-slate-600">{t("TopDownProofEditor_458")}</p>
             <InferenceRulePicker testId="plan-rule-picker" onChoose={(theorem) => void suggestBackward(selectedHole, 'theorem', theorem)} />
           </div>}
 
           <label className="block text-xs text-slate-600">
-            公理を適用
-            <select data-plan-apply-axiom value="" disabled={pending} onChange={(event) => {
+            {t("TopDownProofEditor_459")}<select data-plan-apply-axiom value="" disabled={pending} onChange={(event) => {
               const axiom = axioms.find((item) => item.id === Number(event.target.value))
               if (axiom) void suggestBackward(selectedHole, 'axiom', axiom)
             }} className="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm">
-              <option value="" disabled>公理を選択…</option>
+              <option value="" disabled>{t("TopDownProofEditor_460")}</option>
               {axioms.map((axiom) => <option key={axiom.id} value={axiom.id}>{axiom.name}</option>)}
             </select>
           </label>
 
           <details className="rounded border border-slate-200 p-2">
-            <summary data-plan-assume className="cursor-pointer text-xs font-semibold text-slate-700">含意を仮定して証明する（⇒導入）</summary>
+            <summary data-plan-assume className="cursor-pointer text-xs font-semibold text-slate-700">{t("TopDownProofEditor_461")}</summary>
             <div className="mt-2 space-y-2">
               <FormulaPicker value={selectedHole.assumptionSelection?.formulaId ?? null} onChange={(formulaId) => void selectAssumption(selectedHole, formulaId)} context={context} />
               <button type="button" disabled={pending || implicationBody(selectedHole) == null} onClick={() => void discharge(selectedHole)} className="rounded bg-violet-700 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40">
-                この仮定を置く
-              </button>
+                {t("TopDownProofEditor_462")}</button>
             </div>
           </details>
 
@@ -544,10 +542,12 @@ export function TopDownProofEditor({
 }
 
 function PlanFormula({ tokens, symbolsById }: { tokens: Token[]; symbolsById: Map<number, Symbol> }) {
+  useLanguage()
+
   const tree = tokensToTree(tokens, symbolsById).tree
   return tree
     ? <Latex>{renderLatex(tree, symbolsById)}</Latex>
-    : <span className="text-red-700">この式は木で表示できません</span>
+    : <span className="text-red-700">{t("FormulaEditor_168")}</span>
 }
 
 function PlanNodeView({
@@ -565,16 +565,18 @@ function PlanNodeView({
   onSelect: (id: number) => void
   onSelectArgument: (nodeId: number, premiseIndex: number, stepOrd: number) => void
 }) {
+  useLanguage()
+
   const children = node.kind === 'plan'
     ? node.application.kind === 'mp' ? [node.premises[1], node.premises[0]] : node.premises
     : node.kind === 'discharge' ? [node.body] : []
   const label = node.kind === 'hole'
-    ? '未達成 hole'
+    ? t("TopDownProofEditor_464")
     : node.kind === 'filled'
       ? `${node.label} → step (${node.stepOrd})`
       : node.kind === 'plan'
         ? `${node.application.label}${node.stepOrd == null ? ' (plan)' : ` → step (${node.stepOrd})`}`
-        : `⇒導入: 仮定 step (${node.assumptionStepOrd}) を解消${node.stepOrd == null ? '' : ` → step (${node.stepOrd})`}`
+        : t("TopDownProofEditor_465", node.assumptionStepOrd, node.stepOrd == null ? '' : ` → step (${node.stepOrd})`)
   return (
     <div className="border-l border-violet-200 pl-3">
       <button type="button" disabled={node.kind !== 'hole'} onClick={() => onSelect(node.id)} className={`text-left text-xs ${node.kind === 'hole' ? 'font-semibold text-violet-700' : 'text-slate-600'} ${selectedHoleId === node.id ? 'underline' : ''}`}>
@@ -584,7 +586,7 @@ function PlanNodeView({
       {node.kind === 'plan' && node.argumentCandidates.map((candidates, premiseIndex) => (
         candidates.length >= 2 && (
           <label key={`argument-${premiseIndex}`} className="mt-1 block text-xs text-slate-600">
-            引数 {premiseIndex + 1}
+            {t("TopDownProofEditor_466")}{premiseIndex + 1}
             <select
               data-plan-argument
               value={node.argumentSelections[premiseIndex] ?? ''}
@@ -592,7 +594,7 @@ function PlanNodeView({
               onChange={(event) => onSelectArgument(node.id, premiseIndex, Number(event.target.value))}
               className="ml-2 rounded border border-slate-300 px-2 py-1"
             >
-              <option value="" disabled>候補から選択…</option>
+              <option value="" disabled>{t("TopDownProofEditor_467")}</option>
               {candidates.map((stepOrd) => (
                 <option key={stepOrd} value={stepOrd}>step ({stepOrd})</option>
               ))}
@@ -604,7 +606,7 @@ function PlanNodeView({
         && (node.application.kind === 'axiom' || node.application.kind === 'theorem')
         && (node.application.subst.term_substs.length + node.application.subst.prop_substs.length > 0) && (
         <p className="mt-1 text-xs text-slate-500">
-          代入: {[
+          {t("TopDownProofEditor_468")}{[
             ...node.application.subst.term_substs.map(
               (item) => `#${item.source_symbol_id} ↦ formula #${item.target_formula_id}`,
             ),

@@ -1,3 +1,5 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { UserSymbolNotice } from './BetaIdentity'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useQueries, useQuery } from '@tanstack/react-query'
@@ -25,6 +27,8 @@ const RULE_TAG = 'system:rule'
 const NO_FORMULA_IDS: number[] = []
 
 export function PropositionExplanation({ step, symbolsById, lemmas, trigger, onShowInList, className }: Props) {
+  const language = useLanguage()
+
   const [open, setOpen] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
@@ -47,8 +51,8 @@ export function PropositionExplanation({ step, symbolsById, lemmas, trigger, onS
     staleTime: Infinity,
   })
   const reading = useMemo(
-    () => (open && formula ? readTokens(formula.tokens, symbolsById) : undefined),
-    [formula, open, symbolsById],
+    () => (open && formula ? readTokens(formula.tokens, symbolsById, { language }) : undefined),
+    [formula, language, open, symbolsById],
   )
 
   const lemma = step.applied_proof_id == null ? undefined : lemmas.get(step.applied_proof_id)
@@ -89,41 +93,42 @@ export function PropositionExplanation({ step, symbolsById, lemmas, trigger, onS
     <span className="relative inline-block align-baseline">
       <UserSymbolNotice formulaIds={[step.conclusion_formula.id]} />
       <button ref={triggerRef} type="button" className={className ?? 'text-indigo-700 hover:underline'}
-        aria-label={`ステップ (${step.ord}) の命題を説明`} aria-expanded={open}
+        aria-label={t("PropositionExplanation_323", step.ord)} aria-expanded={open}
         onClick={() => setOpen(true)}>{trigger}</button>
       {open && createPortal(
-        <div ref={dialogRef} role="dialog" aria-label={`ステップ (${step.ord}) の命題の説明`}
+        <div ref={dialogRef} role="dialog" aria-label={t("PropositionExplanation_324", step.ord)}
           style={{ top: position.top, left: position.left }}
           className="fixed z-50 max-h-[70vh] w-[min(30rem,90vw)] overflow-auto rounded-lg border border-slate-300 bg-white p-4 text-left text-sm normal-case text-slate-800 shadow-xl">
           <span className="mb-2 flex items-center justify-between gap-3">
-            <strong>命題・ステップ ({step.ord})</strong>
-            <button ref={closeRef} type="button" onClick={close} className="text-indigo-700 hover:underline">閉じる</button>
+            <strong>{t("PropositionExplanation_325")}{step.ord})</strong>
+            <button ref={closeRef} type="button" onClick={close} className="text-indigo-700 hover:underline">{t("CommandPalette_041")}</button>
           </span>
           <span className="mb-2 block break-words text-base"><FormulaPreview formulaId={step.conclusion_formula.id} /></span>
           <MechanicalReading reading={reading} loading={formula === undefined} />
           <span className="mt-2 block">{describeStep(step, source?.name, symbolsById)}</span>
-          {sourcePath && <Link to={sourcePath} className="mt-1 block text-indigo-700 hover:underline">{source?.name} のページを見る</Link>}
-          {source?.description && <span className="mt-2 block">説明: {source.description}</span>}
+          {sourcePath && <Link to={sourcePath} className="mt-1 block text-indigo-700 hover:underline">{source?.name} {t("PropositionExplanation_327")}</Link>}
+          {source?.description && <span className="mt-2 block">{t("PropositionExplanation_328")}{source.description}</span>}
           {ruleTheorem && (
-            <section className="mt-2" aria-label="推論定理の前提込みの読み">
-              <span className="block text-xs font-semibold text-slate-500">推論定理「{ruleTheorem.name}」の前提込みの読み</span>
-              <span className="block break-words">{ruleReading ?? (ruleReading === null ? '読み下せません' : '読み込み中…')}</span>
+            <section className="mt-2" aria-label={t("PropositionExplanation_329")}>
+              <span className="block text-xs font-semibold text-slate-500">{t("PropositionExplanation_330")}{ruleTheorem.name}{t("PropositionExplanation_331")}</span>
+              <span lang={ruleReading?.language} className="block break-words">{ruleReading?.sentence ?? (ruleReading === null ? t("PropositionExplanation_332") : t("BetaGettingStarted_109"))}</span>
+            {language === 'en' && ruleReading?.language === 'ja' && <span className="block text-xs text-slate-500">{t('readingJapaneseNote')}</span>}
             </section>
           )}
           {data ? (
             <span className="mt-2 block">
               {data.theorems.map((item) => <span key={`theorem-${item.public_id}`} className="block">
-                これは定理「<Link to={`/theorems/${item.public_id}`} className="text-indigo-700 hover:underline">{item.name}</Link>」そのもの{item.description && ` — ${item.description}`}
+                {t("PropositionExplanation_334")}<Link to={`/theorems/${item.public_id}`} className="text-indigo-700 hover:underline">{item.name}</Link>{t("PropositionExplanation_335")}{item.description && ` — ${item.description}`}
               </span>)}
               {data.axioms.map((item) => <span key={`axiom-${item.public_id}`} className="block">
-                これは公理「<Link to={`/axioms/${item.public_id}`} className="text-indigo-700 hover:underline">{item.name}</Link>」そのもの{item.description && ` — ${item.description}`}
+                {t("PropositionExplanation_336")}<Link to={`/axioms/${item.public_id}`} className="text-indigo-700 hover:underline">{item.name}</Link>{t("PropositionExplanation_335")}{item.description && ` — ${item.description}`}
               </span>)}
             </span>
-          ) : isError ? <span role="alert" className="mt-2 block text-red-700">同じ式の名前を読み込めませんでした。</span>
-            : <span className="mt-2 block text-slate-500">同じ式の名前を確認中…</span>}
-          {step.conclusion_formula.remarks && <span className="mt-2 block">式の注記: {step.conclusion_formula.remarks}</span>}
+          ) : isError ? <span role="alert" className="mt-2 block text-red-700">{t("PropositionExplanation_338")}</span>
+            : <span className="mt-2 block text-slate-500">{t("PropositionExplanation_339")}</span>}
+          {step.conclusion_formula.remarks && <span className="mt-2 block">{t("PropositionExplanation_340")}{step.conclusion_formula.remarks}</span>}
           {reading && <SymbolMeanings reading={reading} symbolsById={symbolsById} />}
-          {onShowInList && <button type="button" onClick={() => { close(); onShowInList(step.ord) }} className="mt-3 block text-indigo-700 hover:underline">一覧で表示</button>}
+          {onShowInList && <button type="button" onClick={() => { close(); onShowInList(step.ord) }} className="mt-3 block text-indigo-700 hover:underline">{t("PropositionExplanation_341")}</button>}
         </div>, document.body,
       )}
     </span>
@@ -135,7 +140,8 @@ export function PropositionExplanation({ step, symbolsById, lemmas, trigger, onS
 function useRuleTheoremReading(
   theorem: LemmaDependency['theorem'] | undefined,
   symbolsById: Map<number, Symbol>,
-): string | null | undefined {
+): { sentence: string; language: 'ja' | 'en' } | null | undefined {
+  const language = useLanguage()
   const { data: premises } = useQuery({
     queryKey: ['theorems', theorem?.id, 'premises'],
     queryFn: () => theoremsApi.listPremises(theorem!.id),
@@ -156,24 +162,29 @@ function useRuleTheoremReading(
   })
   return useMemo(() => {
     if (!theorem || formulaIds.length === 0 || results.some((result) => !result.data)) return undefined
-    const readings = results.map((result) => readTokens(result.data!.tokens, symbolsById))
+    const readings = results.map((result) => readTokens(result.data!.tokens, symbolsById, { language }))
     if (readings.some((item) => item === null)) return null
     const all = readings as FormulaReading[]
-    return readTheoremSentence(all.slice(0, -1), all[all.length - 1])
-  }, [formulaIds.length, results, symbolsById, theorem])
+    return { sentence: readTheoremSentence(all.slice(0, -1), all[all.length - 1]), language: all.every(reading => reading.language === 'en') ? 'en' : 'ja' }
+  }, [formulaIds.length, language, results, symbolsById, theorem])
 }
 
 function MechanicalReading({ reading, loading }: { reading: FormulaReading | null | undefined; loading: boolean }) {
+  const language = useLanguage()
+
   return (
-    <section className="mt-1 rounded bg-slate-50 px-2 py-1.5" aria-label="機械的な読み下し">
-      <span className="block text-xs font-semibold text-slate-500">機械的な読み下し</span>
-      {reading ? <ReadingBlockView block={reading.block} />
-        : <span className="block text-slate-500">{loading ? '読み込み中…' : '読み下せません'}</span>}
+    <section className="mt-1 rounded bg-slate-50 px-2 py-1.5" aria-label={t("PropositionExplanation_342")}>
+      <span className="block text-xs font-semibold text-slate-500">{t("PropositionExplanation_342")}</span>
+      {reading ? <span lang={reading.language}><ReadingBlockView block={reading.block} /></span>
+        : <span className="block text-slate-500">{loading ? t("BetaGettingStarted_109") : t("PropositionExplanation_332")}</span>}
+      {language === 'en' && reading?.language === 'ja' && <span className="block text-xs text-slate-500">{t('readingJapaneseNote')}</span>}
     </section>
   )
 }
 
 function ReadingBlockView({ block }: { block: ReadingBlock }) {
+  useLanguage()
+
   if (!block.items) return <span className="block break-words">{block.text}</span>
   return (
     <>
@@ -193,21 +204,23 @@ function ReadingBlockView({ block }: { block: ReadingBlock }) {
 const VARIABLE_TYPES = new Set<string>([SYMBOL_TYPE.freeTermVariable, SYMBOL_TYPE.freePropositionVariable])
 
 function SymbolMeanings({ reading, symbolsById }: { reading: FormulaReading; symbolsById: Map<number, Symbol> }) {
+  useLanguage()
+
   const fallback = new Set(reading.nameFallbackSymbolIds)
   const symbols = reading.symbolIds
     .map((id) => symbolsById.get(id))
     .filter((symbol): symbol is Symbol => symbol != null && !VARIABLE_TYPES.has(symbol.symbol_type.name))
   if (symbols.length === 0) return null
   return (
-    <section className="mt-2" aria-label="この式に出てくる記号の意味">
-      <span className="block text-xs font-semibold text-slate-500">この式に出てくる記号の意味</span>
+    <section className="mt-2" aria-label={t("PropositionExplanation_346")}>
+      <span className="block text-xs font-semibold text-slate-500">{t("PropositionExplanation_346")}</span>
       <dl className="mt-0.5">
         {symbols.map((symbol) => (
           <div key={symbol.id} className="flex gap-2">
             <dt className="shrink-0 font-mono">{symbol.name}</dt>
             <dd className="min-w-0 break-words text-slate-600">
-              {symbol.remarks ?? '（注記なし）'}
-              {fallback.has(symbol.id) && <span className="text-slate-400">（読み下しでは名前のまま）</span>}
+              {symbol.remarks ?? t("PropositionExplanation_348")}
+              {fallback.has(symbol.id) && <span className="text-slate-400">{t("PropositionExplanation_349")}</span>}
             </dd>
           </div>
         ))}
@@ -219,15 +232,15 @@ function SymbolMeanings({ reading, symbolsById }: { reading: FormulaReading; sym
 function describeStep(step: ProofStep, sourceName: string | undefined, symbols: Map<number, Symbol>): string {
   const refs = step.arg_step_ords.map((ord) => `step (${ord})`).join('、')
   switch (step.step_kind) {
-    case 'premise': return `前提 (${step.premise_ord}) から導出`
-    case 'assumption': return '仮定として導入'
-    case 'axiom': return `公理「${sourceName ?? '不明'}」を当てはめた`
-    case 'theorem': return `${sourceName ? `定理「${sourceName}」` : '引用した定理'}を${refs ? ` ${refs} に` : ''}当てはめた`
+    case 'premise': return t("PropositionExplanation_350", step.premise_ord)
+    case 'assumption': return t("PropositionExplanation_351")
+    case 'axiom': return t("PropositionExplanation_352", sourceName ?? t("PropositionExplanation_353"))
+    case 'theorem': return t("PropositionExplanation_354", sourceName ? t("PropositionExplanation_355", sourceName) : t("PropositionExplanation_356"), refs ? t("PropositionExplanation_357", refs) : '')
     case 'rule':
       if (step.inference_rule?.kind === 'modus_ponens') return `MP (${refs})`
-      if (step.inference_rule?.kind === 'generalization') return `一般化 (${refs})${step.gen_variable_symbol_id != null ? `、変数 ${symbols.get(step.gen_variable_symbol_id)?.name ?? `#${step.gen_variable_symbol_id}`}` : ''}`
-      if (step.inference_rule?.kind === 'implication_intro') return `⇒導入 (${refs})`
-      return step.inference_rule?.kind ?? '推論規則'
+      if (step.inference_rule?.kind === 'generalization') return t("PropositionExplanation_358", refs, step.gen_variable_symbol_id != null ? t("PropositionExplanation_359", symbols.get(step.gen_variable_symbol_id)?.name ?? `#${step.gen_variable_symbol_id}`) : '')
+      if (step.inference_rule?.kind === 'implication_intro') return t("PropositionExplanation_360", refs)
+      return step.inference_rule?.kind ?? t("PropositionExplanation_361")
     default: return step.step_kind
   }
 }

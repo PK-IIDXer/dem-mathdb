@@ -1,7 +1,11 @@
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { useCommand, useCommandApi } from './CommandProvider'
 
 export function ShortcutHelp() {
+  useLanguage()
+
   const { inspect } = useCommandApi()
   const [open, setOpen] = useState(false)
   const originRef = useRef<HTMLElement | null>(null)
@@ -37,8 +41,8 @@ export function ShortcutHelp() {
     <div className="fixed inset-0 z-40 flex items-start justify-center bg-slate-950/40 px-4 pt-[15vh]">
       <div role="dialog" aria-modal="true" aria-labelledby={headingId} className="w-full max-w-lg rounded-xl bg-white p-4 shadow-2xl">
         <div className="flex items-center justify-between">
-          <h2 id={headingId} className="font-semibold text-slate-900">キーボードショートカット</h2>
-          <button ref={closeRef} type="button" onClick={close} className="rounded px-2 py-1 text-sm text-slate-500">閉じる Esc</button>
+          <h2 id={headingId} className="font-semibold text-slate-900">{t("ShortcutHelp_090")}</h2>
+          <button ref={closeRef} type="button" onClick={close} className="rounded px-2 py-1 text-sm text-slate-500">{t("ShortcutHelp_091")}</button>
         </div>
         <dl className="mt-3 divide-y divide-slate-100 text-sm">
           {commands.map(({ definition, enabled }) => (
@@ -48,7 +52,7 @@ export function ShortcutHelp() {
             </div>
           ))}
         </dl>
-        <p className="mt-3 text-xs text-slate-500">割り当てのない操作も「操作を検索」から実行できます。</p>
+        <p className="mt-3 text-xs text-slate-500">{t("ShortcutHelp_092")}</p>
       </div>
     </div>
   )

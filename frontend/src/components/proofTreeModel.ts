@@ -1,3 +1,4 @@
+import { t } from "../i18n/translate"
 import type { ProofStep } from '../api/types'
 
 export interface ProofTreeNode {
@@ -83,25 +84,25 @@ export function buildProofTree(steps: ProofStep[]): ProofTree {
 
 export function proofTreeRuleLabel(node: ProofTreeNode): string {
   const { step } = node
-  if (node.isReference) return `ステップ (${step.ord}) を再参照`
+  if (node.isReference) return t("proofTreeModel_315", step.ord)
 
   switch (step.step_kind) {
     case 'premise':
-      return `前提 ${step.premise_ord ?? '?'}`
+      return t("proofTreeModel_316", step.premise_ord ?? '?')
     case 'assumption':
-      return `仮定 (${step.ord})`
+      return t("proofTreeModel_317", step.ord)
     case 'axiom':
-      return `公理 ${step.axiom?.name ?? '?'}`
+      return t("proofTreeModel_318", step.axiom?.name ?? '?')
     case 'theorem':
-      return '引用した証明'
+      return t("ProofStepJustification_293")
     case 'rule':
       if (step.inference_rule?.kind === 'modus_ponens') return 'MP'
       if (step.inference_rule?.kind === 'generalization') return 'Gen'
       if (step.inference_rule?.kind === 'implication_intro') {
-        return `⇒導入, 仮定 (${step.arg_step_ords[0] ?? '?'}) 解消`
+        return t("proofTreeModel_320", step.arg_step_ords[0] ?? '?')
       }
-      return step.inference_rule?.name ?? step.inference_rule?.kind ?? '推論'
+      return step.inference_rule?.name ?? step.inference_rule?.kind ?? t("proofTreeModel_321")
     default:
-      return '推論'
+      return t("proofTreeModel_321")
   }
 }

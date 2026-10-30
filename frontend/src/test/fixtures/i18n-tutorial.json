@@ -1,0 +1,5000 @@
+{
+  "onboarding": {
+    "config": {
+      "read_only": false
+    },
+    "formula_types": [
+      {
+        "id": 1,
+        "name": "項",
+        "code": "term",
+        "remarks": "term. 数学的な実体を表す論理式。",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 2,
+        "name": "命題",
+        "code": "proposition",
+        "remarks": "proposition. 真偽を問える論理式。",
+        "created_at": "2026-10-30T12:22:19Z"
+      }
+    ],
+    "symbol_aliases": [
+      {
+        "id": 2,
+        "symbol_id": 2,
+        "alias": "!",
+        "source": "builtin"
+      },
+      {
+        "id": 8,
+        "symbol_id": 5,
+        "alias": "->",
+        "source": "builtin"
+      },
+      {
+        "id": 6,
+        "symbol_id": 4,
+        "alias": "/\\",
+        "source": "builtin"
+      },
+      {
+        "id": 10,
+        "symbol_id": 6,
+        "alias": "<->",
+        "source": "builtin"
+      },
+      {
+        "id": 4,
+        "symbol_id": 3,
+        "alias": "\\/",
+        "source": "builtin"
+      },
+      {
+        "id": 13,
+        "symbol_id": 8,
+        "alias": "\\exists",
+        "source": "builtin"
+      },
+      {
+        "id": 11,
+        "symbol_id": 7,
+        "alias": "\\forall",
+        "source": "builtin"
+      },
+      {
+        "id": 9,
+        "symbol_id": 6,
+        "alias": "\\leftrightarrow",
+        "source": "builtin"
+      },
+      {
+        "id": 1,
+        "symbol_id": 2,
+        "alias": "\\neg",
+        "source": "builtin"
+      },
+      {
+        "id": 7,
+        "symbol_id": 5,
+        "alias": "\\to",
+        "source": "builtin"
+      },
+      {
+        "id": 3,
+        "symbol_id": 3,
+        "alias": "\\vee",
+        "source": "builtin"
+      },
+      {
+        "id": 5,
+        "symbol_id": 4,
+        "alias": "\\wedge",
+        "source": "builtin"
+      },
+      {
+        "id": 14,
+        "symbol_id": 8,
+        "alias": "exists",
+        "source": "builtin"
+      },
+      {
+        "id": 12,
+        "symbol_id": 7,
+        "alias": "forall",
+        "source": "builtin"
+      }
+    ],
+    "symbols": [
+      {
+        "id": 1,
+        "public_id": "3200b32b-2960-5ad9-98b0-3c46eea42f9c",
+        "name": "⊥",
+        "symbol_type_id": 3,
+        "symbol_type": {
+          "id": 3,
+          "name": "論理記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 2,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "¬, ∨, ∧, →, ↔ など。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 0,
+        "is_primitive": true,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": "\\bot",
+        "remarks": "矛盾",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 2,
+        "public_id": "7ef55380-cb00-59f7-989f-1347cab26b12",
+        "name": "¬",
+        "symbol_type_id": 3,
+        "symbol_type": {
+          "id": 3,
+          "name": "論理記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 2,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "¬, ∨, ∧, →, ↔ など。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 1,
+        "is_primitive": true,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": "\\neg",
+        "remarks": "否定",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 3,
+        "public_id": "e9ab484b-d683-5276-987a-af3df5a6e8e9",
+        "name": "∨",
+        "symbol_type_id": 3,
+        "symbol_type": {
+          "id": 3,
+          "name": "論理記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 2,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "¬, ∨, ∧, →, ↔ など。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 2,
+        "is_primitive": true,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "infix",
+        "precedence": 30,
+        "latex_template": "\\vee",
+        "remarks": "選言",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 4,
+        "public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1",
+        "name": "∧",
+        "symbol_type_id": 3,
+        "symbol_type": {
+          "id": 3,
+          "name": "論理記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 2,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "¬, ∨, ∧, →, ↔ など。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 2,
+        "is_primitive": true,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "infix",
+        "precedence": 40,
+        "latex_template": "\\wedge",
+        "remarks": "連言",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 5,
+        "public_id": "e72831d9-19bc-5094-abd7-359f275f87a1",
+        "name": "→",
+        "symbol_type_id": 3,
+        "symbol_type": {
+          "id": 3,
+          "name": "論理記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 2,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "¬, ∨, ∧, →, ↔ など。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 2,
+        "is_primitive": true,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "infix",
+        "precedence": 20,
+        "latex_template": "\\implies",
+        "remarks": "含意",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 6,
+        "public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec",
+        "name": "↔",
+        "symbol_type_id": 3,
+        "symbol_type": {
+          "id": 3,
+          "name": "論理記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 2,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "¬, ∨, ∧, →, ↔ など。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 2,
+        "is_primitive": true,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "infix",
+        "precedence": 10,
+        "latex_template": "\\iff",
+        "remarks": "同値",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 7,
+        "public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62",
+        "name": "∀",
+        "symbol_type_id": 4,
+        "symbol_type": {
+          "id": 4,
+          "name": "命題型量化記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 2,
+          "fixed_arity": 1,
+          "is_quantifier": true,
+          "remarks": "命題を束縛して命題を作る記号",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 1,
+        "is_primitive": true,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": "\\forall",
+        "remarks": "整形式な項すべてを走る全称量化",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 8,
+        "public_id": "b299df13-8ca1-5327-9b4c-f08b1231a678",
+        "name": "∃",
+        "symbol_type_id": 4,
+        "symbol_type": {
+          "id": 4,
+          "name": "命題型量化記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 2,
+          "fixed_arity": 1,
+          "is_quantifier": true,
+          "remarks": "命題を束縛して命題を作る記号",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 1,
+        "is_primitive": true,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": "\\exists",
+        "remarks": "整形式な項すべてを走る存在量化",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 9,
+        "public_id": "9c6f5697-7475-52bd-b600-b981e924af62",
+        "name": "=",
+        "symbol_type_id": 2,
+        "symbol_type": {
+          "id": 2,
+          "name": "述語記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 1,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "項から命題を作る記号",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 2,
+        "is_primitive": true,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "infix",
+        "precedence": 50,
+        "latex_template": "=",
+        "remarks": "等号",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 10,
+        "public_id": "43c9c73e-69f5-500a-ba17-852af85be0b7",
+        "name": "φ",
+        "symbol_type_id": 7,
+        "symbol_type": {
+          "id": 7,
+          "name": "命題型自由変数記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 1,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "自由な命題変数",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 0,
+        "is_primitive": false,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": null,
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 11,
+        "public_id": "056bb080-b4a4-5b6c-a651-86b3309dcda6",
+        "name": "ψ",
+        "symbol_type_id": 7,
+        "symbol_type": {
+          "id": 7,
+          "name": "命題型自由変数記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 1,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "自由な命題変数",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 0,
+        "is_primitive": false,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": null,
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 12,
+        "public_id": "8e86446f-fb4f-529e-be9c-3ff070066779",
+        "name": "χ",
+        "symbol_type_id": 7,
+        "symbol_type": {
+          "id": 7,
+          "name": "命題型自由変数記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 1,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "自由な命題変数",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 0,
+        "is_primitive": false,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": null,
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 13,
+        "public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1",
+        "name": "φ¹",
+        "symbol_type_id": 7,
+        "symbol_type": {
+          "id": 7,
+          "name": "命題型自由変数記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 1,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "自由な命題変数",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 1,
+        "is_primitive": false,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": null,
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 14,
+        "public_id": "2efc9d40-a273-5e41-8315-4de58dfabad3",
+        "name": "ψ¹",
+        "symbol_type_id": 7,
+        "symbol_type": {
+          "id": 7,
+          "name": "命題型自由変数記号",
+          "output_formula_type_id": 2,
+          "input_formula_type_id": 1,
+          "fixed_arity": null,
+          "is_quantifier": false,
+          "remarks": "自由な命題変数",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 1,
+        "is_primitive": false,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": null,
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 15,
+        "public_id": "58f571b2-5a2d-51ed-8fbf-7e5e6494d147",
+        "name": "x",
+        "symbol_type_id": 6,
+        "symbol_type": {
+          "id": 6,
+          "name": "項型自由変数記号",
+          "output_formula_type_id": 1,
+          "input_formula_type_id": null,
+          "fixed_arity": 0,
+          "is_quantifier": false,
+          "remarks": "自由な項変数",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 0,
+        "is_primitive": false,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": "x",
+        "remarks": "シード用自由項変数",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 16,
+        "public_id": "28ffc497-17bf-56b0-b792-3b4f3882539a",
+        "name": "y",
+        "symbol_type_id": 6,
+        "symbol_type": {
+          "id": 6,
+          "name": "項型自由変数記号",
+          "output_formula_type_id": 1,
+          "input_formula_type_id": null,
+          "fixed_arity": 0,
+          "is_quantifier": false,
+          "remarks": "自由な項変数",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 0,
+        "is_primitive": false,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": "y",
+        "remarks": "シード用自由項変数",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      },
+      {
+        "id": 17,
+        "public_id": "4b3303de-7abf-5ee7-b37a-4dc01d43665c",
+        "name": "t",
+        "symbol_type_id": 6,
+        "symbol_type": {
+          "id": 6,
+          "name": "項型自由変数記号",
+          "output_formula_type_id": 1,
+          "input_formula_type_id": null,
+          "fixed_arity": 0,
+          "is_quantifier": false,
+          "remarks": "自由な項変数",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "arity": 0,
+        "is_primitive": false,
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "notation_kind": "prefix",
+        "precedence": null,
+        "latex_template": "t",
+        "remarks": "シード用自由項変数",
+        "created_at": "2026-10-30T12:22:19Z",
+        "usage_count": null
+      }
+    ],
+    "formulas": [
+      {
+        "id": 1,
+        "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+        "token_count": 5,
+        "description": null,
+        "remarks": "ヒルベルト公理Kの論理式",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 2,
+        "public_id": "8dcb6e1b-0510-5657-ba18-e8a22a7f8b88",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "f5f4c44a0c4d860f9359f083d81cc1abf9fccc1363b29955ba58a46c56e20770",
+        "token_count": 13,
+        "description": null,
+        "remarks": "ヒルベルト公理Sの論理式",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 3,
+        "public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "f6630dccd1deaafb61d3c2941b82e063750dbb8c0d6a649c49d4e4c08762e8ea",
+        "token_count": 6,
+        "description": null,
+        "remarks": "全称除去公理の論理式",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 4,
+        "public_id": "7cbe181b-ba2f-560d-aaba-4f22b25d167a",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "8cefde862c95c198f942ac726a533c2f67d6fbafcdc647ed15907411e0361bb3",
+        "token_count": 14,
+        "description": null,
+        "remarks": "全称分配公理の論理式",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 5,
+        "public_id": "6b1dc303-a6e7-51d5-99d4-50fdfa8f0391",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "3e90d11e1bfcd4e7ecd494bb05a06d0ecc6b63e51651d547afe2920d4c1997f7",
+        "token_count": 3,
+        "description": null,
+        "remarks": "等号反射律公理の論理式",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 6,
+        "public_id": "d15ead78-1e74-5418-9cb2-dc674812870f",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "c24c180eb08243e43a79c75b07c3edbb7de7d6b7cfdf79ecd5710a0684186bff",
+        "token_count": 9,
+        "description": null,
+        "remarks": "等号代入公理の論理式",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 7,
+        "public_id": "998a72b3-e7af-5c9a-a1f9-1003bfca3d27",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "f74dffbd711790e07b044f1d9046918ae7ff0075d20dec3f6c3b4964d707cf15",
+        "token_count": 4,
+        "description": null,
+        "remarks": "定数命題の全称導入公理の論理式",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 8,
+        "public_id": "059b4bd7-c8cd-5c09-b573-b65359032f1f",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "32b85f6afcb4264d7a68230b08619714df1517c63370421aaecd05019746d248",
+        "token_count": 7,
+        "description": null,
+        "remarks": "パース公理の論理式",
+        "created_at": "2026-10-30T12:22:19Z"
+      }
+    ],
+    "tags": [],
+    "theorems": [
+      {
+        "id": 1,
+        "public_id": "53272152-bea8-537d-9dfd-b00e6e776c9f",
+        "namespace_id": 3,
+        "namespace_name": "local.i18n",
+        "name": "i18n_tutorial",
+        "conclusion_formula_id": 9,
+        "conclusion_formula": {
+          "id": 9,
+          "public_id": "2c83ed7d-eee0-5416-904c-75a30fd07162",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "a24aca49c1abe3f914f8a05c774d9fb15df8ecf51de21827987d0f749c74e606",
+          "token_count": 6,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        },
+        "status": "conjecture",
+        "description": null,
+        "tags": [
+          {
+            "id": 1,
+            "name": "system:onboarding",
+            "created_at": "2026-10-30T12:22:20Z"
+          }
+        ],
+        "external_checks": [],
+        "remarks": "{\"phase1\": {\"variables\": {\"x\": 15}}}",
+        "created_at": "2026-10-30T12:22:20Z",
+        "updated_at": "2026-10-30T12:22:20Z"
+      }
+    ],
+    "axioms": [
+      {
+        "id": 1,
+        "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+        "name": "ヒルベルト公理K",
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "formula_id": 1,
+        "formula": {
+          "id": 1,
+          "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+          "token_count": 5,
+          "description": null,
+          "remarks": "ヒルベルト公理Kの論理式",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "origin_kind": "primitive",
+        "definition_id": null,
+        "description": null,
+        "tags": [],
+        "remarks": "ヒルベルト体系のシード",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 2,
+        "public_id": "f78bf2fa-26c3-5047-ae0d-f90393cd2555",
+        "name": "ヒルベルト公理S",
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "formula_id": 2,
+        "formula": {
+          "id": 2,
+          "public_id": "8dcb6e1b-0510-5657-ba18-e8a22a7f8b88",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "f5f4c44a0c4d860f9359f083d81cc1abf9fccc1363b29955ba58a46c56e20770",
+          "token_count": 13,
+          "description": null,
+          "remarks": "ヒルベルト公理Sの論理式",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "origin_kind": "primitive",
+        "definition_id": null,
+        "description": null,
+        "tags": [],
+        "remarks": "ヒルベルト体系のシード",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 3,
+        "public_id": "5e6cd880-e55e-508c-ae3f-bd2069977882",
+        "name": "全称除去公理",
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "formula_id": 3,
+        "formula": {
+          "id": 3,
+          "public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "f6630dccd1deaafb61d3c2941b82e063750dbb8c0d6a649c49d4e4c08762e8ea",
+          "token_count": 6,
+          "description": null,
+          "remarks": "全称除去公理の論理式",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "origin_kind": "primitive",
+        "definition_id": null,
+        "description": null,
+        "tags": [],
+        "remarks": "ヒルベルト体系のシード",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 4,
+        "public_id": "3e665eca-292d-5291-b652-d5eaffb88b9a",
+        "name": "全称分配公理",
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "formula_id": 4,
+        "formula": {
+          "id": 4,
+          "public_id": "7cbe181b-ba2f-560d-aaba-4f22b25d167a",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "8cefde862c95c198f942ac726a533c2f67d6fbafcdc647ed15907411e0361bb3",
+          "token_count": 14,
+          "description": null,
+          "remarks": "全称分配公理の論理式",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "origin_kind": "primitive",
+        "definition_id": null,
+        "description": null,
+        "tags": [],
+        "remarks": "ヒルベルト体系のシード",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 5,
+        "public_id": "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+        "name": "等号反射律公理",
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "formula_id": 5,
+        "formula": {
+          "id": 5,
+          "public_id": "6b1dc303-a6e7-51d5-99d4-50fdfa8f0391",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "3e90d11e1bfcd4e7ecd494bb05a06d0ecc6b63e51651d547afe2920d4c1997f7",
+          "token_count": 3,
+          "description": null,
+          "remarks": "等号反射律公理の論理式",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "origin_kind": "primitive",
+        "definition_id": null,
+        "description": null,
+        "tags": [],
+        "remarks": "ヒルベルト体系のシード",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 6,
+        "public_id": "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+        "name": "等号代入公理",
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "formula_id": 6,
+        "formula": {
+          "id": 6,
+          "public_id": "d15ead78-1e74-5418-9cb2-dc674812870f",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "c24c180eb08243e43a79c75b07c3edbb7de7d6b7cfdf79ecd5710a0684186bff",
+          "token_count": 9,
+          "description": null,
+          "remarks": "等号代入公理の論理式",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "origin_kind": "primitive",
+        "definition_id": null,
+        "description": null,
+        "tags": [],
+        "remarks": "ヒルベルト体系のシード",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 7,
+        "public_id": "23aa9159-805e-5749-8be2-648523b3c1d5",
+        "name": "定数命題の全称導入公理",
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "formula_id": 7,
+        "formula": {
+          "id": 7,
+          "public_id": "998a72b3-e7af-5c9a-a1f9-1003bfca3d27",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "f74dffbd711790e07b044f1d9046918ae7ff0075d20dec3f6c3b4964d707cf15",
+          "token_count": 4,
+          "description": null,
+          "remarks": "定数命題の全称導入公理の論理式",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "origin_kind": "primitive",
+        "definition_id": null,
+        "description": null,
+        "tags": [],
+        "remarks": "ヒルベルト体系のシード",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 8,
+        "public_id": "a4169fa3-8198-51f5-9f57-7ea6a09e71b7",
+        "name": "パース公理",
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "formula_id": 8,
+        "formula": {
+          "id": 8,
+          "public_id": "059b4bd7-c8cd-5c09-b573-b65359032f1f",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "32b85f6afcb4264d7a68230b08619714df1517c63370421aaecd05019746d248",
+          "token_count": 7,
+          "description": null,
+          "remarks": "パース公理の論理式",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "origin_kind": "primitive",
+        "definition_id": null,
+        "description": null,
+        "tags": [],
+        "remarks": "ヒルベルト体系のシード",
+        "created_at": "2026-10-30T12:22:19Z"
+      }
+    ],
+    "axiom_systems": [
+      {
+        "id": 1,
+        "public_id": "e023a375-61f7-545c-98ec-101941c32f36",
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "name": "ヒルベルト体系（コア）",
+        "remarks": "最小限のヒルベルト流コア公理スキーマ。",
+        "comparison_rank": null,
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      {
+        "id": 2,
+        "public_id": "375187a0-82e5-5f3b-b565-da913123944a",
+        "namespace_id": 2,
+        "namespace_name": "dem.foundation.logic",
+        "name": "ヒルベルト体系（古典）",
+        "remarks": "ヒルベルト流コアに古典含意論理を加えた公理系。",
+        "comparison_rank": null,
+        "created_at": "2026-10-30T12:22:19Z"
+      }
+    ],
+    "goal_parse": {
+      "tokens": [
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        }
+      ],
+      "formula_id": null
+    },
+    "goal": {
+      "id": 9,
+      "public_id": "2c83ed7d-eee0-5416-904c-75a30fd07162",
+      "formula_type_id": 2,
+      "formula_type": {
+        "id": 2,
+        "name": "命題",
+        "code": "proposition",
+        "remarks": "proposition. 真偽を問える論理式。",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      "hash": "a24aca49c1abe3f914f8a05c774d9fb15df8ecf51de21827987d0f749c74e606",
+      "token_count": 6,
+      "description": null,
+      "remarks": null,
+      "created_at": "2026-10-30T12:22:20Z",
+      "tokens": [
+        {
+          "position": 0,
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "position": 1,
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "position": 2,
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "position": 3,
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "position": 4,
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "position": 5,
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        }
+      ]
+    },
+    "goal_print": {
+      "text": "∀ x. (φ¹(x)) → (φ¹(x))"
+    },
+    "tag": {
+      "id": 1,
+      "name": "system:onboarding",
+      "created_at": "2026-10-30T12:22:20Z"
+    },
+    "theorem": {
+      "id": 1,
+      "public_id": "53272152-bea8-537d-9dfd-b00e6e776c9f",
+      "namespace_id": 3,
+      "namespace_name": "local.i18n",
+      "name": "i18n_tutorial",
+      "conclusion_formula_id": 9,
+      "conclusion_formula": {
+        "id": 9,
+        "public_id": "2c83ed7d-eee0-5416-904c-75a30fd07162",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "a24aca49c1abe3f914f8a05c774d9fb15df8ecf51de21827987d0f749c74e606",
+        "token_count": 6,
+        "description": null,
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:20Z"
+      },
+      "status": "conjecture",
+      "description": null,
+      "tags": [
+        {
+          "id": 1,
+          "name": "system:onboarding",
+          "created_at": "2026-10-30T12:22:20Z"
+        }
+      ],
+      "external_checks": [],
+      "remarks": "{\"phase1\": {\"variables\": {\"x\": 15}}}",
+      "created_at": "2026-10-30T12:22:20Z",
+      "updated_at": "2026-10-30T12:22:20Z"
+    },
+    "theorem_premises": [],
+    "theorem_used_in": [],
+    "proof": {
+      "id": 1,
+      "public_id": "9972f6e3-7c54-5320-ab33-fb93c136e17f",
+      "theorem_id": 1,
+      "name": null,
+      "status": "draft",
+      "remarks": null,
+      "created_at": "2026-10-30T12:22:20Z",
+      "updated_at": "2026-10-30T12:22:20Z"
+    },
+    "proofs": [
+      {
+        "id": 1,
+        "public_id": "9972f6e3-7c54-5320-ab33-fb93c136e17f",
+        "theorem_id": 1,
+        "name": null,
+        "status": "draft",
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:20Z",
+        "updated_at": "2026-10-30T12:22:20Z"
+      }
+    ],
+    "draft": {
+      "proof": {
+        "id": 1,
+        "public_id": "9972f6e3-7c54-5320-ab33-fb93c136e17f",
+        "theorem_id": 1,
+        "name": null,
+        "status": "draft",
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:20Z",
+        "updated_at": "2026-10-30T12:22:20Z"
+      },
+      "steps": [],
+      "state": {
+        "goal_tokens": [
+          {
+            "symbol_id": 7,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 5,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 13,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          },
+          {
+            "symbol_id": 13,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          }
+        ],
+        "premises": [],
+        "established": [],
+        "open_assumptions": [],
+        "reached_goal": false,
+        "blocking": [
+          "goal_not_reached"
+        ]
+      },
+      "formulas": [],
+      "used_axioms": []
+    },
+    "axiom_workflow": [
+      {
+        "name": "hilbert_k",
+        "parse": {
+          "tokens": [
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ],
+          "formula_id": null
+        },
+        "axiom": {
+          "id": 1,
+          "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+          "name": "ヒルベルト公理K",
+          "namespace_id": 2,
+          "namespace_name": "dem.foundation.logic",
+          "formula_id": 1,
+          "formula": {
+            "id": 1,
+            "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+            "token_count": 5,
+            "description": null,
+            "remarks": "ヒルベルト公理Kの論理式",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "origin_kind": "primitive",
+          "definition_id": null,
+          "description": null,
+          "tags": [],
+          "remarks": "ヒルベルト体系のシード",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "suggestion": {
+          "applied_proof_id": null,
+          "subst": {
+            "prop_substs": [
+              {
+                "source_symbol_id": 10,
+                "body_formula_id": 10,
+                "formal_param_symbol_ids": []
+              },
+              {
+                "source_symbol_id": 11,
+                "body_formula_id": 11,
+                "formal_param_symbol_ids": []
+              }
+            ],
+            "term_substs": []
+          },
+          "undetermined": [],
+          "defaulted_to_identity": [],
+          "conclusion_tokens": [
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ],
+          "premise_count": 0,
+          "arg_candidates": []
+        },
+        "step": {
+          "proof_id": 1,
+          "ord": 0,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 12,
+            "public_id": "a80a70a0-caa9-528b-b837-960728d8be38",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "464f42217ba0979e0629b36baba0ea0f2b57addbbd77b43f597fa03aed179871",
+            "token_count": 11,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 1,
+            "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+            "name": "ヒルベルト公理K",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 1,
+            "formula": {
+              "id": 1,
+              "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+              "token_count": 5,
+              "description": null,
+              "remarks": "ヒルベルト公理Kの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 11,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        }
+      },
+      {
+        "name": "hilbert_k",
+        "parse": {
+          "tokens": [
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ],
+          "formula_id": null
+        },
+        "axiom": {
+          "id": 1,
+          "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+          "name": "ヒルベルト公理K",
+          "namespace_id": 2,
+          "namespace_name": "dem.foundation.logic",
+          "formula_id": 1,
+          "formula": {
+            "id": 1,
+            "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+            "token_count": 5,
+            "description": null,
+            "remarks": "ヒルベルト公理Kの論理式",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "origin_kind": "primitive",
+          "definition_id": null,
+          "description": null,
+          "tags": [],
+          "remarks": "ヒルベルト体系のシード",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "suggestion": {
+          "applied_proof_id": null,
+          "subst": {
+            "prop_substs": [
+              {
+                "source_symbol_id": 10,
+                "body_formula_id": 10,
+                "formal_param_symbol_ids": []
+              },
+              {
+                "source_symbol_id": 11,
+                "body_formula_id": 10,
+                "formal_param_symbol_ids": []
+              }
+            ],
+            "term_substs": []
+          },
+          "undetermined": [],
+          "defaulted_to_identity": [],
+          "conclusion_tokens": [
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ],
+          "premise_count": 0,
+          "arg_candidates": []
+        },
+        "step": {
+          "proof_id": 1,
+          "ord": 1,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 13,
+            "public_id": "ef91b1d0-0a78-5a6a-bdd4-80ed070379a0",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "5a713cd191eafea7d07bd5e342234c36a08aec7480cf89922b5cbcaabe6304fa",
+            "token_count": 8,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 1,
+            "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+            "name": "ヒルベルト公理K",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 1,
+            "formula": {
+              "id": 1,
+              "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+              "token_count": 5,
+              "description": null,
+              "remarks": "ヒルベルト公理Kの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        }
+      },
+      {
+        "name": "hilbert_s",
+        "parse": {
+          "tokens": [
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ],
+          "formula_id": null
+        },
+        "axiom": {
+          "id": 2,
+          "public_id": "f78bf2fa-26c3-5047-ae0d-f90393cd2555",
+          "name": "ヒルベルト公理S",
+          "namespace_id": 2,
+          "namespace_name": "dem.foundation.logic",
+          "formula_id": 2,
+          "formula": {
+            "id": 2,
+            "public_id": "8dcb6e1b-0510-5657-ba18-e8a22a7f8b88",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "f5f4c44a0c4d860f9359f083d81cc1abf9fccc1363b29955ba58a46c56e20770",
+            "token_count": 13,
+            "description": null,
+            "remarks": "ヒルベルト公理Sの論理式",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "origin_kind": "primitive",
+          "definition_id": null,
+          "description": null,
+          "tags": [],
+          "remarks": "ヒルベルト体系のシード",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "suggestion": {
+          "applied_proof_id": null,
+          "subst": {
+            "prop_substs": [
+              {
+                "source_symbol_id": 10,
+                "body_formula_id": 10,
+                "formal_param_symbol_ids": []
+              },
+              {
+                "source_symbol_id": 11,
+                "body_formula_id": 11,
+                "formal_param_symbol_ids": []
+              },
+              {
+                "source_symbol_id": 12,
+                "body_formula_id": 10,
+                "formal_param_symbol_ids": []
+              }
+            ],
+            "term_substs": []
+          },
+          "undetermined": [],
+          "defaulted_to_identity": [],
+          "conclusion_tokens": [
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ],
+          "premise_count": 0,
+          "arg_candidates": []
+        },
+        "step": {
+          "proof_id": 1,
+          "ord": 2,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 14,
+            "public_id": "d2e5833e-56c7-559b-9e03-0367b60f8aee",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "55f5a7ab5901eb552b2c9943eeef9f7546c1b17e5a139154c62233a0c472de3c",
+            "token_count": 26,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 2,
+            "public_id": "f78bf2fa-26c3-5047-ae0d-f90393cd2555",
+            "name": "ヒルベルト公理S",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 2,
+            "formula": {
+              "id": 2,
+              "public_id": "8dcb6e1b-0510-5657-ba18-e8a22a7f8b88",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "f5f4c44a0c4d860f9359f083d81cc1abf9fccc1363b29955ba58a46c56e20770",
+              "token_count": 13,
+              "description": null,
+              "remarks": "ヒルベルト公理Sの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 11,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 12,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        }
+      }
+    ],
+    "after_axioms": {
+      "proof": {
+        "id": 1,
+        "public_id": "9972f6e3-7c54-5320-ab33-fb93c136e17f",
+        "theorem_id": 1,
+        "name": null,
+        "status": "draft",
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:20Z",
+        "updated_at": "2026-10-30T12:22:20Z"
+      },
+      "steps": [
+        {
+          "proof_id": 1,
+          "ord": 0,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 12,
+            "public_id": "a80a70a0-caa9-528b-b837-960728d8be38",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "464f42217ba0979e0629b36baba0ea0f2b57addbbd77b43f597fa03aed179871",
+            "token_count": 11,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 1,
+            "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+            "name": "ヒルベルト公理K",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 1,
+            "formula": {
+              "id": 1,
+              "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+              "token_count": 5,
+              "description": null,
+              "remarks": "ヒルベルト公理Kの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 11,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        },
+        {
+          "proof_id": 1,
+          "ord": 1,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 13,
+            "public_id": "ef91b1d0-0a78-5a6a-bdd4-80ed070379a0",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "5a713cd191eafea7d07bd5e342234c36a08aec7480cf89922b5cbcaabe6304fa",
+            "token_count": 8,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 1,
+            "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+            "name": "ヒルベルト公理K",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 1,
+            "formula": {
+              "id": 1,
+              "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+              "token_count": 5,
+              "description": null,
+              "remarks": "ヒルベルト公理Kの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        },
+        {
+          "proof_id": 1,
+          "ord": 2,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 14,
+            "public_id": "d2e5833e-56c7-559b-9e03-0367b60f8aee",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "55f5a7ab5901eb552b2c9943eeef9f7546c1b17e5a139154c62233a0c472de3c",
+            "token_count": 26,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 2,
+            "public_id": "f78bf2fa-26c3-5047-ae0d-f90393cd2555",
+            "name": "ヒルベルト公理S",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 2,
+            "formula": {
+              "id": 2,
+              "public_id": "8dcb6e1b-0510-5657-ba18-e8a22a7f8b88",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "f5f4c44a0c4d860f9359f083d81cc1abf9fccc1363b29955ba58a46c56e20770",
+              "token_count": 13,
+              "description": null,
+              "remarks": "ヒルベルト公理Sの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 11,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 12,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        }
+      ],
+      "state": {
+        "goal_tokens": [
+          {
+            "symbol_id": 7,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 5,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 13,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          },
+          {
+            "symbol_id": 13,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          }
+        ],
+        "premises": [],
+        "established": [
+          {
+            "ord": 0,
+            "tokens": [
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              }
+            ],
+            "step_kind": "axiom",
+            "depends_on_premises": [],
+            "depends_on_assumptions": []
+          },
+          {
+            "ord": 1,
+            "tokens": [
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              }
+            ],
+            "step_kind": "axiom",
+            "depends_on_premises": [],
+            "depends_on_assumptions": []
+          },
+          {
+            "ord": 2,
+            "tokens": [
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              }
+            ],
+            "step_kind": "axiom",
+            "depends_on_premises": [],
+            "depends_on_assumptions": []
+          }
+        ],
+        "open_assumptions": [],
+        "reached_goal": false,
+        "blocking": [
+          "goal_not_reached"
+        ]
+      },
+      "formulas": [
+        {
+          "id": 12,
+          "public_id": "a80a70a0-caa9-528b-b837-960728d8be38",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "464f42217ba0979e0629b36baba0ea0f2b57addbbd77b43f597fa03aed179871",
+          "token_count": 11,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 8,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 9,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 10,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "public_id": "ef91b1d0-0a78-5a6a-bdd4-80ed070379a0",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "5a713cd191eafea7d07bd5e342234c36a08aec7480cf89922b5cbcaabe6304fa",
+          "token_count": 8,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "public_id": "d2e5833e-56c7-559b-9e03-0367b60f8aee",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "55f5a7ab5901eb552b2c9943eeef9f7546c1b17e5a139154c62233a0c472de3c",
+          "token_count": 26,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 8,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 9,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 10,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 11,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 12,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 13,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 14,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 15,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 16,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 17,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 18,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 19,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 20,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 21,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 22,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 23,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 24,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 25,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        }
+      ],
+      "used_axioms": [
+        {
+          "id": 1,
+          "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+          "name": "ヒルベルト公理K",
+          "namespace_id": 2,
+          "namespace_name": "dem.foundation.logic",
+          "formula_id": 1,
+          "formula": {
+            "id": 1,
+            "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+            "token_count": 5,
+            "description": null,
+            "remarks": "ヒルベルト公理Kの論理式",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "origin_kind": "primitive",
+          "definition_id": null,
+          "description": null,
+          "tags": [],
+          "remarks": "ヒルベルト体系のシード",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        {
+          "id": 2,
+          "public_id": "f78bf2fa-26c3-5047-ae0d-f90393cd2555",
+          "name": "ヒルベルト公理S",
+          "namespace_id": 2,
+          "namespace_name": "dem.foundation.logic",
+          "formula_id": 2,
+          "formula": {
+            "id": 2,
+            "public_id": "8dcb6e1b-0510-5657-ba18-e8a22a7f8b88",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "f5f4c44a0c4d860f9359f083d81cc1abf9fccc1363b29955ba58a46c56e20770",
+            "token_count": 13,
+            "description": null,
+            "remarks": "ヒルベルト公理Sの論理式",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "origin_kind": "primitive",
+          "definition_id": null,
+          "description": null,
+          "tags": [],
+          "remarks": "ヒルベルト体系のシード",
+          "created_at": "2026-10-30T12:22:19Z"
+        }
+      ],
+      "followups": [
+        {
+          "kind": "mp",
+          "antecedent_step_ord": 0,
+          "implication_step_ord": 2,
+          "conclusion_tokens": [
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ],
+          "reaches_goal": false
+        }
+      ]
+    },
+    "first_mp": {
+      "proof_id": 1,
+      "ord": 3,
+      "step_kind": "rule",
+      "conclusion_formula": {
+        "id": 15,
+        "public_id": "f876d7ca-65df-5140-9160-0d811f22cb44",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "9212d0e290f685550a631a3801bf19a800f79ea46341743111dd5635df585c9e",
+        "token_count": 14,
+        "description": null,
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:21Z"
+      },
+      "premise_ord": null,
+      "axiom": null,
+      "applied_proof_id": null,
+      "inference_rule": {
+        "id": 1,
+        "name": "MP",
+        "kind": "modus_ponens",
+        "tier": "primitive",
+        "elimination_procedure": null,
+        "premise_count": 2,
+        "requires_variable_param": false,
+        "remarks": "φ と φ→ψ から ψ を導く",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      "gen_variable_symbol_id": null,
+      "arg_step_ords": [
+        0,
+        2
+      ],
+      "term_substs": [],
+      "prop_substs": [],
+      "remarks": null,
+      "created_at": "2026-10-30T12:22:21Z"
+    },
+    "after_first_mp": {
+      "proof": {
+        "id": 1,
+        "public_id": "9972f6e3-7c54-5320-ab33-fb93c136e17f",
+        "theorem_id": 1,
+        "name": null,
+        "status": "draft",
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:20Z",
+        "updated_at": "2026-10-30T12:22:20Z"
+      },
+      "steps": [
+        {
+          "proof_id": 1,
+          "ord": 0,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 12,
+            "public_id": "a80a70a0-caa9-528b-b837-960728d8be38",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "464f42217ba0979e0629b36baba0ea0f2b57addbbd77b43f597fa03aed179871",
+            "token_count": 11,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 1,
+            "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+            "name": "ヒルベルト公理K",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 1,
+            "formula": {
+              "id": 1,
+              "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+              "token_count": 5,
+              "description": null,
+              "remarks": "ヒルベルト公理Kの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 11,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        },
+        {
+          "proof_id": 1,
+          "ord": 1,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 13,
+            "public_id": "ef91b1d0-0a78-5a6a-bdd4-80ed070379a0",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "5a713cd191eafea7d07bd5e342234c36a08aec7480cf89922b5cbcaabe6304fa",
+            "token_count": 8,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 1,
+            "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+            "name": "ヒルベルト公理K",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 1,
+            "formula": {
+              "id": 1,
+              "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+              "token_count": 5,
+              "description": null,
+              "remarks": "ヒルベルト公理Kの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        },
+        {
+          "proof_id": 1,
+          "ord": 2,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 14,
+            "public_id": "d2e5833e-56c7-559b-9e03-0367b60f8aee",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "55f5a7ab5901eb552b2c9943eeef9f7546c1b17e5a139154c62233a0c472de3c",
+            "token_count": 26,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 2,
+            "public_id": "f78bf2fa-26c3-5047-ae0d-f90393cd2555",
+            "name": "ヒルベルト公理S",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 2,
+            "formula": {
+              "id": 2,
+              "public_id": "8dcb6e1b-0510-5657-ba18-e8a22a7f8b88",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "f5f4c44a0c4d860f9359f083d81cc1abf9fccc1363b29955ba58a46c56e20770",
+              "token_count": 13,
+              "description": null,
+              "remarks": "ヒルベルト公理Sの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 11,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 12,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        },
+        {
+          "proof_id": 1,
+          "ord": 3,
+          "step_kind": "rule",
+          "conclusion_formula": {
+            "id": 15,
+            "public_id": "f876d7ca-65df-5140-9160-0d811f22cb44",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "9212d0e290f685550a631a3801bf19a800f79ea46341743111dd5635df585c9e",
+            "token_count": 14,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:21Z"
+          },
+          "premise_ord": null,
+          "axiom": null,
+          "applied_proof_id": null,
+          "inference_rule": {
+            "id": 1,
+            "name": "MP",
+            "kind": "modus_ponens",
+            "tier": "primitive",
+            "elimination_procedure": null,
+            "premise_count": 2,
+            "requires_variable_param": false,
+            "remarks": "φ と φ→ψ から ψ を導く",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [
+            0,
+            2
+          ],
+          "term_substs": [],
+          "prop_substs": [],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:21Z"
+        }
+      ],
+      "state": {
+        "goal_tokens": [
+          {
+            "symbol_id": 7,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 5,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 13,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          },
+          {
+            "symbol_id": 13,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          }
+        ],
+        "premises": [],
+        "established": [
+          {
+            "ord": 0,
+            "tokens": [
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              }
+            ],
+            "step_kind": "axiom",
+            "depends_on_premises": [],
+            "depends_on_assumptions": []
+          },
+          {
+            "ord": 1,
+            "tokens": [
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              }
+            ],
+            "step_kind": "axiom",
+            "depends_on_premises": [],
+            "depends_on_assumptions": []
+          },
+          {
+            "ord": 2,
+            "tokens": [
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              }
+            ],
+            "step_kind": "axiom",
+            "depends_on_premises": [],
+            "depends_on_assumptions": []
+          },
+          {
+            "ord": 3,
+            "tokens": [
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 5,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 13,
+                "de_bruijn_index": null
+              },
+              {
+                "symbol_id": 15,
+                "de_bruijn_index": null
+              }
+            ],
+            "step_kind": "rule",
+            "depends_on_premises": [],
+            "depends_on_assumptions": []
+          }
+        ],
+        "open_assumptions": [],
+        "reached_goal": false,
+        "blocking": [
+          "goal_not_reached"
+        ]
+      },
+      "formulas": [
+        {
+          "id": 12,
+          "public_id": "a80a70a0-caa9-528b-b837-960728d8be38",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "464f42217ba0979e0629b36baba0ea0f2b57addbbd77b43f597fa03aed179871",
+          "token_count": 11,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 8,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 9,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 10,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "public_id": "ef91b1d0-0a78-5a6a-bdd4-80ed070379a0",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "5a713cd191eafea7d07bd5e342234c36a08aec7480cf89922b5cbcaabe6304fa",
+          "token_count": 8,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "public_id": "d2e5833e-56c7-559b-9e03-0367b60f8aee",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "55f5a7ab5901eb552b2c9943eeef9f7546c1b17e5a139154c62233a0c472de3c",
+          "token_count": 26,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 8,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 9,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 10,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 11,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 12,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 13,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 14,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 15,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 16,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 17,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 18,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 19,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 20,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 21,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 22,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 23,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 24,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 25,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "public_id": "f876d7ca-65df-5140-9160-0d811f22cb44",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "9212d0e290f685550a631a3801bf19a800f79ea46341743111dd5635df585c9e",
+          "token_count": 14,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:21Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 8,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 9,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 10,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 11,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 12,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 13,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        }
+      ],
+      "used_axioms": [
+        {
+          "id": 1,
+          "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+          "name": "ヒルベルト公理K",
+          "namespace_id": 2,
+          "namespace_name": "dem.foundation.logic",
+          "formula_id": 1,
+          "formula": {
+            "id": 1,
+            "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+            "token_count": 5,
+            "description": null,
+            "remarks": "ヒルベルト公理Kの論理式",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "origin_kind": "primitive",
+          "definition_id": null,
+          "description": null,
+          "tags": [],
+          "remarks": "ヒルベルト体系のシード",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        {
+          "id": 2,
+          "public_id": "f78bf2fa-26c3-5047-ae0d-f90393cd2555",
+          "name": "ヒルベルト公理S",
+          "namespace_id": 2,
+          "namespace_name": "dem.foundation.logic",
+          "formula_id": 2,
+          "formula": {
+            "id": 2,
+            "public_id": "8dcb6e1b-0510-5657-ba18-e8a22a7f8b88",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "f5f4c44a0c4d860f9359f083d81cc1abf9fccc1363b29955ba58a46c56e20770",
+            "token_count": 13,
+            "description": null,
+            "remarks": "ヒルベルト公理Sの論理式",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "origin_kind": "primitive",
+          "definition_id": null,
+          "description": null,
+          "tags": [],
+          "remarks": "ヒルベルト体系のシード",
+          "created_at": "2026-10-30T12:22:19Z"
+        }
+      ],
+      "followups": [
+        {
+          "kind": "mp",
+          "antecedent_step_ord": 1,
+          "implication_step_ord": 3,
+          "conclusion_tokens": [
+            {
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ],
+          "reaches_goal": false
+        }
+      ]
+    },
+    "second_mp": {
+      "proof_id": 1,
+      "ord": 4,
+      "step_kind": "rule",
+      "conclusion_formula": {
+        "id": 11,
+        "public_id": "a7e4df72-41ef-5ee2-8b58-46ca81d28073",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "46c5a922a687896d724f0a8ecccb6193ec1630f0614d175c73e7c7b9e4d235b9",
+        "token_count": 5,
+        "description": null,
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:20Z"
+      },
+      "premise_ord": null,
+      "axiom": null,
+      "applied_proof_id": null,
+      "inference_rule": {
+        "id": 1,
+        "name": "MP",
+        "kind": "modus_ponens",
+        "tier": "primitive",
+        "elimination_procedure": null,
+        "premise_count": 2,
+        "requires_variable_param": false,
+        "remarks": "φ と φ→ψ から ψ を導く",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      "gen_variable_symbol_id": null,
+      "arg_step_ords": [
+        1,
+        3
+      ],
+      "term_substs": [],
+      "prop_substs": [],
+      "remarks": null,
+      "created_at": "2026-10-30T12:22:21Z"
+    },
+    "gen_step": {
+      "proof_id": 1,
+      "ord": 5,
+      "step_kind": "rule",
+      "conclusion_formula": {
+        "id": 9,
+        "public_id": "2c83ed7d-eee0-5416-904c-75a30fd07162",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        "hash": "a24aca49c1abe3f914f8a05c774d9fb15df8ecf51de21827987d0f749c74e606",
+        "token_count": 6,
+        "description": null,
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:20Z"
+      },
+      "premise_ord": null,
+      "axiom": null,
+      "applied_proof_id": null,
+      "inference_rule": {
+        "id": 2,
+        "name": "Gen",
+        "kind": "generalization",
+        "tier": "primitive",
+        "elimination_procedure": null,
+        "premise_count": 1,
+        "requires_variable_param": true,
+        "remarks": "φ から ∀°x.φ を導く",
+        "created_at": "2026-10-30T12:22:19Z"
+      },
+      "gen_variable_symbol_id": 15,
+      "arg_step_ords": [
+        4
+      ],
+      "term_substs": [],
+      "prop_substs": [],
+      "remarks": null,
+      "created_at": "2026-10-30T12:22:21Z"
+    },
+    "validate": {
+      "status": "verified"
+    },
+    "verified": {
+      "proof": {
+        "id": 1,
+        "public_id": "9972f6e3-7c54-5320-ab33-fb93c136e17f",
+        "theorem_id": 1,
+        "name": null,
+        "status": "verified",
+        "remarks": null,
+        "created_at": "2026-10-30T12:22:20Z",
+        "updated_at": "2026-10-30T12:22:21Z"
+      },
+      "steps": [
+        {
+          "proof_id": 1,
+          "ord": 0,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 12,
+            "public_id": "a80a70a0-caa9-528b-b837-960728d8be38",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "464f42217ba0979e0629b36baba0ea0f2b57addbbd77b43f597fa03aed179871",
+            "token_count": 11,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 1,
+            "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+            "name": "ヒルベルト公理K",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 1,
+            "formula": {
+              "id": 1,
+              "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+              "token_count": 5,
+              "description": null,
+              "remarks": "ヒルベルト公理Kの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 11,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        },
+        {
+          "proof_id": 1,
+          "ord": 1,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 13,
+            "public_id": "ef91b1d0-0a78-5a6a-bdd4-80ed070379a0",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "5a713cd191eafea7d07bd5e342234c36a08aec7480cf89922b5cbcaabe6304fa",
+            "token_count": 8,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 1,
+            "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+            "name": "ヒルベルト公理K",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 1,
+            "formula": {
+              "id": 1,
+              "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+              "token_count": 5,
+              "description": null,
+              "remarks": "ヒルベルト公理Kの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        },
+        {
+          "proof_id": 1,
+          "ord": 2,
+          "step_kind": "axiom",
+          "conclusion_formula": {
+            "id": 14,
+            "public_id": "d2e5833e-56c7-559b-9e03-0367b60f8aee",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "55f5a7ab5901eb552b2c9943eeef9f7546c1b17e5a139154c62233a0c472de3c",
+            "token_count": 26,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": {
+            "id": 2,
+            "public_id": "f78bf2fa-26c3-5047-ae0d-f90393cd2555",
+            "name": "ヒルベルト公理S",
+            "namespace_id": 2,
+            "namespace_name": "dem.foundation.logic",
+            "formula_id": 2,
+            "formula": {
+              "id": 2,
+              "public_id": "8dcb6e1b-0510-5657-ba18-e8a22a7f8b88",
+              "formula_type_id": 2,
+              "formula_type": {
+                "id": 2,
+                "name": "命題",
+                "code": "proposition",
+                "remarks": "proposition. 真偽を問える論理式。",
+                "created_at": "2026-10-30T12:22:19Z"
+              },
+              "hash": "f5f4c44a0c4d860f9359f083d81cc1abf9fccc1363b29955ba58a46c56e20770",
+              "token_count": 13,
+              "description": null,
+              "remarks": "ヒルベルト公理Sの論理式",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "origin_kind": "primitive",
+            "definition_id": null,
+            "description": null,
+            "tags": [],
+            "remarks": "ヒルベルト体系のシード",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "applied_proof_id": null,
+          "inference_rule": null,
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [],
+          "term_substs": [],
+          "prop_substs": [
+            {
+              "source_symbol_id": 10,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 11,
+              "body_formula_id": 11,
+              "formal_param_symbol_ids": []
+            },
+            {
+              "source_symbol_id": 12,
+              "body_formula_id": 10,
+              "formal_param_symbol_ids": []
+            }
+          ],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z"
+        },
+        {
+          "proof_id": 1,
+          "ord": 3,
+          "step_kind": "rule",
+          "conclusion_formula": {
+            "id": 15,
+            "public_id": "f876d7ca-65df-5140-9160-0d811f22cb44",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "9212d0e290f685550a631a3801bf19a800f79ea46341743111dd5635df585c9e",
+            "token_count": 14,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:21Z"
+          },
+          "premise_ord": null,
+          "axiom": null,
+          "applied_proof_id": null,
+          "inference_rule": {
+            "id": 1,
+            "name": "MP",
+            "kind": "modus_ponens",
+            "tier": "primitive",
+            "elimination_procedure": null,
+            "premise_count": 2,
+            "requires_variable_param": false,
+            "remarks": "φ と φ→ψ から ψ を導く",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [
+            0,
+            2
+          ],
+          "term_substs": [],
+          "prop_substs": [],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:21Z"
+        },
+        {
+          "proof_id": 1,
+          "ord": 4,
+          "step_kind": "rule",
+          "conclusion_formula": {
+            "id": 11,
+            "public_id": "a7e4df72-41ef-5ee2-8b58-46ca81d28073",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "46c5a922a687896d724f0a8ecccb6193ec1630f0614d175c73e7c7b9e4d235b9",
+            "token_count": 5,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": null,
+          "applied_proof_id": null,
+          "inference_rule": {
+            "id": 1,
+            "name": "MP",
+            "kind": "modus_ponens",
+            "tier": "primitive",
+            "elimination_procedure": null,
+            "premise_count": 2,
+            "requires_variable_param": false,
+            "remarks": "φ と φ→ψ から ψ を導く",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "gen_variable_symbol_id": null,
+          "arg_step_ords": [
+            1,
+            3
+          ],
+          "term_substs": [],
+          "prop_substs": [],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:21Z"
+        },
+        {
+          "proof_id": 1,
+          "ord": 5,
+          "step_kind": "rule",
+          "conclusion_formula": {
+            "id": 9,
+            "public_id": "2c83ed7d-eee0-5416-904c-75a30fd07162",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "a24aca49c1abe3f914f8a05c774d9fb15df8ecf51de21827987d0f749c74e606",
+            "token_count": 6,
+            "description": null,
+            "remarks": null,
+            "created_at": "2026-10-30T12:22:20Z"
+          },
+          "premise_ord": null,
+          "axiom": null,
+          "applied_proof_id": null,
+          "inference_rule": {
+            "id": 2,
+            "name": "Gen",
+            "kind": "generalization",
+            "tier": "primitive",
+            "elimination_procedure": null,
+            "premise_count": 1,
+            "requires_variable_param": true,
+            "remarks": "φ から ∀°x.φ を導く",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "gen_variable_symbol_id": 15,
+          "arg_step_ords": [
+            4
+          ],
+          "term_substs": [],
+          "prop_substs": [],
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:21Z"
+        }
+      ],
+      "state": {
+        "goal_tokens": [
+          {
+            "symbol_id": 7,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 5,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 13,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          },
+          {
+            "symbol_id": 13,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          }
+        ],
+        "premises": [],
+        "established": [],
+        "open_assumptions": [],
+        "reached_goal": true,
+        "blocking": []
+      },
+      "formulas": [
+        {
+          "id": 9,
+          "public_id": "2c83ed7d-eee0-5416-904c-75a30fd07162",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "a24aca49c1abe3f914f8a05c774d9fb15df8ecf51de21827987d0f749c74e606",
+          "token_count": 6,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 7,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": null,
+              "de_bruijn_index": 0
+            },
+            {
+              "position": 4,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": null,
+              "de_bruijn_index": 0
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "public_id": "a7e4df72-41ef-5ee2-8b58-46ca81d28073",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "46c5a922a687896d724f0a8ecccb6193ec1630f0614d175c73e7c7b9e4d235b9",
+          "token_count": 5,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "public_id": "a80a70a0-caa9-528b-b837-960728d8be38",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "464f42217ba0979e0629b36baba0ea0f2b57addbbd77b43f597fa03aed179871",
+          "token_count": 11,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 8,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 9,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 10,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "public_id": "ef91b1d0-0a78-5a6a-bdd4-80ed070379a0",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "5a713cd191eafea7d07bd5e342234c36a08aec7480cf89922b5cbcaabe6304fa",
+          "token_count": 8,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "public_id": "d2e5833e-56c7-559b-9e03-0367b60f8aee",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "55f5a7ab5901eb552b2c9943eeef9f7546c1b17e5a139154c62233a0c472de3c",
+          "token_count": 26,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:20Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 8,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 9,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 10,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 11,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 12,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 13,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 14,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 15,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 16,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 17,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 18,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 19,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 20,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 21,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 22,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 23,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 24,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 25,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "public_id": "f876d7ca-65df-5140-9160-0d811f22cb44",
+          "formula_type_id": 2,
+          "formula_type": {
+            "id": 2,
+            "name": "命題",
+            "code": "proposition",
+            "remarks": "proposition. 真偽を問える論理式。",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "hash": "9212d0e290f685550a631a3801bf19a800f79ea46341743111dd5635df585c9e",
+          "token_count": 14,
+          "description": null,
+          "remarks": null,
+          "created_at": "2026-10-30T12:22:21Z",
+          "tokens": [
+            {
+              "position": 0,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 1,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 2,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 3,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 4,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 5,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 6,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 7,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 8,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 9,
+              "symbol_id": 5,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 10,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 11,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 12,
+              "symbol_id": 13,
+              "de_bruijn_index": null
+            },
+            {
+              "position": 13,
+              "symbol_id": 15,
+              "de_bruijn_index": null
+            }
+          ]
+        }
+      ],
+      "used_axioms": [
+        {
+          "id": 1,
+          "public_id": "40fd0ee6-c625-560e-b002-db31582fe8ae",
+          "name": "ヒルベルト公理K",
+          "namespace_id": 2,
+          "namespace_name": "dem.foundation.logic",
+          "formula_id": 1,
+          "formula": {
+            "id": 1,
+            "public_id": "34975be9-5daa-5c05-81e3-bc715764b466",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "b69e1f967d1dfde9d6930a6c1cd1a689a433d2d9faec9a08a97da2c32b4f1788",
+            "token_count": 5,
+            "description": null,
+            "remarks": "ヒルベルト公理Kの論理式",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "origin_kind": "primitive",
+          "definition_id": null,
+          "description": null,
+          "tags": [],
+          "remarks": "ヒルベルト体系のシード",
+          "created_at": "2026-10-30T12:22:19Z"
+        },
+        {
+          "id": 2,
+          "public_id": "f78bf2fa-26c3-5047-ae0d-f90393cd2555",
+          "name": "ヒルベルト公理S",
+          "namespace_id": 2,
+          "namespace_name": "dem.foundation.logic",
+          "formula_id": 2,
+          "formula": {
+            "id": 2,
+            "public_id": "8dcb6e1b-0510-5657-ba18-e8a22a7f8b88",
+            "formula_type_id": 2,
+            "formula_type": {
+              "id": 2,
+              "name": "命題",
+              "code": "proposition",
+              "remarks": "proposition. 真偽を問える論理式。",
+              "created_at": "2026-10-30T12:22:19Z"
+            },
+            "hash": "f5f4c44a0c4d860f9359f083d81cc1abf9fccc1363b29955ba58a46c56e20770",
+            "token_count": 13,
+            "description": null,
+            "remarks": "ヒルベルト公理Sの論理式",
+            "created_at": "2026-10-30T12:22:19Z"
+          },
+          "origin_kind": "primitive",
+          "definition_id": null,
+          "description": null,
+          "tags": [],
+          "remarks": "ヒルベルト体系のシード",
+          "created_at": "2026-10-30T12:22:19Z"
+        }
+      ]
+    }
+  }
+}

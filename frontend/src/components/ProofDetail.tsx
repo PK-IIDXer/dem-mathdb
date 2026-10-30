@@ -1,3 +1,6 @@
+import { useDisplayError } from "../i18n/useDisplayError"
+import { useLanguage } from "../i18n/useLanguage"
+import { t } from "../i18n/translate"
 import { ONBOARDING_AXIOMS, findOnboardingPredicate } from '../onboarding'
 import { SystemValidityNote } from './BetaIdentity'
 import { useMemo, useRef, useState } from 'react'
@@ -33,7 +36,7 @@ const STATUS_COLOR: Record<string, string> = {
 export const PROOF_TREE_DEFAULT_STEP_LIMIT = 100
 export const PROOF_TREE_RENDER_STEP_LIMIT = 250
 
-export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofNumber, context = {}, onboarding = false }: {
+export function ProofDetail({ proofId, theoremId, theoremName = t("ProofDetail_234"), proofNumber, context = {}, onboarding = false }: {
   proofId: number
   theoremId: number
   theoremName?: string
@@ -41,6 +44,8 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
   context?: Record<string, number>
   onboarding?: boolean
 }) {
+  useLanguage()
+
   const readOnly = useReadOnly()
   const proofRef = useRef<HTMLElement>(null)
   const queryClient = useQueryClient()
@@ -77,7 +82,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
     queryKey: ['axiomSystems'],
     queryFn: () => axiomsApi.listSystems(),
   })
-  const [onboardingError, setOnboardingError] = useState<string | null>(null)
+  const [onboardingError, setOnboardingError] = useDisplayError()
   const onboardingPredicate = findOnboardingPredicate(symbols)
   const onboardingVariableId = Object.values(context)[0]
   const onboardingContext = onboardingPredicate == null || onboardingVariableId == null
@@ -85,7 +90,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
     : { P: onboardingPredicate.id, x: onboardingVariableId }
   const prepareOnboardingMutation = useMutation({
     mutationFn: async () => {
-      if (!onboardingContext) throw new Error('P と x の宣言を読み込めませんでした')
+      if (!onboardingContext) throw new Error(t("ProofDetail_235"))
 
       async function addAxiom(name: typeof ONBOARDING_AXIOMS[number], goal: string) {
         const [axiom, parsed] = await Promise.all([
@@ -98,7 +103,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
           goal_tokens: parsed.tokens,
         })
         if (suggestion.undetermined.length > 0) {
-          throw new Error(`${name} の代入を自動決定できませんでした`)
+          throw new Error(t("ProofDetail_236", name))
         }
         await proofsApi.addStep(proofId, {
           kind: 'axiom',
@@ -122,7 +127,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
       refetchSteps()
     },
     onError: (err) => {
-      setOnboardingError(err instanceof Error ? err.message : '公理を追加できませんでした')
+      setOnboardingError(() => (err instanceof Error ? err.message : t("ProofDetail_237")))
       refetchSteps()
     },
   })
@@ -155,7 +160,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
     }, 0)
   }
 
-  const [validateError, setValidateError] = useState<string | null>(null)
+  const [validateError, setValidateError] = useDisplayError()
   const validateMutation = useMutation({
     mutationFn: () => proofsApi.validate(proofId),
     onSuccess: () => {
@@ -165,7 +170,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
       queryClient.invalidateQueries({ queryKey: ['theorems'] })
     },
     onError: (err) => {
-      setValidateError(err instanceof ApiError ? err.message : 'unknown error')
+      setValidateError(() => (err instanceof ApiError ? err.message : 'unknown error'))
       queryClient.invalidateQueries({ queryKey: ['proofs', proofId] })
       queryClient.invalidateQueries({ queryKey: ['proofs', proofId, 'state'] })
     },
@@ -214,7 +219,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
   const immediateFollowups = followups.filter(
     (followup) => followup.implication_step_ord === latestStepOrd,
   )
-  const [followupError, setFollowupError] = useState<string | null>(null)
+  const [followupError, setFollowupError] = useDisplayError()
   const followupMutation = useMutation({
     mutationFn: async (followup: ProofStepFollowup) => {
       const mpStep = await proofsApi.addStep(proofId, {
@@ -239,7 +244,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
       queryClient.invalidateQueries({ queryKey: ['theorems'] })
     },
     onError: (err) => {
-      setFollowupError(err instanceof ApiError ? err.message : 'unknown error')
+      setFollowupError(() => (err instanceof ApiError ? err.message : 'unknown error'))
       refetchSteps()
     },
   })
@@ -252,15 +257,15 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
       await proofsApi.validate(proofId)
     },
     onSuccess: () => { setFollowupError(null); refetchSteps(); queryClient.invalidateQueries({ queryKey: ['proofs', proofId] }); queryClient.invalidateQueries({ queryKey: ['theorems'] }) },
-    onError: (err) => { setFollowupError(err instanceof ApiError ? err.message : 'unknown error'); refetchSteps() },
+    onError: (err) => { setFollowupError(() => (err instanceof ApiError ? err.message : 'unknown error')); refetchSteps() },
   })
 
-  if (!proof) return <p className="text-sm text-slate-400">読み込み中…</p>
+  if (!proof) return <p className="text-sm text-slate-400">{t("BetaGettingStarted_109")}</p>
 
   return (
     <section ref={proofRef} className="space-y-4">
       <div className="flex items-center gap-2">
-        <h2 className="text-lg font-semibold text-slate-800">{theoremName}の証明{proofNumber != null ? ` (${proofNumber})` : ''}</h2>
+        <h2 className="text-lg font-semibold text-slate-800">{theoremName}{t("BetaGettingStarted_105")}{proofNumber != null ? ` (${proofNumber})` : ''}</h2>
         <span className={`rounded px-2 py-0.5 text-xs font-semibold ${STATUS_COLOR[proof.status]}`}>
           {proof.status}
         </span>
@@ -276,7 +281,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
               : 'border-indigo-200 bg-indigo-50'
           }`}
         >
-          <h3 className="mb-2 text-sm font-semibold text-slate-700">証明の目標</h3>
+          <h3 className="mb-2 text-sm font-semibold text-slate-700">{t("ProofDetail_240")}</h3>
           <div className="text-base text-slate-900">
             <TokenPreview tokens={proofState.goal_tokens} symbolsById={symbolsById} context={context} />
           </div>
@@ -290,16 +295,16 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
             }`}
           >
             {proof.status === 'rejected'
-              ? 'この証明は検証に失敗しています。新しい証明を作り直してください。'
+              ? t("ProofDetail_241")
               : proofState.reached_goal
-              ? '✓ 目標に到達しています。検証できます。'
+              ? t("ProofDetail_242")
               : proofState.established.length === 0
-                ? 'この式を導く最初のステップを追加してください。'
-                : '最後のステップは、まだ目標に到達していません。'}
+                ? t("ProofDetail_243")
+                : t("ProofDetail_244")}
           </p>
           {proofState.open_assumptions.length > 0 && (
             <div className="mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-              <p className="font-semibold">未解消の仮定</p>
+              <p className="font-semibold">{t("ProofDetail_245")}</p>
               <ul className="mt-1 space-y-1">
                 {proofState.open_assumptions.map((assumption) => (
                   <li key={assumption.step_ord}>
@@ -329,10 +334,10 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-sm font-semibold text-slate-700">
             {viewMode === 'tree'
-              ? '証明図'
+              ? t("ProofDetail_246")
               : viewMode === 'steps'
-                ? `ステップ (${steps.length})`
-                : stepsQuery.isError ? '証明' : '証明を読み込み中…'}
+                ? t("ProofDetail_247", steps.length)
+                : stepsQuery.isError ? t("ProofDetail_248") : t("ProofDetail_249")}
           </h3>
           <div className="inline-flex rounded-md border border-slate-300 bg-white p-0.5 text-xs">
             <button
@@ -341,7 +346,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
               onClick={() => runTreeView()}
               className={`rounded px-2.5 py-1 disabled:opacity-40 ${viewMode === 'tree' ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-50'}`}
             >
-              証明図 <kbd aria-hidden="true">v t</kbd>
+              {t("ProofDetail_250")}<kbd aria-hidden="true">v t</kbd>
             </button>
             <button
               type="button"
@@ -349,43 +354,37 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
               onClick={() => selectViewMode('steps')}
               className={`rounded px-2.5 py-1 disabled:opacity-40 ${viewMode === 'steps' ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-50'}`}
             >
-              ステップ一覧 <kbd aria-hidden="true">v s</kbd>
+              {t("ProofDetail_251")}<kbd aria-hidden="true">v s</kbd>
             </button>
           </div>
         </div>
         {defaultedToSteps && (
           <p className="mb-2 text-xs text-slate-500">
-            {steps.length} ステップあるため、描画に時間がかかる証明図ではなくステップ一覧を表示しています。
-          </p>
+            {steps.length} {t("ProofDetail_252")}</p>
         )}
         {!hasStepsData && stepsQuery.isError ? (
           <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-3 py-4 text-sm text-red-700">
-            ステップを読み込めませんでした。
-          </p>
+            {t("ProofDetail_253")}</p>
         ) : !hasStepsData ? (
           <p className="rounded-lg border border-slate-200 px-3 py-4 text-sm text-slate-400">
-            ステップを読み込み中…
-          </p>
+            {t("ProofDetail_254")}</p>
         ) : formulasPending ? (
           // Waiting here keeps the per-formula requests from starting: a
           // FormulaPreview that mounts before the bulk read lands would fetch
           // its own formula. On an error the views render anyway and fall back
           // to that per-formula path.
           <p className="rounded-lg border border-slate-200 px-3 py-4 text-sm text-slate-400">
-            論理式を読み込み中…
-          </p>
+            {t("ProofDetail_255")}</p>
         ) : viewMode === 'tree' ? steps.length > PROOF_TREE_RENDER_STEP_LIMIT ? (
           <div role="status" className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             <p>
-              この証明は {steps.length} ステップあり、証明図の安全な上限 ({PROOF_TREE_RENDER_STEP_LIMIT} ステップ) を超えるため描画しません。
-            </p>
+              {t("ProofDetail_256")}{steps.length} {t("ProofDetail_257")}{PROOF_TREE_RENDER_STEP_LIMIT} {t("ProofDetail_258")}</p>
             <button
               type="button"
               onClick={() => runStepsView()}
               className="mt-2 font-semibold text-indigo-700 hover:underline"
             >
-              ステップ一覧で確認する
-            </button>
+              {t("ProofDetail_259")}</button>
           </div>
         ) : (
           <ProofTree proofId={proofId} steps={steps} onSelectStep={jumpTo} symbolsById={symbolsById} lemmas={lemmasByProofId} />
@@ -405,17 +404,17 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
           />
         )}
         {selectedRuleStepOrd != null && !readOnly && proof.status === 'draft' && !onboarding && (
-          <button type="button" onClick={() => document.querySelector<HTMLElement>('[data-step-form]')?.scrollIntoView({ block: 'nearest' })} className="mt-2 text-xs text-indigo-700 hover:underline">step ({selectedRuleStepOrd}) から推論定理を選ぶ</button>
+          <button type="button" onClick={() => document.querySelector<HTMLElement>('[data-step-form]')?.scrollIntoView({ block: 'nearest' })} className="mt-2 text-xs text-indigo-700 hover:underline">step ({selectedRuleStepOrd}{t("ProofDetail_260")}</button>
         )}
       </div>
 
       {!readOnly && proof.status === 'draft' && (
         <div>
-          <h3 className="mb-2 text-sm font-semibold text-slate-700">ステップを追加</h3>
+          <h3 className="mb-2 text-sm font-semibold text-slate-700">{t("ProofDetail_261")}</h3>
           <StepForm proofId={proofId} theoremId={theoremId} priorSteps={steps} onAdded={refetchSteps} context={context} initialRuleStepOrd={onboarding ? null : selectedRuleStepOrd} showRules={!onboarding} />
           {immediateFollowups.length > 0 && (
             <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3">
-              <h4 className="text-sm font-semibold text-emerald-900">続けて適用できる MP</h4>
+              <h4 className="text-sm font-semibold text-emerald-900">{t("ProofDetail_262")}</h4>
               <div className="mt-2 space-y-2">
                 {immediateFollowups.map((followup, index) => (
                   <div
@@ -423,15 +422,15 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
                     className="flex flex-wrap items-center justify-between gap-2 text-sm"
                   >
                     <span className="text-emerald-950">
-                      <StepRef ord={followup.antecedent_step_ord} onJump={jumpTo} /> と{' '}
-                      <StepRef ord={followup.implication_step_ord} onJump={jumpTo} /> から{' '}
+                      <StepRef ord={followup.antecedent_step_ord} onJump={jumpTo} /> {t("ProofDetail_263")}{' '}
+                      <StepRef ord={followup.implication_step_ord} onJump={jumpTo} /> {t("ProofDetail_264")}{' '}
                       <TokenPreview
                         tokens={followup.conclusion_tokens}
                         symbolsById={symbolsById}
                         context={context}
                       />
                       {followup.reaches_goal && (
-                        <span className="ml-2 font-semibold">（目標に到達）</span>
+                        <span className="ml-2 font-semibold">{t("ProofDetail_265")}</span>
                       )}
                     </span>
                     <button
@@ -440,8 +439,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
                       onClick={() => followupMutation.mutate(followup)}
                       className="rounded bg-emerald-700 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40"
                     >
-                      この MP を追加
-                    </button>
+                      {t("ProofDetail_266")}</button>
                   </div>
                 ))}
               </div>
@@ -459,11 +457,10 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
           onClick={() => runValidate()}
           className="rounded bg-indigo-600 px-3 py-1.5 text-sm text-white disabled:opacity-40"
         >
-          検証する
-        </button>
+          {t("ProofDetail_267")}</button>
         {validateError && <p className="mt-2 text-sm text-red-700">{validateError}</p>}
         {proof.status === 'verified' && (
-          <p className="mt-2 text-sm text-green-700">✓ 検証成功。定理は proven に昇格しました。</p>
+          <p className="mt-2 text-sm text-green-700">{t("ProofDetail_268")}</p>
         )}
       </div>
       )}
@@ -471,7 +468,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
       {proof.status === 'verified' && (
         <div className="rounded-lg border border-slate-200 p-4">
           <h3 className="mb-2 text-sm font-semibold text-slate-700">
-            使用している公理 ({usedAxioms.length})
+            {t("ProofDetail_269")}{usedAxioms.length})
           </h3>
           <ul className="mb-3 space-y-1 text-sm">
             {usedAxioms.map((axiom) => (
@@ -482,7 +479,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
               </li>
             ))}
           </ul>
-          <h3 className="mb-2 text-sm font-semibold text-slate-700">公理系での妥当性</h3>
+          <h3 className="mb-2 text-sm font-semibold text-slate-700">{t("ProofDetail_270")}</h3>
           <div className="flex items-center gap-2">
             <select
               value={systemId}
@@ -493,8 +490,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
               className="rounded border border-slate-300 px-2 py-1 text-sm"
             >
               <option value="" disabled>
-                公理系を選択…
-              </option>
+                {t("ProofDetail_271")}</option>
               {axiomSystems.map((system) => (
                 <option key={system.id} value={system.id}>
                   {system.name}
@@ -507,12 +503,11 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
               onClick={() => checkSystemMutation.mutate()}
               className="rounded bg-slate-600 px-3 py-1.5 text-sm text-white disabled:opacity-40"
             >
-              判定
-            </button>
+              {t("ProofDetail_272")}</button>
             <SystemValidityNote namespace={axiomSystems.find(system => system.id === Number(systemId))?.namespace_name} />
           {validInSystem != null && (
               <span className={`text-sm font-semibold ${validInSystem ? 'text-green-700' : 'text-red-700'}`}>
-                {validInSystem ? '✓ この公理系で成立' : '✗ この公理系では成立しない'}
+                {validInSystem ? t("ProofDetail_273") : t("ProofDetail_274")}
               </span>
             )}
           </div>
@@ -520,38 +515,35 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
       )}
 
       {onboarding && proof.status === 'draft' && steps.length < 3 && (
-        <OnboardingCoach step={3} title="証明する">
-          <p>ProofState の「証明の目標」が、あと示す式です。</p>
-          <p>まず K と S を検索し、この式に必要な3つの公理インスタンスを実際の proof へ追加します。</p>
+        <OnboardingCoach step={3} title={t("ProofDetail_275")}>
+          <p>{t("ProofDetail_276")}</p>
+          <p>{t("ProofDetail_277")}</p>
           <button
             type="button"
             disabled={onboardingContext == null || prepareOnboardingMutation.isPending || stepsQuery.isFetching}
             onClick={() => prepareOnboardingMutation.mutate()}
             className="w-full rounded bg-indigo-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
           >
-            公理 K / S を検索して追加
-          </button>
+            {t("ProofDetail_278")}</button>
           {onboardingError && <p className="text-red-700">{onboardingError}</p>}
         </OnboardingCoach>
       )}
       {onboarding && proof.status === 'draft' && steps.length >= 3 && (
-        <OnboardingCoach step={3} title="証明する">
-          <p>緑色の［この MP を追加］を押してください。1回目の結論から次の MP が提案されます。</p>
-          <p>2回目を押すと、宣言した x への一般化と機械検証が続き、verified になります。</p>
-          {steps.length >= 5 && <button type="button" disabled={resumeOnboardingMutation.isPending || stepsQuery.isFetching} onClick={() => resumeOnboardingMutation.mutate()} className="mt-2 rounded bg-indigo-600 px-3 py-2 text-white">一般化と検証を続ける</button>}
+        <OnboardingCoach step={3} title={t("ProofDetail_275")}>
+          <p>{t("ProofDetail_280")}</p>
+          <p>{t("ProofDetail_281")}</p>
+          {steps.length >= 5 && <button type="button" disabled={resumeOnboardingMutation.isPending || stepsQuery.isFetching} onClick={() => resumeOnboardingMutation.mutate()} className="mt-2 rounded bg-indigo-600 px-3 py-2 text-white">{t("ProofDetail_282")}</button>}
         </OnboardingCoach>
       )}
       {onboarding && proof.status === 'verified' && (
-        <OnboardingCoach step={3} title="検証されました">
-          <p className="font-semibold text-green-700">✓ 最初の verified theorem に到達しました。</p>
-          <p>画面内の証明図と「使用している公理」が、保存・検証された実物です。</p>
+        <OnboardingCoach step={3} title={t("ProofDetail_283")}>
+          <p className="font-semibold text-green-700">{t("ProofDetail_284")}</p>
+          <p>{t("ProofDetail_285")}</p>
           <div className="flex gap-2">
             <Link to="/theorems" className="rounded bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white">
-              自分の定理を書く
-            </Link>
+              {t("ProofDetail_286")}</Link>
             <Link to="/" className="rounded bg-slate-100 px-3 py-1.5 text-xs text-slate-700">
-              体系を見る
-            </Link>
+              {t("ProofDetail_287")}</Link>
           </div>
         </OnboardingCoach>
       )}
@@ -568,6 +560,8 @@ function TokenPreview({
   symbolsById: Map<number, Symbol>
   context: Record<string, number>
 }) {
+  useLanguage()
+
   const tree = useMemo(() => tokensToTree(tokens, symbolsById).tree, [tokens, symbolsById])
   const displaySymbolsById = useMemo(
     () => symbolsWithDeclarationNames(symbolsById, context),

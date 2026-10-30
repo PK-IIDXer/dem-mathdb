@@ -1,3 +1,5 @@
+import { useLanguage } from "./i18n/useLanguage"
+import { t } from "./i18n/translate"
 import { createContext, useContext, type ReactNode } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { configApi } from './api/config'
@@ -10,6 +12,8 @@ export function useReadOnly(): boolean {
 }
 
 export function ReadOnlyProvider({ children }: { children: ReactNode }) {
+  useLanguage()
+
   const { data, isLoading } = useQuery({
     queryKey: ['config'],
     queryFn: () => configApi.get(),
@@ -18,7 +22,7 @@ export function ReadOnlyProvider({ children }: { children: ReactNode }) {
   })
 
   if (isLoading) {
-    return <p className="p-6 text-sm text-slate-400">読み込み中…</p>
+    return <p className="p-6 text-sm text-slate-400">{t("BetaGettingStarted_109")}</p>
   }
 
   return <ReadOnlyContext.Provider value={data?.read_only ?? false}><BetaContext.Provider value={data?.beta ?? null}>{children}</BetaContext.Provider></ReadOnlyContext.Provider>
