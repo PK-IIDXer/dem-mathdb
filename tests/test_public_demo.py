@@ -2,7 +2,7 @@
 import pytest
 from sqlalchemy import select
 from dem.db.models import Symbol, Definition, Axiom, AxiomSystem, Theorem, Proof
-from dem.db.seeds import seed_all
+from dem.db.seeds import seed_public_demos
 from dem.db.seeds.public_demo import DEMO_NAMES
 from dem.services.proof import ProofService
 from dem.services.axiom import AxiomService
@@ -25,7 +25,7 @@ def test_public_entities_and_real_verified_proofs(fresh_seeded_session):
     proofs = list(session.scalars(select(Proof)))
     assert len(theorems) == 5 and all(t.status == "proven" for t in theorems)
     assert len(proofs) == 6 and all(p.status == "verified" for p in proofs)
-    seed_all(session)
+    seed_public_demos(session)
     assert len(list(session.scalars(select(Proof)))) == 6
 
 

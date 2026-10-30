@@ -149,7 +149,7 @@ def _isolated_runtime(monkeypatch):
 
 def test_independent_legacy_fixture_matches_known_revision_schema(tmp_path: Path):
     import hashlib
-    assert hashlib.sha256(LEGACY_SQL.read_bytes()).hexdigest() == "3d5dabf4f6429adb6dbaab2ffa2baae8aff75be5df84d951226966dec5ce8486"
+    assert hashlib.sha256(LEGACY_SQL.read_bytes()).hexdigest() == "d82a595c779584f9c3deb190d5cb11e9cc56dea6d7f1ff3f197ef6493546c499"
     fixture = _copy_legacy(tmp_path, "unversioned.db")
     inspection = inspect_sqlite_workspace(fixture)
     assert inspection.revision is None
@@ -160,10 +160,10 @@ def test_independent_legacy_fixture_matches_known_revision_schema(tmp_path: Path
             for table in ("symbol", "formula", "theorem", "proof", "proof_step")
         } == {
             "symbol": 18,
-            "formula": 20,
-            "theorem": 5,
-            "proof": 6,
-            "proof_step": 20,
+            "formula": 85,
+            "theorem": 27,
+            "proof": 28,
+            "proof_step": 164,
         }
 
     migrated = tmp_path / "known-revision.db"

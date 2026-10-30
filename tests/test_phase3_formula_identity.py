@@ -42,6 +42,6 @@ def test_public_hash_replaces_local_hash_one_to_one(
         )
 
     formula_count = all_seeded_session.scalar(select(func.count()).select_from(Formula))
-    assert formula_count == 20
+    assert formula_count == 85
     assert len({old for old, _new in pairs}) == formula_count
     assert len({_new for _old, _new in pairs}) == formula_count

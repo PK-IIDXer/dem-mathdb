@@ -53,7 +53,7 @@ def test_round_trip_all_formulas(all_seeded_session: Session) -> None:
         assert parse_core(rendered, table) == tokens, formula_id
         assert parse_convenience(rendered, table) == tokens, formula_id
         formula_count += 1
-    assert formula_count == 20
+    assert formula_count == 85
 
 
 @pytest.mark.parametrize("parser", (parse_core, parse_convenience))

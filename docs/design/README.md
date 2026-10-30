@@ -11,6 +11,9 @@
 
 ## はじめに読む 2 冊
 
+公開seedには、coreと独立デモに加えて自然推論の基本定理packageがある。
+件数と公理系の区別は下記current-stateに記録する。
+
 | | |
 | --- | --- |
 | [`overview/current-state.md`](./overview/current-state.md) | いま DB に何がどれだけ入っているか。公開 seed の内容と信頼境界の現在地 |

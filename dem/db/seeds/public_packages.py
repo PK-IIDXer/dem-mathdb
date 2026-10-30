@@ -15,9 +15,11 @@ from dem.db.seeds.public_catalog import PACKAGE_ENTITIES
 
 VERSION = "1.0.0"
 RUNTIME_RANGE = ">=0.1.0,<0.2.0"
-PACKAGE_GROUPS = (("public-core", (), ()), ("public-demo", (), ("public-core",)))
+PACKAGE_GROUPS = (("public-core", (), ()), ("public-demo", (), ("public-core",)),
+                  ("public-natural-deduction", (), ("public-core",)))
 def package_name(key):
-    return {"public-core": "dem.public.logic", "public-demo": "dem.public.demos"}[key]
+    return {"public-core": "dem.public.logic", "public-demo": "dem.public.demos",
+            "public-natural-deduction": "dem.public.natural_deduction"}[key]
 
 MODELS = (Symbol, Definition, Axiom, AxiomSystem, Theorem, Proof)
 

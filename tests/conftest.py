@@ -41,7 +41,7 @@ from dem.db.models import Base
 from dem.db.seed import seed_inference_rules, seed_language
 
 
-from dem.db.seeds import seed_public_core, seed_all
+from dem.db.seeds import seed_public_core, seed_public_demos, seed_all
 
 SeedFunction = Callable[[Session], object]
 
@@ -64,7 +64,8 @@ _POSTGRES_METRICS_DIR_ENV = "DEM_TEST_PG_METRICS_DIR"
 
 _PHASES: tuple[tuple[str, SeedFunction], ...] = (
     ("public_core", seed_public_core),
-    ("public_demo", seed_all),
+    ("public_demo", seed_public_demos),
+    ("public_natural_deduction", seed_all),
 )
 _BRANCHES: tuple[tuple[str, str, SeedFunction], ...] = ()
 
@@ -129,7 +130,7 @@ def _build_model_l2(engine: Engine) -> None:
     with Session(engine) as session:
         seed_language(session)
         seed_inference_rules(session)
-        for _, seed_function in _PHASES[:3]:
+        for _, seed_function in _PHASES[:2]:
             seed_function(session)
         session.commit()
 
@@ -946,7 +947,7 @@ def all_seeded_session(
     seed_snapshot_factory: SeedSnapshotFactory,
 ) -> Iterator[Session]:
     with seed_snapshot_factory.session(
-        "public_demo", _database_for(request)
+        "public_natural_deduction", _database_for(request)
     ) as session:
         yield session
 

@@ -2,7 +2,7 @@
 import pytest
 from sqlalchemy import event, select
 
-from dem.db.models import Base, Symbol, Axiom, AxiomSystem, Theorem, Proof
+from dem.db.models import Base, Symbol, Axiom, AxiomSystem, Theorem, Proof, Package, PackageRelease
 from dem.types import SymbolTypeName
 from webapi import beta, contact
 from webapi.main import app, READ_ONLY_POST_PATHS, SAFE_METHODS
@@ -100,15 +100,18 @@ def reset_admission(monkeypatch, enabled):
 
 
 @pytest.mark.parametrize("enabled", [False, True])
-def test_published_write_matrix(base_api, monkeypatch, enabled):
+@pytest.mark.parametrize("package", ["dem.public.logic", "dem.public.natural_deduction"])
+def test_published_write_matrix(base_api, monkeypatch, enabled, package):
     api = base_api
     with api.transaction() as dem:
         symbol = dem.session.scalar(select(Symbol).where(Symbol.arity == 2).order_by(Symbol.id))
-        axiom = dem.session.scalar(select(Axiom).order_by(Axiom.id))
-        theorem = dem.session.scalar(select(Theorem).order_by(Theorem.id))
+        release_id = dem.session.scalar(select(PackageRelease.id).join(Package).where(Package.name == package))
+        axiom = dem.session.scalar(select(Axiom).where(Axiom.release_id == release_id).order_by(Axiom.id))
+        # The original logic package contains no theorem; its demos exercise that path.
+        theorem = dem.session.scalar(select(Theorem).where(Theorem.release_id == release_id).order_by(Theorem.id)) if package.endswith("natural_deduction") else dem.session.scalar(select(Theorem).order_by(Theorem.id))
         proof = dem.session.scalar(select(Proof).where(Proof.theorem_id == theorem.id, Proof.status == "verified"))
         member = Base.metadata.tables["axiom_system_member"]
-        system_id, member_axiom_id = dem.session.execute(select(member.c.axiom_system_id, member.c.axiom_id).order_by(member.c.axiom_system_id, member.c.axiom_id)).first()
+        system_id, member_axiom_id = dem.session.execute(select(member.c.axiom_system_id, member.c.axiom_id).join(AxiomSystem, AxiomSystem.id == member.c.axiom_system_id).where(AxiomSystem.release_id == release_id).order_by(member.c.axiom_system_id, member.c.axiom_id)).first()
         tag = dem.tags.get_or_create("beta-matrix-existing")
         for kind, row in (("axiom", axiom), ("theorem", theorem)):
             dem.tags.attach(kind, row.id, tag.id)
@@ -155,7 +158,7 @@ def test_published_write_matrix(base_api, monkeypatch, enabled):
             assert digests(api) == before
         rows.append(dict(method=method, route=route, base_status=status, user_status=user_status, response=response))
         exercised.add((method, route))
-        report(f"writes-{api.engine.dialect.name}-{enabled}", rows)
+        report(f"writes-{api.engine.dialect.name}-{enabled}-{package}", rows)
 
     for suffix, body in (("aliases", {"alias": "matrix-extra-alias"}),
                          ("notation", changed_notation),
