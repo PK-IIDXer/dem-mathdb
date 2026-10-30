@@ -472,3 +472,11 @@ def test_patched_runtime_packages_and_openssl_removal():
     for library in ["libssl3", "libcrypto3"]:
         assert f"apk info -e {library}" in source
     assert "apk del --no-cache curl" not in source
+
+
+def test_beta_only_advertises_published_tcp_http_protocols():
+    root = Path(__file__).resolve().parents[1]
+    config = (root / 'deploy/beta/Caddyfile').read_text()
+    compose = (root / 'deploy/beta/compose.yml').read_text()
+    assert 'protocols h1 h2' in config
+    assert '443:443/udp' not in compose and 'protocol: udp' not in compose

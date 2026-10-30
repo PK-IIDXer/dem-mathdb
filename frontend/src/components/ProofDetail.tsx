@@ -1,3 +1,4 @@
+import { ONBOARDING_AXIOMS, findOnboardingPredicate } from '../onboarding'
 import { SystemValidityNote } from './BetaIdentity'
 import { useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -77,7 +78,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
     queryFn: () => axiomsApi.listSystems(),
   })
   const [onboardingError, setOnboardingError] = useState<string | null>(null)
-  const onboardingPredicate = symbols.find((symbol) => symbol.name === 'φ¹')
+  const onboardingPredicate = findOnboardingPredicate(symbols)
   const onboardingVariableId = Object.values(context)[0]
   const onboardingContext = onboardingPredicate == null || onboardingVariableId == null
     ? null
@@ -86,7 +87,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
     mutationFn: async () => {
       if (!onboardingContext) throw new Error('P と x の宣言を読み込めませんでした')
 
-      async function addAxiom(name: 'hilbert_k' | 'hilbert_s', goal: string) {
+      async function addAxiom(name: typeof ONBOARDING_AXIOMS[number], goal: string) {
         const [axiom, parsed] = await Promise.all([
           axiomsApi.getByName(name),
           formulasApi.parse(goal, onboardingContext as Record<string, number>),
@@ -109,10 +110,10 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
       // Put both K antecedents before S. Once S is appended, the ordinary
       // follow-up endpoint can offer MP; its conclusion is itself an
       // implication, so the same endpoint offers the second MP.
-      await addAxiom('hilbert_k', 'P(x) -> ((P(x) -> P(x)) -> P(x))')
-      await addAxiom('hilbert_k', 'P(x) -> (P(x) -> P(x))')
-      await addAxiom(
-        'hilbert_s',
+      if (steps.length === 0) await addAxiom(ONBOARDING_AXIOMS[0], 'P(x) -> ((P(x) -> P(x)) -> P(x))')
+      if (steps.length <= 1) await addAxiom(ONBOARDING_AXIOMS[0], 'P(x) -> (P(x) -> P(x))')
+      if (steps.length <= 2) await addAxiom(
+        ONBOARDING_AXIOMS[1],
         '(P(x) -> ((P(x) -> P(x)) -> P(x))) -> ((P(x) -> (P(x) -> P(x))) -> (P(x) -> P(x)))',
       )
     },
@@ -120,9 +121,10 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
       setOnboardingError(null)
       refetchSteps()
     },
-    onError: (err) => setOnboardingError(
-      err instanceof Error ? err.message : '公理を追加できませんでした',
-    ),
+    onError: (err) => {
+      setOnboardingError(err instanceof Error ? err.message : '公理を追加できませんでした')
+      refetchSteps()
+    },
   })
 
   const [highlightOrd, setHighlightOrd] = useState<number | null>(null)
@@ -238,7 +240,19 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
     },
     onError: (err) => {
       setFollowupError(err instanceof ApiError ? err.message : 'unknown error')
+      refetchSteps()
     },
+  })
+
+  const resumeOnboardingMutation = useMutation({
+    mutationFn: async () => {
+      if (steps.length === 5 && onboardingVariableId != null) {
+        await proofsApi.addStep(proofId, { kind: 'gen', body_step_ord: 4, gen_variable_symbol_id: onboardingVariableId })
+      }
+      await proofsApi.validate(proofId)
+    },
+    onSuccess: () => { setFollowupError(null); refetchSteps(); queryClient.invalidateQueries({ queryKey: ['proofs', proofId] }); queryClient.invalidateQueries({ queryKey: ['theorems'] }) },
+    onError: (err) => { setFollowupError(err instanceof ApiError ? err.message : 'unknown error'); refetchSteps() },
   })
 
   if (!proof) return <p className="text-sm text-slate-400">読み込み中…</p>
@@ -505,13 +519,13 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
         </div>
       )}
 
-      {onboarding && proof.status === 'draft' && steps.length === 0 && (
+      {onboarding && proof.status === 'draft' && steps.length < 3 && (
         <OnboardingCoach step={3} title="証明する">
           <p>ProofState の「証明の目標」が、あと示す式です。</p>
           <p>まず K と S を検索し、この式に必要な3つの公理インスタンスを実際の proof へ追加します。</p>
           <button
             type="button"
-            disabled={onboardingContext == null || prepareOnboardingMutation.isPending}
+            disabled={onboardingContext == null || prepareOnboardingMutation.isPending || stepsQuery.isFetching}
             onClick={() => prepareOnboardingMutation.mutate()}
             className="w-full rounded bg-indigo-600 px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
           >
@@ -524,6 +538,7 @@ export function ProofDetail({ proofId, theoremId, theoremName = '定理', proofN
         <OnboardingCoach step={3} title="証明する">
           <p>緑色の［この MP を追加］を押してください。1回目の結論から次の MP が提案されます。</p>
           <p>2回目を押すと、宣言した x への一般化と機械検証が続き、verified になります。</p>
+          {steps.length >= 5 && <button type="button" disabled={resumeOnboardingMutation.isPending || stepsQuery.isFetching} onClick={() => resumeOnboardingMutation.mutate()} className="mt-2 rounded bg-indigo-600 px-3 py-2 text-white">一般化と検証を続ける</button>}
         </OnboardingCoach>
       )}
       {onboarding && proof.status === 'verified' && (

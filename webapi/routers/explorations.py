@@ -16,6 +16,7 @@ from webapi.schemas import (
     ProofOut,
 )
 from webapi.theorem_output import theorem_output, theorem_outputs
+from webapi.presentation import displayed
 
 
 router = APIRouter(tags=["explorations"])
@@ -42,7 +43,7 @@ def _dependencies_out(
             AxiomOut.model_validate(axiom, from_attributes=True)
             for axiom in dependencies.axioms
         ],
-        theorems=theorem_outputs(dem.session, dependencies.theorems),
+        theorems=theorem_outputs(dem.session, displayed(dem.session, dependencies.theorems)),
     )
 
 

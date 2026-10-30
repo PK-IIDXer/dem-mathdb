@@ -12,7 +12,7 @@ from dem.types import FormulaTypeName
 from dem.db.models.language import Formula, FormulaToken, FormulaType
 from dem.db.models.inference import Axiom
 from dem.db.models.theorem import Theorem
-from dem.services.system_tags import visible_theorem_clause
+from webapi.presentation import visible_theorems
 from webapi.deps import dem_services
 from webapi.pagination import Cursor, Limit, decode_cursor, encode_cursor, read_page
 from webapi.schemas import (
@@ -43,7 +43,7 @@ def named_conclusions(id: int, dem: DemServices = Depends(dem_services, scope="f
         select(Theorem)
         .where(
             Theorem.conclusion_formula_id == id,
-            visible_theorem_clause(Theorem.id),
+            visible_theorems(),
         )
         .order_by(Theorem.id)
     )

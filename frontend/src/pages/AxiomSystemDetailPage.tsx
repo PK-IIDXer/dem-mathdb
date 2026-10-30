@@ -75,7 +75,7 @@ function AxiomSystemDetailContent() {
       </section>
 
       <section className="rounded-lg border border-slate-200 p-4">
-        <div className="mb-2 text-sm font-semibold text-slate-700">この公理系で成立する定理 ({theorems.length})</div>
+        <div className="mb-2 text-sm font-semibold text-slate-700">この公理系で成立する定理（練習・推論ノートを除く） ({theorems.length})</div>
         {theorems.length === 0 ? (
           <p className="text-xs text-slate-400">まだありません</p>
         ) : (

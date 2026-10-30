@@ -4,6 +4,7 @@ import { cleanup, render, screen, waitFor, within } from '@testing-library/react
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
 import { HomePage } from './HomePage'
+import { ReadOnlyProvider } from '../ReadOnlyContext'
 
 const values = {
   theorem_count: 1234, proven_theorem_count: 987, verified_proof_count: 999,
@@ -13,18 +14,20 @@ const values = {
 
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 
-function showHome() {
+function showHome(configured = true) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  if (configured) client.setQueryData(['config'], { read_only: false })
   client.setQueryData(['theorems'], [])
   client.setQueryData(['tags'], [])
   client.setQueryData(['axiomSystems'], [])
-  return render(<QueryClientProvider client={client}><MemoryRouter><HomePage /></MemoryRouter></QueryClientProvider>)
+  return render(<QueryClientProvider client={client}><ReadOnlyProvider><MemoryRouter><HomePage /></MemoryRouter></ReadOnlyProvider></QueryClientProvider>)
 }
 
 it('displays corpus counts from the stats API rather than the theorem list', async () => {
   const fetcher = vi.fn(async (url: string) => ({ ok: true, json: async () => url === '/api/stats' ? values : [] }))
   vi.stubGlobal('fetch', fetcher)
   showHome()
+  expect(screen.getByRole('link', { name: '定理を 1 本書く' }).getAttribute('href')).toBe('/formulas?onboarding=1')
   const region = screen.getByRole('region', { name: '収録規模' })
   for (const [label, value] of [
     ['登録済みの定理', '1,234'], ['証明済み', '987'], ['証明ステップ', '45,678'],
@@ -41,4 +44,12 @@ it('does not present failed counts as zero', async () => {
   showHome()
   expect(await screen.findByRole('alert')).toBeTruthy()
   expect(within(screen.getByRole('region', { name: '収録規模' })).getAllByText('—')).toHaveLength(6)
+})
+
+it('hides both tutorial entry points when the initial beta configuration is unknown', async () => {
+  vi.stubGlobal('fetch', vi.fn(async () => { throw new Error('configuration unavailable') }))
+  showHome(false)
+  await screen.findByRole('region', { name: '収録規模' })
+  expect(screen.queryByRole('link', { name: '定理を 1 本書く' })).toBeNull()
+  expect(screen.queryByRole('link', { name: 'チュートリアルを始める' })).toBeNull()
 })

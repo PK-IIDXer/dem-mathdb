@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Query, Response, status
-from sqlalchemy import exists, select
+from sqlalchemy import exists, func, select
 
 from dem.api import DemServices
 from dem.db.models.theorem import Theorem
 from dem.db.models.theorem import Proof
 from dem.db.models.tag import Tag, TheoremTag
 from dem.errors import ValidationError
-from dem.services.system_tags import HIDDEN_THEOREM_TAGS, visible_theorem_clause
+from dem.services.system_tags import EXPLORATION_TAG, HIDDEN_THEOREM_TAGS, visible_theorem_clause
 from webapi.deps import dem_services, get_local_namespace_name
 from webapi.pagination import Cursor, Limit, named_query, read_page
+from webapi.presentation import displayed, visible_ids, visible_theorems
+from webapi import beta
 from webapi.schemas import (
     DescriptionUpdate,
     ExternalSourceOut,
@@ -77,18 +79,21 @@ def list_applicable_theorems(
             )
         except ValueError as exc:
             raise ValidationError("arg_step_ords must contain integers") from exc
+    # The service ranks all matching rows already. Filter before the public
+    # result limit so hidden rows cannot crowd visible candidates out.
+    candidates = dem.theorems.list_applicable(
+        goal_formula_id, dem.session.scalar(select(func.count()).select_from(Theorem)),
+        proof_id=proof_id, arg_step_ords=parsed_arg_ords,
+    )
+    shown = visible_ids(dem.session, [item.id for item, _, _ in candidates])
+    candidates = [entry for entry in candidates if entry[0].id in shown][:limit]
     return [
         ApplicableTheoremOut(
             theorem=theorem_output(dem.session, theorem),
             is_schematic=is_schematic,
             score=score,
         )
-        for theorem, is_schematic, score in dem.theorems.list_applicable(
-            goal_formula_id,
-            limit,
-            proof_id=proof_id,
-            arg_step_ords=parsed_arg_ords,
-        )
+        for theorem, is_schematic, score in candidates
     ]
 
 
@@ -106,10 +111,10 @@ def list_theorems(
     if limit is None and cursor is None and not exclude_tag_id:
         return theorem_outputs(
             dem.session,
-            dem.theorems.list_all(search=search, tag_ids=tag_id, status=status),
+            displayed(dem.session, dem.theorems.list_all(search=search, tag_ids=tag_id, status=status)),
         )
     stmt = named_query(Theorem, search, tag_id, exclude_tag_id).where(
-        visible_theorem_clause(Theorem.id)
+        visible_theorems()
     )
     if status:
         stmt = stmt.where(Theorem.status == status)
@@ -134,6 +139,8 @@ def register_theorem(
         namespace=namespace,
     )
     for tag_id in body.tag_ids:
+        if beta.enabled() and dem.session.scalar(select(Tag.name).where(Tag.id == tag_id)) == EXPLORATION_TAG:
+            raise ValidationError("Create exploration notes through /explorations", code="beta.reserved_tag")
         _check_rule_tag(dem, theorem.id, tag_id)
         dem.tags.attach("theorem", theorem.id, tag_id)
     return theorem_output(dem.session, theorem)
@@ -150,6 +157,11 @@ def update_theorem_description(
 def add_theorem_tag(
     id: int, body: TagAttach, dem: DemServices = Depends(dem_services, scope="function")
 ) -> TheoremOut:
+    if beta.enabled():
+        tag_name = dem.session.scalar(select(Tag.name).where(Tag.id == body.tag_id))
+        attached = dem.session.get(TheoremTag, (id, body.tag_id))
+        if tag_name in HIDDEN_THEOREM_TAGS and attached is None:
+            raise ValidationError("Reserved visibility tags cannot be added to existing theorems in beta", code="beta.reserved_tag")
     _check_rule_tag(dem, id, body.tag_id)
     dem.tags.attach("theorem", id, body.tag_id)
     return theorem_output(dem.session, dem.theorems.get(id))
@@ -209,4 +221,4 @@ def list_theorem_premises(
 def list_theorem_used_in_theorems(
     id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> list[TheoremOut]:
-    return theorem_outputs(dem.session, dem.theorems.list_used_in_theorems(id))
+    return theorem_outputs(dem.session, displayed(dem.session, dem.theorems.list_used_in_theorems(id)))

@@ -7,7 +7,7 @@ from dem.api import DemServices
 from dem.db.models.definition import Definition
 from dem.db.models.inference import Axiom, AxiomSystem
 from dem.db.models.theorem import Proof, ProofStep, Theorem
-from dem.services.system_tags import visible_theorem_clause
+from webapi.presentation import visible_theorems
 from webapi.deps import dem_services
 
 router = APIRouter(tags=["stats"])
@@ -22,7 +22,7 @@ def get_stats(dem: DemServices = Depends(dem_services, scope="function")) -> dic
     on another theorem.
     """
     session = dem.session
-    visible = select(Theorem.id).where(visible_theorem_clause(Theorem.id))
+    visible = select(Theorem.id).where(visible_theorems())
     visible_proofs = select(Proof.id).where(Proof.theorem_id.in_(visible))
     cited = aliased(Proof)
     pairs = (
@@ -32,6 +32,7 @@ def get_stats(dem: DemServices = Depends(dem_services, scope="function")) -> dic
         .join(cited, cited.id == ProofStep.applied_proof_id)
         .where(
             Proof.theorem_id.in_(visible),
+            cited.theorem_id.in_(visible),
             ProofStep.step_kind == "theorem",
             Proof.theorem_id != cited.theorem_id,
         )

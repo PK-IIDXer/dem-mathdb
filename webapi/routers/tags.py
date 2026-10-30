@@ -5,7 +5,7 @@ from sqlalchemy import select
 
 from dem.api import DemServices
 from dem.db.models.tag import Tag
-from dem.services.system_tags import EXPLORATION_TAG
+from dem.services.system_tags import HIDDEN_THEOREM_TAGS
 from webapi.deps import dem_services
 from webapi.pagination import Cursor, Limit, read_page
 from webapi.schemas import TagCreate, TagOut
@@ -22,12 +22,12 @@ def list_tags(
 ) -> list[TagOut]:
     if limit is None and cursor is None:
         return [
-            tag for tag in dem.tags.list_all() if tag.name != EXPLORATION_TAG
+            tag for tag in dem.tags.list_all() if tag.name not in HIDDEN_THEOREM_TAGS
         ]  # Legacy callers expect alphabetical order.
     return read_page(
         dem.session,
         Tag,
-        select(Tag).where(Tag.name != EXPLORATION_TAG),
+        select(Tag).where(Tag.name.not_in(HIDDEN_THEOREM_TAGS)),
         response,
         limit,
         cursor,

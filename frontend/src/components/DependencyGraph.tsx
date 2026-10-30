@@ -57,7 +57,7 @@ function DependencyChildren({ proofId, ancestorIds }: { proofId: number; ancesto
   if (!dependencies) return <li className="text-xs text-slate-400">読み込み中…</li>
   const hasChildren =
     dependencies.axioms.length > 0 || dependencies.lemmas.some((lemma) => !ancestorIds.has(lemma.theorem.id))
-  if (!hasChildren) return <li className="text-xs text-slate-400">依存なし</li>
+  if (!hasChildren) return <li className="text-xs text-slate-400">表示対象の依存はありません</li>
   return <DependencyItems dependencies={dependencies} ancestorIds={ancestorIds} />
 }
 
@@ -113,12 +113,15 @@ export function DependencyGraph({ theoremId }: { theoremId: number }) {
   }
   if (!dependencies) return <p className="text-xs text-slate-400">読み込み中…</p>
   if (dependencies.axioms.length === 0 && dependencies.lemmas.length === 0) {
-    return <p className="text-xs text-slate-400">依存する公理・定理はありません。</p>
+    return <p className="text-xs text-slate-400">表示対象の公理・定理への依存はありません。練習の定理と推論ノートは図から除いています。</p>
   }
 
   return (
-    <ul className="space-y-1">
-      <DependencyItems dependencies={dependencies} ancestorIds={new Set([theoremId])} />
-    </ul>
+    <div>
+      <p className="mb-2 text-xs text-slate-500">練習の定理と推論ノートは図から除いています。</p>
+      <ul className="space-y-1">
+        <DependencyItems dependencies={dependencies} ancestorIds={new Set([theoremId])} />
+      </ul>
+    </div>
   )
 }

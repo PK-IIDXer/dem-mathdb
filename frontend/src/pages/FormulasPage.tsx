@@ -9,7 +9,7 @@ import { renderLatex, renderPreview, tokensToTree } from '../components/FormulaE
 import { Latex } from '../components/Latex'
 import { useReadOnly } from '../ReadOnlyContext'
 import { OnboardingCoach } from '../components/OnboardingCoach'
-import { ONBOARDING_FORMULA, onboardingQuery } from '../onboarding'
+import { ONBOARDING_FORMULA, findOnboardingPredicate, onboardingQuery } from '../onboarding'
 
 export function FormulasPage() {
   usePageTitle('論理式')
@@ -30,7 +30,7 @@ export function FormulasPage() {
     queryFn: () => symbolsApi.listSymbols(),
     enabled: onboarding,
   })
-  const onboardingPredicate = onboardingSymbols.find((symbol) => symbol.name === 'φ¹')
+  const onboardingPredicate = findOnboardingPredicate(onboardingSymbols)
 
   return (
     <div className="space-y-6">

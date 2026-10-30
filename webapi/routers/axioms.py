@@ -18,6 +18,7 @@ from webapi.schemas import (
     TheoremOut,
 )
 from webapi.theorem_output import theorem_outputs
+from webapi.presentation import displayed
 
 router = APIRouter(tags=["axioms"])
 
@@ -101,7 +102,7 @@ def get_axiom_by_public_id(
 def list_axiom_used_in_theorems(
     id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> list[TheoremOut]:
-    return theorem_outputs(dem.session, dem.axioms.list_used_in_theorems(id))
+    return theorem_outputs(dem.session, displayed(dem.session, dem.axioms.list_used_in_theorems(id)))
 
 
 @router.get("/axiom-systems", response_model=list[AxiomSystemOut])
@@ -161,4 +162,4 @@ def is_axiom_system_subset(
 def list_axiom_system_theorems(
     id: int, dem: DemServices = Depends(dem_services, scope="function")
 ) -> list[TheoremOut]:
-    return theorem_outputs(dem.session, dem.axioms.list_theorems_provable_in_system(id))
+    return theorem_outputs(dem.session, displayed(dem.session, dem.axioms.list_theorems_provable_in_system(id)))

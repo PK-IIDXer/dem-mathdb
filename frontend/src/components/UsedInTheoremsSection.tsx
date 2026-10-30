@@ -30,8 +30,9 @@ export function UsedInTheoremsSection({ title, queryKey, queryFn }: Props) {
       <div className="mb-1 text-xs text-slate-500">
         {title} ({theorems.length})
       </div>
+      <p className="mb-1 text-xs text-slate-500">練習の定理と推論ノートを除いた表示です。</p>
       {theorems.length === 0 ? (
-        <p className="text-xs text-slate-400">まだありません</p>
+        <p className="text-xs text-slate-400">表示対象はまだありません</p>
       ) : (
         <ul className="space-y-1 text-sm">
           {theorems.map((theorem) => (

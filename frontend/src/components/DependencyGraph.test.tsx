@@ -104,4 +104,16 @@ describe('DependencyGraph', () => {
       '/api/proofs/20/direct-dependencies',
     ])
   })
+  it('labels an empty projection without claiming the proof has no dependencies', async () => {
+    const key = '/api/proofs/10/direct-dependencies'
+    const original = responses[key]
+    responses[key] = { axioms: [], lemmas: [] }
+    try {
+      renderGraph()
+      expect(await screen.findByText(/表示対象の公理・定理への依存はありません/)).toBeTruthy()
+      expect(screen.getByText(/練習の定理と推論ノートは図から除いています/)).toBeTruthy()
+      expect(screen.queryByText('依存する公理・定理はありません。')).toBeNull()
+    } finally { responses[key] = original }
+  })
+
 })

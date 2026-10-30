@@ -60,6 +60,7 @@ from webapi.schemas import (
     ValidateResultOut,
 )
 from webapi.theorem_output import theorem_output
+from webapi.presentation import visible_ids
 
 router = APIRouter(tags=["proofs"])
 
@@ -515,6 +516,9 @@ def list_direct_dependencies(
         for proof in dem.session.scalars(select(Proof).where(Proof.id.in_(applied_proof_ids)))
     }
 
+    shown = visible_ids(dem.session, [proof.theorem_id for proof in proofs.values()])
+    proofs = {key: proof for key, proof in proofs.items() if proof.theorem_id in shown}
+    applied_proof_ids = {key: None for key in applied_proof_ids if key in proofs}
     lemmas: list[LemmaDependencyOut] = []
     seen_theorem_ids: set[int] = set()
     for proof_id in applied_proof_ids:

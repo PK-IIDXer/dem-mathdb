@@ -1,3 +1,4 @@
+import { configApi } from '../api/config'
 import { EntityBadge } from '../components/BetaIdentity'
 import { statsApi } from '../api/stats'
 import { usePageTitle } from '../hooks/usePageTitle'
@@ -28,6 +29,7 @@ export function HomePage() {
   usePageTitle('')
   const readOnly = useReadOnly()
   const beta = useBeta()
+  const { isSuccess: configured } = useQuery({ queryKey: ['config'], queryFn: configApi.get, enabled: false })
   const { data: theorems = [] } = useQuery({ queryKey: ['theorems'], queryFn: () => theoremsApi.listVisible() })
   const { data: tags = [] } = useQuery({ queryKey: ['tags'], queryFn: () => tagsApi.list() })
   const { data: axiomSystems = [] } = useQuery({ queryKey: ['axiomSystems'], queryFn: () => axiomsApi.listSystems() })
@@ -41,7 +43,7 @@ export function HomePage() {
   return (
     <div className="space-y-6">
       <BetaGettingStarted theorems={theorems} />
-      {!readOnly && !beta && (
+      {!readOnly && !beta && configured && (
         <section className="rounded-xl border border-indigo-200 bg-indigo-50 p-5">
           <h2 className="text-lg font-semibold text-indigo-950">はじめての定理</h2>
           <p className="mt-1 text-sm text-indigo-900">実際の画面で、式の入力から機械検証済みの証明まで進めます。</p>
@@ -68,6 +70,7 @@ export function HomePage() {
           </div>
         ))}
       </section>
+      {beta && <p className="text-xs text-slate-500">定理とその証明・依存の件数は、練習の定理と推論ノートを除いた数です。</p>}
       {statsError && <p role="alert" className="text-sm text-slate-500">収録規模を取得できませんでした。</p>}
 
       <section className="rounded-lg border border-slate-200 p-4">
