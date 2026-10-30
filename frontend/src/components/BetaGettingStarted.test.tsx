@@ -9,9 +9,24 @@ import { ONBOARDING_AXIOMS, ONBOARDING_PREDICATE } from '../onboarding'
 import { SYMBOL_TYPE } from '../constants/symbolTypes'
 import type { Symbol } from '../api/types'
 import type { Config } from '../api/config'
-import fixture from '../test/fixtures/component-api.json'
 
-const symbols = fixture.onboarding.symbols as unknown as Symbol[]
+// Synthetic prerequisite responses; no private corpus or proof fixture is needed.
+const symbols: Symbol[] = [
+  { name: ONBOARDING_PREDICATE, arity: 1, type: SYMBOL_TYPE.freePropositionVariable },
+  { name: 'x', arity: 0, type: SYMBOL_TYPE.freeTermVariable },
+  { name: '→', arity: 2, type: SYMBOL_TYPE.logical },
+  { name: '∀', arity: 1, type: SYMBOL_TYPE.logical },
+].map(({ name, arity, type }, index) => ({
+  id: index + 1, public_id: `synthetic-symbol-${index}`, name, arity,
+  symbol_type_id: index + 1,
+  symbol_type: { id: index + 1, name: type, output_formula_type_id: 1,
+    input_formula_type_id: null, fixed_arity: arity, is_quantifier: name === '∀',
+    remarks: null, created_at: '2000-01-01T00:00:00Z' },
+  is_primitive: true, namespace_id: 1, namespace_name: 'synthetic',
+  notation_kind: 'prefix', precedence: null, latex_template: null,
+  remarks: null, created_at: '2000-01-01T00:00:00Z',
+}))
+const axioms = ONBOARDING_AXIOMS.map((name, index) => ({ name, id: index + 1, formula_id: index + 1 }))
 const open: Config = { read_only: false, beta: { enabled: true, write_state: 'open', next_reset_at: null, last_reset_at: null, last_reset_error: null, limits: {} } }
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 function setup(config = open, missing = '') {
@@ -25,7 +40,7 @@ function setup(config = open, missing = '') {
     if (path.startsWith('/axioms/by-name/')) {
       const name = path.split('/').at(-1)
       if (name === missing) return new Response('{}', { status: 404 })
-      data = fixture.onboarding.axiom_workflow.find(item => item.name === name)?.axiom
+      data = axioms.find(item => item.name === name)
     } else if (path === '/symbols') {
       data = symbols.map(s => s.name === ONBOARDING_PREDICATE && missing === 'arity' ? { ...s, arity: 0 } : s.name === ONBOARDING_PREDICATE && missing === 'type' ? { ...s, symbol_type: { ...s.symbol_type, name: SYMBOL_TYPE.logical } } : s).filter(s => missing !== s.name && !(missing === 'variable' && s.symbol_type.name === SYMBOL_TYPE.freeTermVariable))
     } else if (path.startsWith('/symbol-roles/')) {

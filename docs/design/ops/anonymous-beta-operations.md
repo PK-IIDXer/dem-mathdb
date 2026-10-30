@@ -463,7 +463,9 @@ sudo systemctl list-timers dem-beta-notify.timer
 問い合わせ配信が継続することも確認する。実通知はレビュー側が行い、この実装作業では送信していない。
 
 
-## beta-2026-11.10 の通常配備予定（未実行）
+## beta-2026-11.11 の通常配備予定（未実行）
+
+beta-2026-11.10 は frontend CI 失敗のため配備対象外。tag は残し、この手順では使わない。
 
 実施担当はレビュー側。2026-11-02（月）04:00 JST = 2026-11-01 19:00 UTC の定期resetが
 正常に完了した直後に行う。定期resetから以下の配備resetまでの投稿は失われる。
@@ -482,7 +484,7 @@ sudo dem-beta status
 sudo dem-beta backup
 sudo dem-beta freeze
 sudo git fetch --tags origin
-sudo git checkout --detach beta-2026-11.10
+sudo git checkout --detach beta-2026-11.11
 # 公開候補のレビュー済みtreeとtagを照合する。
 # 今回はimageを更新するので、DEM_BETA_COMMITをこのtagの完全なSHAへ更新する。
 # 資格情報は変更・表示しない。
