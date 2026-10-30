@@ -31,7 +31,7 @@ it('shows no beta decorations outside beta and makes no extra network calls', ()
 
 it.each(['maintenance', 'full'] as const)('shows local reset time, %s, and failed reset without claiming success', state => {
   show(<BetaBanner />, { ...beta, write_state: state, last_reset_error: { failed_at: '2026-10-22T01:02:03Z', stage: 'prepare' } })
-  expect(screen.getByLabelText('匿名公開β').textContent).toContain(new Date(beta.next_reset_at!).toLocaleString())
+  expect(screen.getByLabelText('匿名公開β').textContent).toContain(new Date(beta.next_reset_at!).toLocaleString('ja-JP'))
   expect(screen.getByText(/前回の定期リセットが完了しませんでした/)).toBeTruthy()
   expect(screen.getByText(state === 'full' ? /容量の上限/ : /メンテナンス中のため/)).toBeTruthy()
   expect(screen.getByText(/Public beta/)).toBeTruthy()

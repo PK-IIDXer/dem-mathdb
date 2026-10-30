@@ -518,7 +518,9 @@ upのbuildは変更の無いimageのcacheを使う予定だが、所要時間は
 - 既存の問い合わせ・日次要約・ログ異常通知も確認する。試験後の練習は次の通常resetで消え、今回追加のresetで利用者の投稿を消さない。
 
 
-## beta-2026-11.13 の通常配備予定（未実行）
+## beta-2026-11.14 の通常配備予定（未実行）
+
+beta-2026-11.13 は公開 CI の frontend 試験が2件失敗したため配備対象外とし、tag は残す。11/9 は修正版 beta-2026-11.14 を配備する。
 
 日英切り替えの配備予定。英語の法的文書は2026-10-30に利用者承認済み。公開候補のレビュー完了が前提。11/2向けの11.12の予定は変更しない。
 
@@ -539,7 +541,7 @@ sudo dem-beta status
 sudo dem-beta backup
 sudo dem-beta freeze
 sudo git fetch --tags origin
-sudo git checkout --detach beta-2026-11.13
+sudo git checkout --detach beta-2026-11.14
 # 公開候補のレビュー済みtreeとtagを照合する。
 # 今回はimageを更新するので、DEM_BETA_COMMITをこのtagの完全なSHAへ更新する。
 # 資格情報は変更・表示しない。
@@ -561,6 +563,8 @@ APIが止まる前にunfreezeしない。resetのprepare / swap / start / finish
 upのbuildは変更の無いimageのcacheを使う予定だが、所要時間は未測定。検査不合格を理由にDBのガードを外さない。
 
 配備後の確認（すべてこの修正版では未実行）:
+
+- `?lang=en`で英語になり、保存した言語が再読込後も維持され、`<html lang>`が表示言語に一致すること。法的3ページ・問い合わせ画面が英語になり、βの帯の日時も表示言語の書式になること。
 
 - Homeの任意開始からチュートリアル9操作でverified。通常の定理案内・集計・候補・依存グラフから練習を除き、直接URLと数式は共有すること。
 - maintenance / full / read-only・前提欠落・取得失敗で入口全体が消え、リセット後は前提を再取得すること。
