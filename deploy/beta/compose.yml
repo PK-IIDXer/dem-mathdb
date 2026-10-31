@@ -30,6 +30,7 @@ services:
       dockerfile: deploy/beta/api.Dockerfile
     environment:
       DEM_BETA: "1"
+      DEM_BETA_COMMIT: ${DEM_BETA_COMMIT:?set full commit}
       DEM_DATABASE_URL: postgresql+psycopg://dem_beta_app:${DEM_BETA_APP_PASSWORD:?set app password}@db/dem_beta_live
       DEM_BETA_FLAG_DIR: /beta/flags
       DEM_BETA_STATUS_FILE: /beta/status/status.json
@@ -117,5 +118,9 @@ networks:
         - subnet: 172.30.42.0/24
 volumes:
   pgdata:
+    external: true
+    name: ${DEM_BETA_DB_VOLUME:-dem-beta_pgdata}
   caddy_data:
+    name: dem-beta_caddy_data
   caddy_config:
+    name: dem-beta_caddy_config

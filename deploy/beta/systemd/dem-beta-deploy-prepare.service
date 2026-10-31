@@ -1,0 +1,9 @@
+[Unit]
+Description=Prepare approved beta release in an isolated project
+Requires=docker.service
+After=docker.service network-online.target
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/dem-beta deploy-prepare
+TimeoutStartSec=45min
+KillMode=control-group

@@ -123,7 +123,8 @@ def contact_text(record):
             f"Message:\n{record['message'][:2000]}")
 
 
-def operations(home, pending):
+def operations(home, pending, now=None):
+    now = now or datetime.now(timezone.utc)
     result = {}
     error = home / "status/reset-error.json"
     if error.exists():
@@ -131,6 +132,29 @@ def operations(home, pending):
         if set(value) != {"failed_at", "stage"} or value["stage"] not in {"prepare", "stop", "swap", "start", "ready", "finish", "restore"} or not isinstance(value["failed_at"], str):
             raise ValueError("invalid reset error")
         result["reset"] = f"Beta reset failed: {value['failed_at']} / {value['stage']}"
+    switching = home / "host-state/deploy-switching.json"
+    if switching.exists():
+        value = read_json(switching)
+        if (set(value) != {"started_at", "stage"} or value["stage"] not in
+                {"prepare", "stop", "swap", "start", "ready", "finish"}):
+            raise ValueError("invalid switch marker")
+        started = datetime.fromisoformat(value["started_at"])
+        if started.utcoffset() is None:
+            raise ValueError("invalid switch timestamp")
+        if (now - started).total_seconds() >= 1200:
+            result["deployment_interrupted"] = f"Beta deployment failed: interrupted switch / {value['stage']} / {value['started_at']}"
+    deployment = home / "host-state/deploy-event.json"
+    if deployment.exists():
+        value = read_json(deployment)
+        allowed = {"preparing", "prepared", "preparation-failed", "cancelled", "switch-failed",
+                   "deployed", "deployed-check-warning", "pre-switch-rejected", "approval-expired",
+                   "cleanup-failed", "recovery-blocked", "early-reset-rejected"}
+        if set(value) != {"at", "outcome"} or value["outcome"] not in allowed or not isinstance(value["at"], str):
+            raise ValueError("invalid deployment event")
+        result["deployment"] = f"Beta deployment: {value['at']} / {value['outcome']}"
+        if (value["outcome"] == "preparing" and
+                (now - datetime.fromisoformat(value["at"])).total_seconds() >= 2700):
+            result["deployment"] += " / preparation interrupted or timed out; ordinary reset required"
     watch = home / "host-state/watch-alerts.json"
     if watch.exists():
         value = read_json(watch)
@@ -259,7 +283,7 @@ def deliver(home, webhook, now=None):
             print("dem-beta notify: invalid contact record quarantined")
             continue
         ready.append((path, text))
-    events = operations(home, len(contact_files(directory)))
+    events = operations(home, len(contact_files(directory)), now)
     quarantined = contact_files(invalid)
     names = {path.name for path in quarantined}
     announced = set(state.get("quarantined", [])) & names

@@ -575,3 +575,167 @@ upのbuildは変更の無いimageのcacheを使う予定だが、所要時間は
   配備の実5xxが5分10件以上ならapi_errors開始は観測として正しく、攻撃と決めない。時刻と配備段階に照合する。
   開始した場合は復旧後30分連続clearで1回だけ解消され、観測不能中は解消されないことを確認する。
 - 既存の問い合わせ・日次要約・ログ異常通知も確認する。試験後の練習は次の通常resetで消え、今回追加のresetで利用者の投稿を消さない。
+
+
+## 承認済み tag の自動配備（β7 修正1、実Docker・実機は未確認）
+
+公開A番号とは別に、利用者が承認したtag/完全commit/tree/次回reset日時をrootが登録する。hostが公開HTTPS originからpullする。
+GitHub Actionsの配備job・SSH鍵・新secretは作らない。11/2の11.12と11/9の11.14の予定・手順は変更しない。導入日は未定。
+
+### 資源の設計と移行
+
+稼働projectは **dem-betaに固定**する。既存のdem-beta_proxy（172.30.42.0/24、internal）、web .2、api .3をそのまま使い、
+APIが信用する転送元172.30.42.2も変更しない。Caddyは既存の **dem-beta_caddy_data / dem-beta_caddy_config** を名前で指定して引き継ぐ。
+証明書・ACME account/keyを消したり、配備ごとに新規volumeを作ったりしない。network/公開port/証明書volumeは世代にしない。
+
+DBだけを `dem-beta-db-<commit>-<unique>` の外部volumeにする。既存hostの初期値は **dem-beta_pgdata**。
+main composeはpgdataをexternalとして名前で参照する。初回新規installerだけは既定volumeを明示作成する（既存volumeは保持）。
+準備用 `prepare.compose.yml` はdb/toolsとinternalのdatabase networkだけを定義し、固定subnet/IP、proxy、public port、Caddy volumeを一切持たない。
+image buildはdocker build、Caddy検査は `docker run --rm --network none`（ログはtmpfs、既存証明書のmountなし）で行う。
+準備DBでroles/build-base/statusを通し、候補コンテナを停止・除去してから準備完了とする。切替まで稼働DBは旧volumeのまま。
+
+切替時は旧API/Web/DBを止め、停止確認後にdem-betaのDBを **--force-recreate** して準備済みvolumeを選ぶ。
+volumeの定義だけ変わったときも旧mountが残らないよう強制再作成する。候補DBはその前に停止を再確認し、同じvolumeに二つのPostgreSQLを起動しない。
+旧DBコンテナは再作成で置き換えられ、旧volumeは残す。API/Webも同じdem-beta projectで新imageへ更新する。
+`down`で稼働networkを破棄しないので、2回目以後もproxyと証明書の名前は同じである。
+根拠となる定義は[Dockerのvolume name/external](https://docs.docker.com/reference/compose-file/volumes/)と[network](https://docs.docker.com/reference/compose-file/networks/)。
+これらの定義と静的試験は実Dockerでの成功を示すものではない。
+
+**既存本番からの移行:** 昼間のhost道具更新ではcheckout/wrapper/unitだけを更新し、DEM_BETA_COMMITは旧imageのSHAのまま、
+DEM_BETA_DB_VOLUMEは未設定（既定dem-beta_pgdata）または既存volume名とする。稼働コンテナは再作成しない。
+proxy/証明書/DBの物理的な名前はこの時点では変わらないため、host道具の初回導入にサービス停止やresetは要らない。
+その後の **承認した定期resetの1回** で初めてDBvolumeを世代へ切り替える。この回は旧API/Web/DBの停止、DB再起動、検証、API/Web再起動が必要。
+停止時間は実機未測定で、上限はreset serviceの20分。短い無停止更新とは扱わない。失敗後の停止は人の復旧まで続く。
+初回移行も2回連続の配備も、stagingの実Dockerで確認してから本番を承認する。
+
+### 登録・確認・取り消し
+
+```bash
+sudo dem-beta deploy-dry-run <beta-tag> <full-commit-sha> <full-tree-sha> <reset-ISO8601-with-timezone>
+sudo dem-beta deploy-approve <beta-tag> <full-commit-sha> <full-tree-sha> <reset-ISO8601-with-timezone>
+sudo dem-beta deploy-status
+sudo dem-beta deploy-cancel
+```
+
+日時はhostの既存scheduleと一致する次回（7日以内）だけ。本番の月曜04:00 JSTは変更しない。
+登録・準備・切替直前にcommit/treeを照合し、候補コードは照合前に実行しない。deploy/beta全体に差分があれば手動host更新を先に行う。
+Dockerfile/Caddy/lockだけの変更も保守的に拒否する。host道具のcheckout SHAと稼働image SHAを別に照合するので、host-only導入後も登録できる。
+自動配備を一度行った後に既存の手動配備手順を使う場合は、そこでのcd /opt/dem-betaと.env/composeの参照先を、active-repoが選ぶcheckoutへ置き換える。
+既存のDEM_BETA_DB_VOLUMEを保持し、稼働projectはdem-betaを明示する。退役した/optの.envを更新して稼働版を取り違えない。
+originは資格情報のないhttps://github.com/所有者/repoに限定する。追跡ファイルの変更も拒否する。
+root専用host-state（700）のファイルを600で原子的に保存し、承認は成功・失敗・取消いずれも単回消費する。既存承認は先に取り消す。
+dry-runは一時取得・照合だけ。statusは秘密を表示せず、取消は準備中にも無効化印を置いて候補publishを拒否する。
+
+生成する.envはbash sourceとComposeの両方でリテラルになる文字に制限する。英数字と `_./:@%+=, ?&-`、空白、空値だけを単引用符で囲む。
+単/二重引用符、$、#、backslash、改行、backtick、制御文字、その他の文字は停止前に拒否する。
+既存の生成hex passwordとSlack URL/schedule/標準host pathはこの範囲内。拒否した値やsubprocess出力は記録・表示しない。
+
+### 通常の流れとlock
+
+5分周期prepare timerが1時間前から準備し、最大45分。登録を消費してからDocker資源の所有情報をroot専用deploy-candidatesへ永続化する。
+別DBで本物のbase構築・検査を行い、seed/proof検証・DBガードは省略しない。現行checkout/.env/live/base/image参照は変えない。
+準備はdeploy.lockだけを長く持つ。watch/backup/statusは旧版・旧DBで動く。準備publishだけ短いoperation lockを取る。
+候補は準備完了後も停止状態で待つ。prepareが間に合わなければ旧版の通常resetを行う。
+切替のoperation lockは最大20分。watch/backup/statusはその間75で終了し、disk85%freeze等の監視が最大20分休止し得る。
+notifyは独立lockなので動く。準備の掃除もDocker stopの待ち（通常最大30秒、command上限120秒）を使い、掃除失敗は記録して次回再試行する。
+
+指定時刻より前には切替しない。早いscheduled-reset呼出は承認を保持して **early-reset-rejectedを通知**し、resetしない。
+Persistent timerによる遅延は指定時刻から5分以内だけ候補に使える。5分超なら承認を消費し、期限切れ通知と旧版通常reset。
+正常切替は旧版backup → 時刻再確認 → 切替中の印/停止印 → 旧API/Web/DB停止とAPI停止確認 → 新volumeでDB起動 →
+新版prepare → swap → API/Web起動と検査 → finishの1回だけ。先に旧版のresetはしない。
+active-repoを原子的に変更して他timerも新checkout/.env/DBvolumeを使う。/opt/dem-beta自体を準備中に変更しない。
+
+### 通知・中断・失敗と復旧
+
+切替開始は **deploy-switching.json**（開始時刻と実際の段階）を保存する。成功する切替中にreset-errorやswitch-failedは書かない。
+notifyが途中のどの段で動いても失敗とは配信しない。切替中の印が開始から20分残れば、service上限を超えた中断として失敗を通知する。
+中断では停止印を保持し、次のscheduled-resetも手動復旧待ちで止める。実際に例外を検出した場合だけreset-errorにstop/prepare/swap/start/ready/finishの実段階を書く。
+
+| 条件 | 状態と処置 |
+|---|---|
+| 照合・差分・build・Caddy/base検査等の停止前失敗、壊れた/権限不正な承認・consumed・prepared、unlink競合 | 承認/準備を消費し、通知し、旧版で通常reset。個別の記録/掃除の例外でも通常resetを黙って飛ばさない |
+| 準備失敗・期限切れ・取消 | 登録した候補projectのコンテナを止めて除去する。volumeは残す。掃除失敗は次のprepare/resetで再試行し通知 |
+| 準備processの強制終了/timeout | dockerd側のコンテナは残り得るので、次のprepareまたはscheduled-resetが永続registryの所有候補を止める。45分preparingのままなら中断通知 |
+| API停止を始めた後の失敗・image/commit不一致・API不健康 | freeze/reset-errorを保持、switch-failedを通知。finish/unfreeze・旧版の自動起動はしない |
+| **新webが起動する前の失敗** | **旧webも止まっているため、読取も含めサイト全体に到達できないことがある。人の復旧まで全停止が続く** |
+| 20分を超えたswitching印 | 中断失敗として通知、書込停止・次回reset停止。自動rollbackなし |
+| 既存reset-errorがある次の定期回 | **通常resetの失敗由来も含め**復旧待ちで停止し、その回ごとにrecovery-blocked通知 |
+| 公開ヘッダ・next_reset・protocol・ページGETだけの失敗 | 版/健康を確認したうえでfinish、警告を通知 |
+
+**従来との差:** 以前は通常resetの失敗後も翌週のtimerが再試行した。自動配備導入後はreset-errorがある限り、由来を問わず翌週も止める。
+失敗後に管理者の判断なしで書き込みを再開しないための厳格化であり、旧版の自動復旧と取り違えない。止めた回ごとに通知時刻を更新する。
+数学の検証・base検査・DBガードの受入条件は変更しない。通常resetコマンド自体の既存検証・回復手順は維持するが、timerの再試行方針はこの差分に従う。
+復旧ではpointer、旧/新DBvolume、image/commit/schema、base参照、prepared.json、backupを確認する。旧schemaへ戻せる保証はない。
+正常な復旧を人が確認してから停止印・reset-error・中断印を処置する。それまでは手動でもfinish/unfreezeを行わない。
+
+必須検査はAPI健康、API/Webのimage参照とID、APIのDEM_BETA_COMMIT、公開/api/health/readyのok。
+警告検査は/api/configのnext_reset_at、HSTS/nosniff/CSP等とnoindex、h2/h1.1の実際の版、Alt-Svc不在、主要6ページGET。
+書込チュートリアルは自動化しない。既存の記録→notify timer→Slack経路を使い、本作業で実Slack送信はしない。
+
+### 片付けと容量（昼間、成功/失敗を確認した24時間以内、次回承認前）
+
+コンテナは自動停止する。成功時は旧dem-betaのAPI/Web/DBを止めて置き換え、準備projectは全コンテナと専用networkを止めて除去する。
+失敗・取消・期限切れ・強制終了もregistryに列挙したdem-beta-prepare-<id>だけを止める。固定のdem-betaや他のprojectを掃除対象にしない。
+**volumeは自動で消さない。** 旧DB、image tag、checkout/git object、runtimeは世代ごとに残るので、運用者が翌日の24時間以内に確認して整理する。
+復旧中の世代は削除しない。必要なら次回の承認を延期する。掃除せず何週間も運転しない。
+
+1回の追加diskは、DBvolume 1個（V）、API/Webの新規image layer（I）、checkoutと2つのgit object領域（C）、build cache（B）とruntime（R）で **V+I+C+B+R**。
+実Docker実測は未実施。承認前の予算は保守的に `2×現DB使用量 + 新API/Webの全image size + 2×source/git使用量 + build cache余裕 + runtime余裕` とする。
+計算例に限ればV予算2 GiB、image合計1.25 GiB、source/git予算0.4 GiB、cache/runtime1 GiBで **4.65 GiB/回**。
+これは実測値でも上限保証でもない。新しいseed/imageで増える場合は事前に予算を増やす。
+`docker system df -v`、各volumeの使用量、releasesのdu、dfから容量を見積もり、準備後でもdisk使用80%未満になる余裕を確保して承認する。
+watchの80%通知・85%freezeは維持する。容量不足なら掃除/増設後まで承認しない。
+
+削除は次の手順で、人が対象の完全名を確認して行う。docker system prune/volume prune、down -v、wildcard削除は使わない。
+
+1. prepare timerを止め実行中service完了を待ち、承認/準備がないことをdeploy-statusで確認する。operation.lock/deploy.lockが空いている昼間に行う。
+2. active-repo（初回は/opt/dem-beta）のroot専用.envから、DEM_BETA_COMMITとDEM_BETA_DB_VOLUME（省略時dem-beta_pgdata）だけを確認する。env全体を表示しない。
+   `docker ps -a`とvolume inspectで現DBのMount、候補registryのid/volume/projectを照合する。backupが利用でき、復旧不要と判断した世代だけを選ぶ。
+3. 退役volumeの完全名を選ぶ。現DBvolumeと一致しないことと、`docker ps -a --filter volume=<退役volume>`が空であることを確認する。
+   **この確認後だけ** `sudo docker volume rm <退役volumeの完全名>`。最初の退役volumeはdem-beta_pgdataになり得る。Caddyの2volumeは削除対象外。
+4. 退役commitが現行commitと異なり、imageがどのコンテナにも使われていないことを確認して、
+   `sudo docker image rm dem-beta-api:<退役commit> dem-beta-web:<退役commit>`（-fなし）。同じcommitを再配備した世代ではimageを残す。
+5. 退役releases/<id>をrealpathで解決し、/var/lib/dem-beta/releases直下の正しいidで、active-repoの親でもpreparedの親でもないことを確認する。
+   確認済みの完全パスだけを `sudo rm -r -- <確認済み退役releaseの完全パス>` で削除する。root直下や変数の未確認展開へ再帰削除しない。
+6. volume/containers/checkoutの整理が済んだidだけ、host-state/deploy-candidates/<id>.jsonを完全名で削除する。registryを先に消して孤児を作らない。
+   build cacheの整理が必要なら他buildがないことを確認し、そのDocker公式手順で容量を記録して実施する。準備timerを戻し、df/du/docker system dfを再確認する。
+
+### 初回host道具の導入（昼間、未実行）
+
+利用者承認後、全timerを一時停止し、oneshot完了を待つ。API/Web/DBはそのまま動かし、現在wrapperが選ぶcheckout（初回/opt/dem-beta）を承認tagへ更新する。
+DEM_BETA_COMMITと既存DBvolume名は保持する。wrapperと全unitを更新し、reloadする。
+
+```bash
+cd /opt/dem-beta
+sudo git checkout --detach <approved-host-update-tag>
+sudo install -o root -g root -m 0755 deploy/beta/bin/dem-beta /usr/local/sbin/dem-beta
+sudo bash -c 'set -a; source deploy/beta/.env; set +a; python3 deploy/beta/host.py units deploy/beta/systemd /etc/systemd/system "$DEM_BETA_RESET_SCHEDULE"'
+sudo systemctl daemon-reload
+sudo dem-beta deploy-status
+sudo dem-beta status
+sudo systemctl enable dem-beta-deploy-prepare.timer
+sudo systemctl start dem-beta-reset.timer dem-beta-backup.timer dem-beta-watch.timer dem-beta-notify.timer dem-beta-deploy-prepare.timer
+sudo systemctl list-timers 'dem-beta-*'
+```
+
+GitとcurlのHTTP2対応も確認。全installer、build/build-base/reset/up/コンテナ再作成はこの昼間の操作では行わない。
+Persistentの未処理resetがある状態や04:00直前にはtimerを再開しない。
+同じtagを最初の自動配備に承認できる。DBの実際の移行停止は承認済み定期resetの時だけにまとめる。
+
+### staging予行（要利用者承認、実Dockerでは未実施）
+
+本作業の環境にはWindows/WSLともDocker CLIがなく、Docker Desktopも見つからない。実Dockerを使う4確認は未実施。
+閉じたstagingで、既存dem-beta projectのproxy/IP/ports/証明書volume/DBvolumeのIDとCaddy accountを記録してから始める。
+
+- scheduleを一時的に近い曜日/時刻にそろえ、画面とunitも同じにする。準備に十分な猶予をとる。本番schedule/11月の予定は変更しない。
+- **旧project稼働中のbuild・network無しCaddy検査・DB準備全段**が成功し、旧proxy/証明書/DBを変更しないこと。
+- **初回移行と切替**でproxy network ID/固定IPが同じ、Caddy volume ID/account/certificateが同じ、既定dem-beta_pgdataが残り、DBが新世代volumeを使うこと。
+- **2回連続の切替**で同じnetwork/証明書を維持し、証明書を再発行しないこと。旧DB/準備DBのコンテナが毎回止まっていること。
+- build/Caddy/base失敗、期限切れ、取消、準備processの強制終了→次prepare/resetの掃除、switch強制終了→20分後の失敗通知/次回reset停止。
+- tag付替え、host差分拒否、unsafe/corrupt承認/consumed/preparedとunlink競合で、停止前なら通常resetが行われ通知されること。
+- notifyを切替の各段で走らせて失敗の誤通知がなく、実失敗では実段階が届き、復旧待ちで止めた各回に通知が届くこと。
+- API版/健康失敗ではfinishしないことと、旧web停止後はサイト全体が到達不能になり得ること。自動で旧版を起動しない。
+- 公開ヘッダ、h2/h1.1、Alt-Svc、next_reset、ページGET、watch85%freeze、lock休止、実際のdisk追加量と手動整理手順。
+
+UTC開始/終了・各段・失敗状態・通知・network/volume/image ID・disk/memoryを記録する。予行後にstaging schedule/unitを戻す。
+本番・staging・実Slack・公開tag/pushはこの実装作業では実行しない。

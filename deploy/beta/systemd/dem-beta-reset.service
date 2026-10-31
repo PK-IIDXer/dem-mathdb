@@ -4,5 +4,5 @@ Requires=docker.service
 After=docker.service network-online.target
 [Service]
 Type=oneshot
-ExecStart=/usr/local/sbin/dem-beta reset
+ExecStart=/usr/local/sbin/dem-beta scheduled-reset
 TimeoutStartSec=20min

@@ -8,7 +8,24 @@ set -a
 source "$ENV_FILE"
 set +a
 : "${DEM_BETA_HOME:?}" "${DEM_BETA_COMMIT:?}"
+# An atomic root-owned pointer selects a completely prepared release. Never
+# source a candidate while preparation is in progress.
+if [[ -f "$DEM_BETA_HOME/host-state/active-repo" ]]; then
+    REPO=$(cat "$DEM_BETA_HOME/host-state/active-repo")
+    [[ "$REPO" == "$DEM_BETA_HOME"/releases/*/repo ]] || exit 2
+    ENV_FILE="$REPO/deploy/beta/.env"
+    set -a
+    source "$ENV_FILE"
+    set +a
+fi
 command=${1:-status}
+case "$command" in
+    deploy-approve|deploy-cancel|deploy-status|deploy-dry-run|deploy-prepare|scheduled-reset)
+        export DEM_BETA_HOST_COMMIT
+        DEM_BETA_HOST_COMMIT=$(git -C "$REPO" rev-parse HEAD)
+        exec python3 "$REPO/deploy/beta/auto_deploy.py" "$REPO" "$@"
+        ;;
+esac
 # Delivery has its own lock; it must not block or depend on a DB operation.
 if [[ "$command" == notify ]]; then
     exec python3 "$REPO/deploy/beta/notify.py" "$DEM_BETA_HOME"

@@ -8,7 +8,7 @@ REPO=$(cd -- "$(dirname -- "$0")/../.." && pwd)
 source /etc/os-release
 [[ "$ID" == ubuntu ]] || { echo 'Ubuntu is required' >&2; exit 1; }
 apt-get update
-apt-get install -y ca-certificates curl openssl python3 tzdata unattended-upgrades logrotate iproute2 util-linux
+apt-get install -y ca-certificates curl openssl python3 tzdata unattended-upgrades logrotate iproute2 util-linux git
 install -m 0755 -d /etc/apt/keyrings
 curl --fail --silent --show-error https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
@@ -55,6 +55,8 @@ fi
 chmod 600 "$ENV_FILE"
 chown root:root "$ENV_FILE"
 source "$ENV_FILE"
+# Explicit external volume also supports the first installation; existing data is retained.
+docker volume create "${DEM_BETA_DB_VOLUME:-dem-beta_pgdata}" >/dev/null
 [[ "$DEM_BETA_HOME" == /var/lib/dem-beta ]] || { echo 'Unexpected runtime directory; inspect manually' >&2; exit 1; }
 install -d -m 0755 "$DEM_BETA_HOME"
 for directory in flags status state backups; do
@@ -79,6 +81,6 @@ cat > /etc/logrotate.d/dem-beta <<'EOF'
 EOF
 systemctl daemon-reload
 # Enable now; start only after the first healthy reset (operations guide).
-systemctl enable dem-beta-reset.timer dem-beta-backup.timer dem-beta-watch.timer dem-beta-notify.timer
+systemctl enable dem-beta-reset.timer dem-beta-backup.timer dem-beta-watch.timer dem-beta-notify.timer dem-beta-deploy-prepare.timer
 systemctl enable --now logrotate.timer
 echo 'dem-beta: host prepared; configure domain, initialize DB, then start timers'
