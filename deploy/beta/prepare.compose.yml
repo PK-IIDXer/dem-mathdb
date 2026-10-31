@@ -31,7 +31,7 @@ services:
       timeout: 5s
       retries: 12
   tools:
-    image: dem-beta-api:${DEM_BETA_COMMIT:?set full commit}
+    image: ${DEM_BETA_API_IMAGE:-dem-beta-api:${DEM_BETA_COMMIT:?set full commit}}
     profiles:
     - tools
     entrypoint:

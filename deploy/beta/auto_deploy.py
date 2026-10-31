@@ -19,6 +19,7 @@ from zoneinfo import ZoneInfo
 UTC = timezone.utc
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 TAG = re.compile(r"beta-[A-Za-z0-9][A-Za-z0-9._-]{0,100}\Z")
+IMAGE_ID = re.compile(r"sha256:[0-9a-f]{64}\Z")
 GRACE = 300  # Persistent timer catch-up: at most five minutes, never early.
 
 
@@ -78,6 +79,17 @@ def lock(path, *, blocking=False):
         except BlockingIOError:
             raise Busy("busy") from None
         yield
+
+
+@contextmanager
+def checkout_permissions():
+    # Only public checkout data is readable by image UID 10001. Secrets and the
+    # enclosing release/runtime retain the wrapper's restrictive umask.
+    previous = os.umask(0o022)
+    try:
+        yield
+    finally:
+        os.umask(previous)
 
 
 def instant(value):
@@ -142,7 +154,7 @@ class Deployment:
                     "-f", Path(repo) / "deploy/beta/compose.yml", *args], env=env, timeout=2400)
 
     def tools(self, repo, env, *args):
-        return self.dc(repo, env, "run", "--rm", "tools", *args)
+        return self.dc(repo, env, "run", "--rm", "-T", "tools", *args)
 
     def check_baseline(self):
         if not SHA.fullmatch(self.baseline):
@@ -257,8 +269,9 @@ class Deployment:
             release.mkdir(parents=True, mode=0o700)
             repo, objects = release / "repo", release / "objects"
             verify(self.repo, objects, record, self.baseline)
-            run(["git", "clone", "--no-checkout", objects, repo])
-            run(["git", "-C", repo, "checkout", "--detach", record["commit"]])
+            with checkout_permissions():
+                run(["git", "clone", "--no-checkout", objects, repo])
+                run(["git", "-C", repo, "checkout", "--detach", record["commit"]])
             remote = run(["git", "-C", self.repo, "remote", "get-url", "origin"])
             run(["git", "-C", repo, "remote", "set-url", "origin", remote])
             isolated = release / "runtime"
@@ -278,15 +291,36 @@ class Deployment:
                        DEM_BETA_DB_VOLUME=candidate["volume"], COMPOSE_PROJECT_NAME=candidate["project"])
             self.env_file(repo, env)
             self.preparing(record)
+            candidate["images"] = {}
             for service in ("api", "web"):
-                run(["docker", "build", "-t", f"dem-beta-{service}:{record['commit']}",
+                tag = f"dem-beta-{service}:candidate-{identifier}"
+                run(["docker", "build", "-t", tag,
                      "-f", repo / f"deploy/beta/{service}.Dockerfile", repo], env=env, timeout=2400)
+                image_id = run(["docker", "image", "inspect", "--format", "{{.Id}}", tag], env=env)
+                if not IMAGE_ID.fullmatch(image_id):
+                    raise Rejected("invalid prepared image ID")
+                candidate["images"][service] = image_id
+                env["DEM_BETA_" + service.upper() + "_IMAGE"] = image_id
                 self.preparing(record)
+            save(registry / (identifier + ".json"), candidate)
+            self.env_file(repo, env)
+            # Read every application source as the real image UID; no DB, secret
+            # environment, ports or network. Failure is preparation failure.
+            probe = ("import os\nfrom pathlib import Path\n"
+                     "assert os.getuid() == 10001\n"
+                     "import dem, demlang, scripts.beta_admin, webapi\n"
+                     "def denied(error): raise error\n"
+                     "for directory, folders, files in os.walk('/app', onerror=denied):\n"
+                     " for name in files: Path(directory, name).read_bytes()\n")
+            run(["docker", "run", "--rm", "--user", "10001:10001", "--network", "none",
+                 "--label", "com.docker.compose.project=" + candidate["project"],
+                 "--entrypoint", "python", candidate["images"]["api"], "-c", probe], env=env)
+            self.preparing(record)
             # Never create a proxy network or mount live certificate volumes.
             run(["docker", "run", "--rm", "--network", "none", "--entrypoint", "caddy",
                  "--tmpfs", "/var/log/caddy", "--label", "com.docker.compose.project=" + candidate["project"], "-e", "DEM_BETA_DOMAIN=" + env["DEM_BETA_DOMAIN"],
                  "-e", "DEM_BETA_NOINDEX=" + env.get("DEM_BETA_NOINDEX", "1"),
-                 "dem-beta-web:" + record["commit"], "validate", "--config", "/etc/caddy/Caddyfile",
+                 candidate["images"]["web"], "validate", "--config", "/etc/caddy/Caddyfile",
                  "--adapter", "caddyfile"], env=env)
             self.preparing(record)
             run(["docker", "volume", "create", "--label", "dem.beta.deployment=" + identifier,
@@ -294,7 +328,7 @@ class Deployment:
             self.pc(repo, env, "up", "-d", "--wait", "db")
             for command in ("roles", "build-base", "status"):
                 self.preparing(record)
-                self.pc(repo, env, "run", "--rm", "tools", command)
+                self.pc(repo, env, "run", "--rm", "-T", "tools", command)
             self.stop_candidate(candidate)
             with lock(self.state / "operation.lock"):
                 self.preparing(record)
@@ -329,9 +363,8 @@ class Deployment:
         for service in ("api", "web"):
             container = self.dc(repo, env, "ps", "-aq", service)
             info = json.loads(run(["docker", "inspect", container]))[0]
-            expected = f"dem-beta-{service}:{record['commit']}"
-            image_id = run(["docker", "image", "inspect", "--format", "{{.Id}}", expected])
-            if info["Config"]["Image"] != expected or info["Image"] != image_id:
+            expected = record["images"][service]
+            if not IMAGE_ID.fullmatch(expected) or info["Config"]["Image"] != expected or info["Image"] != expected:
                 raise Rejected("version mismatch")
             if service == "api":
                 if f"DEM_BETA_COMMIT={record['commit']}" not in info["Config"]["Env"]:
@@ -370,6 +403,11 @@ class Deployment:
         repo = Path(record["repo"])
         env = dict(self.env, DEM_BETA_COMMIT=record["commit"], COMPOSE_PROJECT_NAME="dem-beta",
                    DEM_BETA_DB_VOLUME=record["volume"])
+        for service in ("api", "web"):
+            image_id = record["images"][service]
+            if not IMAGE_ID.fullmatch(image_id):
+                raise Rejected("invalid prepared image ID")
+            env["DEM_BETA_" + service.upper() + "_IMAGE"] = image_id
         self.check_baseline()
         # Recheck object identity and host-file boundary at the last trusted point.
         self.plan(record_for_approval(record))
@@ -379,6 +417,9 @@ class Deployment:
             raise Rejected("already frozen")
         if run(["git", "-C", repo, "rev-parse", "HEAD"]) != record["commit"] or run(["git", "-C", repo, "status", "--porcelain", "--untracked-files=no"]):
             raise Rejected("prepared checkout changed")
+        for image_id in record["images"].values():
+            if run(["docker", "image", "inspect", "--format", "{{.Id}}", image_id], env=env) != image_id:
+                raise Rejected("prepared image missing or changed")
         # Validate dotenv before stopping anything; env_file writes only the candidate.
         self.env_file(repo, env)
         volume_owner = run(["docker", "volume", "inspect", "--format",
@@ -417,7 +458,7 @@ class Deployment:
             self.tools(repo, env, "reset", "swap")
             self.stage = "start"
             self.switching()
-            self.dc(repo, env, "up", "-d", "--no-deps", "--no-build", "--wait", "api", "web")
+            self.dc(repo, env, "up", "-d", "--no-deps", "--no-build", "--force-recreate", "--wait", "api", "web")
             self.stage = "ready"
             self.switching()
             self.critical(repo, env, record)

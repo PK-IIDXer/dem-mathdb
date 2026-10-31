@@ -38,7 +38,7 @@ fi
 exec 9>"$DEM_BETA_HOME/host-state/operation.lock"
 flock -n 9 || { echo 'dem-beta: another host operation is running' >&2; exit 75; }
 dc() { docker compose --env-file "$ENV_FILE" -f "$REPO/deploy/beta/compose.yml" "$@"; }
-tools() { dc run --rm tools "$@"; }
+tools() { dc run --rm -T tools "$@"; }
 notify() {
     python3 "$REPO/deploy/beta/notify.py" "$DEM_BETA_HOME" --record-only "$@" || echo 'dem-beta: notification recording failed' >&2
 }
@@ -89,7 +89,13 @@ ready() {
 host_stats() { python3 "$REPO/deploy/beta/host.py" "$1" "$DEM_BETA_HOME" "${DEM_BETA_INTERFACE:?}"; }
 command=${1:-status}
 case "$command" in
-    up) dc build; dc up -d ;;
+    up)
+        if [[ -n "${DEM_BETA_API_IMAGE:-}" && -n "${DEM_BETA_WEB_IMAGE:-}" ]]; then
+            dc up -d --no-build
+        else
+            dc build; dc up -d
+        fi
+        ;;
     roles) tools roles ;;
     build-base) tools build-base ;;
     backup) tools backup ;;

@@ -24,7 +24,7 @@ services:
       timeout: 5s
       retries: 12
   api:
-    image: dem-beta-api:${DEM_BETA_COMMIT:?set full commit}
+    image: ${DEM_BETA_API_IMAGE:-dem-beta-api:${DEM_BETA_COMMIT:?set full commit}}
     build:
       context: ../..
       dockerfile: deploy/beta/api.Dockerfile
@@ -60,7 +60,7 @@ services:
       retries: 24
       start_period: 10s
   tools:
-    image: dem-beta-api:${DEM_BETA_COMMIT:?set full commit}
+    image: ${DEM_BETA_API_IMAGE:-dem-beta-api:${DEM_BETA_COMMIT:?set full commit}}
     profiles: [tools]
     entrypoint: ["python", "-m", "scripts.beta_admin"]
     environment:
@@ -87,7 +87,7 @@ services:
     mem_limit: 768m
     logging: *logging
   web:
-    image: dem-beta-web:${DEM_BETA_COMMIT:?set full commit}
+    image: ${DEM_BETA_WEB_IMAGE:-dem-beta-web:${DEM_BETA_COMMIT:?set full commit}}
     build:
       context: ../..
       dockerfile: deploy/beta/web.Dockerfile

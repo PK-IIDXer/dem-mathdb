@@ -79,7 +79,7 @@ def test_versions_volumes_profiles_and_logging():
             assert svc["image"] == config["services"]["api"]["image"]
         else:
             assert svc["restart"] == "unless-stopped"
-        assert svc["image"] == "postgres:18.6" or svc["image"].endswith(":${DEM_BETA_COMMIT:?set full commit}")
+        assert svc["image"] == "postgres:18.6" or svc["image"].endswith(":${DEM_BETA_COMMIT:?set full commit}}")
     api = (DEPLOY / "api.Dockerfile").read_text()
     web = (DEPLOY / "web.Dockerfile").read_text()
     images = re.findall(r"^FROM (\S+)", api + web, re.M)
@@ -258,7 +258,7 @@ printf "%s\\n" "$TEST_STATS"
 ''')
     (binpath / "docker").write_text('''#!/bin/bash
 echo "$*" >> "$TEST_LOG"
-if [[ "$*" == *"run --rm tools reset prepare"* ]]; then
+if [[ "$*" == *"run --rm"*"tools reset prepare"* ]]; then
     echo token > "$DEM_BETA_HOME/flags/read_only"
 fi
 if [[ -n "$FAIL_AT" && "$*" == *"$FAIL_AT"* ]]; then

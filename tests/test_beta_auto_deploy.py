@@ -92,6 +92,8 @@ def deployment(tmp_path, monkeypatch):
             return RECORD["commit"]
         if "get-url" in args:
             return "https://github.com/example/demo.git"
+        if args[:3] == ["docker", "image", "inspect"]:
+            return args[-1] if args[-1].startswith("sha256:") else "sha256:" + ("1" if "api:" in args[-1] else "2")*64
         if args[:3] == ["docker", "volume", "inspect"]:
             return args[-1].removeprefix("dem-beta-db-")
         if args[0] == "docker" and "inspect" in args:
@@ -245,15 +247,16 @@ def test_noncritical_check_warns_and_finishes(deployment, monkeypatch):
 @pytest.mark.parametrize("bad", ["none", "image-ref", "image-id", "env", "health", "http", "body"])
 def test_running_version_and_health_guard(deployment, monkeypatch, bad):
     d, _, _ = deployment
+    record = dict(RECORD, images=dict(api="sha256:"+"1"*64, web="sha256:"+"2"*64))
     def inspect(args, **kwargs):
         text = " ".join(map(str,args))
         if "image inspect" in text:
             return "sha256:expected"
         if "docker inspect" in text:
             service = "web" if str(args[-1]) == "web-id" else "api"
-            return json.dumps([dict(Config=dict(Image=f"dem-beta-{service}:"+("d"*40 if bad == "image-ref" else RECORD["commit"]),
+            return json.dumps([dict(Config=dict(Image="sha256:"+"3"*64 if bad == "image-ref" else record["images"][service],
                 Env=[] if bad == "env" else [f"DEM_BETA_COMMIT={RECORD['commit']}"]),
-                Image="sha256:wrong" if bad == "image-id" else "sha256:expected",
+                Image="sha256:wrong" if bad == "image-id" else record["images"][service],
                 State=dict(Health=dict(Status="unhealthy" if bad == "health" else "healthy")))])
         if args[0] == "curl":
             if bad == "http":
@@ -263,10 +266,10 @@ def test_running_version_and_health_guard(deployment, monkeypatch, bad):
     monkeypatch.setattr(auto, "run", inspect)
     monkeypatch.setattr(d, "dc", lambda r,e,*a: a[-1]+"-id")
     if bad == "none":
-        d.critical(d.repo, d.env, RECORD)
+        d.critical(d.repo, d.env, record)
     else:
         with pytest.raises(auto.Rejected):
-            d.critical(d.repo, d.env, RECORD)
+            d.critical(d.repo, d.env, record)
 
 
 def test_trusted_wrapper_and_locks_are_preserved():
@@ -802,3 +805,166 @@ def test_early_reset_notification_failure_never_runs_reset(deployment,monkeypatc
     assert auto.main()==1
     assert (d.state/'deploy-approval.json').exists()
     assert not any(a==['/usr/local/sbin/dem-beta','reset'] for a,e in calls)
+
+# Fix 2: UID readability and immutable image selection, including same-commit redeploy.
+def portable_umask(monkeypatch):
+    if os.name == 'nt':
+        # Windows CRT returns 0 for unsupported permission bits. Track requested
+        # masks here; the real Git/POSIX mode matrix is also run on local WSL.
+        original=os.umask;state=[0o077]
+        def tracked(value):
+            previous=state[0];state[0]=value;original(value);return previous
+        monkeypatch.setattr(os,'umask',tracked)
+
+
+def test_checkout_uses_public_modes_inside_private_release(deployment,monkeypatch):
+    portable_umask(monkeypatch)
+    d,_,execute=deployment
+    masks=[]
+    def inspect_mask(args,**kwargs):
+        if list(map(str,args))[:2]==['git','clone'] or 'checkout' in args:
+            value=os.umask(0o077);os.umask(value);masks.append(value)
+        return execute(args,**kwargs)
+    monkeypatch.setattr(auto,'run',inspect_mask)
+    previous=os.umask(0o077)
+    try:
+        record=prepared(deployment)
+        restored=os.umask(0o077)
+        assert restored==0o077
+        assert masks==[0o022,0o022]
+        if os.name!='nt':
+            assert (Path(record['repo']).parent.stat().st_mode & 0o777)==0o700
+            assert (Path(record['repo'])/'deploy/beta/.env').stat().st_mode & 0o777==0o600
+    finally:os.umask(previous)
+
+
+def test_checkout_mask_restored_after_exception(monkeypatch):
+    portable_umask(monkeypatch)
+    old=os.umask(0o077)
+    try:
+        with pytest.raises(RuntimeError):
+            with auto.checkout_permissions():raise RuntimeError('checkout failed')
+        current=os.umask(0o077);assert current==0o077
+    finally:os.umask(old)
+
+
+def test_actual_git_checkout_under_restrictive_mask(tmp_path):
+    import subprocess
+    origin=tmp_path/'origin';origin.mkdir()
+    def git(*args):return subprocess.check_output(['git',*map(str,args)],stderr=subprocess.DEVNULL).decode().strip()
+    git('-C',origin,'init');(origin/'source.py').write_text('value=1\n')
+    git('-C',origin,'add','.');git('-C',origin,'-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','-qm','source')
+    release=tmp_path/'release'
+    old=os.umask(0o077)
+    try:
+        release.mkdir(mode=0o700)
+        with auto.checkout_permissions():git('clone',origin,release/'repo')
+        auto.atomic(release/'repo/.env','SECRET=local-test-only\n')
+        assert (release/'repo/source.py').stat().st_mode & 0o004
+        assert (release/'repo').stat().st_mode & 0o005==0o005
+        if os.name!='nt':
+            assert release.stat().st_mode & 0o777==0o700
+            assert (release/'repo/.env').stat().st_mode & 0o777==0o600
+    finally:os.umask(old)
+
+
+@pytest.mark.parametrize('failure',['none','probe'])
+def test_image_readability_probe_is_required_before_db(deployment,monkeypatch,failure):
+    d,calls,execute=deployment
+    def fail(args,**kwargs):
+        if '--user' in args and failure=='probe':raise auto.Rejected('unreadable image')
+        return execute(args,**kwargs)
+    monkeypatch.setattr(auto,'run',fail)
+    auto.save(d.state/'deploy-approval.json',RECORD);d.prepare()
+    probes=[a for a,e in calls if '--user' in a]
+    if failure=='none':
+        assert len(probes)==1
+        command=probes[0]
+        assert command[command.index('--user')+1]=='10001:10001'
+        assert command[command.index('--network')+1]=='none'
+        assert 'scripts.beta_admin' in command[-1] and 'onerror=denied' in command[-1]
+        assert command[command.index('--entrypoint')+2].startswith('sha256:')
+        assert (d.state/'deploy-prepared.json').exists()
+    else:
+        assert not (d.state/'deploy-prepared.json').exists()
+        assert not any(a[:2]==['docker','compose'] and 'up' in a for a,e in calls)
+        assert json.loads((d.state/'deploy-event.json').read_text())['outcome']=='preparation-failed'
+
+
+def test_preparation_never_retags_live_images_or_changes_live_tools(deployment):
+    d,calls,_=deployment
+    d.env.update(DEM_BETA_COMMIT=RECORD['commit'],DEM_BETA_API_IMAGE='sha256:'+'a'*64,DEM_BETA_WEB_IMAGE='sha256:'+'b'*64)
+    before=dict(d.env);record=prepared(deployment)
+    assert d.env==before
+    builds=[a for a,e in calls if a[:2]==['docker','build']]
+    assert len(builds)==2
+    assert all(a[a.index('-t')+1].endswith(':candidate-'+record['id']) for a in builds)
+    assert all(a[a.index('-t')+1]!=f'dem-beta-api:{RECORD["commit"]}' for a in builds)
+    d.tools(d.repo,d.env,'backup');d.tools(d.repo,d.env,'reset','prepare')
+    live_tools=[e for a,e in calls if a[:2]==['docker','compose'] and 'prepare.compose.yml' not in ' '.join(a)]
+    assert all(e['DEM_BETA_API_IMAGE']==before['DEM_BETA_API_IMAGE'] for e in live_tools)
+    assert all(auto.IMAGE_ID.fullmatch(value) for value in record['images'].values())
+
+
+def test_same_commit_redeploy_uses_recorded_ids_despite_retag(deployment,monkeypatch):
+    d,calls,execute=deployment
+    d.env.update(DEM_BETA_COMMIT=RECORD['commit'],DEM_BETA_API_IMAGE='sha256:'+'a'*64,DEM_BETA_WEB_IMAGE='sha256:'+'b'*64)
+    record=prepared(deployment);d.now=lambda:NOW
+    running={};tag_reads=[]
+    def docker(args,**kwargs):
+        a=list(map(str,args));env=kwargs.get('env',{})
+        if a[:3]==['docker','image','inspect'] and not a[-1].startswith('sha256:'):
+            tag_reads.append(a[-1]);return 'sha256:'+'f'*64 # Tag has moved after preparation.
+        if a[:2]==['docker','compose'] and 'up' in a and a[-2:]==['api','web']:
+            assert '--force-recreate' in a
+            for service in ('api','web'):running[service]=env['DEM_BETA_'+service.upper()+'_IMAGE']
+        if a[:2]==['docker','compose'] and a[-3:]==['ps','-aq','api']:return 'api-container'
+        if a[:2]==['docker','compose'] and a[-3:]==['ps','-aq','web']:return 'web-container'
+        if a[:2]==['docker','inspect'] and '--format' not in a:
+            service=a[-1].split('-')[0]
+            return json.dumps([dict(Image=running[service],Config=dict(Image=running[service],Env=['DEM_BETA_COMMIT='+record['commit']]),State=dict(Health=dict(Status='healthy')))])
+        if a[0]=='curl':return '{"status":"ok"}'
+        return execute(args,**kwargs)
+    monkeypatch.setattr(auto,'run',docker);monkeypatch.setattr(d,'observations',lambda *a:None)
+    d.switch(record)
+    assert running==record['images'] and not tag_reads
+    assert not (d.home/'flags/read_only').exists()
+    assert not (d.home/'status/reset-error.json').exists()
+    backups=[e for a,e in calls if 'backup' in a]
+    assert backups and backups[0]['DEM_BETA_API_IMAGE']=='sha256:'+'a'*64
+
+
+@pytest.mark.parametrize('bad',['missing','wrong'])
+def test_prepared_image_loss_or_replacement_rejects_before_stop(deployment,monkeypatch,bad):
+    d,calls,execute=deployment;record=prepared(deployment);d.now=lambda:NOW;calls.clear()
+    def reject(args,**kwargs):
+        if list(map(str,args))[:3]==['docker','image','inspect']:
+            if bad=='missing':raise auto.Rejected('missing image')
+            return 'sha256:'+'f'*64
+        return execute(args,**kwargs)
+    monkeypatch.setattr(auto,'run',reject)
+    with pytest.raises(auto.Rejected):d.switch(record)
+    assert not any(a[:2]==['docker','compose'] and 'stop' in a for a,e in calls)
+    assert not (d.home/'flags/read_only').exists()
+
+
+def test_compose_uses_pins_for_api_tools_and_web_and_runs_without_stdin(deployment):
+    import yaml
+    d,calls,_=deployment;record=prepared(deployment)
+    for name in ('compose.yml','prepare.compose.yml'):
+        model=yaml.safe_load((ROOT/'deploy/beta'/name).read_text())
+        assert model['services']['tools']['image']=='${DEM_BETA_API_IMAGE:-dem-beta-api:${DEM_BETA_COMMIT:?set full commit}}'
+        if 'api' in model['services']:
+            assert model['services']['api']['image']==model['services']['tools']['image']
+            assert model['services']['web']['image']=='${DEM_BETA_WEB_IMAGE:-dem-beta-web:${DEM_BETA_COMMIT:?set full commit}}'
+    assert all('-T' in a for a,e in calls if a[:2]==['docker','compose'] and 'run' in a)
+    assert 'dc run --rm -T tools' in (ROOT/'deploy/beta/bin/dem-beta').read_text()
+
+
+def test_same_commit_reapproval_is_explicitly_allowed(deployment,monkeypatch):
+    d,_,_=deployment;d.env['DEM_BETA_COMMIT']=RECORD['commit']
+    monkeypatch.setattr(auto,'Deployment',lambda repo:d)
+    monkeypatch.setattr(auto.os,'geteuid',lambda:0,raising=False)
+    monkeypatch.setattr(auto.os.sys,'argv',['auto',str(d.repo),'deploy-approve',*RECORD.values()])
+    assert auto.main()==0
+    assert auto.read(d.state/'deploy-approval.json')['commit']==d.env['DEM_BETA_COMMIT']

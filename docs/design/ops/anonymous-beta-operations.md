@@ -151,13 +151,13 @@ Docker ログは各サービス 10 MB × 5。月 1 回は Bills と Cost Explore
 - API の停止以降の reset / restore 失敗: シェルは API 起動を試し、既存の停止印の token を保ち、reset-error.json を記録する。
   restore 検査が自分の印を消した場合もホストが印を作る。
   再起動の成功だけを理由に解除しない。DB 名・目印・所有者、prepared.json の phase、status、API healthy を確認する。
-  `swapped` / `failed_restored` で token が合うなら、確認後 `docker compose ... run --rm tools reset finish`。
+  `swapped` / `failed_restored` で token が合うなら、確認後 `docker compose ... run --rm -T tools reset finish`。
   prepare 失敗だけなら unfreeze は不要。別の理由で既存 freeze があるときは、その理由を確認してから解除する。
   未処理 next / old を推測で削除しない。
 - reset swap の入口で失敗し、phase が `prepared` のままの場合: まず失敗の原因を除く。
   **API を止める前に** `state/prepared.json` の phase が `prepared` であり、その token が `flags/read_only` の tools の停止印と一致することを確認する。
-  一致を確認してから API を停止 → `docker compose ... run --rm tools reset swap` → API を起動し healthy を待つ →
-  `docker compose ... run --rm tools reset finish` の順に復旧する。`reset-error.json` は次の正常な `dem-beta reset` で消す。
+  一致を確認してから API を停止 → `docker compose ... run --rm -T tools reset swap` → API を起動し healthy を待つ →
+  `docker compose ... run --rm -T tools reset finish` の順に復旧する。`reset-error.json` は、復旧確認後にfinishしてから手動で削除する。自動配備導入後は次の定期resetも復旧待ちで止まるため、それを待って消去しない。
   未処理の next / old を推測で削除しない。この順序は閉じた staging で実際に確認した手順。
 - DB 復元: `sudo dem-beta restore dem-beta-backup-<timestamp>-<id>.dump`。
   ファイルは `/var/lib/dem-beta/backups` に UID 10001 が読める状態で置く（引数は basename のみ）。
@@ -245,7 +245,7 @@ sudo dem-beta status
 
 ```bash
 cd /opt/dem-beta
-sudo docker compose --env-file deploy/beta/.env -f deploy/beta/compose.yml run --rm tools reset finish
+sudo docker compose --env-file deploy/beta/.env -f deploy/beta/compose.yml run --rm -T tools reset finish
 ```
 
 ## 撤収と課金停止（この機械では未実行）
@@ -693,8 +693,8 @@ watchの80%通知・85%freezeは維持する。容量不足なら掃除/増設�
    `docker ps -a`とvolume inspectで現DBのMount、候補registryのid/volume/projectを照合する。backupが利用でき、復旧不要と判断した世代だけを選ぶ。
 3. 退役volumeの完全名を選ぶ。現DBvolumeと一致しないことと、`docker ps -a --filter volume=<退役volume>`が空であることを確認する。
    **この確認後だけ** `sudo docker volume rm <退役volumeの完全名>`。最初の退役volumeはdem-beta_pgdataになり得る。Caddyの2volumeは削除対象外。
-4. 退役commitが現行commitと異なり、imageがどのコンテナにも使われていないことを確認して、
-   `sudo docker image rm dem-beta-api:<退役commit> dem-beta-web:<退役commit>`（-fなし）。同じcommitを再配備した世代ではimageを残す。
+4. registryの退役image IDが現行/準備IDと異なり、どのコンテナにも使われていないことを確認して、
+   `sudo docker image rm dem-beta-api:candidate-<退役id> dem-beta-web:candidate-<退役id>`（-fなし）。同じcommitでもIDで判断する。従来commit tagのimageを整理するときも、IDと使用中コンテナを照合する。
 5. 退役releases/<id>をrealpathで解決し、/var/lib/dem-beta/releases直下の正しいidで、active-repoの親でもpreparedの親でもないことを確認する。
    確認済みの完全パスだけを `sudo rm -r -- <確認済み退役releaseの完全パス>` で削除する。root直下や変数の未確認展開へ再帰削除しない。
 6. volume/containers/checkoutの整理が済んだidだけ、host-state/deploy-candidates/<id>.jsonを完全名で削除する。registryを先に消して孤児を作らない。
@@ -722,9 +722,9 @@ GitとcurlのHTTP2対応も確認。全installer、build/build-base/reset/up/コ
 Persistentの未処理resetがある状態や04:00直前にはtimerを再開しない。
 同じtagを最初の自動配備に承認できる。DBの実際の移行停止は承認済み定期resetの時だけにまとめる。
 
-### staging予行（要利用者承認、実Dockerでは未実施）
+### staging予行（要利用者承認、修正2の再予行は未実施）
 
-本作業の環境にはWindows/WSLともDocker CLIがなく、Docker Desktopも見つからない。実Dockerを使う4確認は未実施。
+11.15の予行で資源の引継ぎは確認されたが、F1/F2で不合格になった。修正2のimage/mode対応後は、以下の実Docker確認をレビュー側がやり直す。
 閉じたstagingで、既存dem-beta projectのproxy/IP/ports/証明書volume/DBvolumeのIDとCaddy accountを記録してから始める。
 
 - scheduleを一時的に近い曜日/時刻にそろえ、画面とunitも同じにする。準備に十分な猶予をとる。本番schedule/11月の予定は変更しない。
@@ -739,3 +739,104 @@ Persistentの未処理resetがある状態や04:00直前にはtimerを再開し�
 
 UTC開始/終了・各段・失敗状態・通知・network/volume/image ID・disk/memoryを記録する。予行後にstaging schedule/unitを戻す。
 本番・staging・実Slack・公開tag/pushはこの実装作業では実行しない。
+
+
+### 修正2：checkout権限・image固定・復旧手順
+
+予行（11.15）では、固定network/IP・証明書の引継ぎとDB世代化は実Dockerで成功したが、checkoutのmodeと同commitの再buildで失敗した。
+以下はその2点を修正した手順であり、修正後の実Docker再予行は未実施。既存の11/2・11/9の予定には使わない。
+
+checkoutのclone/checkoutだけumask 022にする。外側releaseは700、.envは600、runtimeのUID/GIDは10001を保持し、全体をchmodしない。
+API build後、network none・UID 10001で必須moduleのimportと/app全ファイルの読取を検査する。読めなければ準備失敗で通常resetに戻る。
+
+**同じcommitの再承認は許す。** buildは `dem-beta-{api,web}:candidate-<id>` の一意なtagを使い、稼働tagを付け替えない。
+API/Webの完全image IDをroot専用registryとprepared記録へ保存し、検査・準備tools・切替後のapi/web/toolsは全てそのIDを直接参照する。
+.envのDEM_BETA_API_IMAGE/DEM_BETA_WEB_IMAGEにIDを保存する（未設定の既存hostは従来のcommit tagを使う）。
+切替前にIDの存在も再照合し、切替のapi/webは--force-recreateで必ず作り直す。criticalはtagの現在値でなく、準備記録のID・稼働コンテナのID・COMMIT/健康を照合する。
+これで準備中の旧版backup/通常resetも稼働imageのまま実行でき、後から候補tagが変わっても選択imageは変わらない。
+IDを持つ版でdem-beta upを呼ぶ場合はbuildをせず、保存IDから起動する。手動で別版をbuildする場合だけ、先に.envの旧API/WEB_IMAGE指定を外し、承認したCOMMITを設定する。
+片付けのimage削除はcommit tagだけでなく候補tagも対象とする。退役idのregistryにあるIDとcandidate tagを確認し、現行/準備IDや他コンテナが使うimageは残す。
+同じcommitでも別候補は別IDになり得る。削除の基準をcommit一致だけで決めず、使用中IDを照合し、docker image rmに-fを付けない。
+
+**初回host更新のoneshot待機:** timerを止めても実行中のserviceは完了していないことがある。更新checkoutに入る前に、以下を実行する。
+
+```bash
+sudo systemctl stop dem-beta-reset.timer dem-beta-backup.timer dem-beta-watch.timer dem-beta-notify.timer
+if sudo systemctl cat dem-beta-deploy-prepare.timer >/dev/null 2>&1; then
+  sudo systemctl stop dem-beta-deploy-prepare.timer
+fi
+# 各serviceがactive/activating/deactivatingである間は既存処理を中断せず待つ。
+for service in dem-beta-reset dem-beta-backup dem-beta-watch dem-beta-notify dem-beta-deploy-prepare; do
+  if ! sudo systemctl cat "$service.service" >/dev/null 2>&1; then
+    # 11.14からの初回導入ではprepare unitだけがまだ存在しない。
+    [[ "$service" == dem-beta-deploy-prepare ]] && continue
+    echo "Required service missing; inspect before host update" >&2; exit 1
+  fi
+  while :; do
+    state=$(sudo systemctl show "$service.service" -p ActiveState --value) || exit 1
+    case "$state" in
+      active|activating|deactivating) sleep 2 ;;
+      inactive) break ;;
+      failed) echo "$service failed; inspect before host update" >&2; exit 1 ;;
+      *) echo "Unknown service state; inspect before host update" >&2; exit 1 ;;
+    esac
+  done
+done
+```
+
+待機後に上の「初回host道具の導入」のcheckout/install/unit/reloadを行い、元のtimerを戻す。これ自体はresetや稼働コンテナ再作成を行わない。
+
+**切替後失敗の手動復旧:** 旧版へ自動では戻さない。DB/schema/baseとprepared.jsonのphase/tokenをrootローカルで確認し、
+swapが完了して正しい候補DBを使っているstart/ready障害だけが、以下の再起動→検査→finishの対象となる。
+prepare/swap障害や中断は先に既存DB復旧手順で状態を確定する。トークンや.env全体をログ/チャットへ貼らない。
+11.15予行で確認した順序を、修正2以降では準備記録のimmutable IDを使って行う。
+
+```bash
+sudo bash <<'ROOT'
+set -euo pipefail
+active_repo=$(cat /var/lib/dem-beta/host-state/active-repo)
+set -a
+source "$active_repo/deploy/beta/.env"
+set +a
+registry="$DEM_BETA_HOME/host-state/deploy-candidates/$(basename "$(dirname "$active_repo")").json"
+# IDとcommitだけを照合する。.envの他の値は出力しない。
+python3 - "$registry" <<'PY'
+import json, os, sys
+record = json.load(open(sys.argv[1]))
+assert record['commit'] == os.environ['DEM_BETA_COMMIT']
+for service in ('api', 'web'):
+    assert record['images'][service] == os.environ['DEM_BETA_' + service.upper() + '_IMAGE']
+PY
+dc=(docker compose --project-name dem-beta --env-file "$active_repo/deploy/beta/.env" -f "$active_repo/deploy/beta/compose.yml")
+"${dc[@]}" up -d --no-deps --no-build --force-recreate --wait api web
+api_id=$("${dc[@]}" ps -q api)
+web_id=$("${dc[@]}" ps -q web)
+[[ "$(docker inspect --format '{{.Image}}' "$api_id")" == "$DEM_BETA_API_IMAGE" ]]
+[[ "$(docker inspect --format '{{.Image}}' "$web_id")" == "$DEM_BETA_WEB_IMAGE" ]]
+docker exec "$api_id" python -c 'import os,sys; assert os.environ["DEM_BETA_COMMIT"] == sys.argv[1]' "$DEM_BETA_COMMIT"
+printf 'Confirmed commit: %s\nAPI image: %s\nWeb image: %s\n' "$DEM_BETA_COMMIT" "$DEM_BETA_API_IMAGE" "$DEM_BETA_WEB_IMAGE"
+# 上記の健康/版とDBの復旧確認後だけ。finishは既存のphase/tokenガードを使う。
+"${dc[@]}" run --rm -T tools reset finish
+rm -f -- "$DEM_BETA_HOME/status/reset-error.json"
+rm -f -- "$DEM_BETA_HOME/host-state/deploy-switching.json"
+curl --fail --silent --show-error "https://$DEM_BETA_DOMAIN/api/config"
+ROOT
+```
+
+最後にread_only=false、write_state=open、last_reset_error=nullとnext_reset_atを確認し、freezeが残っていないことを確認する。
+finish/検査の失敗時はそこで止め、印を手で外さない。SSHのbash -s/heredocではcompose runが後続入力を消費しないよう必ず-Tを付ける。
+今回のwrapperと自動配備toolsもrun --rm -Tを使う。通常reset成功なら既存wrapperがreset-errorを消すが、失敗のまま次の定期回を待っても自動では消えない。
+
+dem-beta_pgdataは世代移行後も復旧用に保持するため、Composeが「compose fileと一致しない/手動削除」というwarningを出すことがある。
+予行で見られた想定内の旧volumeであり、warningだけを理由に消さない。上の片付け手順3で現行mount/backup/復旧不要を確認した24時間以内の整理対象となる。
+Caddyの2volumeには適用せず、現在のDBvolumeなら当然削除しない。未知のvolume警告は名前を確認して止めて調査する。
+
+**再予行:** 本番と旧stagingを使わず、承認済みの予行専用hostをレビュー側が使う。通知は実Slackでなくhost内loopback受信器（127.0.0.1:18080）へ送る。
+受信器/外部からの観測/notifyの起動時刻、各段のUTC、tag/commit/tree、候補IDとimage ID、root checkout/env/runtimeのmode/所有者を記録する。
+最初に稼働API/Web/DBとproxy/IP/証明書serial/ACME account/旧volumeを記録し、shimなし・wrapper umask077で再予行する。
+UID10001読取probe→roles/base検証→切替が成功すること、同じcommitを2回続けて承認/配備できること、準備中も旧toolsのimage IDが変わらないことを必須とする。
+候補tagの移動/削除でも記録IDから選択されること、IDそのものの消失では停止前に拒否すること、force-recreateとcriticalのID照合も記録する。
+従来の拒否/中断/復旧待ち/誤通知なし、network/IP/証明書の不変、旧/候補コンテナ停止、OOM/応答停止の有無、memory/swap/diskも再確認する。
+復旧場面は上の具体コマンドを-T付きで実行し、/api/configを記録する。
+完了後はtimer・受信器・観測processを止め、使い捨て候補を片付け、秘密を記録しない。instance/静的IP/DNSの撤去は利用者/レビュー側の別作業とする。
+この実装作業では予行host・staging・本番・AWS・DNS・実Slackを操作しない。
