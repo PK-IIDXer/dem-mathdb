@@ -367,7 +367,7 @@ class ProofTranslator:
     ) -> list[str]:
         """引用先のスキーマ変数へ渡す引数列を、DB の代入から組み立てる。
 
-        代入の**適用**はしない。適用は Lean の β 簡約が行う。
+        命題代入の本体に残る項変数も、Lean の関数適用として具体化する。
         """
         terms = dict(step.term_substs)
         props = {source: (body, formal) for source, body, formal in step.prop_substs}
@@ -378,13 +378,26 @@ class ProofTranslator:
             elif symbol_id in props:
                 body_formula_id, formal_params = props[symbol_id]
                 body = self._formulas.text(body_formula_id)
+                substituted = sorted(
+                    (self._formulas.free(body_formula_id) & terms.keys()) - set(formal_params)
+                ) if terms else []
                 if formal_params:
-                    binders = " ".join(
+                    names = [
                         binder(variable_name(param), body) for param in formal_params
+                    ]
+                    if substituted:
+                        # The inner lambda is now inferred inside another application.
+                        names = [f"({name} : U)" for name in names]
+                    body = f"(fun {' '.join(names)} => {body})"
+                if substituted:
+                    # Apply all targets outside both lambdas to avoid capture and
+                    # keep this substitution simultaneous.
+                    binders = self._renderer.binders(substituted)
+                    body = self._apply(
+                        f"(fun {binders} => {body})",
+                        [self._formulas.text(terms[source]) for source in substituted],
                     )
-                    arguments.append(f"(fun {binders} => {body})")
-                else:
-                    arguments.append(body)
+                arguments.append(body)
             elif symbol_id in scope:
                 arguments.append(variable_name(symbol_id))
             else:

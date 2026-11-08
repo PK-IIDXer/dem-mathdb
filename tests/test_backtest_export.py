@@ -131,6 +131,70 @@ def test_logical_core_axioms_translate_faithfully(
     assert statement("定数命題の全称導入公理") == (
         f"∀ ({phi} : Prop), ({phi} → (∀ _z0 : U, {phi}))"
     )
+
+
+@pytest.fixture
+def public_substitution_session(seed_snapshot_factory):
+    # This case needs membership and bound-variable vocabulary; the rest of
+    # the module continues to use the narrower public_core phase.
+    with seed_snapshot_factory.session("public_zfc", "sqlite") as session:
+        yield session
+
+
+def test_export_substitutes_free_terms_in_a_proposition_body(
+    public_substitution_session: Session, tmp_path: Path
+) -> None:
+    from dem.services.axiom import AxiomService
+    from dem.services.formula import FormulaService
+    from dem.services.proof import ProofService
+    from dem.services.theorem import TheoremService
+    from dem.types import AxiomStepInput, PropSubst, Substitution, TermSubst
+
+    session = public_substitution_session
+    ids = _symbol_ids(session)
+    formulas = FormulaService(session)
+    proofs = ProofService(session)
+    axiom = AxiomService(session).get_by_name("存在導入公理")
+
+    def formula(text: str) -> int:
+        return formulas.register(formulas.parse_text(text)[0]).id
+
+    # Public vocabulary only. The target of t is the formal name x;
+    # y maps to t, which must not be replaced a second time. The formal x
+    # itself must stay bound even though x also has a term substitution.
+    targets = {"t": "x", "x": "y", "y": "t"}
+    substitution = Substitution(
+        term_substs=tuple(TermSubst(ids[src], formula(dst)) for src, dst in targets.items()),
+        prop_substs=(PropSubst(ids["φ¹"], formula("∀ z. y = t → x ∈ z"), (ids["x"],)),),
+    )
+    expected = formula("(∀ z. t = x → x ∈ z) → (∃ w. ∀ z. t = x → w ∈ z)")
+    theorem = TheoremService(session).register("backtest substitution under binders", expected)
+    proof = proofs.create_proof(theorem.id)
+    step = proofs.add_step(proof.id, AxiomStepInput(axiom.id, substitution))
+    assert step.conclusion_formula_id == expected
+    proofs.validate(proof.id)
+    session.commit()
+
+    export_lean.main(["--db", _database_path(session), "--out", str(tmp_path)])
+
+    def lean_var(name: str) -> str:
+        return f"v{ids[name]}"
+
+    x, y, t = (lean_var(name) for name in ("x", "y", "t"))
+    eq, mem = (f"dem_s{ids[name]}" for name in ("=", "∈"))
+    sources = sorted(("t", "y"), key=ids.__getitem__)
+    binders = " ".join(f"({lean_var(src)} : U)" for src in sources)
+    arguments = " ".join(lean_var(targets[src]) for src in sources)
+    expected_body = f"(∀ z0 : U, (({eq} {y} {t}) → ({mem} {x} z0)))"
+    expected_arg = f"((fun {binders} => (fun ({x} : U) => {expected_body})) {arguments})"
+    generated = "\n".join(
+        path.read_text(encoding="utf-8") for path in (tmp_path / "Dem" / "Theorems").glob("*.lean")
+    )
+    assert f"theorem dem_t{theorem.id} " in generated
+    axiom_args = " ".join(arg for _, arg in sorted(((ids["t"], x), (ids["φ¹"], expected_arg))))
+    assert f"(dem_ax{axiom.id} {axiom_args})" in generated
+
+
 def test_export_aborts_without_symbol_role(seeded_session: Session, tmp_path: Path) -> None:
     """native 化する 2 記号を同定できないなら、生成してはならない (設計 §4.1)。"""
     tampered = tmp_path / "tampered.db"
