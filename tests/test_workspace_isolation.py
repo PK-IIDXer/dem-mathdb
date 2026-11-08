@@ -342,8 +342,8 @@ def test_workspace_template_is_the_documented_public_layer(workspace_template: P
             "SELECT version_num FROM alembic_version"
         ).fetchone()[0]
 
-    assert counts == {"symbol": 18, "formula": 85, "theorem": 27, "proof": 28}
-    assert verified == 28
+    assert counts == {"symbol": 41, "formula": 876, "theorem": 51, "proof": 52}
+    assert verified == 52
     assert revision == content_schema_head()
 
 

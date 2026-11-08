@@ -16,10 +16,15 @@ from dem.db.seeds.public_catalog import PACKAGE_ENTITIES
 VERSION = "1.0.0"
 RUNTIME_RANGE = ">=0.1.0,<0.2.0"
 PACKAGE_GROUPS = (("public-core", (), ()), ("public-demo", (), ("public-core",)),
-                  ("public-natural-deduction", (), ("public-core",)))
+                  ("public-natural-deduction", (), ("public-core",)),
+                  ("public-equivalence", (), ("public-core", "public-natural-deduction")),
+                  ("public-zfc", (), ("public-equivalence",)),
+                  ("public-mk", (), ("public-zfc",)))
 def package_name(key):
     return {"public-core": "dem.public.logic", "public-demo": "dem.public.demos",
-            "public-natural-deduction": "dem.public.natural_deduction"}[key]
+            "public-natural-deduction": "dem.public.natural_deduction",
+            "public-equivalence": "dem.public.equivalence",
+            "public-zfc": "dem.public.zfc", "public-mk": "dem.public.mk"}[key]
 
 MODELS = (Symbol, Definition, Axiom, AxiomSystem, Theorem, Proof)
 

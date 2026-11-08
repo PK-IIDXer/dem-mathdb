@@ -81,7 +81,7 @@ def seed_public_demos(session: Session) -> PublicSeedSummary:
     )
 
 
-def seed_all(session: Session) -> PublicSeedSummary:
+def seed_public_natural_deductions(session: Session) -> PublicSeedSummary:
     from dem.db.seeds.public_natural_deduction import (
         AXIOM_NAMES, SYSTEM_NAMES, THEOREM_NAMES, seed_public_natural_deduction,
     )
@@ -94,3 +94,29 @@ def seed_all(session: Session) -> PublicSeedSummary:
         axiom_system_names=(*previous.axiom_system_names, *SYSTEM_NAMES),
         theorem_names=(*previous.theorem_names, *THEOREM_NAMES),
     )
+
+
+def _extend(session, previous, seed, axioms, systems, theorems=()):
+    from dem.db.seeds.public_packages import assign_public_releases
+    seed(session)
+    assign_public_releases(session)
+    return PublicSeedSummary((*previous.axiom_names, *axioms),
+                             (*previous.axiom_system_names, *systems),
+                             (*previous.theorem_names, *theorems))
+
+
+def seed_public_equivalences(session):
+    from dem.db.seeds.public_equivalence import seed_public_equivalence, AXIOM_NAMES, SYSTEM_NAMES
+    return _extend(session, seed_public_natural_deductions(session), seed_public_equivalence, AXIOM_NAMES, SYSTEM_NAMES)
+
+
+def seed_public_sets(session):
+    from dem.db.seeds.public_zfc import seed_public_zfc, AXIOMS, SYSTEM_NAMES, THEOREM_NAMES
+    return _extend(session, seed_public_equivalences(session), seed_public_zfc,
+                   tuple(a[0] for a in AXIOMS), SYSTEM_NAMES, THEOREM_NAMES)
+
+
+def seed_all(session):
+    from dem.db.seeds.public_mk import seed_public_mk, AXIOMS, THEOREM_NAMES
+    return _extend(session, seed_public_sets(session), seed_public_mk,
+                   tuple(a[0] for a in AXIOMS), ('MK',), THEOREM_NAMES)

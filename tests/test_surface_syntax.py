@@ -53,7 +53,7 @@ def test_round_trip_all_formulas(all_seeded_session: Session) -> None:
         assert parse_core(rendered, table) == tokens, formula_id
         assert parse_convenience(rendered, table) == tokens, formula_id
         formula_count += 1
-    assert formula_count == 85
+    assert formula_count == 876
 
 
 @pytest.mark.parametrize("parser", (parse_core, parse_convenience))
@@ -225,7 +225,7 @@ def test_lexer_longest_match(all_seeded_session: Session) -> None:
         for long in names
         if short != long and long.startswith(short)
     ]
-    assert prefix_pairs == [("φ", "φ¹"), ("ψ", "ψ¹")]
+    assert set(prefix_pairs) == {("φ", "φ¹"), ("φ", "φ²"), ("φ", "φ³"), ("ψ", "ψ¹")}
     for _short, long in prefix_pairs:
         lexemes = lexer.tokenize(long)
         assert len(lexemes) == 2
@@ -250,7 +250,8 @@ def test_truncated_higher_arity_pattern_is_not_a_match(
     symbols = SymbolService(all_seeded_session)
     formulas = FormulaService(all_seeded_session)
     prop_type = symbols.get_symbol_type_by_name(SymbolTypeName.FREE_PROP_VAR.value)
-    phi2 = symbols.register("φ²", prop_type.id, 2)
+    phi2 = symbols.get_by_name("φ²")
+    assert phi2.symbol_type_id == prop_type.id and phi2.arity == 2
     x = symbols.get_by_name("x")
     phi = symbols.get_by_name("φ")
     pattern = [Token(symbol_id=phi2.id), Token(symbol_id=x.id)]
@@ -276,7 +277,8 @@ def test_builtin_aliases_and_public_variables(all_seeded_session: Session) -> No
             .where(SymbolType.name == SymbolTypeName.FREE_TERM_VAR.value)
         )
     }
-    assert variable_names == {"t", "x", "y", "z", "w"}
+    assert variable_names == {"t", "x", "y", "a", "b", "c", "d", "w", "u", "z",
+                              "v", "q", "g", "Z", "r", "s", "h", "k"}
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -288,4 +290,6 @@ def synthetic_operator_vocabulary(all_seeded_session):
     symbols.register("ρ", symbols.get_symbol_type_by_name(SymbolTypeName.FREE_PROP_VAR.value).id, 0)
     for name in ("◇", "◆", "☆"):
         symbols.register(name, symbols.get_symbol_type_by_name(SymbolTypeName.FUNCTION.value).id, 2, notation_kind="infix", precedence=70)
-    symbols.register("∈", symbols.get_symbol_type_by_name(SymbolTypeName.PREDICATE.value).id, 2, notation_kind="infix", precedence=50)
+    membership = symbols.get_by_name("∈")
+    assert membership.symbol_type.name == SymbolTypeName.PREDICATE.value
+    assert (membership.arity, membership.notation_kind, membership.precedence) == (2, "infix", 50)

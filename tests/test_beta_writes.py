@@ -100,7 +100,8 @@ def reset_admission(monkeypatch, enabled):
 
 
 @pytest.mark.parametrize("enabled", [False, True])
-@pytest.mark.parametrize("package", ["dem.public.logic", "dem.public.natural_deduction"])
+@pytest.mark.parametrize("package", ["dem.public.logic", "dem.public.natural_deduction",
+                                     "dem.public.equivalence", "dem.public.zfc", "dem.public.mk"])
 def test_published_write_matrix(base_api, monkeypatch, enabled, package):
     api = base_api
     with api.transaction() as dem:
@@ -108,7 +109,8 @@ def test_published_write_matrix(base_api, monkeypatch, enabled, package):
         release_id = dem.session.scalar(select(PackageRelease.id).join(Package).where(Package.name == package))
         axiom = dem.session.scalar(select(Axiom).where(Axiom.release_id == release_id).order_by(Axiom.id))
         # The original logic package contains no theorem; its demos exercise that path.
-        theorem = dem.session.scalar(select(Theorem).where(Theorem.release_id == release_id).order_by(Theorem.id)) if package.endswith("natural_deduction") else dem.session.scalar(select(Theorem).order_by(Theorem.id))
+        theorem = dem.session.scalar(select(Theorem).where(Theorem.release_id == release_id).order_by(Theorem.id))
+        if theorem is None: theorem = dem.session.scalar(select(Theorem).order_by(Theorem.id))
         proof = dem.session.scalar(select(Proof).where(Proof.theorem_id == theorem.id, Proof.status == "verified"))
         member = Base.metadata.tables["axiom_system_member"]
         system_id, member_axiom_id = dem.session.execute(select(member.c.axiom_system_id, member.c.axiom_id).join(AxiomSystem, AxiomSystem.id == member.c.axiom_system_id).where(AxiomSystem.release_id == release_id).order_by(member.c.axiom_system_id, member.c.axiom_id)).first()

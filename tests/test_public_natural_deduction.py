@@ -10,7 +10,7 @@ from dem.db.models import (
     Axiom, AxiomSystem, AxiomSystemMember, Definition, Proof, ProofStep,
     PackageRelease, Symbol, Theorem,
 )
-from dem.db.seeds import seed_all
+from dem.db.seeds import seed_public_natural_deductions as seed_all
 from dem.db.seeds.public_catalog import PACKAGE_ENTITIES
 from dem.db.seeds.public_natural_deduction import seed_public_natural_deduction
 from dem.errors import ProofValidationError, ValidationError
@@ -126,10 +126,11 @@ def test_catalog_preserves_every_existing_public_identity_and_owns_all_rows(fres
         "symbol": 0, "definition": 0, "axiom": 11, "axiom_system": 2, "theorem": 22, "proof": 22}
     for model in MODELS:
         kind = model.__tablename__
-        catalogued = {pid for phase in PACKAGE_ENTITIES.values() for pid in phase["entities"][kind]}
+        phases = [PACKAGE_ENTITIES[key] for key in ("public_core", "public_demo", "public_natural_deduction")]
+        catalogued = {pid for phase in phases for pid in phase["entities"][kind]}
         rows = list(session.scalars(select(model)))
         assert {row.public_id for row in rows} == catalogued
-        for phase in PACKAGE_ENTITIES.values():
+        for phase in phases:
             expected_release = session.scalar(select(PackageRelease).where(
                 PackageRelease.manifest["package"].as_string() == {
                     "public-core": "dem.public.logic", "public-demo": "dem.public.demos",

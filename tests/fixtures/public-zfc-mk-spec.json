@@ -1,0 +1,122 @@
+{
+  "symbols": [
+    {
+      "name": "∈",
+      "actual": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "name": "IsSet",
+      "actual": "ba3eee89-4fef-52cf-9b04-fcbb5680cc96"
+    },
+    {
+      "name": "{|}",
+      "actual": "554fae59-0cd9-556d-bf9b-9e6dcadcf278"
+    },
+    {
+      "name": "φ²",
+      "actual": "5fddd714-b6e1-5b99-b981-0976f650267d"
+    }
+  ],
+  "axioms": [
+    {
+      "name": "ZF外延性公理",
+      "expected_id": "63ae98fe-e18d-5284-9017-a4e481ca04e1",
+      "expected_hash": "746c0f080e459fb4106f2c36e22deff2f4824b848803eb5122f41841d7238ec5",
+      "dss": "∀ x. ∀ y. IsSet(x) → IsSet(y) → (∀ z. (z ∈ x ↔ z ∈ y)) → x = y"
+    },
+    {
+      "name": "ZF内包項所属公理図式",
+      "expected_id": "dcacdf51-3291-5dd8-961c-c1658d3f68c5",
+      "expected_hash": "46f39410e8aabca71289d5d8637045ff294875225eddaf07e04efed16b00c5c0",
+      "dss": "IsSet(({|} x. φ¹(x))) → (∀ a. (a ∈ ({|} x. φ¹(x)) ↔ ((∃ b. a ∈ b) ∧ φ¹(a))))"
+    },
+    {
+      "name": "ZF内包項外延性公理図式",
+      "expected_id": "adfd21cc-625f-5686-9b73-bc58c9547382",
+      "expected_hash": "3ee0f24e0d8d07d3d65f269cbc7d9a07ce2813c54eb15655523d183894f9112f",
+      "dss": "(∀ x. (φ¹(x) ↔ ψ¹(x))) → ({|} x. φ¹(x)) = ({|} x. ψ¹(x))"
+    },
+    {
+      "name": "ZF分出公理図式",
+      "expected_id": "52e850aa-5538-5413-916e-1205ac323730",
+      "expected_hash": "62bd21b07fbcc66564b0069ec44c304044827ba67389bcb7810b7d029282499d",
+      "dss": "∀ a. IsSet(a) → IsSet(({|} x. (x ∈ a ∧ φ¹(x))))"
+    },
+    {
+      "name": "ZF対公理",
+      "expected_id": "8ca5d520-b2d2-5965-9091-62d5e7ccefdb",
+      "expected_hash": "0bd452de52c037569383c5f3cc1aba290db120ddfca570a2bcb2cf4ad3f017f4",
+      "dss": "∀ a. ∀ b. IsSet(({|} x. (x = a ∨ x = b)))"
+    },
+    {
+      "name": "ZF和集合公理",
+      "expected_id": "84495358-e8a8-55f7-beb2-730ed92181d3",
+      "expected_hash": "f018d7887a18a47c825f1c165aedfe34a7332911876edfb2615436817c06a6dd",
+      "dss": "∀ a. IsSet(a) → IsSet(({|} x. (∃ w. (w ∈ a ∧ x ∈ w))))"
+    },
+    {
+      "name": "ZF冪集合公理",
+      "expected_id": "77ef8386-367e-5e66-80e9-8d169969f168",
+      "expected_hash": "fae16172c489545a4f47344c69502efdaea7d8ac4cce38d6ac4db68196b74106",
+      "dss": "∀ a. IsSet(a) → IsSet(({|} x. (IsSet(x) ∧ (∀ w. (w ∈ x → w ∈ a)))))"
+    },
+    {
+      "name": "ZF無限公理",
+      "expected_id": "2ed34631-aed9-524c-a1de-256f6a0703fe",
+      "expected_hash": "92f176edf90d3572983301bac6a8f12dd70f8a430f63fb357413f08351e22e56",
+      "dss": "∃ u. (IsSet(u) ∧ ((({|} x. ⊥) ∈ u) ∧ (∀ z. (z ∈ u → ({|} w. (w ∈ z ∨ w = z)) ∈ u))))"
+    },
+    {
+      "name": "ZF置換公理図式",
+      "expected_id": "68da6153-3a97-57d1-9c12-1fa534f4be4d",
+      "expected_hash": "4ced939d84c79b3063d65b6c4c7d8a2a62e3a1bd2f736482a2686817f33822e6",
+      "dss": "∀ a. IsSet(a) → (∀ x. (x ∈ a → (∃ y. ((∃ c. y ∈ c) ∧ (φ²(x, y) ∧ (∀ w. ((∃ c. w ∈ c) → φ²(x, w) → w = y))))))) → IsSet(({|} y. (∃ x. (x ∈ a ∧ φ²(x, y)))))"
+    },
+    {
+      "name": "ZF選択公理",
+      "expected_id": "b6550908-a9a7-51b7-b349-a3bea0e5cf7e",
+      "expected_hash": "81141c9c17e9bcbc5e9bd6f593ac52bb13f9153990a00fbf2e5622292f581c20",
+      "dss": "∀ a. IsSet(a) → (∀ x. (x ∈ a → (IsSet(x) ∧ (∃ y. y ∈ x)))) → (∀ x. ∀ y. (x ∈ a → y ∈ a → ¬(x = y) → ¬(∃ z. (z ∈ x ∧ z ∈ y)))) → (∃ c. (IsSet(c) ∧ (∀ x. (x ∈ a → (∃ z. (z ∈ x ∧ (z ∈ c ∧ (∀ w. (w ∈ x → w ∈ c → w = z)))))))))"
+    },
+    {
+      "name": "ZF集合元性公理",
+      "expected_id": "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+      "expected_hash": "e892348344af3572a10c6f69edd634e864785c34596ae5c3c1c749ef75284be8",
+      "dss": "∀ a. IsSet(a) → (∃ b. a ∈ b)"
+    },
+    {
+      "name": "ZF純粋性公理",
+      "expected_id": "dd00e7fd-ace3-5e74-a618-2b82451f0d90",
+      "expected_hash": "1245c83fadeb4c49b7f5b0c9955f4ae055d0aa4ed0afb46360dfe8e12549ddd2",
+      "dss": "∀ a. ∀ b. a ∈ b → IsSet(a)"
+    },
+    {
+      "name": "MK類内包公理図式",
+      "expected_id": "a506bb2b-e4f1-5a50-9b97-d0e564ae28cb",
+      "expected_hash": "22c8a97db248661864026d9b22563e72b255abd1594927dce14ca3cb524e204f",
+      "dss": "∀ a. (a ∈ ({|} x. φ¹(x)) ↔ ((∃ b. a ∈ b) ∧ φ¹(a)))"
+    },
+    {
+      "name": "MK類外延性公理",
+      "expected_id": "e7984fab-2f19-5175-9d43-0464d34568f5",
+      "expected_hash": "f4908388d367f78f815398299e31266d51afc0f4761643f1732a54fb0fad9598",
+      "dss": "∀ x. ∀ y. (∀ z. (z ∈ x ↔ z ∈ y)) → x = y"
+    }
+  ],
+  "statements": {
+    "MK:B1 所属関係の類": "∃ Z. (∀ x. IsSet(x) → (∀ y. IsSet(y) → (⟨,⟩(x, y) ∈ Z ↔ (x ∈ y))))",
+    "MK:B2 共通部分の類": "∀ a. (∀ b. (∃ Z. (∀ x. IsSet(x) → (x ∈ Z ↔ (x ∈ a ∧ x ∈ b)))))",
+    "MK:B3 補類": "∀ a. (∃ Z. (∀ x. IsSet(x) → (x ∈ Z ↔ (¬(x ∈ a)))))",
+    "MK:B4 定義域の類": "∀ a. (∃ Z. (∀ x. IsSet(x) → (x ∈ Z ↔ (∃ y. (IsSet(y) ∧ ⟨,⟩(x, y) ∈ a)))))",
+    "MK:B5 全体類との直積": "∀ g. (∃ Z. (∀ x. IsSet(x) → (∀ y. IsSet(y) → (⟨,⟩(x, y) ∈ Z ↔ (x ∈ g)))))",
+    "MK:B6 三つ組の巡回置換の類": "∀ g. (∃ Z. (∀ a. IsSet(a) → (∀ b. IsSet(b) → (∀ c. IsSet(c) → (⟨,⟩(⟨,⟩(a, b), c) ∈ Z ↔ ⟨,⟩(⟨,⟩(b, c), a) ∈ g)))))",
+    "MK:B7 三つ組の後ろ二成分の転置の類": "∀ g. (∃ Z. (∀ a. IsSet(a) → (∀ b. IsSet(b) → (∀ c. IsSet(c) → (⟨,⟩(⟨,⟩(a, b), c) ∈ Z ↔ ⟨,⟩(⟨,⟩(a, c), b) ∈ g)))))",
+    "MK:逆関係の類": "∀ g. (∃ Z. (∀ x. IsSet(x) → (∀ y. IsSet(y) → (⟨,⟩(x, y) ∈ Z ↔ (⟨,⟩(y, x) ∈ g)))))",
+    "ZF:単集合の集合性": "IsSet({}(a))",
+    "ZF:非順序対の集合性": "IsSet({,}(a,b))",
+    "ZF:順序対の集合性": "IsSet(⟨,⟩(a,b))",
+    "ZF:単集合の所属": "IsSet(a) → (x ∈ {}(a) ↔ x = a)",
+    "ZF:非順序対の所属": "IsSet(a) → IsSet(b) → (x ∈ {,}(a,b) ↔ (x = a ∨ x = b))",
+    "ZF:ラッセル": "¬(IsSet(({|} x. ¬(x ∈ x))))"
+  }
+}

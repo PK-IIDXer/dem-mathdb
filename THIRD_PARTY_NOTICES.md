@@ -118,3 +118,12 @@ is licensed under BSD-3-Clause, copyright The Go Authors. Its upstream
 [LICENSE](https://github.com/golang/net/blob/v0.62.0/LICENSE), copyright notice,
 conditions and disclaimer must be retained when redistributing the binary.
 The Go checksum database remains enabled during the build.
+
+## Public set and class foundations
+
+The public biconditional, set and class packages were independently constructed
+from the project's user-supplied mathematical specification. Their proofs are
+checked by DEM. The B1–B7 labels follow the reference supplied in that
+specification: Elliott Mendelson, *Introduction to Mathematical Logic*,
+4th edition, p. 230; the converse relation corresponds to Exercise 4.5(a).
+No book prose or proof text is reproduced in these packages.

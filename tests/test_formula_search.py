@@ -144,7 +144,16 @@ def test_structural_search_worst_case_measurement(api, capsys):
         )
     assert len(matches) == formula_count
     assert status == 200
-    assert len(body["items"]) == formula_count
+    assert len(body["items"]) == min(500, formula_count)
+    seen = {item["formula_id"] for item in body["items"]}
+    while body["next_cursor"] is not None:
+        cursor = body["next_cursor"]
+        status, body = post({"pattern": "φ", "context": {}, "limit": 500, "cursor": cursor})
+        assert status == 200
+        page = {item["formula_id"] for item in body["items"]}
+        assert page and seen.isdisjoint(page)
+        seen.update(page)
+    assert seen == {formula_id for formula_id, _ in matches}
 
 
 @pytest.mark.timing_sensitive
@@ -178,7 +187,7 @@ def test_structural_search_schema_root_arity_measurement(api, capsys):
 @pytest.mark.timing_sensitive
 def test_structural_search_response_time_and_pagination(api, capsys):
     dem, post = api
-    assert dem.session.scalar(select(func.count()).select_from(Formula)) == 85
+    assert dem.session.scalar(select(func.count()).select_from(Formula)) == 876
     request = {"pattern": "φ → ψ", "context": {}, "limit": 50}
     assert post(request)[0] == 200  # warm SQLite pages and service caches
     samples = []
