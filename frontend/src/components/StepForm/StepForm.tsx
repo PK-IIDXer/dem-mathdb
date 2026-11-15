@@ -143,26 +143,26 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
       }
       setSubst(nextSubst)
       if (result.applied_proof_id != null) setAppliedProofId(result.applied_proof_id)
+      const selected = request.kind === 'theorem' ? request.arg_step_ords ?? [] : []
+      const selectedBySlot = new Map(result.arg_slots.map((slot, index) => [slot, selected[index]]))
       if (ruleMode && request.kind === 'theorem') {
         const matchingSlot = result.arg_candidates.findIndex((candidates) => initialRuleStepOrd != null && candidates.includes(initialRuleStepOrd))
-        const next = request.arg_step_ords?.length === result.premise_count
-          ? request.arg_step_ords
-          : Array.from({ length: result.premise_count }, (_, index) => {
-              const candidates = result.arg_candidates[index] ?? []
-              if (index === matchingSlot && initialRuleStepOrd != null) return initialRuleStepOrd
-              return candidates.length === 1 ? candidates[0] : -1
-            })
+        const next = Array.from({ length: result.premise_count }, (_, index) => {
+          const assigned = selectedBySlot.get(index)
+          if (assigned != null) return assigned
+          const candidates = result.arg_candidates[index] ?? []
+          if (index === matchingSlot && initialRuleStepOrd != null) return initialRuleStepOrd
+          return candidates.length === 1 ? candidates[0] : -1
+        })
         setArgStepOrds(next)
-        if (request.arg_step_ords?.length !== result.premise_count && next.every((ord) => ord >= 0)) {
+        if (selected.length !== result.premise_count && next.every((ord) => ord >= 0)) {
           suggestMutation.mutate({ kind: 'theorem', applied_theorem_id: request.applied_theorem_id, arg_step_ords: next })
         }
       } else {
         setArgStepOrds(
-          request.kind === 'theorem' && request.arg_step_ords?.length === result.premise_count
-            ? request.arg_step_ords
-            : Array.from({ length: result.premise_count }, (_, index) =>
-                result.arg_candidates[index]?.[0] ?? priorSteps[0]?.ord ?? 0,
-              ),
+          Array.from({ length: result.premise_count }, (_, index) =>
+            selectedBySlot.get(index) ?? result.arg_candidates[index]?.[0] ?? priorSteps[0]?.ord ?? 0,
+          ),
         )
       }
       setError(null)
@@ -306,6 +306,15 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
       {priorSteps.map((step) => <option key={step.ord} value={step.ord}>#{step.ord}</option>)}
     </select>
   )
+
+  const argumentOptions = suggestion?.arg_candidates.map((candidates, index) => {
+    const options = candidates.length > 0 || ruleMode ? candidates : priorSteps.map((step) => step.ord)
+    const selected = argStepOrds[index]
+    // An assigned step may require a substitution that is still undetermined.
+    return selected != null && selected >= 0 && !options.includes(selected)
+      ? [selected, ...options]
+      : options
+  }) ?? []
 
   return (
     <div ref={formRef} data-step-form data-rule-enabled={showRules} className="space-y-4 rounded-lg border border-slate-200 p-4">
@@ -472,10 +481,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
                 className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
               >
                 {ruleMode && <option value={-1} disabled>{t("StepForm_405")}</option>}
-                {(suggestion.arg_candidates[index]?.length
-                  ? suggestion.arg_candidates[index]
-                  : ruleMode ? [] : priorSteps.map((step) => step.ord)
-                ).map((ord) => <option key={ord} value={ord}>#{ord}{ruleMode ? t("StepForm_406", priorSteps.find((step) => step.ord === ord)?.conclusion_formula.description ?? t("StepForm_407")) : ''}</option>)}
+                {(argumentOptions[index] ?? []).map((ord) => <option key={ord} value={ord}>#{ord}{ruleMode ? t("StepForm_406", priorSteps.find((step) => step.ord === ord)?.conclusion_formula.description ?? t("StepForm_407")) : ''}</option>)}
               </select>
               </label>
               {ruleMode && (suggestion.arg_candidates[index]?.length ?? 0) > 1 && <p className="mt-1 text-amber-700">{t("StepForm_408")}</p>}

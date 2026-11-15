@@ -283,6 +283,7 @@ def suggest_proof_step(
             for token in result["conclusion_tokens"]
         ],
         premise_count=result["premise_count"],
+        arg_slots=list(result["arg_slots"]),
         arg_candidates=result["arg_candidates"],
     )
 

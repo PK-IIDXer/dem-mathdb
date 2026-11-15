@@ -430,6 +430,7 @@ class StepSuggestOut(BaseModel):
     defaulted_to_identity: list[int]
     conclusion_tokens: list[TokenIn] | None
     premise_count: int
+    arg_slots: list[int]
     arg_candidates: list[list[int]]
 
 

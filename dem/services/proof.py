@@ -26,7 +26,11 @@ from dem.services.authoring_provenance import AuthoringVia, record_authoring_pro
 from dem.identity import deterministic_public_id
 from dem.services.formula import FormulaService
 from dem.services.symbol import SymbolService
-from dem.services.theorem import TheoremService, match_theorem_constraints
+from dem.services.theorem import (
+    TheoremService,
+    assign_selected_arguments,
+    match_theorem_constraints,
+)
 from dem.services.used_axioms import is_defining_axiom, used_axiom_ids_for_proof
 from dem.types import (
     AssumptionStepInput,
@@ -844,6 +848,58 @@ class ProofService:
                 failed.add(source_id)
         return prop_map, term_map, failed
 
+    def _protect_suggested_prop_bodies(
+        self,
+        prop_map: dict[int, tuple[list[Token], tuple[int, ...]]],
+        term_map: dict[int, list[Token]],
+        symbol_meta: dict[int, SymbolMeta],
+        proof: Proof,
+    ) -> None:
+        """Encode rigid variables in inferred bodies using one-pass term substitution."""
+        changed_sources = {
+            source for source, target in term_map.items()
+            if target != [Token(symbol_id=source)]
+        }
+        collisions = sorted({
+            token.symbol_id
+            for body, params in prop_map.values()
+            for token in body
+            if token.symbol_id in changed_sources and token.symbol_id not in params
+        })
+        if not collisions:
+            return
+
+        occupied = set(symbol_meta) | {
+            token.symbol_id
+            for token in self._tokens_for_formula(proof.theorem.conclusion_formula_id)
+            if token.is_symbol
+        }
+        symbols = SymbolService(self._session)
+        free_term = symbols.get_symbol_type_by_name(SymbolTypeName.FREE_TERM_VAR.value)
+        fresh_symbols = [
+            symbol for symbol in symbols.list_by_type(free_term.id)
+            if symbol.id not in occupied
+        ][:len(collisions)]
+        if len(fresh_symbols) < len(collisions):
+            raise ValidationError(
+                "not enough unused free term variables to protect the inferred substitution",
+                code="proof.suggestion_no_fresh_variable",
+            )
+
+        formula_service = FormulaService(self._session)
+        renamed: dict[int, Token] = {}
+        for source, fresh in zip(collisions, fresh_symbols, strict=True):
+            renamed[source] = Token(symbol_id=fresh.id)
+            symbol_meta[fresh.id] = formula_service._symbol_to_meta(fresh)
+            term_map[fresh.id] = [Token(symbol_id=source)]
+
+        for source, (body, params) in prop_map.items():
+            prop_map[source] = ([
+                renamed.get(token.symbol_id, token)
+                if token.symbol_id not in params else token
+                for token in body
+            ], params)
+
     def suggest_step(
         self,
         proof_id: int,
@@ -861,7 +917,7 @@ class ProofService:
         may therefore add formula rows, although interning is idempotent. Keep
         the HTTP endpoint out of read-only deployment allowlists.
         """
-        self.get(proof_id)
+        proof = self.get(proof_id)
         if kind == "theorem":
             if applied_theorem_id is None:
                 raise ValidationError("theorem suggestion requires applied_theorem_id")
@@ -909,25 +965,21 @@ class ProofService:
             FormulaService(self._session).validate(goal_tokens)
             all_tokens.extend(goal_tokens)
         symbol_meta = self._symbol_meta_for_tokens(all_tokens)
-        matched = MatchResult()
         argument_tokens: list[list[Token]] = []
-        for premise, step_ord in zip(premise_patterns, arg_step_ords):
+        for step_ord in arg_step_ords:
             if step_ord not in prior_tokens:
                 raise ValidationError("arg_step_ord must reference an existing step")
             argument_tokens.append(prior_tokens[step_ord])
-        if match_theorem_constraints(
-            premise_patterns,
-            conclusion_pattern,
-            argument_tokens,
-            goal_tokens,
-            symbol_meta,
-            matched,
-        ) is None:
+        assignment = assign_selected_arguments(
+            premise_patterns, conclusion_pattern, argument_tokens, goal_tokens, symbol_meta
+        )
+        if assignment is None:
             raise ValidationError(
                 "selected arguments or goal do not match",
                 code="proof.suggestion_no_match",
             )
 
+        matched, arg_slots = assignment
         schema_ids = {
             token.symbol_id
             for formula in patterns
@@ -943,6 +995,10 @@ class ProofService:
         prop_map, term_map, failed_matches = self._matched_token_maps(
             matched, symbol_meta
         )
+        if prop_map and term_map:
+            self._protect_suggested_prop_bodies(
+                prop_map, term_map, symbol_meta, proof,
+            )
         term_items: list[TermSubst] = []
         for source_id, target in term_map.items():
             formula = formula_service.register(target)
@@ -992,6 +1048,7 @@ class ProofService:
             "defaulted_to_identity": defaulted,
             "conclusion_tokens": conclusion_tokens,
             "premise_count": len(premise_patterns),
+            "arg_slots": arg_slots,
             "arg_candidates": arg_candidates,
         }
 

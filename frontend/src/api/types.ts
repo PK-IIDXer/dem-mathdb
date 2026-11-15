@@ -257,6 +257,7 @@ export interface StepSuggestion {
   defaulted_to_identity: number[]
   conclusion_tokens: Token[] | null
   premise_count: number
+  arg_slots: number[]
   arg_candidates: number[][]
 }
 

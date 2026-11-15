@@ -15,7 +15,7 @@ from dem.errors import ConflictError, NotFoundError, ValidationError
 from dem.services.authoring_provenance import AuthoringVia, record_authoring_provenance
 from dem.types import FormulaTypeName
 from dem.types import SymbolMeta, SymbolTypeName, Token
-from demlang.match import MatchResult, match_formulas
+from demlang.match import MatchResult, match_formula, match_formulas
 from dem.services.formula import FormulaService
 from dem.services.system_tags import visible_theorem_clause
 from dem.identity import (
@@ -55,15 +55,80 @@ def match_theorem_constraints(
     result: MatchResult | None = None,
 ) -> MatchResult | None:
     """Match one theorem against the premises and/or goal selected by a user."""
-    if len(arg_tokens) > len(premise_patterns):
+    assignment = assign_selected_arguments(
+        premise_patterns, conclusion_pattern, arg_tokens, goal_tokens, symbol_meta, result
+    )
+    return assignment[0] if assignment is not None else None
+
+
+_MAX_REORDER_PREMISES = 8
+_MAX_ASSIGNMENT_NODES = 256
+
+
+def assign_selected_arguments(
+    premise_patterns: Sequence[Sequence[Token]],
+    conclusion_pattern: Sequence[Token],
+    selected_arg_tokens: Sequence[Sequence[Token]],
+    goal_tokens: Sequence[Token] | None,
+    symbol_meta: Mapping[int, SymbolMeta],
+    result: MatchResult | None = None,
+) -> tuple[MatchResult, tuple[int, ...]] | None:
+    """Return the match and the premise slot of each selected argument."""
+    if len(selected_arg_tokens) > len(premise_patterns):
         return None
-    constraints = [
-        (premise, argument)
-        for premise, argument in zip(premise_patterns, arg_tokens)
+
+    def match_slots(slots: tuple[int, ...]) -> tuple[MatchResult, tuple[int, ...]] | None:
+        constraints = [
+            (premise_patterns[slot], selected_arg_tokens[index])
+            for index, slot in sorted(enumerate(slots), key=lambda pair: pair[1])
+        ]
+        if goal_tokens is not None:
+            constraints.append((conclusion_pattern, goal_tokens))
+        matched = match_formulas(constraints, symbol_meta, result)
+        return (matched, slots) if matched is not None else None
+
+    positional = tuple(range(len(selected_arg_tokens)))
+    direct = match_slots(positional)
+    if direct is not None or len(premise_patterns) > _MAX_REORDER_PREMISES:
+        return direct
+
+    def pair_matches(premise: Sequence[Token], argument: Sequence[Token]) -> bool:
+        # A successful probe must not constrain a different candidate pair.
+        context = None if result is None else MatchResult(
+            term_substs=dict(result.term_substs),
+            prop_substs=dict(result.prop_substs),
+            undetermined=set(result.undetermined),
+        )
+        return match_formula(premise, argument, symbol_meta, context) is not None
+
+    possible_slots = [
+        [
+            slot
+            for slot, premise in enumerate(premise_patterns)
+            if pair_matches(premise, argument)
+        ]
+        for argument in selected_arg_tokens
     ]
-    if goal_tokens is not None:
-        constraints.append((conclusion_pattern, goal_tokens))
-    return match_formulas(constraints, symbol_meta, result)
+    if not all(possible_slots):
+        return None
+
+    remaining_nodes = _MAX_ASSIGNMENT_NODES
+
+    def search(slots: tuple[int, ...]) -> tuple[MatchResult, tuple[int, ...]] | None:
+        nonlocal remaining_nodes
+        remaining_nodes -= 1
+        if len(slots) == len(selected_arg_tokens):
+            return match_slots(slots) if slots != positional else None
+        for slot in possible_slots[len(slots)]:
+            if remaining_nodes == 0:
+                break
+            if slot not in slots:
+                matched = search((*slots, slot))
+                if matched is not None:
+                    return matched
+        return None
+
+    return search(())
 
 
 def rank_lemma_candidates(
@@ -85,16 +150,19 @@ def rank_lemma_candidates(
     if goal_tokens is None and not arg_tokens:
         raise ValueError("a goal or at least one argument is required")
 
-    ranked: list[RankedLemma] = []
+    positional_slots = tuple(range(len(arg_tokens)))
+    ranked: list[tuple[bool, RankedLemma]] = []
     for candidate in candidates:
-        if match_theorem_constraints(
+        assignment = assign_selected_arguments(
             candidate.premise_tokens,
             candidate.conclusion_tokens,
             arg_tokens,
             goal_tokens,
             symbol_meta,
-        ) is None:
+        )
+        if assignment is None:
             continue
+        _, slots = assignment
         score = (
             3.0 * log1p(candidate.usage_count)
             - (2.0 if candidate.is_schematic else 0.0)
@@ -109,15 +177,16 @@ def rank_lemma_candidates(
                 else 0.0
             )
         )
-        ranked.append(
+        ranked.append((
+            slots != positional_slots,
             RankedLemma(
                 theorem_id=candidate.theorem_id,
                 is_schematic=candidate.is_schematic,
                 score=score,
-            )
-        )
-    ranked.sort(key=lambda item: (-item.score, item.theorem_id))
-    return ranked
+            ),
+        ))
+    ranked.sort(key=lambda item: (item[0], -item[1].score, item[1].theorem_id))
+    return [item for _, item in ranked]
 
 
 class TheoremService:
