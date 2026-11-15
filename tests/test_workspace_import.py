@@ -378,3 +378,89 @@ def test_rejected_failure_guard_mutation(proof_state_archive, tmp_path, engines,
         with pytest.raises(pytest.fail.Exception, match='DID NOT RAISE'):
             with pytest.raises(WorkspaceImportError):
                 import_workspace(session, source)
+
+
+@pytest.fixture
+def legacy_zfc_archive(tmp_path):
+    # Minimal export from the 11.18 writer with the old ZF infinity axiom.
+    path = Path(__file__).parent / 'fixtures/workspace-zfc-1.0.0.json'
+    members = json.loads(path.read_text(encoding='utf-8'))
+    assert members['manifest.json'][0]['depends'] == {}
+    archive = tmp_path / 'legacy-zfc.dempkg'
+    with ZipFile(archive, 'w') as target:
+        for name, rows in members.items():
+            if name == 'manifest.json':
+                target.writestr(_zip_info(name), _json_bytes(rows[0]))
+            else:
+                with target.open(_zip_info(name), 'w', force_zip64=True) as member:
+                    for row in rows:
+                        member.write(_json_bytes(row))
+    return archive
+
+
+def test_public_workspace_has_no_import_endpoint(legacy_zfc_archive, monkeypatch):
+    import asyncio
+    from beta_http import asgi_request
+    from webapi.main import app
+
+    monkeypatch.delenv('DEM_READ_ONLY', raising=False)
+    status, response, _ = asyncio.run(asgi_request(
+        app, 'POST', '/workspace/import', chunks=[legacy_zfc_archive.read_bytes()],
+        headers=[(b'content-type', b'application/vnd.dem.workspace+zip')],
+    ))
+    assert (status, response) == (404, {'detail': 'Not Found'})
+
+
+@pytest.mark.parametrize('occupied', [True, False])
+def test_cli_does_not_rebind_legacy_zfc(tmp_path, legacy_zfc_archive, seed_snapshot_factory, occupied):
+    import hashlib
+    import shutil
+    import sqlite3
+    import subprocess
+    import sys
+    from dem.db.models import Axiom, Formula, PackageRelease, Symbol
+
+    destination = tmp_path / 'destination.db'
+    if occupied:
+        shutil.copyfile(seed_snapshot_factory.sqlite.get('public_mk'), destination)
+        with sqlite3.connect(destination) as connection:
+            releases = connection.execute(
+                "SELECT package.name FROM package_release JOIN package ON package.id = package_release.package_id "
+                "WHERE package_release.version = '1.1.0'"
+            )
+            assert {name for (name,) in releases} == {'dem.public.zfc', 'dem.public.mk'}
+        before = hashlib.sha256(destination.read_bytes()).digest()
+    url = 'sqlite:///' + destination.as_posix()
+    output = tmp_path / 'roundtrip.dempkg'
+    report = tmp_path / 'import.json'
+    run = subprocess.run(
+        [sys.executable, '-m', 'scripts.import_workspace', str(legacy_zfc_archive),
+         '--database-url', url, '--roundtrip', str(output), '--report', str(report)],
+        capture_output=True, text=True, timeout=90,
+    )
+    result = json.loads(report.read_text(encoding='utf-8'))
+    if occupied:
+        assert run.returncode == 1, run.stderr
+        assert 'destination is not empty' in result['error']
+        assert hashlib.sha256(destination.read_bytes()).digest() == before
+        assert not output.exists()
+        return
+    assert run.returncode == 0, run.stderr
+    assert result['byte_identical'] and output.read_bytes() == legacy_zfc_archive.read_bytes()
+    engine = make_engine(url)
+    try:
+        with Session(engine) as session:
+            axiom = session.scalar(select(Axiom).where(Axiom.public_id == '2ed34631-aed9-524c-a1de-256f6a0703fe'))
+            assert session.get(Formula, axiom.formula_id).hash == '92f176edf90d3572983301bac6a8f12dd70f8a430f63fb357413f08351e22e56'
+            assert session.scalar(select(Symbol).where(Symbol.name == '∅')) is None
+            assert session.scalar(select(PackageRelease)) is None
+    finally:
+        engine.dispose()
+    verify = subprocess.run(
+        [sys.executable, '-m', 'scripts.beta_base', 'verify', '--database-url', url],
+        capture_output=True, text=True, timeout=60,
+    )
+    assert verify.returncode == 1
+    base = json.loads(verify.stdout)
+    assert base['ok'] is False
+    assert base['checks']['ownership']['ok'] is False

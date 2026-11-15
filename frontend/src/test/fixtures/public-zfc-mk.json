@@ -927,6 +927,31 @@
     },
     {
       "id": 38,
+      "public_id": "c4ec1e44-7555-51f1-bfa8-2f757ad9368e",
+      "name": "∅",
+      "symbol_type_id": 1,
+      "symbol_type": {
+        "id": 1,
+        "name": "関数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から項を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\varnothing",
+      "remarks": "The comprehension term for the always-false predicate.",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 39,
       "public_id": "589e211c-09e2-5ce9-960b-a427f66bf0c2",
       "name": "{}",
       "symbol_type_id": 1,
@@ -951,7 +976,7 @@
       "created_at": "2000-01-01T00:00:00Z"
     },
     {
-      "id": 39,
+      "id": 40,
       "public_id": "0e2776cb-b874-59b2-8480-98ca7d4fbaf8",
       "name": "{,}",
       "symbol_type_id": 1,
@@ -976,7 +1001,7 @@
       "created_at": "2000-01-01T00:00:00Z"
     },
     {
-      "id": 40,
+      "id": 41,
       "public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f",
       "name": "⟨,⟩",
       "symbol_type_id": 1,
@@ -1001,7 +1026,7 @@
       "created_at": "2000-01-01T00:00:00Z"
     },
     {
-      "id": 41,
+      "id": 42,
       "public_id": "c48df6a0-94f9-55d3-ab4f-7201c98acb45",
       "name": "φ³",
       "symbol_type_id": 7,
@@ -1052,7 +1077,7 @@
       "text": "⟨,⟩(a, b)",
       "tokens": [
         {
-          "symbol_id": 40,
+          "symbol_id": 41,
           "de_bruijn_index": null
         },
         {
@@ -1095,6 +1120,19 @@
         {
           "symbol_id": null,
           "de_bruijn_index": 0
+        }
+      ]
+    },
+    {
+      "text": "IsSet(∅)",
+      "tokens": [
+        {
+          "symbol_id": 20,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 38,
+          "de_bruijn_index": null
         }
       ]
     }

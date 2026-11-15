@@ -2,7 +2,8 @@
 import pytest
 from sqlalchemy import event, select
 
-from dem.db.models import Base, Symbol, Axiom, AxiomSystem, Theorem, Proof, Package, PackageRelease
+from dem.db.models import Base, Symbol, Axiom, AxiomSystem, Definition, Theorem, Proof, Package, PackageRelease
+from dem.db.seeds.public_packages import package_name
 from dem.types import SymbolTypeName
 from webapi import beta, contact
 from webapi.main import app, READ_ONLY_POST_PATHS, SAFE_METHODS
@@ -99,21 +100,48 @@ def reset_admission(monkeypatch, enabled):
         monkeypatch.delenv("DEM_BETA", raising=False)
 
 
+RELATION_PACKAGES = (
+    package_name("public-unique-existence"),
+    package_name("public-relations"),
+    package_name("public-class-relations"),
+)
+
+
 @pytest.mark.parametrize("enabled", [False, True])
-@pytest.mark.parametrize("package", ["dem.public.logic", "dem.public.natural_deduction",
-                                     "dem.public.equivalence", "dem.public.zfc", "dem.public.mk"])
+@pytest.mark.parametrize("package", [
+    "dem.public.logic", "dem.public.natural_deduction", "dem.public.equivalence",
+    "dem.public.zfc", "dem.public.mk", *RELATION_PACKAGES,
+])
 def test_published_write_matrix(base_api, monkeypatch, enabled, package):
     api = base_api
     with api.transaction() as dem:
         symbol = dem.session.scalar(select(Symbol).where(Symbol.arity == 2).order_by(Symbol.id))
         release_id = dem.session.scalar(select(PackageRelease.id).join(Package).where(Package.name == package))
+        relation_package = package in RELATION_PACKAGES
+        if relation_package:
+            assert release_id is not None
+            owned_symbol = dem.session.scalar(
+                select(Symbol).where(Symbol.release_id == release_id, Symbol.arity == 2).order_by(Symbol.id)
+            )
+            if owned_symbol is not None:
+                symbol = owned_symbol
         axiom = dem.session.scalar(select(Axiom).where(Axiom.release_id == release_id).order_by(Axiom.id))
         # The original logic package contains no theorem; its demos exercise that path.
         theorem = dem.session.scalar(select(Theorem).where(Theorem.release_id == release_id).order_by(Theorem.id))
+        if relation_package:
+            assert axiom is not None and theorem is not None
         if theorem is None: theorem = dem.session.scalar(select(Theorem).order_by(Theorem.id))
         proof = dem.session.scalar(select(Proof).where(Proof.theorem_id == theorem.id, Proof.status == "verified"))
         member = Base.metadata.tables["axiom_system_member"]
-        system_id, member_axiom_id = dem.session.execute(select(member.c.axiom_system_id, member.c.axiom_id).join(AxiomSystem, AxiomSystem.id == member.c.axiom_system_id).where(AxiomSystem.release_id == release_id).order_by(member.c.axiom_system_id, member.c.axiom_id)).first()
+        # The three relations packages introduce definitions and theorems.
+        # Use MK for the member routes because those packages own no systems.
+        system_owner = AxiomSystem.name == "MK" if relation_package else AxiomSystem.release_id == release_id
+        system_id, member_axiom_id = dem.session.execute(
+            select(member.c.axiom_system_id, member.c.axiom_id)
+            .join(AxiomSystem, AxiomSystem.id == member.c.axiom_system_id)
+            .where(system_owner)
+            .order_by(member.c.axiom_system_id, member.c.axiom_id)
+        ).first()
         tag = dem.tags.get_or_create("beta-matrix-existing")
         for kind, row in (("axiom", axiom), ("theorem", theorem)):
             dem.tags.attach(kind, row.id, tag.id)
@@ -202,3 +230,35 @@ def test_published_write_matrix(base_api, monkeypatch, enabled, package):
     exercised.add(("POST", "/explorations"))
     assert exercised == PROTECTED | USER_OR_COMPUTATION
     assert digests(api) == before
+
+
+@pytest.mark.parametrize("enabled", [False, True])
+def test_published_empty_set_and_theorems_reject_writes(base_api, monkeypatch, enabled):
+    with base_api.session() as dem:
+        session = dem.session
+        symbol = session.scalar(select(Symbol).where(Symbol.name == "∅"))
+        definition = session.scalar(select(Definition).where(Definition.new_symbol_id == symbol.id))
+        names = (
+            "ZF:空集合の集合性", "ZF:空集合は元を持たない", "ZF:空集合の一意性",
+            "ZF:空でない集合は元を持つ", "ZF:空集合は単集合でない", "MK:空類の一意性",
+        )
+        theorems = list(session.scalars(select(Theorem).where(Theorem.name.in_(names))))
+        assert len(theorems) == len(names)
+        cases = [
+            ("POST", f"/symbols/{symbol.id}/aliases", {"alias": "alternate-empty"}),
+            ("PATCH", f"/symbols/{symbol.id}/latex-template", {"latex_template": "E"}),
+            ("PATCH", f"/definitions/{definition.id}/description", {"description": "Changed definition"}),
+        ]
+        for theorem in theorems:
+            cases.extend([
+                ("PATCH", f"/theorems/{theorem.id}/description", {"description": "Changed theorem"}),
+                ("POST", "/proofs", {"theorem_id": theorem.id}),
+            ])
+
+    publish_all(base_api.engine)
+    before = digests(base_api)
+    for method, path, body in cases:
+        reset_admission(monkeypatch, enabled)
+        status, response, _ = request(method, path, body)
+        assert 400 <= status < 500, (method, path, status, response)
+    assert digests(base_api) == before

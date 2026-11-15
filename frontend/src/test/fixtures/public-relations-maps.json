@@ -1,0 +1,2714 @@
+{
+  "symbols": [
+    {
+      "id": 1,
+      "public_id": "3200b32b-2960-5ad9-98b0-3c46eea42f9c",
+      "name": "⊥",
+      "symbol_type_id": 3,
+      "symbol_type": {
+        "id": 3,
+        "name": "論理記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "¬, ∨, ∧, →, ↔ など。",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\bot",
+      "remarks": "矛盾",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 2,
+      "public_id": "7ef55380-cb00-59f7-989f-1347cab26b12",
+      "name": "¬",
+      "symbol_type_id": 3,
+      "symbol_type": {
+        "id": 3,
+        "name": "論理記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "¬, ∨, ∧, →, ↔ など。",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\neg",
+      "remarks": "否定",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 3,
+      "public_id": "e9ab484b-d683-5276-987a-af3df5a6e8e9",
+      "name": "∨",
+      "symbol_type_id": 3,
+      "symbol_type": {
+        "id": 3,
+        "name": "論理記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "¬, ∨, ∧, →, ↔ など。",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 30,
+      "latex_template": "\\vee",
+      "remarks": "選言",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 4,
+      "public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1",
+      "name": "∧",
+      "symbol_type_id": 3,
+      "symbol_type": {
+        "id": 3,
+        "name": "論理記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "¬, ∨, ∧, →, ↔ など。",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 40,
+      "latex_template": "\\wedge",
+      "remarks": "連言",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 5,
+      "public_id": "e72831d9-19bc-5094-abd7-359f275f87a1",
+      "name": "→",
+      "symbol_type_id": 3,
+      "symbol_type": {
+        "id": 3,
+        "name": "論理記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "¬, ∨, ∧, →, ↔ など。",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 20,
+      "latex_template": "\\implies",
+      "remarks": "含意",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 6,
+      "public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec",
+      "name": "↔",
+      "symbol_type_id": 3,
+      "symbol_type": {
+        "id": 3,
+        "name": "論理記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "¬, ∨, ∧, →, ↔ など。",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 10,
+      "latex_template": "\\iff",
+      "remarks": "同値",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 7,
+      "public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62",
+      "name": "∀",
+      "symbol_type_id": 4,
+      "symbol_type": {
+        "id": 4,
+        "name": "命題型量化記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": 1,
+        "is_quantifier": true,
+        "remarks": "命題を束縛して命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\forall",
+      "remarks": "整形式な項すべてを走る全称量化",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 8,
+      "public_id": "b299df13-8ca1-5327-9b4c-f08b1231a678",
+      "name": "∃",
+      "symbol_type_id": 4,
+      "symbol_type": {
+        "id": 4,
+        "name": "命題型量化記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": 1,
+        "is_quantifier": true,
+        "remarks": "命題を束縛して命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\exists",
+      "remarks": "整形式な項すべてを走る存在量化",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 9,
+      "public_id": "9c6f5697-7475-52bd-b600-b981e924af62",
+      "name": "=",
+      "symbol_type_id": 2,
+      "symbol_type": {
+        "id": 2,
+        "name": "述語記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 50,
+      "latex_template": "=",
+      "remarks": "等号",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 10,
+      "public_id": "43c9c73e-69f5-500a-ba17-852af85be0b7",
+      "name": "φ",
+      "symbol_type_id": 7,
+      "symbol_type": {
+        "id": 7,
+        "name": "命題型自由変数記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "自由な命題変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 11,
+      "public_id": "056bb080-b4a4-5b6c-a651-86b3309dcda6",
+      "name": "ψ",
+      "symbol_type_id": 7,
+      "symbol_type": {
+        "id": 7,
+        "name": "命題型自由変数記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "自由な命題変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 12,
+      "public_id": "8e86446f-fb4f-529e-be9c-3ff070066779",
+      "name": "χ",
+      "symbol_type_id": 7,
+      "symbol_type": {
+        "id": 7,
+        "name": "命題型自由変数記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "自由な命題変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 13,
+      "public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1",
+      "name": "φ¹",
+      "symbol_type_id": 7,
+      "symbol_type": {
+        "id": 7,
+        "name": "命題型自由変数記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "自由な命題変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 14,
+      "public_id": "2efc9d40-a273-5e41-8315-4de58dfabad3",
+      "name": "ψ¹",
+      "symbol_type_id": 7,
+      "symbol_type": {
+        "id": 7,
+        "name": "命題型自由変数記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "自由な命題変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 15,
+      "public_id": "58f571b2-5a2d-51ed-8fbf-7e5e6494d147",
+      "name": "x",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "x",
+      "remarks": "シード用自由項変数",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 16,
+      "public_id": "28ffc497-17bf-56b0-b792-3b4f3882539a",
+      "name": "y",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "y",
+      "remarks": "シード用自由項変数",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 17,
+      "public_id": "4b3303de-7abf-5ee7-b37a-4dc01d43665c",
+      "name": "t",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "t",
+      "remarks": "シード用自由項変数",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 18,
+      "public_id": "d807ef85-63f5-5649-aac2-05cc10dda180",
+      "name": "同式含意",
+      "symbol_type_id": 3,
+      "symbol_type": {
+        "id": 3,
+        "name": "論理記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "¬, ∨, ∧, →, ↔ など。",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\mathsf{Self}(#1)",
+      "remarks": "Self-implication connective: a standard definitional abbreviation.",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 19,
+      "public_id": "2267b6f1-547f-5692-a001-4f67db673389",
+      "name": "∈",
+      "symbol_type_id": 2,
+      "symbol_type": {
+        "id": 2,
+        "name": "述語記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 50,
+      "latex_template": "#1 \\in #2",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 20,
+      "public_id": "ba3eee89-4fef-52cf-9b04-fcbb5680cc96",
+      "name": "IsSet",
+      "symbol_type_id": 2,
+      "symbol_type": {
+        "id": 2,
+        "name": "述語記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\operatorname{IsSet}(#1)",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 21,
+      "public_id": "554fae59-0cd9-556d-bf9b-9e6dcadcf278",
+      "name": "{|}",
+      "symbol_type_id": 5,
+      "symbol_type": {
+        "id": 5,
+        "name": "項型量化記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": 2,
+        "fixed_arity": 1,
+        "is_quantifier": true,
+        "remarks": "項を作る束縛記法。現在インスタンスは無い。",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\{#1 \\mid #2\\}",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 22,
+      "public_id": "5fddd714-b6e1-5b99-b981-0976f650267d",
+      "name": "φ²",
+      "symbol_type_id": 7,
+      "symbol_type": {
+        "id": 7,
+        "name": "命題型自由変数記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "自由な命題変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 23,
+      "public_id": "5df58ce0-bf65-52d8-9e75-14398116b027",
+      "name": "a",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 24,
+      "public_id": "cb820b83-7e20-577a-8743-618ea45f6d2e",
+      "name": "b",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 25,
+      "public_id": "f39fb585-b566-525d-ae50-d4a530e658fc",
+      "name": "c",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 26,
+      "public_id": "14253a75-24f1-5889-88d5-41838b5ac926",
+      "name": "d",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 27,
+      "public_id": "a4b7d106-1364-568d-b802-40c8a142696e",
+      "name": "w",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 28,
+      "public_id": "85a4f66d-126a-5a12-a2f6-7354dad1ec4f",
+      "name": "u",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 29,
+      "public_id": "f21f29e8-f8bc-5a4a-847d-215ff1a21ce4",
+      "name": "z",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 30,
+      "public_id": "711605cf-48f3-5133-aba8-3752a46050f9",
+      "name": "v",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 31,
+      "public_id": "7900f757-1a50-5c60-8e56-b540bbd829df",
+      "name": "q",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 32,
+      "public_id": "191dd445-6390-5b44-9bc0-e05b99d0a8fc",
+      "name": "g",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 33,
+      "public_id": "0fa218c0-2c6e-5c7d-8be8-8f9ff6d66712",
+      "name": "Z",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 34,
+      "public_id": "a9c5dacc-2d6a-523f-aff6-094bb238e6c5",
+      "name": "r",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 35,
+      "public_id": "be68136e-7a62-57a7-a721-ec20e9e5dd01",
+      "name": "s",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 36,
+      "public_id": "ed5e7042-1ef3-5a6f-9142-90a02f7780e5",
+      "name": "h",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 37,
+      "public_id": "670aa197-9a3e-57c6-9d7c-9d46d2f3273c",
+      "name": "k",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 38,
+      "public_id": "c4ec1e44-7555-51f1-bfa8-2f757ad9368e",
+      "name": "∅",
+      "symbol_type_id": 1,
+      "symbol_type": {
+        "id": 1,
+        "name": "関数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から項を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\varnothing",
+      "remarks": "The comprehension term for the always-false predicate.",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 39,
+      "public_id": "589e211c-09e2-5ce9-960b-a427f66bf0c2",
+      "name": "{}",
+      "symbol_type_id": 1,
+      "symbol_type": {
+        "id": 1,
+        "name": "関数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から項を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\{#1\\}",
+      "remarks": "Explicit term abbreviation.",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 40,
+      "public_id": "0e2776cb-b874-59b2-8480-98ca7d4fbaf8",
+      "name": "{,}",
+      "symbol_type_id": 1,
+      "symbol_type": {
+        "id": 1,
+        "name": "関数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から項を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\{#1,#2\\}",
+      "remarks": "Explicit term abbreviation.",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 41,
+      "public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f",
+      "name": "⟨,⟩",
+      "symbol_type_id": 1,
+      "symbol_type": {
+        "id": 1,
+        "name": "関数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から項を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\langle #1,#2\\rangle",
+      "remarks": "Explicit term abbreviation.",
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 42,
+      "public_id": "c48df6a0-94f9-55d3-ab4f-7201c98acb45",
+      "name": "φ³",
+      "symbol_type_id": 7,
+      "symbol_type": {
+        "id": 7,
+        "name": "命題型自由変数記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "自由な命題変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 3,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 43,
+      "public_id": "37b02e8e-0a3a-5b7a-be5f-2667762850e2",
+      "name": "i",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 44,
+      "public_id": "080638fa-4f5c-5671-8938-bdbe62d643c2",
+      "name": "j",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 45,
+      "public_id": "e4d6bbd7-0eee-5b71-8736-c0054d307479",
+      "name": "l",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 46,
+      "public_id": "5a5db6b4-230a-592f-9048-17197b0657c4",
+      "name": "∃!",
+      "symbol_type_id": 4,
+      "symbol_type": {
+        "id": 4,
+        "name": "命題型量化記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": 1,
+        "is_quantifier": true,
+        "remarks": "命題を束縛して命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\exists!",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 47,
+      "public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b",
+      "name": "f",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 48,
+      "public_id": "dab10caa-8f2e-5030-a75d-7a5819ddf9b4",
+      "name": "R",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 49,
+      "public_id": "089c33b2-013e-5ddb-9ab8-005776d762db",
+      "name": "S",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 50,
+      "public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f",
+      "name": "X",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 51,
+      "public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41",
+      "name": "Y",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 52,
+      "public_id": "e1d98c45-ba59-57a9-a450-86cbce243e6f",
+      "name": "⊂",
+      "symbol_type_id": 2,
+      "symbol_type": {
+        "id": 2,
+        "name": "述語記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 50,
+      "latex_template": "#1 \\subset #2",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 53,
+      "public_id": "b596d30a-d16a-58b2-a13f-0d045a7cf0b5",
+      "name": "×",
+      "symbol_type_id": 1,
+      "symbol_type": {
+        "id": 1,
+        "name": "関数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から項を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 2,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 70,
+      "latex_template": "#1 \\times #2",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 54,
+      "public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e",
+      "name": "IsRelation",
+      "symbol_type_id": 2,
+      "symbol_type": {
+        "id": 2,
+        "name": "述語記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 3,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "#1 \\mathrel{\\mathsf{IsRelationFrom}} #2 \\mathrel{\\mathsf{To}} #3",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 55,
+      "public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc",
+      "name": "IsMap",
+      "symbol_type_id": 2,
+      "symbol_type": {
+        "id": 2,
+        "name": "述語記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 3,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "#1 \\mathrel{\\mathsf{IsMapFrom}} #2 \\mathrel{\\mathsf{To}} #3",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 56,
+      "public_id": "ad785183-ec25-5475-9161-f5756379d645",
+      "name": "IsClassRelation",
+      "symbol_type_id": 2,
+      "symbol_type": {
+        "id": 2,
+        "name": "述語記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 3,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "#1 \\mathrel{\\mathsf{IsClassRelationFrom}} #2 \\mathrel{\\mathsf{To}} #3",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 57,
+      "public_id": "f6c93212-ff3b-506e-8481-0a177fb2a32c",
+      "name": "IsClassMap",
+      "symbol_type_id": 2,
+      "symbol_type": {
+        "id": 2,
+        "name": "述語記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から命題を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 3,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "#1 \\mathrel{\\mathsf{IsClassMapFrom}} #2 \\mathrel{\\mathsf{To}} #3",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
+    }
+  ],
+  "samples": [
+    {
+      "text": "(∃! x. φ¹(x)) → φ¹(y) → φ¹(t) → y = t",
+      "tokens": [
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 46,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 16,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 17,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 16,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 17,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "text": "IsSet(X) → IsSet(Y) → (∀ q. (q ∈ X × Y ↔ (∃ x. ∃ y. (x ∈ X ∧ (y ∈ Y ∧ q = ⟨,⟩(x, y))))))",
+      "tokens": [
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 20,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 20,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 6,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 53,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 8,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 8,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 41,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        }
+      ]
+    },
+    {
+      "text": "IsMap(f, X, Y) → (∀ x. (x ∈ X → (∃ y. (y ∈ Y ∧ ⟨,⟩(x, y) ∈ f))))",
+      "tokens": [
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 55,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 47,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 8,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 41,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 47,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "text": "IsSet(X) → IsSet(Y) → IsMap(f, X, Y) → IsMap(g, X, Y) → f ⊂ g → f = g",
+      "tokens": [
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 20,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 20,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 55,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 47,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 55,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 32,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 52,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 47,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 32,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 47,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 32,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "text": "IsMap(f, X, Y) ↔ (IsSet(f) ∧ IsClassMap(f, X, Y))",
+      "tokens": [
+        {
+          "symbol_id": 6,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 55,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 47,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 20,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 47,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 57,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 47,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "text": "IsSet(X) → IsClassMap(f, X, Y) → IsMap(f, X, Y)",
+      "tokens": [
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 20,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 57,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 47,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 55,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 47,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 51,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "text": "(∃! x. φ¹(x)) ↔ (∃ x. (φ¹(x)) ∧ (∀ y. (φ¹(y)) → (y = x)))",
+      "tokens": [
+        {
+          "symbol_id": 6,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 46,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 8,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        }
+      ]
+    },
+    {
+      "text": "∀ x. ∀ y. (x ⊂ y) ↔ (∀ z. (z ∈ x) → (z ∈ y))",
+      "tokens": [
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 6,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 52,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        }
+      ]
+    },
+    {
+      "text": "∀ x. ∀ y. (x × y) = ({|} z. ∃ x_1. ∃ y_1. (x_1 ∈ x) ∧ (y_1 ∈ y) ∧ (z = (⟨,⟩(x_1, y_1))))",
+      "tokens": [
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 53,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 21,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 8,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 8,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 4
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 3
+        },
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 41,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        }
+      ]
+    },
+    {
+      "text": "∀ x. ∀ y. ∀ z. (IsRelation(x, y, z)) ↔ ((IsSet(x)) ∧ (x ⊂ (y × z)))",
+      "tokens": [
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 6,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 54,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 20,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 52,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 53,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        }
+      ]
+    },
+    {
+      "text": "∀ x. ∀ y. ∀ z. (IsMap(x, y, z)) ↔ ((IsRelation(x, y, z)) ∧ (∀ x_1. (x_1 ∈ y) → (∃! y_1. (y_1 ∈ z) ∧ ((⟨,⟩(x_1, y_1)) ∈ x))))",
+      "tokens": [
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 6,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 55,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 54,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 46,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 41,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 4
+        }
+      ]
+    },
+    {
+      "text": "∀ x. ∀ y. ∀ z. (IsClassRelation(x, y, z)) ↔ (x ⊂ (y × z))",
+      "tokens": [
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 6,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 56,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 52,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 53,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        }
+      ]
+    },
+    {
+      "text": "∀ x. ∀ y. ∀ z. (IsClassMap(x, y, z)) ↔ ((IsClassRelation(x, y, z)) ∧ (∀ x_1. (x_1 ∈ y) → (∃! y_1. (y_1 ∈ z) ∧ ((⟨,⟩(x_1, y_1)) ∈ x))))",
+      "tokens": [
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 6,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 57,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 56,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 46,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 41,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 4
+        }
+      ]
+    }
+  ],
+  "copy": [
+    {
+      "id": "4f391acf-aa0e-560a-ab8a-be24dd1c57ba",
+      "kind": "definition",
+      "ja": "一意存在 ∃!",
+      "en": "Unique existence ∃!"
+    },
+    {
+      "id": "cfbe2291-1387-5857-85a6-c8fffbf666da",
+      "kind": "definition",
+      "ja": "包含 ⊂",
+      "en": "Inclusion ⊂"
+    },
+    {
+      "id": "7cbd6c9f-a924-5d9d-afb9-2f851d0c865d",
+      "kind": "definition",
+      "ja": "直積 ×",
+      "en": "Cartesian product ×"
+    },
+    {
+      "id": "2651dbd9-0b54-5df1-86e2-589a26d62b64",
+      "kind": "definition",
+      "ja": "関係 IsRelationFrom",
+      "en": "Relation IsRelationFrom"
+    },
+    {
+      "id": "7a5903af-a90d-52ad-b1ac-bb42f56d99c1",
+      "kind": "definition",
+      "ja": "写像 IsMapFrom",
+      "en": "Map IsMapFrom"
+    },
+    {
+      "id": "17478805-0c66-5832-8fa9-ac7713b16d6e",
+      "kind": "definition",
+      "ja": "類関係 IsClassRelationFrom",
+      "en": "Class relation IsClassRelationFrom"
+    },
+    {
+      "id": "33192b33-f834-51e0-a966-d406dd4f37eb",
+      "kind": "definition",
+      "ja": "類写像 IsClassMapFrom",
+      "en": "Class map IsClassMapFrom"
+    },
+    {
+      "id": "403a61e1-d953-518a-a3e8-b2495ec73e42",
+      "kind": "theorem",
+      "ja": "一意存在:導入",
+      "en": "Unique existence: Introduction"
+    },
+    {
+      "id": "e054b314-9469-59cb-a40b-909311d84665",
+      "kind": "theorem",
+      "ja": "一意存在:存在",
+      "en": "Unique existence: Existence"
+    },
+    {
+      "id": "e565ebc3-7ce0-578e-be51-5c6f69191674",
+      "kind": "theorem",
+      "ja": "一意存在:一意性",
+      "en": "Unique existence: Uniqueness"
+    },
+    {
+      "id": "44d18ce6-b8ac-501d-a9fd-0cf999a342ce",
+      "kind": "theorem",
+      "ja": "一意存在:存在と一意性から",
+      "en": "Unique existence: From existence and uniqueness"
+    },
+    {
+      "id": "b10a2097-e429-5e0f-b459-c43d6c34516d",
+      "kind": "theorem",
+      "ja": "包含:反射律",
+      "en": "Inclusion: Reflexivity"
+    },
+    {
+      "id": "63629f99-6af7-52a4-aa08-49fa540f94ca",
+      "kind": "theorem",
+      "ja": "包含:推移律",
+      "en": "Inclusion: Transitivity"
+    },
+    {
+      "id": "275c2f75-eb48-509c-be23-aed6cbab79fe",
+      "kind": "theorem",
+      "ja": "包含:反対称律",
+      "en": "Inclusion: Antisymmetry"
+    },
+    {
+      "id": "478a5839-fb58-5012-9c61-ec2343a6cbca",
+      "kind": "theorem",
+      "ja": "包含:空集合はすべてに含まれる",
+      "en": "Inclusion: The empty set is included in everything"
+    },
+    {
+      "id": "d16ca9fc-b1b6-54f9-92d8-93754f1c22a1",
+      "kind": "theorem",
+      "ja": "直積:集合性",
+      "en": "Cartesian product: Sethood"
+    },
+    {
+      "id": "66f20dbc-fd66-5319-8227-857b6df48b5d",
+      "kind": "theorem",
+      "ja": "直積:所属",
+      "en": "Cartesian product: Membership"
+    },
+    {
+      "id": "fe831dae-4c58-5784-a93d-ef10a17660ca",
+      "kind": "theorem",
+      "ja": "直積:順序対の所属",
+      "en": "Cartesian product: Membership of ordered pairs"
+    },
+    {
+      "id": "0119ab46-9188-5fb1-bd2d-a832089a2d2f",
+      "kind": "theorem",
+      "ja": "関係:元は順序対",
+      "en": "Relations: Elements are ordered pairs"
+    },
+    {
+      "id": "25f5e786-e813-5234-aa62-dcbdebf6848f",
+      "kind": "theorem",
+      "ja": "関係:直積は関係",
+      "en": "Relations: The Cartesian product is a relation"
+    },
+    {
+      "id": "018d8e2a-c5f1-5b00-bf2f-89b9703b6c69",
+      "kind": "theorem",
+      "ja": "関係:空集合は関係",
+      "en": "Relations: The empty set is a relation"
+    },
+    {
+      "id": "d4153be4-1c5b-51b3-805f-ab0dd92ae102",
+      "kind": "theorem",
+      "ja": "関係:外延性",
+      "en": "Relations: Extensionality"
+    },
+    {
+      "id": "b8bc784d-852d-59bc-9bda-994edd9b5b75",
+      "kind": "theorem",
+      "ja": "写像:写像は関係",
+      "en": "Maps: A map is a relation"
+    },
+    {
+      "id": "7aa7de4b-0f53-575f-b98e-cc67a962f05b",
+      "kind": "theorem",
+      "ja": "写像:値の存在",
+      "en": "Maps: Existence of values"
+    },
+    {
+      "id": "80394553-4fba-5cb5-9a62-dad38e402b78",
+      "kind": "theorem",
+      "ja": "写像:値の一意性",
+      "en": "Maps: Uniqueness of values"
+    },
+    {
+      "id": "d15fc567-f798-5f6f-967b-9fa8da33e94f",
+      "kind": "theorem",
+      "ja": "写像:包含する写像は等しい",
+      "en": "Maps: A map included in another is equal to it"
+    },
+    {
+      "id": "910c8249-6c19-56ab-8439-d84142fd80d9",
+      "kind": "theorem",
+      "ja": "写像:空写像",
+      "en": "Maps: The empty map"
+    },
+    {
+      "id": "84ccacac-f27d-54c3-b5d8-459dc44ad4fb",
+      "kind": "theorem",
+      "ja": "類関係:関係は集合である類関係",
+      "en": "Class relations: A relation is a class relation that is a set"
+    },
+    {
+      "id": "a627fa32-6c96-5b0c-884d-df5713b4adfc",
+      "kind": "theorem",
+      "ja": "類写像:写像は集合である類写像",
+      "en": "Class maps: A map is a class map that is a set"
+    },
+    {
+      "id": "0ab293d1-c477-5f34-8b2f-993eaebb4bd2",
+      "kind": "theorem",
+      "ja": "類写像:類写像は類関係",
+      "en": "Class maps: A class map is a class relation"
+    },
+    {
+      "id": "df44ce4d-f19e-53c1-8b41-414849b7ca62",
+      "kind": "theorem",
+      "ja": "類写像:値の存在",
+      "en": "Class maps: Existence of values"
+    },
+    {
+      "id": "87075f17-5dcb-5e32-b7b2-4312b18abf84",
+      "kind": "theorem",
+      "ja": "類写像:値の一意性",
+      "en": "Class maps: Uniqueness of values"
+    },
+    {
+      "id": "2b75f474-817e-588a-aaab-4d51856b5a98",
+      "kind": "theorem",
+      "ja": "MK:直積の所属",
+      "en": "MK: Membership in a Cartesian product"
+    },
+    {
+      "id": "d97033cd-6b20-5124-8300-3f93a0fb73be",
+      "kind": "theorem",
+      "ja": "MK:類関係の元は順序対",
+      "en": "MK: Elements of a class relation are ordered pairs"
+    },
+    {
+      "id": "d2f7270e-4b07-53de-8b8a-71aa11e8d217",
+      "kind": "theorem",
+      "ja": "MK:集合の間の類関係は関係",
+      "en": "MK: A class relation between sets is a relation"
+    },
+    {
+      "id": "b5133339-970a-5f98-a0c5-17b38e58f061",
+      "kind": "theorem",
+      "ja": "MK:定義域が集合の類写像は写像",
+      "en": "MK: A class map on a set is a map"
+    },
+    {
+      "id": "9065d163-6a00-58a0-a2dc-9b8d462afdcc",
+      "kind": "theorem",
+      "ja": "MK:包含する類写像は等しい",
+      "en": "MK: A class map included in another is equal to it"
+    },
+    {
+      "id": "54a7788b-fc8b-57af-aadb-23f08aad3b8d",
+      "kind": "theorem",
+      "ja": "直積:順序対の片側の像の集合性",
+      "en": "Cartesian product: A slice is a set"
+    },
+    {
+      "id": "7a325758-6e21-5186-962e-6b86d97bf543",
+      "kind": "theorem",
+      "ja": "直積:順序対の片側の像を集めた集合",
+      "en": "Cartesian product: The family of slices is a set"
+    },
+    {
+      "id": "a6d42759-69b2-52c7-80a8-a5c9fe1dc244",
+      "kind": "theorem",
+      "ja": "類写像:集合を定義域とする類写像の順序対の像は集合",
+      "en": "Class maps: The ordered-pair image of a class map on a set is a set"
+    }
+  ]
+}

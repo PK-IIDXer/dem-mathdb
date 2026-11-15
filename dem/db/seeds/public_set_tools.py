@@ -30,6 +30,7 @@ LOGIC = {
     'iff_left': '(φ ↔ ψ) → φ → ψ',
     'iff_right': '(φ ↔ ψ) → ψ → φ',
 }
+PEIRCE = '((φ → ψ) → φ) → φ'
 
 
 def completed(session, theorem_names, axiom_names, system_names, definition_names=()):
@@ -52,6 +53,9 @@ def completed(session, theorem_names, axiom_names, system_names, definition_name
 
 
 class Builder:
+    extra_logic = {}
+    substitution_variables = ('r', 's', 'h', 'k')
+
     def __init__(self, session, package):
         self.session, self.package = session, package
         self.ss, self.fs = SymbolService(session), FormulaService(session)
@@ -60,7 +64,7 @@ class Builder:
         self.symbols = {s.name: s for s in session.scalars(select(Symbol))}
         self.meta = self.fs._load_symbol_meta([Token(s.id) for s in self.symbols.values()])
         self.logic = {}
-        for key, text in LOGIC.items():
+        for key, text in (LOGIC | self.extra_logic).items():
             tokens = self.parse(text)
             digest = self.fs.register(tokens).hash
             from dem.db.models import Formula
@@ -124,7 +128,7 @@ class Builder:
         protected, extra = {}, {}
         used = {t.symbol_id for body in props.values() for t in (body[0] if isinstance(body, tuple) else body)}
         used.update(t.symbol_id for body in terms.values() for t in body)
-        fresh = [n for n in ('r','s','h','k') if self.symbols[n].id not in used and n not in terms]
+        fresh = [n for n in self.substitution_variables if self.symbols[n].id not in used and n not in terms]
         renames = {}
         for n in terms:
             if any(self.symbols[n].id in {t.symbol_id for t in (body[0] if isinstance(body,tuple) else body)}

@@ -15,6 +15,10 @@
     {
       "name": "φ²",
       "actual": "5fddd714-b6e1-5b99-b981-0976f650267d"
+    },
+    {
+      "name": "∅",
+      "actual": "c4ec1e44-7555-51f1-bfa8-2f757ad9368e"
     }
   ],
   "axioms": [
@@ -63,8 +67,8 @@
     {
       "name": "ZF無限公理",
       "expected_id": "2ed34631-aed9-524c-a1de-256f6a0703fe",
-      "expected_hash": "92f176edf90d3572983301bac6a8f12dd70f8a430f63fb357413f08351e22e56",
-      "dss": "∃ u. (IsSet(u) ∧ ((({|} x. ⊥) ∈ u) ∧ (∀ z. (z ∈ u → ({|} w. (w ∈ z ∨ w = z)) ∈ u))))"
+      "expected_hash": "59fdba467e4078028cefdb962c78c85bbc60a9d376b13895e58f4a862db19640",
+      "dss": "∃ u. (IsSet(u) ∧ (∅ ∈ u ∧ (∀ z. (z ∈ u → ({|} w. (w ∈ z ∨ w = z)) ∈ u))))"
     },
     {
       "name": "ZF置換公理図式",
@@ -101,6 +105,12 @@
       "expected_id": "e7984fab-2f19-5175-9d43-0464d34568f5",
       "expected_hash": "f4908388d367f78f815398299e31266d51afc0f4761643f1732a54fb0fad9598",
       "dss": "∀ x. ∀ y. (∀ z. (z ∈ x ↔ z ∈ y)) → x = y"
+    },
+    {
+      "name": "∅ 定義公理",
+      "expected_id": "9f77b3b7-3ffc-5dcd-b449-8fead94b5c75",
+      "expected_hash": "2b2a725cd37866d477ac02935ddf2b7e4077d54853f97a6ff23dc7841d84cd00",
+      "dss": "∅ = ({|} x. ⊥)"
     }
   ],
   "statements": {
@@ -117,6 +127,34 @@
     "ZF:順序対の集合性": "IsSet(⟨,⟩(a,b))",
     "ZF:単集合の所属": "IsSet(a) → (x ∈ {}(a) ↔ x = a)",
     "ZF:非順序対の所属": "IsSet(a) → IsSet(b) → (x ∈ {,}(a,b) ↔ (x = a ∨ x = b))",
-    "ZF:ラッセル": "¬(IsSet(({|} x. ¬(x ∈ x))))"
+    "ZF:ラッセル": "¬(IsSet(({|} x. ¬(x ∈ x))))",
+    "ZF:空集合の集合性": "IsSet(∅)",
+    "ZF:空集合は元を持たない": "∀ x. ¬(x ∈ ∅)",
+    "ZF:空集合の一意性": "∀ a. IsSet(a) → (∀ x. ¬(x ∈ a)) → a = ∅",
+    "ZF:空でない集合は元を持つ": "∀ a. IsSet(a) → ¬(a = ∅) → (∃ x. x ∈ a)",
+    "ZF:空集合は単集合でない": "∀ a. IsSet(a) → ¬(∅ = {}(a))",
+    "MK:空類の一意性": "∀ a. (∀ x. ¬(x ∈ a)) → a = ∅"
+  },
+  "definitions": [
+    {
+      "name": "∅",
+      "expected_id": "0daf185d-cb58-57a3-8533-b9c3f7e46026",
+      "kind": "function",
+      "latex": "\\varnothing"
+    }
+  ],
+  "old_infinity": {
+    "name": "ZF無限公理",
+    "expected_id": "2ed34631-aed9-524c-a1de-256f6a0703fe",
+    "expected_hash": "92f176edf90d3572983301bac6a8f12dd70f8a430f63fb357413f08351e22e56",
+    "dss": "∃ u. (IsSet(u) ∧ ((({|} x. ⊥) ∈ u) ∧ (∀ z. (z ∈ u → ({|} w. (w ∈ z ∨ w = z)) ∈ u))))"
+  },
+  "release_digests": {
+    "dem.public.logic@1.0.0": "1e3c9f079c1e3b68f534366419d2f2b656bc997a12c4031ef5d627df52fb3bb6",
+    "dem.public.demos@1.0.0": "786d874a331e7cb223bd9f045bd4c6355ec77d23d6beddb3fe2a8cafd69c901c",
+    "dem.public.natural_deduction@1.0.0": "7346c1aa0cf9470356cf1d1339ecf5c1bfbf15ac16956c9eb8dead8bb5c88962",
+    "dem.public.equivalence@1.0.0": "663fc09b6bfef5ed5deae62e676e4bb245d3c85f7abfa134da7228570b4f8fe5",
+    "dem.public.zfc@1.1.0": "fa71dc202b76568ca4b8f7f416b8a038450b01c20fd7f1ef55561e80e4bb14b9",
+    "dem.public.mk@1.1.0": "2a14ded1899654760219751918bf919ae516ba9a0df263258c2ce4efc3b756cc"
   }
 }

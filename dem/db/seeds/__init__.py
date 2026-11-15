@@ -9,9 +9,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from dem.db.seed import seed_inference_rules, seed_language
+from dem.db.models import AxiomSystem
+from dem.db.seed_labels import axiom_system_lookup_names
 from dem.db.seeds.hilbert import (
     HILBERT_CLASSICAL_AXIOM_NAMES,
     HILBERT_CLASSICAL_AXIOM_SYSTEM_NAME,
@@ -54,11 +57,15 @@ def refresh_symbol_display(session: Session) -> None:
 
 def seed_public_core(session: Session) -> PublicSeedSummary:
     """Create the complete public A-only seed."""
+    existing_core = session.scalar(select(AxiomSystem.id).where(
+        AxiomSystem.name.in_(axiom_system_lookup_names(HILBERT_CORE_AXIOM_SYSTEM_NAME)),
+    ))
     seed_language(session)
     seed_inference_rules(session)
     seed_hilbert_core(session)
     refresh_symbol_display(session)
-    refresh_symbol_usage_counts(session)
+    if existing_core is None:
+        refresh_symbol_usage_counts(session)
     return PublicSeedSummary(
         axiom_names=(*HILBERT_CORE_AXIOM_NAMES, *HILBERT_CLASSICAL_AXIOM_NAMES),
         axiom_system_names=(
@@ -116,7 +123,32 @@ def seed_public_sets(session):
                    tuple(a[0] for a in AXIOMS), SYSTEM_NAMES, THEOREM_NAMES)
 
 
-def seed_all(session):
+def seed_public_classes(session):
     from dem.db.seeds.public_mk import seed_public_mk, AXIOMS, THEOREM_NAMES
     return _extend(session, seed_public_sets(session), seed_public_mk,
                    tuple(a[0] for a in AXIOMS), ('MK',), THEOREM_NAMES)
+
+
+
+def seed_public_unique_existence_layer(session):
+    from dem.db.seeds.public_unique_existence import THEOREM_NAMES, seed_public_unique_existence
+    return _extend(session, seed_public_equivalences(session), seed_public_unique_existence,
+                   (), (), THEOREM_NAMES)
+
+
+def seed_public_set_relations(session):
+    from dem.db.seeds.public_relations import THEOREM_NAMES, seed_public_relations
+    from dem.db.seeds.public_unique_existence import THEOREM_NAMES as UNIQUE_NAMES, seed_public_unique_existence
+    previous = _extend(session, seed_public_sets(session), seed_public_unique_existence, (), (), UNIQUE_NAMES)
+    return _extend(session, previous, seed_public_relations, (), (), THEOREM_NAMES)
+
+
+def seed_all(session):
+    from dem.db.seeds._notation import validate_display_shapes
+    from dem.db.seeds.public_class_relations import THEOREM_NAMES, seed_public_class_relations
+    from dem.db.seeds.public_mk import AXIOMS, THEOREM_NAMES as MK_NAMES, seed_public_mk
+    previous = _extend(session, seed_public_set_relations(session), seed_public_mk,
+                       tuple(a[0] for a in AXIOMS), ("MK",), MK_NAMES)
+    summary = _extend(session, previous, seed_public_class_relations, (), (), THEOREM_NAMES)
+    validate_display_shapes(session)
+    return summary

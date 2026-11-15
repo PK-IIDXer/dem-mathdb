@@ -9,17 +9,47 @@ from dem.services.axiom import AxiomService
 from dem.services.definition import DefinitionService, DefinitionPublicIdKeys
 from dem.types import SymbolTypeName, FunctionDefinitionInput, AxiomStepInput
 from dem.db.seeds.public_zfc_data import AXIOMS
-from dem.db.seeds.public_set_tools import Builder, completed
+from dem.db.seeds.public_set_tools import Builder, PEIRCE, completed
 
 SYSTEM_NAMES = ('ZF', 'ZFC')
+EMPTY_SET_KEY = 'dem.lean.foundation::∅[zf]'
+EMPTY_SET_IDENTITIES = (
+    'c4ec1e44-7555-51f1-bfa8-2f757ad9368e',
+    '0daf185d-cb58-57a3-8533-b9c3f7e46026',
+    '9f77b3b7-3ffc-5dcd-b449-8fead94b5c75',
+    '2b2a725cd37866d477ac02935ddf2b7e4077d54853f97a6ff23dc7841d84cd00',
+)
 THEOREM_NAMES = ('ZF:単集合の集合性', 'ZF:非順序対の集合性', 'ZF:順序対の集合性',
                  'ZF:単集合の所属', 'ZF:非順序対の所属', 'ZF:ラッセル',
                  'ZF:順序対の第一成分', 'ZF:順序対の成分範囲', 'ZF:対の共通成分消去',
-                 'ZF:順序対の第二成分', 'ZF:順序対の成分一致')
+                 'ZF:順序対の第二成分', 'ZF:順序対の成分一致',
+                 'ZF:空集合の集合性', 'ZF:空集合は元を持たない',
+                 'ZF:空集合の一意性', 'ZF:空でない集合は元を持つ',
+                 'ZF:空集合は単集合でない')
+
+
+def _register_empty_set(symbols, formulas, definitions):
+    definition = definitions.register(
+        FunctionDefinitionInput(
+            '∅', (), formulas.register(formulas.parse_text('{|} x. ⊥')[0]).id,
+            remarks='The comprehension term for the always-false predicate.',
+            latex_template=r'\varnothing',
+        ),
+        public_id_keys=DefinitionPublicIdKeys(
+            EMPTY_SET_KEY, EMPTY_SET_KEY, EMPTY_SET_KEY + ' 定義公理',
+        ),
+    )
+    axiom = definitions.get_axiom(definition.id)
+    actual = (
+        symbols.get_by_name('∅').public_id, definition.public_id, axiom.public_id,
+        formulas.get(axiom.formula_id).hash,
+    )
+    if actual != EMPTY_SET_IDENTITIES:
+        raise ValidationError(f'Shared empty-set identity mismatch: {actual}')
 
 
 def seed_public_zfc(session):
-    if completed(session, THEOREM_NAMES, [a[0] for a in AXIOMS], SYSTEM_NAMES, ('{}','{,}','⟨,⟩')): return
+    if completed(session, THEOREM_NAMES, [a[0] for a in AXIOMS], SYSTEM_NAMES, ('∅','{}','{,}','⟨,⟩')): return
     ss, fs, axs = SymbolService(session), FormulaService(session), AxiomService(session)
     for name, kind, arity, key, notation, precedence, latex, primitive in (
         ('∈', 'PREDICATE', 2, 'dem.foundation.logic::∈', 'infix', 50, r'#1 \in #2', True),
@@ -35,6 +65,8 @@ def seed_public_zfc(session):
         if session.scalar(select(Symbol).where(Symbol.name == name)) is None:
             ss.register(name, ss.get_symbol_type_by_name(SymbolTypeName.FREE_TERM_VAR.value).id, 0,
                         public_id_key='dem.foundation.logic::'+name)
+    defs = DefinitionService(session, authoring_via='seed')
+    _register_empty_set(ss, fs, defs)
     for name, text, pid, digest in AXIOMS:
         formula = fs.register(fs.parse_text(text)[0])
         axiom = axs.register(name, formula.id, public_id_key='dem.lean.foundation::'+name,
@@ -47,7 +79,6 @@ def seed_public_zfc(session):
                                      remarks='Pure sets with IsSet guards and comprehension terms.' + (' Choice included.' if name == 'ZFC' else ' Choice excluded.'))
         ids = [axs.get_by_name(a[0]).id for a in AXIOMS if name == 'ZFC' or a[0] != 'ZF選択公理']
         for ax in [*base, *ids]: axs.add_to_system(system.id, ax)
-    defs = DefinitionService(session, authoring_via='seed')
     for name, params, text, latex in (
         ('{}', ('a',), '{|} x. x = a', r'\{#1\}'),
         ('{,}', ('a', 'b'), '{|} x. (x = a ∨ x = b)', r'\{#1,#2\}'),
@@ -58,10 +89,14 @@ def seed_public_zfc(session):
                                               fs.register(fs.parse_text(text)[0]).id,
                                               remarks='Explicit term abbreviation.', latex_template=latex),
                       public_id_keys=DefinitionPublicIdKeys(key, key, key))
-    _Proofs(session, 'zfc').seed()
+    proofs = _Proofs(session, 'zfc')
+    proofs.seed()
+    proofs.seed_empty_set()
 
 
 class _Proofs(Builder):
+    extra_logic = {'peirce': PEIRCE}
+
     def single(self, a): return self.op('{}', a)
     def unordered(self, a, b): return self.op('{,}', a, b)
     def ordered(self, a, b): return self.op('⟨,⟩', a, b)
@@ -102,6 +137,86 @@ class _Proofs(Builder):
     def close_many(self, assumptions, result):
         for a in reversed(assumptions): result = self.close(a, result)
         return result
+
+    def empty_membership_equivalence(self, a):
+        x = self.atom('x')
+        left, right = self.member(x, a), self.member(x, self.atom('∅'))
+        no_left = self.assume(self.all('x', self.neg(left)))
+        no_right = self.ui(self.cite('ZF:空集合は元を持たない'), x)
+        forward = self.from_impossible_membership(left, self.ui(no_left, x), right)
+        reverse = self.from_impossible_membership(right, no_right, left)
+        return no_left, self.gen(self.iff_in(forward, reverse), 'x')
+
+    def from_impossible_membership(self, membership, negation, target):
+        assumption = self.assume(membership)
+        contradiction = self.not_out(negation, assumption)
+        result = self.mp(self.ax('false', {'φ': target}), contradiction)
+        return self.close(assumption, result)
+
+    def seed_empty_set(self):
+        empty, a, x, u, v = (self.atom(n) for n in ('∅', 'a', 'x', 'u', 'v'))
+        empty_set = 'ZF:空集合の集合性'
+        no_elements = 'ZF:空集合は元を持たない'
+        uniqueness = 'ZF:空集合の一意性'
+
+        self.start()
+        infinity = self.ax('ZF無限公理')
+        witness = self.assume(self.opened(self.tokens(infinity), 'u'))
+        membership = self.left(self.right(witness))
+        purity = self.uis(self.ax('ZF純粋性公理'), empty, u)
+        self.ee(infinity, 'u', witness, self.mp(purity, membership))
+        self.finish(empty_set, self.parse('IsSet(∅)'), 'The empty set is a set.')
+
+        self.start()
+        definition = self.definition('∅')
+        bottom = self.atom('⊥')
+        comp_set = self.transport(definition, self.cite(empty_set), 'v', self.isset(v))
+        schema = self.ax('ZF内包項所属公理図式', {'φ¹': (bottom, ('x',))})
+        comp_membership = self.ui(self.mp(schema, comp_set), x)
+        member = self.assume(self.member(x, empty))
+        expanded = self.transport(definition, member, 'v', self.member(x, v))
+        contradiction = self.right(self.iff_out(comp_membership, expanded))
+        self.gen(self.not_in(self.close(member, contradiction)), 'x')
+        self.finish(no_elements, self.parse('∀ x. ¬(x ∈ ∅)'),
+                    'No object belongs to the empty set.')
+
+        self.start()
+        guard = self.assume(self.isset(a))
+        no_left, pointwise = self.empty_membership_equivalence(a)
+        extensionality = self.uis(self.ax('ZF外延性公理'), a, empty)
+        equal = self.apply(extensionality, guard, self.cite(empty_set), pointwise)
+        self.gen(self.close_many([guard, no_left], equal), 'a')
+        self.finish(uniqueness, self.parse('∀ a. IsSet(a) → (∀ x. ¬(x ∈ a)) → a = ∅'),
+                    'Every set with no elements equals the empty set.')
+
+        self.start()
+        guard = self.assume(self.isset(a))
+        unequal = self.assume(self.neg(self.eq(a, empty)))
+        membership = self.member(x, a)
+        exists = self.some('x', membership)
+        refute_existence = self.assume(self.imp(exists, bottom))
+        member = self.assume(membership)
+        contradiction = self.mp(refute_existence, self.ei(member, 'x', membership, x))
+        no_members = self.gen(self.not_in(self.close(member, contradiction)), 'x')
+        equal = self.apply(self.ui(self.cite(uniqueness), a), guard, no_members)
+        contradiction = self.not_out(unequal, equal)
+        result = self.mp(self.ax('false', {'φ': exists}), contradiction)
+        classical = self.ax('peirce', {'φ': exists, 'ψ': bottom})
+        exists_proof = self.mp(classical, self.close(refute_existence, result))
+        self.gen(self.close_many([guard, unequal], exists_proof), 'a')
+        self.finish('ZF:空でない集合は元を持つ',
+                    self.parse('∀ a. IsSet(a) → ¬(a = ∅) → (∃ x. x ∈ a)'),
+                    'A set distinct from the empty set has an element.')
+
+        self.start()
+        guard = self.assume(self.isset(a))
+        equal = self.assume(self.eq(empty, self.single(a)))
+        member = self.iff_out(self.smem(guard, a), self.refl(a), True)
+        in_empty = self.transport(self.sym(equal), member, 'v', self.member(a, v))
+        contradiction = self.not_out(self.ui(self.cite(no_elements), a), in_empty)
+        self.gen(self.close(guard, self.not_in(self.close(equal, contradiction))), 'a')
+        self.finish('ZF:空集合は単集合でない', self.parse('∀ a. IsSet(a) → ¬(∅ = {}(a))'),
+                    'The singleton of a set is distinct from the empty set.')
 
     def seed(self):
         a,b,c,d,x,v = [self.atom(n) for n in ('a','b','c','d','x','v')]

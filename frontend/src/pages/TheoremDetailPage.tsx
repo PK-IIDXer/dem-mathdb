@@ -1,5 +1,5 @@
 import { useLanguage } from "../i18n/useLanguage"
-import { t } from "../i18n/translate"
+import { publicSetCopy, t } from "../i18n/translate"
 import { EntityBadge } from '../components/BetaIdentity'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { PublicIdRoute } from '../components/PublicIdRoute'
@@ -100,7 +100,8 @@ function TheoremDetailPageContent() {
     },
   })
 
-  usePageTitle(theorem ? t("TheoremDetailPage_774", theorem.name, proofIdParam ? t("BetaGettingStarted_105") : '') : t("ProofDetail_234"))
+  const publicCopy = publicSetCopy(theorem?.public_id)
+  usePageTitle(theorem ? t("TheoremDetailPage_774", publicCopy?.name ?? theorem.name, proofIdParam ? t("BetaGettingStarted_105") : '') : t("ProofDetail_234"))
 
   if (!theorem) return <p className="text-sm text-slate-400">{t("BetaGettingStarted_109")}</p>
 
@@ -111,7 +112,7 @@ function TheoremDetailPageContent() {
 
       <section className="space-y-4 rounded-lg border border-slate-200 p-4">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-base text-slate-800">{theorem.name}</span> <EntityBadge namespace={theorem.namespace_name} detail />
+          <span className="font-mono text-base text-slate-800">{publicCopy?.name ?? theorem.name}</span> <EntityBadge namespace={theorem.namespace_name} detail />
           <span className={`rounded px-2 py-0.5 text-xs font-semibold ${STATUS_BADGE[theorem.status] ?? ''}`}>
             DEM: {STATUS_LABEL[theorem.status] ?? theorem.status}
           </span>
@@ -128,11 +129,11 @@ function TheoremDetailPageContent() {
 
         <div>
           <div className="mb-1 text-xs text-slate-500">description</div>
-          <DescriptionEditor
+          {publicCopy ? <p className="text-sm text-slate-600">{publicCopy.description}</p> : <DescriptionEditor
             value={theorem.description}
             onSave={(description) => setDescriptionMutation.mutate(description)}
             isSaving={setDescriptionMutation.isPending}
-          />
+          />}
         </div>
         <div>
           <div className="mb-1 text-xs text-slate-500">tags</div>

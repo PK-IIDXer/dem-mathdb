@@ -1,5 +1,5 @@
 import { useLanguage } from "../i18n/useLanguage"
-import { t } from "../i18n/translate"
+import { publicSetCopy, t } from "../i18n/translate"
 import { EntityBadge } from '../components/BetaIdentity'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { PublicIdRoute } from '../components/PublicIdRoute'
@@ -53,7 +53,8 @@ function DefinitionDetailPageContent() {
     onSuccess: invalidate,
   })
 
-  usePageTitle(definition?.name ?? t("DefinitionDetailPage_560"))
+  const publicCopy = publicSetCopy(definition?.public_id)
+  usePageTitle(publicCopy?.name ?? definition?.name ?? t("DefinitionDetailPage_560"))
 
   if (!definition) return <p className="text-sm text-slate-400">{t("BetaGettingStarted_109")}</p>
 
@@ -68,7 +69,7 @@ function DefinitionDetailPageContent() {
         {t("DefinitionDetailPage_562")}</Link>
       <section className="space-y-4 rounded-lg border border-slate-200 p-4">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-base text-slate-800">{definition.name}</span> <EntityBadge namespace={definition.namespace_name} detail />
+          <span className="font-mono text-base text-slate-800">{publicCopy?.name ?? definition.name}</span> <EntityBadge namespace={definition.namespace_name} detail />
           <span className="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-600">{definition.kind}</span>
         </div>
         <div className="text-sm">
@@ -117,11 +118,11 @@ function DefinitionDetailPageContent() {
         )}
         <div>
           <div className="mb-1 text-xs text-slate-500">description</div>
-          <DescriptionEditor
+          {publicCopy ? <p className="text-sm text-slate-600">{publicCopy.description}</p> : <DescriptionEditor
             value={definition.description}
             onSave={(description) => setDescriptionMutation.mutate(description)}
             isSaving={setDescriptionMutation.isPending}
-          />
+          />}
         </div>
         <div>
           <div className="mb-1 text-xs text-slate-500">tags</div>

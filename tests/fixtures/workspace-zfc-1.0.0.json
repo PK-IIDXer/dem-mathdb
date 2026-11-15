@@ -1,0 +1,562 @@
+{
+  "manifest.json": [
+    {
+      "dem_runtime": ">=0.1.0,<0.2.0",
+      "depends": {},
+      "derived_fields": {
+        "proofs.jsonl": [
+          "status"
+        ],
+        "theorems.jsonl": [
+          "status"
+        ]
+      },
+      "description": "Legacy infinity axiom",
+      "empty_field_reasons": {
+        "depends": "Package dependency tracking starts in Phase 5-6.",
+        "license": "The workspace model does not yet store a workspace-wide license. When present, license covers only the imported entities named in NOTICE."
+      },
+      "identity": {
+        "entities": "public_id",
+        "formulas": "public_id and hash",
+        "non_formula_identity": "public_id only; canonical hashes start in Phase 5-6"
+      },
+      "license": null,
+      "license_scope": null,
+      "package": "workspace.legacy-zfc",
+      "schema_version": 2,
+      "version": "0.0.0"
+    }
+  ],
+  "namespaces.jsonl": [
+    {
+      "name": "dem.foundation",
+      "parent": null
+    },
+    {
+      "name": "dem.foundation.logic",
+      "parent": "dem.foundation"
+    }
+  ],
+  "formula_types.jsonl": [
+    {
+      "name": "命題",
+      "remarks": "proposition. 真偽を問える論理式。"
+    },
+    {
+      "name": "項",
+      "remarks": "term. 数学的な実体を表す論理式。"
+    }
+  ],
+  "symbol_types.jsonl": [
+    {
+      "fixed_arity": null,
+      "input_formula_type": "項",
+      "is_quantifier": false,
+      "name": "命題型自由変数記号",
+      "output_formula_type": "命題",
+      "remarks": "自由な命題変数"
+    },
+    {
+      "fixed_arity": 1,
+      "input_formula_type": "命題",
+      "is_quantifier": true,
+      "name": "命題型量化記号",
+      "output_formula_type": "命題",
+      "remarks": "命題を束縛して命題を作る記号"
+    },
+    {
+      "fixed_arity": null,
+      "input_formula_type": "命題",
+      "is_quantifier": false,
+      "name": "論理記号",
+      "output_formula_type": "命題",
+      "remarks": "¬, ∨, ∧, →, ↔ など。"
+    },
+    {
+      "fixed_arity": null,
+      "input_formula_type": "項",
+      "is_quantifier": false,
+      "name": "述語記号",
+      "output_formula_type": "命題",
+      "remarks": "項から命題を作る記号"
+    },
+    {
+      "fixed_arity": null,
+      "input_formula_type": "項",
+      "is_quantifier": false,
+      "name": "関数記号",
+      "output_formula_type": "項",
+      "remarks": "項から項を作る記号"
+    },
+    {
+      "fixed_arity": 0,
+      "input_formula_type": null,
+      "is_quantifier": false,
+      "name": "項型自由変数記号",
+      "output_formula_type": "項",
+      "remarks": "自由な項変数"
+    },
+    {
+      "fixed_arity": 1,
+      "input_formula_type": "命題",
+      "is_quantifier": true,
+      "name": "項型量化記号",
+      "output_formula_type": "項",
+      "remarks": "項を作る束縛記法。現在インスタンスは無い。"
+    }
+  ],
+  "symbols.jsonl": [
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "#1 \\in #2",
+      "name": "∈",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 50,
+      "public_id": "2267b6f1-547f-5692-a001-4f67db673389",
+      "remarks": null,
+      "symbol_type": "述語記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": true,
+      "latex_template": "\\bot",
+      "name": "⊥",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "3200b32b-2960-5ad9-98b0-3c46eea42f9c",
+      "remarks": "矛盾",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "\\wedge",
+      "name": "∧",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 40,
+      "public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1",
+      "remarks": "連言",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": true,
+      "latex_template": "\\{#1 \\mid #2\\}",
+      "name": "{|}",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "554fae59-0cd9-556d-bf9b-9e6dcadcf278",
+      "remarks": null,
+      "symbol_type": "項型量化記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": true,
+      "latex_template": "\\neg",
+      "name": "¬",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "7ef55380-cb00-59f7-989f-1347cab26b12",
+      "remarks": "否定",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": true,
+      "latex_template": "\\forall",
+      "name": "∀",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62",
+      "remarks": "整形式な項すべてを走る全称量化",
+      "symbol_type": "命題型量化記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "=",
+      "name": "=",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 50,
+      "public_id": "9c6f5697-7475-52bd-b600-b981e924af62",
+      "remarks": "等号",
+      "symbol_type": "述語記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": true,
+      "latex_template": "\\exists",
+      "name": "∃",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "b299df13-8ca1-5327-9b4c-f08b1231a678",
+      "remarks": "整形式な項すべてを走る存在量化",
+      "symbol_type": "命題型量化記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": true,
+      "latex_template": "\\operatorname{IsSet}(#1)",
+      "name": "IsSet",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "ba3eee89-4fef-52cf-9b04-fcbb5680cc96",
+      "remarks": null,
+      "symbol_type": "述語記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "\\implies",
+      "name": "→",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 20,
+      "public_id": "e72831d9-19bc-5094-abd7-359f275f87a1",
+      "remarks": "含意",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "\\vee",
+      "name": "∨",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 30,
+      "public_id": "e9ab484b-d683-5276-987a-af3df5a6e8e9",
+      "remarks": "選言",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "\\iff",
+      "name": "↔",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 10,
+      "public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec",
+      "remarks": "同値",
+      "symbol_type": "論理記号"
+    }
+  ],
+  "symbol_aliases.jsonl": [
+    {
+      "alias": "/\\",
+      "source": "builtin",
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "alias": "\\wedge",
+      "source": "builtin",
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "alias": "!",
+      "source": "builtin",
+      "symbol_public_id": "7ef55380-cb00-59f7-989f-1347cab26b12"
+    },
+    {
+      "alias": "\\neg",
+      "source": "builtin",
+      "symbol_public_id": "7ef55380-cb00-59f7-989f-1347cab26b12"
+    },
+    {
+      "alias": "\\forall",
+      "source": "builtin",
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "alias": "forall",
+      "source": "builtin",
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "alias": "\\exists",
+      "source": "builtin",
+      "symbol_public_id": "b299df13-8ca1-5327-9b4c-f08b1231a678"
+    },
+    {
+      "alias": "exists",
+      "source": "builtin",
+      "symbol_public_id": "b299df13-8ca1-5327-9b4c-f08b1231a678"
+    },
+    {
+      "alias": "->",
+      "source": "builtin",
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "alias": "\\to",
+      "source": "builtin",
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "alias": "\\/",
+      "source": "builtin",
+      "symbol_public_id": "e9ab484b-d683-5276-987a-af3df5a6e8e9"
+    },
+    {
+      "alias": "\\vee",
+      "source": "builtin",
+      "symbol_public_id": "e9ab484b-d683-5276-987a-af3df5a6e8e9"
+    },
+    {
+      "alias": "<->",
+      "source": "builtin",
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "alias": "\\leftrightarrow",
+      "source": "builtin",
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    }
+  ],
+  "symbol_roles.jsonl": [
+    {
+      "remarks": null,
+      "role": "biconditional",
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "remarks": null,
+      "role": "equality",
+      "symbol_public_id": "9c6f5697-7475-52bd-b600-b981e924af62"
+    },
+    {
+      "remarks": null,
+      "role": "implication",
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "remarks": null,
+      "role": "universal_quantifier",
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    }
+  ],
+  "inference_rules.jsonl": [
+    {
+      "elimination_procedure": null,
+      "kind": "generalization",
+      "name": "Gen",
+      "premise_count": 1,
+      "remarks": "φ から ∀°x.φ を導く",
+      "requires_variable_param": true,
+      "tier": "primitive"
+    },
+    {
+      "elimination_procedure": "expand_implication_intro",
+      "kind": "implication_intro",
+      "name": "ImpIntro",
+      "premise_count": 1,
+      "remarks": "仮定 φ の下での ψ から φ→ψ を導き、その仮定を落とす (Tier 2 許容規則。除去手続きは expand_implication_intro、設計書 §9.3)",
+      "requires_variable_param": false,
+      "tier": "admissible"
+    },
+    {
+      "elimination_procedure": null,
+      "kind": "modus_ponens",
+      "name": "MP",
+      "premise_count": 2,
+      "remarks": "φ と φ→ψ から ψ を導く",
+      "requires_variable_param": false,
+      "tier": "primitive"
+    }
+  ],
+  "formulas.jsonl": [
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "92f176edf90d3572983301bac6a8f12dd70f8a430f63fb357413f08351e22e56",
+      "public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "remarks": null,
+      "token_count": 24
+    }
+  ],
+  "formula_tokens.jsonl": [
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 0,
+      "symbol_public_id": "b299df13-8ca1-5327-9b4c-f08b1231a678"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 1,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 2,
+      "symbol_public_id": "ba3eee89-4fef-52cf-9b04-fcbb5680cc96"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 3,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 4,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 5,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 6,
+      "symbol_public_id": "554fae59-0cd9-556d-bf9b-9e6dcadcf278"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 7,
+      "symbol_public_id": "3200b32b-2960-5ad9-98b0-3c46eea42f9c"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 8,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 9,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 10,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 11,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 12,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 13,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 14,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 15,
+      "symbol_public_id": "554fae59-0cd9-556d-bf9b-9e6dcadcf278"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 16,
+      "symbol_public_id": "e9ab484b-d683-5276-987a-af3df5a6e8e9"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 17,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 18,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 19,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 20,
+      "symbol_public_id": "9c6f5697-7475-52bd-b600-b981e924af62"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 21,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 22,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "position": 23,
+      "symbol_public_id": null
+    }
+  ],
+  "definitions.jsonl": [],
+  "definition_formal_params.jsonl": [],
+  "axioms.jsonl": [
+    {
+      "definition_public_id": null,
+      "description": "Set-theory axiom schema supplied for the public foundation.",
+      "formula_public_id": "aa4b8295-0f90-55d1-b002-73bc320a8050",
+      "name": "ZF無限公理",
+      "namespace": "dem.foundation.logic",
+      "origin_kind": "primitive",
+      "public_id": "2ed34631-aed9-524c-a1de-256f6a0703fe",
+      "remarks": null
+    }
+  ],
+  "axiom_systems.jsonl": [],
+  "axiom_system_members.jsonl": [],
+  "theorems.jsonl": [],
+  "theorem_premises.jsonl": [],
+  "import_records.jsonl": [],
+  "tags.jsonl": [],
+  "theorem_tags.jsonl": [],
+  "proof_identity_sequences.jsonl": [],
+  "proofs.jsonl": [],
+  "proof_steps.jsonl": [],
+  "proof_step_args.jsonl": [],
+  "proof_step_subst_terms.jsonl": [],
+  "proof_step_subst_props.jsonl": [],
+  "proof_step_subst_prop_params.jsonl": []
+}

@@ -13,18 +13,34 @@ from dem.db.models import (
 )
 from dem.db.seeds.public_catalog import PACKAGE_ENTITIES
 
-VERSION = "1.0.0"
+VERSIONS = {
+    "public-core": "1.0.0",
+    "public-demo": "1.0.0",
+    "public-natural-deduction": "1.0.0",
+    "public-equivalence": "1.0.0",
+    "public-zfc": "1.1.0",
+    "public-mk": "1.1.0",
+    "public-unique-existence": "1.0.0",
+    "public-relations": "1.0.0",
+    "public-class-relations": "1.0.0",
+}
 RUNTIME_RANGE = ">=0.1.0,<0.2.0"
 PACKAGE_GROUPS = (("public-core", (), ()), ("public-demo", (), ("public-core",)),
                   ("public-natural-deduction", (), ("public-core",)),
                   ("public-equivalence", (), ("public-core", "public-natural-deduction")),
                   ("public-zfc", (), ("public-equivalence",)),
-                  ("public-mk", (), ("public-zfc",)))
+                  ("public-mk", (), ("public-zfc",)),
+                  ("public-unique-existence", (), ("public-equivalence",)),
+                  ("public-relations", (), ("public-zfc", "public-unique-existence")),
+                  ("public-class-relations", (), ("public-relations", "public-mk")))
 def package_name(key):
     return {"public-core": "dem.public.logic", "public-demo": "dem.public.demos",
             "public-natural-deduction": "dem.public.natural_deduction",
             "public-equivalence": "dem.public.equivalence",
-            "public-zfc": "dem.public.zfc", "public-mk": "dem.public.mk"}[key]
+            "public-zfc": "dem.public.zfc", "public-mk": "dem.public.mk",
+            "public-unique-existence": "dem.public.unique_existence",
+            "public-relations": "dem.public.relations",
+            "public-class-relations": "dem.public.class_relations"}[key]
 
 MODELS = (Symbol, Definition, Axiom, AxiomSystem, Theorem, Proof)
 
@@ -59,6 +75,7 @@ def assign_public_releases(session):
             return selected[key]
         deps = {dep: ensure(dep) for dep in specs[key]}
         name = package_name(key)
+        version = VERSIONS[key]
         package = packages.get(name)
         visibility = "public"
         if package is None:
@@ -68,20 +85,20 @@ def assign_public_releases(session):
             packages[name] = package
         elif package.owner != "dem" or (package.visibility != visibility and not (
             package.visibility == "private"
-            and (imported := releases.get((package.id, VERSION))) is not None
+            and (imported := releases.get((package.id, version))) is not None
             and imported.published_at is not None
         )):
             raise ValueError(f"seed package metadata conflict: {name}")
-        manifest = {"package": name, "version": VERSION, "dem_runtime": RUNTIME_RANGE,
-                    "depends": {package_name(dep): f"={VERSION}" for dep in specs[key]}}
-        release = releases.get((package.id, VERSION))
+        manifest = {"package": name, "version": version, "dem_runtime": RUNTIME_RANGE,
+                    "depends": {package_name(dep): f"={row.version}" for dep, row in deps.items()}}
+        release = releases.get((package.id, version))
         if release is None:
-            release = PackageRelease(package_id=package.id, version=VERSION,
+            release = PackageRelease(package_id=package.id, version=version,
                                      dem_runtime_range=RUNTIME_RANGE, manifest=manifest)
             session.add(release)
             session.flush()
             for dep in deps.values():
-                session.add(ReleaseDependency(release_id=release.id, depends_package_id=dep.package_id, range=f"={VERSION}"))
+                session.add(ReleaseDependency(release_id=release.id, depends_package_id=dep.package_id, range=f"={dep.version}"))
             pins = {dep.id for dep in deps.values()}
             for dep in deps.values():
                 pins.update(session.scalars(select(ReleaseLockEntry.locked_release_id).where(ReleaseLockEntry.release_id == dep.id)))
@@ -91,7 +108,7 @@ def assign_public_releases(session):
         elif (({k: release.manifest.get(k) for k in manifest} if release.published_at is not None else
                {k: v for k, v in release.manifest.items() if k not in ("_archive_catalogs", "_archive_formula_ids")}) != manifest
               or release.dem_runtime_range != RUNTIME_RANGE):
-            raise ValueError(f"seed release metadata conflict: {name}@{VERSION}")
+            raise ValueError(f"seed release metadata conflict: {name}@{version}")
         selected[key] = release
         return release
 

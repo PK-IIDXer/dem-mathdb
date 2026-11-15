@@ -22,7 +22,8 @@ STATEMENTS = (
     ('MK:B7 三つ組の後ろ二成分の転置の類', '∀ g. (∃ Z. (∀ a. IsSet(a) → (∀ b. IsSet(b) → (∀ c. IsSet(c) → (⟨,⟩(⟨,⟩(a, b), c) ∈ Z ↔ ⟨,⟩(⟨,⟩(a, c), b) ∈ g)))))'),
     ('MK:逆関係の類', '∀ g. (∃ Z. (∀ x. IsSet(x) → (∀ y. IsSet(y) → (⟨,⟩(x, y) ∈ Z ↔ (⟨,⟩(y, x) ∈ g)))))'),
 )
-THEOREM_NAMES = (*HELPERS, *(name for name, _ in STATEMENTS))
+EMPTY_CLASS = 'MK:空類の一意性'
+THEOREM_NAMES = (*HELPERS, *(name for name, _ in STATEMENTS), EMPTY_CLASS)
 
 
 def seed_public_mk(session):
@@ -39,10 +40,21 @@ def seed_public_mk(session):
     zfc=axs.get_system_by_name('ZFC')
     ids=list(session.scalars(select(AxiomSystemMember.axiom_id).where(AxiomSystemMember.axiom_system_id==zfc.id)))
     for ax in [*ids,*(axs.get_by_name(a[0]).id for a in AXIOMS)]: axs.add_to_system(system.id,ax)
-    _Classes(session,'mk').seed_classes()
+    proofs = _Classes(session, 'mk')
+    proofs.seed_classes()
+    proofs.seed_empty_class()
 
 
 class _Classes(_Proofs):
+    def seed_empty_class(self):
+        self.start()
+        a = self.atom('a')
+        no_members, pointwise = self.empty_membership_equivalence(a)
+        extensionality = self.uis(self.ax('MK類外延性公理'), a, self.atom('∅'))
+        self.gen(self.close(no_members, self.mp(extensionality, pointwise)), 'a')
+        self.finish(EMPTY_CLASS, self.parse('∀ a. (∀ x. ¬(x ∈ a)) → a = ∅'),
+                    'Every class with no elements equals the empty set.')
+
     def replaced(self,body,bindings):
         from dem.services.proof import apply_substitution_pure
         return apply_substitution_pure(body,{}, {self.symbols[n].id:t for n,t in bindings.items()},self.meta)
