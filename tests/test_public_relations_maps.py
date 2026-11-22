@@ -126,6 +126,8 @@ def replace_step(session, theorem_name, old_axiom, new_axiom):
     ("写像:逆像の所属", "ZF内包項所属公理図式", "hilbert_eq_refl"),
     ("写像:合成は関係", "ZF分出公理図式", "hilbert_eq_refl"),
     ("写像:合成の所属", "ZF内包項所属公理図式", "hilbert_eq_refl"),
+    ("写像:恒等写像は関係", "ZF分出公理図式", "hilbert_eq_refl"),
+    ("写像:恒等写像の所属", "ZF内包項所属公理図式", "hilbert_eq_refl"),
 ])
 def test_replacing_axiom_rejects_proof(fresh_seeded_session, theorem, old, new):
     replace_step(fresh_seeded_session, theorem, old, new)
@@ -166,7 +168,7 @@ def test_unowned_symbol_is_detected(fresh_seeded_session, monkeypatch):
 
 @pytest.mark.parametrize(("name","guard"), [
     ("IsRelation", "IsSet(R) ∧ "), ("IsMap", "y ∈ Y ∧ "), ("ev", "IsSet(w) ∧ "),
-    ("Preimage", "IsSet(x) ∧ "), ("∘", "IsSet(y) ∧ "),
+    ("Preimage", "IsSet(x) ∧ "), ("∘", "IsSet(y) ∧ "), ("id", "x ∈ X ∧ "),
 ])
 def test_definition_guard_mutation_changes_hash(seed_snapshot_factory, monkeypatch, name, guard):
     with seed_snapshot_factory.session("public_mk", "sqlite") as s:

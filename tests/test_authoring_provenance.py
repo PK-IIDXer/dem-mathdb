@@ -107,8 +107,8 @@ def test_a_only_seed_has_no_generated_proof_provenance(seeded_session):
 def test_complete_seed_proof_provenance(all_seeded_session):
     seeded_session = all_seeded_session
     generated = set(seeded_session.scalars(select(Proof.id)))
-    assert len(generated) == 122
-    assert seeded_session.scalar(select(func.count()).select_from(ProofStep)) == 4909
+    assert len(generated) == 128
+    assert seeded_session.scalar(select(func.count()).select_from(ProofStep)) == 5368
     proof_rows = list(seeded_session.scalars(select(AuthoringProvenance).where(
         AuthoringProvenance.via == "seed", AuthoringProvenance.entity_kind == "proof")))
     assert {row.entity_id for row in proof_rows} == {str(pid) for pid in generated}

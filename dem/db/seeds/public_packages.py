@@ -13,37 +13,46 @@ from dem.db.models import (
 )
 from dem.db.seeds.public_catalog import PACKAGE_ENTITIES
 
-VERSIONS = {
-    "public-core": "1.0.0",
-    "public-demo": "1.0.0",
-    "public-natural-deduction": "1.0.0",
-    "public-equivalence": "1.0.0",
-    "public-zfc": "2.0.0",
-    "public-mk": "2.0.0",
-    "public-unique-existence": "2.0.0",
-    "public-relations": "2.0.0",
-    "public-class-relations": "2.0.0",
-    "public-algebra": "1.0.0",
-}
+PACKAGES = (
+    {"key": 'public-core', "name": 'dem.public.logic', "version": '1.0.0',
+     "depends": (), "phase": 'public_core',
+     "seed": 'dem.db.seeds:seed_public_core'},
+    {"key": 'public-demo', "name": 'dem.public.demos', "version": '1.0.0',
+     "depends": ('public-core',), "phase": 'public_demo',
+     "seed": 'dem.db.seeds.public_demo:seed_public_demo'},
+    {"key": 'public-natural-deduction', "name": 'dem.public.natural-deduction', "version": '1.0.0',
+     "depends": ('public-core',), "phase": 'public_natural_deduction',
+     "seed": 'dem.db.seeds.public_natural_deduction:seed_public_natural_deduction'},
+    {"key": 'public-equivalence', "name": 'dem.public.equivalence', "version": '1.0.0',
+     "depends": ('public-core', 'public-natural-deduction'), "phase": 'public_equivalence',
+     "seed": 'dem.db.seeds.public_equivalence:seed_public_equivalence'},
+    {"key": 'public-zfc', "name": 'dem.public.zfc', "version": '2.0.0',
+     "depends": ('public-equivalence',), "phase": 'public_zfc',
+     "seed": 'dem.db.seeds.public_zfc:seed_public_zfc'},
+    {"key": 'public-mk', "name": 'dem.public.mk', "version": '2.0.0',
+     "depends": ('public-zfc',), "phase": 'public_mk',
+     "seed": 'dem.db.seeds.public_mk:seed_public_mk'},
+    {"key": 'public-unique-existence', "name": 'dem.public.unique-existence', "version": '2.0.0',
+     "depends": ('public-equivalence',), "phase": 'public_unique_existence',
+     "seed": 'dem.db.seeds.public_unique_existence:seed_public_unique_existence'},
+    {"key": 'public-relations', "name": 'dem.public.relations', "version": '2.0.0',
+     "depends": ('public-zfc', 'public-unique-existence'), "phase": 'public_relations',
+     "seed": 'dem.db.seeds.public_relations:seed_public_relations'},
+    {"key": 'public-class-relations', "name": 'dem.public.class-relations', "version": '2.0.0',
+     "depends": ('public-relations', 'public-mk'), "phase": 'public_class_relations',
+     "seed": 'dem.db.seeds.public_class_relations:seed_public_class_relations'},
+    {"key": 'public-algebra', "name": 'dem.public.algebra', "version": '1.0.0',
+     "depends": ('public-relations',), "phase": 'public_algebra',
+     "seed": 'dem.db.seeds.public_algebra:seed_public_algebra'},
+)
+
+VERSIONS = {package["key"]: package["version"] for package in PACKAGES}
 RUNTIME_RANGE = ">=0.1.0,<0.2.0"
-PACKAGE_GROUPS = (("public-core", (), ()), ("public-demo", (), ("public-core",)),
-                  ("public-natural-deduction", (), ("public-core",)),
-                  ("public-equivalence", (), ("public-core", "public-natural-deduction")),
-                  ("public-zfc", (), ("public-equivalence",)),
-                  ("public-mk", (), ("public-zfc",)),
-                  ("public-unique-existence", (), ("public-equivalence",)),
-                  ("public-relations", (), ("public-zfc", "public-unique-existence")),
-                  ("public-class-relations", (), ("public-relations", "public-mk")),
-                  ("public-algebra", (), ("public-relations",)))
+PACKAGE_GROUPS = tuple((package["key"], (), package["depends"]) for package in PACKAGES)
+
+
 def package_name(key):
-    return {"public-core": "dem.public.logic", "public-demo": "dem.public.demos",
-            "public-natural-deduction": "dem.public.natural-deduction",
-            "public-equivalence": "dem.public.equivalence",
-            "public-zfc": "dem.public.zfc", "public-mk": "dem.public.mk",
-            "public-unique-existence": "dem.public.unique-existence",
-            "public-relations": "dem.public.relations",
-            "public-class-relations": "dem.public.class-relations",
-            "public-algebra": "dem.public.algebra"}[key]
+    return {package["key"]: package["name"] for package in PACKAGES}[key]
 
 MODELS = (Symbol, Definition, Axiom, AxiomSystem, Theorem, Proof)
 

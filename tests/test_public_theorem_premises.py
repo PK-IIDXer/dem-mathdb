@@ -20,7 +20,7 @@ from dem.db.models import Axiom, AxiomSystem, Formula, Proof, Symbol, Theorem
 from dem.db.seeds import public_set_tools
 from dem.db.seeds.public_mk import STATEMENTS as MK_EXISTENCE
 from dem.db.seeds.public_relations_data import CLASS_VALUES, COMPOSITION_STATEMENTS, PREIMAGE_STATEMENTS
-from dem.db.seeds.public_relations_data import RELATION_VALUES
+from dem.db.seeds.public_relations_data import IDENTITY_STATEMENTS, RELATION_VALUES
 from dem.errors import ProofValidationError, ValidationError
 from dem.services.formula import FormulaService
 from dem.services.proof import ProofService
@@ -126,8 +126,10 @@ def assert_migration(before, after):
 
 def test_preserves_old_proof_and_statement_boundaries(seeded_session):
     after = snapshot(seeded_session)
-    # The value, preimage and composition theorems were added after the migration.
-    added = {name for name, _, _ in (*RELATION_VALUES, *CLASS_VALUES, *PREIMAGE_STATEMENTS, *COMPOSITION_STATEMENTS)}
+    # The value, preimage, composition and identity theorems were added after the migration.
+    added = {name for name, _, _ in (
+        *RELATION_VALUES, *CLASS_VALUES, *PREIMAGE_STATEMENTS, *COMPOSITION_STATEMENTS, *IDENTITY_STATEMENTS,
+    )}
     assert after.keys() - BASELINE['theorems'].keys() == added
     assert_migration(BASELINE['theorems'], {name: after[name] for name in BASELINE['theorems']})
 

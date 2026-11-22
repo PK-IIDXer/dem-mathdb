@@ -36,6 +36,9 @@ DEFINITIONS = {
          "{|} q. (∃ x. ∃ y. ∃ z. (IsSet(x) ∧ (IsSet(y) ∧ (IsSet(z) ∧ (q = ⟨,⟩(x, z)"
          " ∧ (⟨,⟩(x, y) ∈ f ∧ ⟨,⟩(y, z) ∈ g))))))",
          r"#1 \circ #2", 70),
+        ("id", FunctionDefinitionInput, ("X",),
+         "{|} q. (∃ x. (x ∈ X ∧ q = ⟨,⟩(x, x)))",
+         r"\operatorname{id}_{#1}", None),
     ),
     "class-relations": (
         ("IsClassRelation", PredicateDefinitionInput, ("R", "X", "Y"),

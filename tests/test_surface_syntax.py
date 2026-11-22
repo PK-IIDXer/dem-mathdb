@@ -53,7 +53,7 @@ def test_round_trip_all_formulas(all_seeded_session: Session) -> None:
         assert parse_core(rendered, table) == tokens, formula_id
         assert parse_convenience(rendered, table) == tokens, formula_id
         formula_count += 1
-    assert formula_count == 3195
+    assert formula_count == 3491
 
 
 @pytest.mark.parametrize("parser", (parse_core, parse_convenience))
@@ -225,7 +225,7 @@ def test_lexer_longest_match(all_seeded_session: Session) -> None:
         for long in names
         if short != long and long.startswith(short)
     ]
-    assert set(prefix_pairs) == {("φ", "φ¹"), ("φ", "φ²"), ("φ", "φ³"), ("ψ", "ψ¹"), ("∃", "∃!"), ("e", "ev")}
+    assert set(prefix_pairs) == {("φ", "φ¹"), ("φ", "φ²"), ("φ", "φ³"), ("ψ", "ψ¹"), ("∃", "∃!"), ("e", "ev"), ("i", "id")}
     for _short, long in prefix_pairs:
         lexemes = lexer.tokenize(long)
         assert len(lexemes) == 2

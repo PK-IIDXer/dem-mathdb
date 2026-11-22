@@ -1524,6 +1524,31 @@
       "latex_template": "#1 \\circ #2",
       "remarks": null,
       "created_at": "2000-01-01T00:00:00Z"
+    },
+    {
+      "id": 62,
+      "public_id": "58929cd7-accd-52f0-8c3f-0fe7b49a8ca3",
+      "name": "id",
+      "symbol_type_id": 1,
+      "symbol_type": {
+        "id": 1,
+        "name": "関数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から項を作る記号",
+        "created_at": "2000-01-01T00:00:00Z"
+      },
+      "arity": 1,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\operatorname{id}_{#1}",
+      "remarks": null,
+      "created_at": "2000-01-01T00:00:00Z"
     }
   ],
   "samples": [
@@ -3710,6 +3735,269 @@
           "de_bruijn_index": null
         }
       ]
+    },
+    {
+      "text": "∀ x. (id(x)) = ({|} y. ∃ z. (z ∈ x) ∧ (y = (⟨,⟩(z, z))))",
+      "tokens": [
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 62,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 21,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 8,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 2
+        },
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 1
+        },
+        {
+          "symbol_id": 41,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        }
+      ]
+    },
+    {
+      "text": "IsRelation(id(X), X, X)",
+      "tokens": [
+        {
+          "symbol_id": 53,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 62,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 49,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 49,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 49,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "text": "((⟨,⟩(x, y)) ∈ (id(X))) ↔ ((x ∈ X) ∧ (y = x))",
+      "tokens": [
+        {
+          "symbol_id": 6,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 41,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 15,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 16,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 62,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 49,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 4,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 15,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 49,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 16,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 15,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "text": "IsMap(id(X), X, X)",
+      "tokens": [
+        {
+          "symbol_id": 54,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 62,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 49,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 49,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 49,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "text": "(ev(id(X), x)) = x",
+      "tokens": [
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 58,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 62,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 49,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 15,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 15,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "text": "((id(Y)) ∘ f) = f",
+      "tokens": [
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 61,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 62,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 50,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 46,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 46,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "text": "(f ∘ (id(X))) = f",
+      "tokens": [
+        {
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 61,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 46,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 62,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 49,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 46,
+          "de_bruijn_index": null
+        }
+      ]
     }
   ],
   "copy": [
@@ -4054,6 +4342,48 @@
       "kind": "theorem",
       "ja": "写像:合成の結合律",
       "en": "Maps: Associativity of composition"
+    },
+    {
+      "id": "b7437df4-f71f-5b0e-90d4-267f045fc83a",
+      "kind": "definition",
+      "ja": "恒等写像 id",
+      "en": "Identity map id"
+    },
+    {
+      "id": "e1310198-e2da-5488-b13f-b0676d88440b",
+      "kind": "theorem",
+      "ja": "写像:恒等写像は関係",
+      "en": "Maps: The identity map is a relation"
+    },
+    {
+      "id": "2ea59e94-281f-56f4-8b99-bf6d97617c48",
+      "kind": "theorem",
+      "ja": "写像:恒等写像の所属",
+      "en": "Maps: Membership in the identity map"
+    },
+    {
+      "id": "edf45e8d-4472-5a56-bdf6-7fc701104774",
+      "kind": "theorem",
+      "ja": "写像:恒等写像は写像",
+      "en": "Maps: The identity map is a map"
+    },
+    {
+      "id": "848e2281-3d7a-5330-88d1-91e4521e3750",
+      "kind": "theorem",
+      "ja": "写像:恒等写像の値",
+      "en": "Maps: Value of the identity map"
+    },
+    {
+      "id": "3a5dc26c-4ae1-51ff-bb3e-da0e009fc485",
+      "kind": "theorem",
+      "ja": "写像:合成の左単位律",
+      "en": "Maps: Left unit law of composition"
+    },
+    {
+      "id": "b3fe0be2-9fa1-5cf2-a6ed-68195b94dd57",
+      "kind": "theorem",
+      "ja": "写像:合成の右単位律",
+      "en": "Maps: Right unit law of composition"
     }
   ]
 }

@@ -41,7 +41,7 @@ it.each(['ja', 'en'] as const)('renders and serializes the public relations nota
 
 it('offers the public symbols for input and recognizes the definition kinds', () => {
   const completion = buildSymbolCompletionItems(symbols, new Map(), {})
-  for (const name of ['∃!', '⊂', '×', 'IsRelation', 'IsMap', 'IsClassRelation', 'IsClassMap', 'Preimage', '∘']) {
+  for (const name of ['∃!', '⊂', '×', 'IsRelation', 'IsMap', 'IsClassRelation', 'IsClassMap', 'Preimage', '∘', 'id']) {
     expect(completion.some(item => item.symbol.name === name), name).toBe(true)
   }
   const phi = symbols.find(symbol => symbol.name === 'φ¹')!
@@ -65,6 +65,19 @@ it('keeps the grouping of composition in the display', () => {
   expect(associativity).toContain('\\left(h\\circ g\\right)\\circ f'.replace(/\s+/g, ''))
   // The value of a composite reads (g ∘ f)(x), never g ∘ f(x).
   expect(latexOf('(ev(g ∘ f, x)) = (ev(g, ev(f, x)))')).toContain('\\left(g\\circ f\\right)\\left(x\\right)'.replace(/\s+/g, ''))
+})
+
+it('shows the identity map with its domain as a subscript', () => {
+  const latexOf = (text: string) => {
+    const sample = fixture.samples.find(candidate => candidate.text === text)
+    expect(sample, text).toBeDefined()
+    const parsed = tokensToTree(sample!.tokens, byId)
+    expect(parsed.ok, text).toBe(true)
+    return renderLatex(parsed.tree, byId).replace(/\s+/g, '')
+  }
+  expect(latexOf('((id(Y)) ∘ f) = f')).toContain('\\operatorname{id}_{Y}\\circf')
+  expect(latexOf('(f ∘ (id(X))) = f')).toContain('f\\circ\\operatorname{id}_{X}')
+  expect(latexOf('(ev(id(X), x)) = x')).toContain('\\operatorname{id}_{X}\\left(x\\right)')
 })
 
 it.each(['ja', 'en'] as const)('shows the requested names and explanatory copy in %s', language => {

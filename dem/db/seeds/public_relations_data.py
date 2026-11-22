@@ -81,10 +81,19 @@ STATEMENTS = (('一意存在:導入', ('φ¹(t)', '(∀ y. (φ¹(y) → y = t))'
   'ev(g ∘ f, x) = ev(g, ev(f, x))'),
  ('写像:合成の結合律',
   ('IsSet(X)', 'IsSet(Y)', 'IsSet(Z)', 'IsSet(W)', 'IsMap(f, X, Y)', 'IsMap(g, Y, Z)', 'IsMap(h, Z, W)'),
-  'h ∘ (g ∘ f) = (h ∘ g) ∘ f'))
+  'h ∘ (g ∘ f) = (h ∘ g) ∘ f'),
+ ('写像:恒等写像は関係', ('IsSet(X)',), 'IsRelation(id(X), X, X)'),
+ ('写像:恒等写像の所属',
+  ('IsSet(X)', 'IsSet(x)', 'IsSet(y)'),
+  '⟨,⟩(x, y) ∈ id(X) ↔ (x ∈ X ∧ y = x)'),
+ ('写像:恒等写像は写像', ('IsSet(X)',), 'IsMap(id(X), X, X)'),
+ ('写像:恒等写像の値', ('IsSet(X)', 'x ∈ X'), 'ev(id(X), x) = x'),
+ ('写像:合成の左単位律', ('IsSet(X)', 'IsSet(Y)', 'IsMap(f, X, Y)'), 'id(Y) ∘ f = f'),
+ ('写像:合成の右単位律', ('IsSet(X)', 'IsSet(Y)', 'IsMap(f, X, Y)'), 'f ∘ id(X) = f'))
 # Statements 31-35 belong to the relations package, 36 to class relations and
-# 37-44 (the preimage and composition) to the relations package again.
+# 37-50 (the preimage, composition and identity) to the relations package again.
 RELATION_VALUES = STATEMENTS[30:35]
 CLASS_VALUES = STATEMENTS[35:36]
 PREIMAGE_STATEMENTS = STATEMENTS[36:39]
-COMPOSITION_STATEMENTS = STATEMENTS[39:]
+COMPOSITION_STATEMENTS = STATEMENTS[39:44]
+IDENTITY_STATEMENTS = STATEMENTS[44:]

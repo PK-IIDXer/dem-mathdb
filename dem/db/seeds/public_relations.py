@@ -2,14 +2,15 @@
 
 from dem.db.seeds.public_product import ProductProofs, SLICE, SLICES
 from dem.db.seeds.public_relation_definitions import DEFINITIONS, register_definitions
-from dem.db.seeds.public_relations_data import COMPOSITION_STATEMENTS, PREIMAGE_STATEMENTS, RELATION_VALUES
+from dem.db.seeds.public_relations_data import COMPOSITION_STATEMENTS, IDENTITY_STATEMENTS, PREIMAGE_STATEMENTS
+from dem.db.seeds.public_relations_data import RELATION_VALUES
 from dem.db.seeds.public_relations_data import STATEMENTS
 from dem.db.seeds.public_set_tools import PEIRCE, completed
 from dem.db.seeds.public_zfc import THEOREM_NAMES as ZF
 
 PACKAGE = "relations"
 THEOREM_NAMES = (*(name for name, _, _ in (
-    *STATEMENTS[4:20], *RELATION_VALUES, *PREIMAGE_STATEMENTS, *COMPOSITION_STATEMENTS,
+    *STATEMENTS[4:20], *RELATION_VALUES, *PREIMAGE_STATEMENTS, *COMPOSITION_STATEMENTS, *IDENTITY_STATEMENTS,
 )), SLICE, SLICES)
 COMPREHENSION = "ZF内包項所属公理図式"
 COMPREHENSION_EXTENSIONALITY = "ZF内包項外延性公理図式"
@@ -31,6 +32,7 @@ def seed_public_relations(session):
     proofs.seed_map_values()
     proofs.seed_preimages()
     proofs.seed_compositions()
+    proofs.seed_identities()
 
 
 class SetRelationProofs(ProductProofs):
@@ -638,3 +640,150 @@ class SetRelationProofs(ProductProofs):
         included = self.subset_in(left_side, right_side, self.gen(self.close(member, moved), "q"))
         self.named(19, sX, sW, map_left, map_right, included, f=left_side, g=right_side, Y=W)
         self.prove(44)
+
+    def seed_identities(self):
+        f, X, Y, q, x, y, u, v = map(self.atom, ("f", "X", "Y", "q", "x", "y", "u", "v"))
+        identity = self.op("id", X)
+
+        def opened_definition():
+            definition = self.definition("id", X)
+            return definition, self.opened(self.parts(self.tokens(definition))[1], "q")
+
+        # Every member of id(X) is a pair in X × X, so separation on X × X gives sethood.
+        sX, = self.begin(45)
+        definition, body = opened_definition()
+        square = self.op("×", X, X)
+
+        def located(witness):
+            belongs, equal = self.left(witness), self.right(witness)
+            set_x = self.set_member(belongs)
+            criterion = self.named(11, sX, sX, set_x, set_x, Y=X, a=x, b=x)
+            pair_in = self.iff_out(criterion, self.pair(belongs, belongs), True)
+            return self.transport(self.sym(equal), pair_in, "v", self.member(v, square))
+
+        bounded = self.by_assumption(body, lambda condition: self.using_witness(condition, "x", located))
+        restricted = self.conj(self.member(q, square), body)
+        pointwise = self.iff_in(self.by_assumption(body, lambda c: self.pair(self.mp(bounded, c), c)),
+                                self.by_assumption(restricted, self.right))
+        equal = self.mp(self.ax(COMPREHENSION_EXTENSIONALITY, {
+            "φ¹": (body, ("q",)), "ψ¹": (restricted, ("q",)),
+        }), self.gen(pointwise, "q"))
+        separated = self.mp(self.ui(self.ax("ZF分出公理図式", {"φ¹": (body, ("q",))}), square),
+                            self.named(9, sX, sX, Y=X))
+        term_set = self.transport(self.sym(equal), separated, "v", self.isset(v))
+        criterion = self.comprehension("q", body, q, axiom=COMPREHENSION, sethood=term_set)
+
+        def inside(member):
+            unfolded = self.transport(definition, member, "v", self.member(q, v))
+            return self.mp(bounded, self.right(self.iff_out(criterion, unfolded)))
+
+        pointwise = self.gen(self.by_assumption(self.member(q, identity), inside), "q")
+        subset = self.subset_in(identity, square, pointwise)
+        sethood = self.transport(self.sym(definition), term_set, "v", self.isset(v))
+        self.iff_out(self.definition("IsRelation", identity, X, X), self.pair(sethood, subset), True)
+        self.prove(45)
+
+        # ⟨x, y⟩ ∈ id(X) exactly when x ∈ X and y = x.
+        sX, sx, sy = self.begin(46)
+        definition, body = opened_definition()
+        relation = self.named(45, sX)
+        sethood = self.left(self.iff_out(self.definition("IsRelation", identity, X, X), relation))
+        term_set = self.transport(definition, sethood, "v", self.isset(v))
+        pair = self.ordered(x, y)
+        comprehension = self.comprehension("q", body, pair, axiom=COMPREHENSION, sethood=term_set)
+        unfolded = self.parts(self.tokens(comprehension))[1]
+        criterion = self.transport(self.sym(definition), comprehension, "v", self.iff(self.member(pair, v), unfolded))
+        witnessed = self.parts(unfolded)[1]
+
+        def found(witness):
+            belongs, equal = self.left(witness), self.right(witness)
+            set_u = self.set_member(belongs)
+            same = self.cite(ZF[10], terms={"a": x, "b": y, "c": u, "d": u}, args=(sx, sy, set_u, set_u, equal))
+            in_x = self.transport(self.sym(self.left(same)), belongs, "v", self.member(v, X))
+            return self.pair(in_x, self.trans(self.right(same), self.sym(self.left(same))))
+
+        def forward(member):
+            return self.using_witness(self.right(self.iff_out(criterion, member)), "u", found)
+
+        def build(condition):
+            belongs, equal = self.left(condition), self.right(condition)
+            same_pair = self.transport(equal, self.refl(pair), "v", self.eq(pair, self.ordered(x, v)))
+            exists = self.ei(self.pair(belongs, same_pair), "u", self.opened(witnessed, "u"), x)
+            return self.iff_out(criterion, self.pair(self.pair_element(x, y), exists), True)
+
+        self.iff_in(self.by_assumption(self.member(pair, identity), forward),
+                    self.by_assumption(self.conj(self.member(x, X), self.eq(y, x)), build))
+        self.prove(46)
+
+        def own_pair(sX, belongs):
+            set_x = self.set_member(belongs)
+            criterion = self.named(46, sX, set_x, set_x, y=x)
+            return self.iff_out(criterion, self.pair(belongs, self.refl(x)), True)
+
+        # Each x in X has exactly one image, x itself.
+        sX, = self.begin(47)
+        belongs = self.assume(self.member(x, X))
+        holds = self.pair(belongs, own_pair(sX, belongs))
+        candidate = self.assume(self.conj(self.member(y, X), self.member(self.ordered(x, y), identity)))
+        criterion = self.named(46, sX, self.set_member(belongs), self.set_member(self.left(candidate)))
+        same = self.right(self.iff_out(criterion, self.right(candidate)))
+        unique = self.gen(self.close(candidate, same), "y")
+        image = (self.conj(self.member(v, X), self.member(self.ordered(x, v), identity)), ("v",))
+        exists_unique = self.cite(STATEMENTS[0][0], {"φ¹": image}, {"t": x}, args=(holds, unique))
+        total = self.gen(self.close(belongs, exists_unique), "x")
+        self.iff_out(self.definition("IsMap", identity, X, X), self.pair(self.named(45, sX), total), True)
+        self.prove(47)
+
+        sX, belongs = self.begin(48)
+        graph = self.named(35, sX, sX, self.named(47, sX), belongs, f=identity, Y=X, y=x)
+        self.iff_out(graph, self.pair(belongs, own_pair(sX, belongs)))
+        self.prove(48)
+
+        # Both unit laws: the composite is a map from X to Y contained in f, hence equal to f.
+        def unit_law(index, maps, side, map_side, value_of_side):
+            sX, sY, mf = maps
+            members = self.named(12, sX, sY, self.named(16, map_side, f=side), R=side)
+            member = self.assume(self.member(q, side))
+            decomposition = self.mp(self.ui(members, q), member)
+
+            def transfer(witness):
+                belongs, rest = self.left(witness), self.right(witness)
+                in_y, equal = self.left(rest), self.right(rest)
+                in_side = self.transport(equal, member, "v", self.member(v, side))
+                value = self.iff_out(self.named(35, sX, sY, map_side, belongs, f=side), self.pair(in_y, in_side))
+                chain = self.trans(self.sym(value_of_side(belongs)), value)
+                in_f = self.right(self.iff_out(self.named(35, sX, sY, mf, belongs), chain, True))
+                return self.transport(self.sym(equal), in_f, "v", self.member(v, f))
+
+            moved = self.using_witness(decomposition, "x", lambda a: self.using_witness(a, "y", transfer))
+            included = self.subset_in(side, f, self.gen(self.close(member, moved), "q"))
+            self.named(19, sX, sY, map_side, mf, included, f=side, g=f)
+            self.prove(index)
+
+        # ev(id(Y) ∘ f, x) = ev(id(Y), ev(f, x)) = ev(f, x).
+        maps = self.begin(49)
+        sX, sY, mf = maps
+        unit = self.op("id", Y)
+        map_unit = self.named(47, sY, X=Y)
+
+        def left_value(belongs):
+            composed = self.named(43, sX, sY, sY, mf, map_unit, belongs, g=unit, Z=Y)
+            in_y = self.left(self.named(34, sX, sY, mf, belongs))
+            return self.trans(composed, self.named(48, sY, in_y, X=Y, x=self.op("ev", f, x)))
+
+        map_side = self.named(42, sX, sY, sY, mf, map_unit, g=unit, Z=Y)
+        unit_law(49, maps, self.op("∘", unit, f), map_side, left_value)
+
+        # ev(f ∘ id(X), x) = ev(f, ev(id(X), x)) = ev(f, x).
+        maps = self.begin(50)
+        sX, sY, mf = maps
+        side = self.op("∘", f, identity)
+        map_unit = self.named(47, sX)
+
+        def right_value(belongs):
+            composed = self.named(43, sX, sX, sY, map_unit, mf, belongs, f=identity, g=f, Y=X, Z=Y)
+            predicate = self.eq(self.op("ev", side, x), self.op("ev", f, v))
+            return self.transport(self.named(48, sX, belongs), composed, "v", predicate)
+
+        map_side = self.named(42, sX, sX, sY, map_unit, mf, f=identity, g=f, Y=X, Z=Y)
+        unit_law(50, maps, side, map_side, right_value)
