@@ -23,6 +23,7 @@ import { useDisplaySettings } from '../../DisplaySettingsContext'
 
 interface FormulaEditorProps {
   onRegistered?: (formula: FormulaDetail) => void
+  onDraftChange?: (unfinished: boolean) => void
   context?: Record<string, number>
   showSuggestions?: boolean
   showAdvanced?: boolean
@@ -55,6 +56,7 @@ function completionAt(
 
 export function FormulaEditor({
   onRegistered,
+  onDraftChange,
   context = {},
   showSuggestions = true,
   showAdvanced = true,
@@ -194,9 +196,10 @@ export function FormulaEditor({
   }, [completionItems, currentWord.value, expected, formulaTypes, recent])
 
   const registerMutation = useMutation({
-    mutationFn: (tokens: Token[]) => formulasApi.register(tokens, remarks || undefined),
-    onSuccess: (formula) => {
+    mutationFn: ({ tokens }: { tokens: Token[]; sequence: number }) => formulasApi.register(tokens, remarks || undefined),
+    onSuccess: (formula, { sequence }) => {
       queryClient.invalidateQueries({ queryKey: ['formulas'] })
+      if (onDraftChange && sequence !== requestSequence.current) return
       setParsed((value) => value ? { ...value, formula_id: formula.id } : value)
       onRegistered?.(formula)
       setRegisterError(null)
@@ -208,15 +211,18 @@ export function FormulaEditor({
 
   async function chooseFormula() {
     if (!parsed) return
+    const sequence = requestSequence.current
     if (parsed.formula_id != null) {
-      onRegistered?.(await formulasApi.get(parsed.formula_id))
+      const formula = await formulasApi.get(parsed.formula_id)
+      if (!onDraftChange || sequence === requestSequence.current) onRegistered?.(formula)
     } else {
-      registerMutation.mutate(parsed.tokens)
+      registerMutation.mutate({ tokens: parsed.tokens, sequence })
     }
   }
 
   function changeText(next: string, nextCursor: number) {
     requestSequence.current += 1
+    onDraftChange?.(next.trim().length > 0)
     setText(next)
     setCursor(nextCursor)
     setTextRevision((value) => value + 1)
@@ -256,6 +262,7 @@ export function FormulaEditor({
 
   async function changeTree(next: EditorNode | null) {
     const sequence = ++requestSequence.current
+    onDraftChange?.(true)
     setRoot(next)
     setParsed(null)
     setDss('')

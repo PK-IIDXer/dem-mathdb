@@ -115,10 +115,10 @@ class _Proofs(Builder):
         return self.mp(self.ui(self.ax('ZF集合元性公理'), a), set_a)
     def smem(self, set_a, x):
         a = self.parts(self.tokens(set_a))[0]
-        return self.mp(self.cite(THEOREM_NAMES[3], terms={'a': a, 'x': x}), set_a)
+        return self.cite(THEOREM_NAMES[3], terms={'a': a, 'x': x}, args=(set_a,))
     def pmem(self, set_a, set_b, x):
         a, b = self.parts(self.tokens(set_a))[0], self.parts(self.tokens(set_b))[0]
-        return self.apply(self.cite(THEOREM_NAMES[4], terms={'a': a, 'b': b, 'x': x}), set_a, set_b)
+        return self.cite(THEOREM_NAMES[4], terms={'a': a, 'b': b, 'x': x}, args=(set_a, set_b))
     def inner_member(self, a, b, x, eq, sa, sb):
         # x=a or x=b supplies membership in {a,b}.
         disjunction = self.or_in(eq, self.eq(x, b))
@@ -138,14 +138,13 @@ class _Proofs(Builder):
         for a in reversed(assumptions): result = self.close(a, result)
         return result
 
-    def empty_membership_equivalence(self, a):
+    def empty_membership_equivalence(self, a, no_left):
         x = self.atom('x')
         left, right = self.member(x, a), self.member(x, self.atom('∅'))
-        no_left = self.assume(self.all('x', self.neg(left)))
         no_right = self.ui(self.cite('ZF:空集合は元を持たない'), x)
         forward = self.from_impossible_membership(left, self.ui(no_left, x), right)
         reverse = self.from_impossible_membership(right, no_right, left)
-        return no_left, self.gen(self.iff_in(forward, reverse), 'x')
+        return self.gen(self.iff_in(forward, reverse), 'x')
 
     def from_impossible_membership(self, membership, negation, target):
         assumption = self.assume(membership)
@@ -180,43 +179,38 @@ class _Proofs(Builder):
         self.finish(no_elements, self.parse('∀ x. ¬(x ∈ ∅)'),
                     'No object belongs to the empty set.')
 
-        self.start()
-        guard = self.assume(self.isset(a))
-        no_left, pointwise = self.empty_membership_equivalence(a)
+        premises = (self.isset(a), self.all('x', self.neg(self.member(x, a))))
+        guard, no_left = self.start(premises)
+        pointwise = self.empty_membership_equivalence(a, no_left)
         extensionality = self.uis(self.ax('ZF外延性公理'), a, empty)
-        equal = self.apply(extensionality, guard, self.cite(empty_set), pointwise)
-        self.gen(self.close_many([guard, no_left], equal), 'a')
-        self.finish(uniqueness, self.parse('∀ a. IsSet(a) → (∀ x. ¬(x ∈ a)) → a = ∅'),
-                    'Every set with no elements equals the empty set.')
+        self.apply(extensionality, guard, self.cite(empty_set), pointwise)
+        self.finish(uniqueness, self.eq(a, empty), 'Every set with no elements equals the empty set.', premises)
 
-        self.start()
-        guard = self.assume(self.isset(a))
-        unequal = self.assume(self.neg(self.eq(a, empty)))
+        premises = (self.isset(a), self.neg(self.eq(a, empty)))
+        guard, unequal = self.start(premises)
         membership = self.member(x, a)
         exists = self.some('x', membership)
         refute_existence = self.assume(self.imp(exists, bottom))
         member = self.assume(membership)
         contradiction = self.mp(refute_existence, self.ei(member, 'x', membership, x))
         no_members = self.gen(self.not_in(self.close(member, contradiction)), 'x')
-        equal = self.apply(self.ui(self.cite(uniqueness), a), guard, no_members)
+        equal = self.cite(uniqueness, args=(guard, no_members))
         contradiction = self.not_out(unequal, equal)
         result = self.mp(self.ax('false', {'φ': exists}), contradiction)
         classical = self.ax('peirce', {'φ': exists, 'ψ': bottom})
-        exists_proof = self.mp(classical, self.close(refute_existence, result))
-        self.gen(self.close_many([guard, unequal], exists_proof), 'a')
-        self.finish('ZF:空でない集合は元を持つ',
-                    self.parse('∀ a. IsSet(a) → ¬(a = ∅) → (∃ x. x ∈ a)'),
-                    'A set distinct from the empty set has an element.')
+        self.mp(classical, self.close(refute_existence, result))
+        self.finish('ZF:空でない集合は元を持つ', exists,
+                    'A set distinct from the empty set has an element.', premises)
 
-        self.start()
-        guard = self.assume(self.isset(a))
+        premises = (self.isset(a),)
+        guard, = self.start(premises)
         equal = self.assume(self.eq(empty, self.single(a)))
         member = self.iff_out(self.smem(guard, a), self.refl(a), True)
         in_empty = self.transport(self.sym(equal), member, 'v', self.member(a, v))
         contradiction = self.not_out(self.ui(self.cite(no_elements), a), in_empty)
-        self.gen(self.close(guard, self.not_in(self.close(equal, contradiction))), 'a')
-        self.finish('ZF:空集合は単集合でない', self.parse('∀ a. IsSet(a) → ¬(∅ = {}(a))'),
-                    'The singleton of a set is distinct from the empty set.')
+        self.not_in(self.close(equal, contradiction))
+        self.finish('ZF:空集合は単集合でない', self.parse('¬(∅ = {}(a))'),
+                    'The singleton of a set is distinct from the empty set.', premises)
 
     def seed(self):
         a,b,c,d,x,v = [self.atom(n) for n in ('a','b','c','d','x','v')]
@@ -242,7 +236,10 @@ class _Proofs(Builder):
         self.finish(THEOREM_NAMES[2],self.isset(self.ordered(a,b)), 'Kuratowski ordered pairs are sets.')
 
         for single in (True,False):
-            self.start(); sa = self.assume(self.isset(a)); sb = None if single else self.assume(self.isset(b))
+            premises = (self.isset(a),) if single else (self.isset(a), self.isset(b))
+            steps = self.start(premises)
+            sa = steps[0]
+            sb = None if single else steps[1]
             body = self.eq(x,a) if single else self.disj(self.eq(x,a),self.eq(x,b))
             term = self.single(a) if single else self.unordered(a,b)
             name = '{}' if single else '{,}'; args = (a,) if single else (a,b)
@@ -262,9 +259,9 @@ class _Proofs(Builder):
             mem = self.iff_out(raw,self.pair(ex,p),True)
             mem = self.transport(self.sym(defined),mem,'v',self.member(x,v))
             rev = self.close(p,mem)
-            result = self.iff_in(fwd,rev)
-            self.close_many([sa] if single else [sa,sb],result)
-            self.finish(THEOREM_NAMES[3 if single else 4], description='Membership, guarded by sethood of the displayed elements.')
+            self.iff_in(fwd,rev)
+            self.finish(THEOREM_NAMES[3 if single else 4], self.iff(self.member(x, term), body),
+                        'Membership, guarded by sethood of the displayed elements.', premises)
 
         self.start()
         russell = self.comp('x',self.neg(self.member(x,x)))
@@ -282,8 +279,10 @@ class _Proofs(Builder):
     def injectivity(self):
         a,b,c,d,x,u,v = [self.atom(n) for n in ('a','b','c','d','x','u','v')]
         # Recover the first component from the singleton in the ordered pair.
-        self.start(); guards = [self.assume(self.isset(t)) for t in (a,b,c,d)]; sa,sb,sc,sd = guards
-        eq = self.assume(self.eq(self.ordered(a,b),self.ordered(c,d)))
+        premises = (*[self.isset(t) for t in (a, b, c, d)],
+                    self.eq(self.ordered(a, b), self.ordered(c, d)))
+        *guards, eq = self.start(premises)
+        sa, sb, sc, sd = guards
         single_a = self.single(a)
         mem = self.transport(eq,self.k_member(a,b),'v',self.member(single_a,v))
         choice = self.k_choice(c,d,single_a,mem)
@@ -295,12 +294,12 @@ class _Proofs(Builder):
             cmem = self.transport(self.sym(e),cmem,'v',self.member(c,v))
             ca = self.iff_out(self.smem(sa,c),cmem)
             branches.append(self.close(e,self.sym(ca)))
-        result = self.cases(choice,*branches)
-        self.close_many([*guards,eq],result); self.finish(THEOREM_NAMES[6])
+        self.cases(choice,*branches)
+        self.finish(THEOREM_NAMES[6], self.eq(a, c), premises=premises)
 
         # Any member of a member of K(c,d) equals c or d.
-        self.start(); sc,sd = [self.assume(self.isset(t)) for t in (c,d)]
-        xu = self.assume(self.member(x,u)); uk = self.assume(self.member(u,self.ordered(c,d)))
+        premises = (self.isset(c), self.isset(d), self.member(x, u), self.member(u, self.ordered(c, d)))
+        sc, sd, xu, uk = self.start(premises)
         choice = self.k_choice(c,d,u,uk); branches=[]
         for right in (False,True):
             target = self.unordered(c,d) if right else self.single(c)
@@ -309,33 +308,41 @@ class _Proofs(Builder):
             got = self.iff_out(self.pmem(sc,sd,x) if right else self.smem(sc,x),m)
             if not right: got = self.or_in(got,self.eq(x,d))
             branches.append(self.close(e,got))
-        self.close_many([sc,sd,xu,uk],self.cases(choice,*branches)); self.finish(THEOREM_NAMES[7])
+        self.cases(choice,*branches)
+        self.finish(THEOREM_NAMES[7], self.disj(self.eq(x, c), self.eq(x, d)), premises=premises)
 
         # {a,b}={a,d} fixes the other component; stated using its two membership consequences.
-        self.start(); p = self.assume(self.disj(self.eq(b,a),self.eq(b,d))); q = self.assume(self.disj(self.eq(d,a),self.eq(d,b)))
+        premises = (self.disj(self.eq(b, a), self.eq(b, d)), self.disj(self.eq(d, a), self.eq(d, b)))
+        p, q = self.start(premises)
         ba = self.assume(self.eq(b,a)); da = self.assume(self.eq(d,a))
         branch1 = self.close(da,self.trans(ba,self.sym(da)))
         db = self.assume(self.eq(d,b)); branch2 = self.close(db,self.sym(db))
         left = self.close(ba,self.cases(q,branch1,branch2))
         bd = self.assume(self.eq(b,d)); right = self.close(bd,bd)
-        self.close_many([p,q],self.cases(p,left,right)); self.finish(THEOREM_NAMES[8])
+        self.cases(p,left,right)
+        self.finish(THEOREM_NAMES[8], self.eq(b, d), premises=premises)
 
-        self.start(); guards = [self.assume(self.isset(t)) for t in (a,b,c,d)]; sa,sb,sc,sd=guards
-        eq = self.assume(self.eq(self.ordered(a,b),self.ordered(c,d)))
-        ac = self.apply(self.cite(THEOREM_NAMES[6]),*guards,eq)
+        premises = (*[self.isset(t) for t in (a, b, c, d)],
+                    self.eq(self.ordered(a, b), self.ordered(c, d)))
+        *guards, eq = self.start(premises)
+        sa, sb, sc, sd = guards
+        ac = self.cite(THEOREM_NAMES[6], args=(*guards, eq))
         def range_for(first,second,third,fourth,sfirst,ssecond,sthird,sfourth,equality):
             pair = self.unordered(first,second)
             member = self.iff_out(self.pmem(sfirst,ssecond,second),self.or_in(self.refl(second),self.eq(second,first),True),True)
             member_k = self.transport(equality,self.k_member(first,second,True),'v',self.member(pair,v))
-            return self.apply(self.cite(THEOREM_NAMES[7],terms={'c':third,'d':fourth,'x':second,'u':pair}),sthird,sfourth,member,member_k)
+            return self.cite(THEOREM_NAMES[7], terms={'c':third,'d':fourth,'x':second,'u':pair},
+                             args=(sthird, sfourth, member, member_k))
         bd = range_for(a,b,c,d,sa,sb,sc,sd,eq)
         db = range_for(c,d,a,b,sc,sd,sa,sb,self.sym(eq))
         bd = self.transport(self.sym(ac),bd,'v',self.disj(self.eq(b,v),self.eq(b,d)))
-        result = self.apply(self.cite(THEOREM_NAMES[8]),bd,db)
-        self.close_many([*guards,eq],result); self.finish(THEOREM_NAMES[9])
+        self.cite(THEOREM_NAMES[8], args=(bd, db))
+        self.finish(THEOREM_NAMES[9], self.eq(b, d), premises=premises)
 
-        self.start(); guards = [self.assume(self.isset(t)) for t in (a,b,c,d)]
-        eq = self.assume(self.eq(self.ordered(a,b),self.ordered(c,d)))
-        first = self.apply(self.cite(THEOREM_NAMES[6]),*guards,eq)
-        second = self.apply(self.cite(THEOREM_NAMES[9]),*guards,eq)
-        self.close_many([*guards,eq],self.pair(first,second)); self.finish(THEOREM_NAMES[10])
+        premises = (*[self.isset(t) for t in (a, b, c, d)],
+                    self.eq(self.ordered(a, b), self.ordered(c, d)))
+        *guards, eq = self.start(premises)
+        first = self.cite(THEOREM_NAMES[6], args=(*guards, eq))
+        second = self.cite(THEOREM_NAMES[9], args=(*guards, eq))
+        self.pair(first,second)
+        self.finish(THEOREM_NAMES[10], self.conj(self.eq(a, c), self.eq(b, d)), premises=premises)

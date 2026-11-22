@@ -10,12 +10,14 @@ import { symbolsApi } from '../../api/symbols'
 import { formulasApi } from '../../api/formulas'
 import { FormulaPicker } from '../FormulaPicker'
 import { SubstitutionEditor } from './SubstitutionEditor'
+import { completedSubstitution, createSubstitutionDraft, type SubstitutionDraft } from './substitutionDraft'
+import { ArgumentMismatchMessage } from './ArgumentMismatchMessage'
+import { argumentMismatch, type ArgumentMismatch } from './argumentMismatch'
 import { ApiError } from '../../api/client'
-import type { ProofStep, ProofStepCreate, StepKind, StepSuggestion, Substitution, Token } from '../../api/types'
-import { emptySubstitution } from '../../api/types'
+import type { ProofStep, ProofStepCreate, StepKind, StepSuggestion, Theorem, Token } from '../../api/types'
 import { SYMBOL_TYPE } from '../../constants/symbolTypes'
 import { Latex } from '../Latex'
-import { renderLatex, tokensToTree } from '../FormulaEditor/model'
+import { renderLatex, renderPreview, tokensToTree } from '../FormulaEditor/model'
 import { useCommand } from '../../commands/CommandProvider'
 import { InferenceRulePicker } from '../InferenceRulePicker'
 import { FormulaPreview } from '../FormulaPreview'
@@ -29,6 +31,10 @@ interface StepFormProps {
   initialRuleStepOrd?: number | null
   showRules?: boolean
 }
+
+type SuggestionRequest =
+  | { kind: 'theorem'; applied_theorem_id: number; arg_step_ords?: number[]; goal_tokens?: Token[]; keepSlots?: boolean }
+  | { kind: 'axiom'; axiom_id: number }
 
 const COMMANDS: { kind: StepKind; label: string }[] = [
   { kind: 'premise', get label() { return t("StepForm_372") } },
@@ -44,6 +50,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
   useLanguage()
 
   const formRef = useRef<HTMLDivElement>(null)
+  const latestSuggestion = useRef<SuggestionRequest | null>(null)
   const [kind, setKind] = useState<StepKind>('premise')
   const [ruleMode, setRuleMode] = useState(false)
   const [assumptionConclusionId, setAssumptionConclusionId] = useState<number | null>(null)
@@ -51,14 +58,14 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
   const [premiseOrd, setPremiseOrd] = useState<number | ''>('')
   const [axiomId, setAxiomId] = useState<number | ''>('')
   const [appliedTheoremId, setAppliedTheoremId] = useState<number | ''>('')
-  const [appliedProofId, setAppliedProofId] = useState<number | ''>('')
   const [argStepOrds, setArgStepOrds] = useState<number[]>([])
   const [antecedentOrd, setAntecedentOrd] = useState<number | ''>('')
   const [implicationOrd, setImplicationOrd] = useState<number | ''>('')
   const [bodyOrd, setBodyOrd] = useState<number | ''>('')
   const [assumptionOrd, setAssumptionOrd] = useState<number | ''>('')
   const [genVarId, setGenVarId] = useState<number | ''>('')
-  const [subst, setSubst] = useState<Substitution>(emptySubstitution)
+  const [editedDraft, setEditedDraft] = useState<SubstitutionDraft | null>(null)
+  const [mismatch, setMismatch] = useState<ArgumentMismatch | null>(null)
   const [suggestion, setSuggestion] = useState<StepSuggestion | null>(null)
   const [lemmaSearch, setLemmaSearch] = useState('')
   const [lemmaGoalFormulaId, setLemmaGoalFormulaId] = useState<number | null>(null)
@@ -79,6 +86,11 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
     queryFn: () => formulasApi.get(Number(lemmaGoalFormulaId)),
     enabled: lemmaGoalFormulaId != null,
   })
+  const { data: proofState } = useQuery({
+    queryKey: ['proofs', proofId, 'state'],
+    queryFn: () => proofsApi.getState(proofId),
+    enabled: kind === 'axiom' || kind === 'theorem',
+  })
   const hasLemmaConstraints = lemmaGoalFormulaId != null || candidateArgStepOrds.length > 0
   const { data: applicableTheorems = [], isFetching: applicableFetching } = useQuery({
     queryKey: ['theorems', 'applicable', proofId, lemmaGoalFormulaId, candidateArgStepOrds],
@@ -97,6 +109,19 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
     () => new Map(symbols.map((symbol) => [symbol.id, symbol])),
     [symbols],
   )
+  const inferredDraft = useMemo(() => suggestion && createSubstitutionDraft(suggestion, symbols, [
+    suggestion.conclusion_tokens ?? [],
+    lemmaGoalFormula?.tokens ?? [],
+    proofState?.goal_tokens ?? [],
+    ...(proofState?.established.map((step) => step.tokens) ?? []),
+  ]), [suggestion, symbols, lemmaGoalFormula, proofState])
+  const draft = editedDraft ?? inferredDraft
+  const subst = suggestion && draft && completedSubstitution(suggestion, draft, symbolsById)
+  // The candidate lists describe the inferred values. Edits may change the
+  // premises, so an edited draft cannot reuse the exact-match labels.
+  const changedSubstitution = editedDraft != null && (subst == null || (
+    suggestion != null && JSON.stringify(subst) !== JSON.stringify(suggestion.subst)
+  ))
   const suggestedConclusionLatex = useMemo(() => {
     if (!suggestion?.conclusion_tokens) return null
     const tree = tokensToTree(suggestion.conclusion_tokens, symbolsById).tree
@@ -108,42 +133,26 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
       .filter((item) => !needle || item.name.toLocaleLowerCase().includes(needle))
       .slice(0, 100)
   }, [lemmaSearch, provenTheorems])
+  function tooFewPremises(theorem: Theorem) {
+    return theorem.premise_formula_ids.length < candidateArgStepOrds.length
+  }
+
   const concreteApplicable = applicableTheorems.filter((item) => !item.is_schematic)
   const schematicApplicable = applicableTheorems.filter((item) => item.is_schematic)
 
   const suggestMutation = useMutation({
-    mutationFn: (request:
-      | { kind: 'theorem'; applied_theorem_id: number; arg_step_ords?: number[]; goal_tokens?: Token[] }
-      | { kind: 'axiom'; axiom_id: number }) =>
-      proofsApi.suggestStep(proofId, request),
+    mutationFn: (request: SuggestionRequest) =>
+      proofsApi.suggestStep(proofId, request.kind === 'theorem'
+        ? { kind: request.kind, applied_theorem_id: request.applied_theorem_id, arg_step_ords: request.arg_step_ords, goal_tokens: request.goal_tokens }
+        : request),
     onSuccess: (result, request) => {
-      setSuggestion(result)
-      const nextSubst: Substitution = {
-        term_substs: [...result.subst.term_substs],
-        prop_substs: [...result.subst.prop_substs],
-      }
-      for (const item of result.undetermined) {
-        const symbol = symbols.find((candidate) => candidate.id === item.symbol_id)
-        if (symbol?.symbol_type.name === SYMBOL_TYPE.freeTermVariable) {
-          if (!nextSubst.term_substs.some((substItem) => substItem.source_symbol_id === symbol.id)) {
-            nextSubst.term_substs.push({ source_symbol_id: symbol.id, target_formula_id: 0 })
-          }
-        } else if (symbol?.symbol_type.name === SYMBOL_TYPE.freePropositionVariable) {
-          if (!nextSubst.prop_substs.some((substItem) => substItem.source_symbol_id === symbol.id)) {
-            nextSubst.prop_substs.push({
-              source_symbol_id: symbol.id,
-              body_formula_id: 0,
-              formal_param_symbol_ids: Array.from(
-                { length: symbol.arity },
-                (_, index) => termVars[index]?.id ?? termVars[0]?.id ?? 0,
-              ),
-            })
-          }
-        }
-      }
-      setSubst(nextSubst)
-      if (result.applied_proof_id != null) setAppliedProofId(result.applied_proof_id)
+      if (latestSuggestion.current !== request) return
       const selected = request.kind === 'theorem' ? request.arg_step_ords ?? [] : []
+      if (request.kind === 'theorem' && request.keepSlots && (result.arg_slots.length !== selected.length || result.arg_slots.some((slot, index) => slot !== index))) return
+      setSuggestion(result)
+      setEditedDraft(null)
+      setError(null)
+      if (request.kind === 'theorem' && request.keepSlots) return
       const selectedBySlot = new Map(result.arg_slots.map((slot, index) => [slot, selected[index]]))
       if (ruleMode && request.kind === 'theorem') {
         const matchingSlot = result.arg_candidates.findIndex((candidates) => initialRuleStepOrd != null && candidates.includes(initialRuleStepOrd))
@@ -156,36 +165,55 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
         })
         setArgStepOrds(next)
         if (selected.length !== result.premise_count && next.every((ord) => ord >= 0)) {
-          suggestMutation.mutate({ kind: 'theorem', applied_theorem_id: request.applied_theorem_id, arg_step_ords: next })
+          requestSuggestion({ kind: 'theorem', applied_theorem_id: request.applied_theorem_id, arg_step_ords: next })
         }
       } else {
         setArgStepOrds(
           Array.from({ length: result.premise_count }, (_, index) =>
-            selectedBySlot.get(index) ?? result.arg_candidates[index]?.[0] ?? priorSteps[0]?.ord ?? 0,
+            selectedBySlot.get(index) ?? result.arg_candidates[index]?.[0] ?? -1,
           ),
         )
       }
-      setError(null)
     },
-    onError: (err) => setError(() => (err instanceof ApiError ? err.message : t("StepForm_379"))),
+    onError: (err, request) => {
+      if (latestSuggestion.current === request) {
+        setError(() => (err instanceof ApiError ? err.message : t("StepForm_379")))
+      }
+    },
   })
 
+  function requestSuggestion(request: SuggestionRequest) {
+    latestSuggestion.current = request
+    suggestMutation.mutate(request)
+  }
+
   useEffect(() => {
+    if (latestSuggestion.current?.kind !== kind) latestSuggestion.current = null
+    if (kind !== 'axiom') setAxiomId('')
+    if (kind !== 'theorem') setAppliedTheoremId('')
     setSuggestion(null)
-    setSubst(emptySubstitution)
+    setEditedDraft(null)
+    setMismatch(null)
   }, [kind])
 
   useEffect(() => {
+    if (latestSuggestion.current?.kind === 'theorem') latestSuggestion.current = null
     setAppliedTheoremId('')
-    setAppliedProofId('')
     setSuggestion(null)
-    setSubst(emptySubstitution)
+    setEditedDraft(null)
+    setMismatch(null)
     setArgStepOrds([])
   }, [lemmaGoalFormulaId, candidateArgStepOrds])
 
   function chooseLemma(theoremId: number, asRule = ruleMode) {
+    const theorem = provenTheorems.find((item) => item.id === theoremId)
+      ?? applicableTheorems.find((item) => item.theorem.id === theoremId)?.theorem
+    if (!asRule && theorem && tooFewPremises(theorem)) return
     setAppliedTheoremId(theoremId)
-    suggestMutation.mutate({
+    setSuggestion(null)
+    setEditedDraft(null)
+    setMismatch(null)
+    requestSuggestion({
       kind: 'theorem',
       applied_theorem_id: theoremId,
       arg_step_ords: asRule ? [] : candidateArgStepOrds,
@@ -213,14 +241,21 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
     mutationFn: (body: ProofStepCreate) => proofsApi.addStep(proofId, body),
     onSuccess: () => {
       onAdded()
+      setAxiomId('')
+      setAppliedTheoremId('')
       setAssumptionConclusionId(null)
       setArgStepOrds([])
       setCandidateArgStepOrds([])
-      setSubst(emptySubstitution)
+      setEditedDraft(null)
+      setMismatch(null)
       setSuggestion(null)
       setError(null)
     },
-    onError: (err) => setError(() => (err instanceof ApiError ? err.message : t("StepForm_380"))),
+    onError: (err) => {
+      const details = argumentMismatch(err)
+      setMismatch(details)
+      setError(details ? null : () => (err instanceof ApiError ? err.message : t("StepForm_380")))
+    },
   })
 
   function buildStepInput(): ProofStepCreate | null {
@@ -232,11 +267,11 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
           ? null
           : { kind, conclusion_formula_id: assumptionConclusionId }
       case 'axiom':
-        return axiomId === '' ? null : { kind, axiom_id: axiomId, subst }
+        return axiomId === '' || !subst ? null : { kind, axiom_id: axiomId, subst }
       case 'theorem':
-        return appliedProofId === '' ? null : {
+        return suggestion?.applied_proof_id == null || !subst ? null : {
           kind,
-          applied_proof_id: appliedProofId,
+          applied_proof_id: suggestion.applied_proof_id,
           subst,
           arg_step_ords: argStepOrds,
         }
@@ -262,15 +297,15 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
   }
 
   const stepInput = buildStepInput()
-  const substitutionComplete = subst.term_substs.every((item) => item.target_formula_id > 0)
-    && subst.prop_substs.every(
-      (item) => item.body_formula_id > 0 && item.formal_param_symbol_ids.every((id) => id > 0),
-    )
-  const commitEnabled = stepInput != null && substitutionComplete
-    && (!ruleMode || kind !== 'theorem' || (suggestion != null && argStepOrds.length === suggestion.premise_count && argStepOrds.every((ord) => ord >= 0)))
+  const commitEnabled = stepInput != null
+    && (kind !== 'theorem' || (argStepOrds.length === suggestion?.premise_count && argStepOrds.every((ord) => ord >= 0)))
     && !addStepMutation.isPending && !suggestMutation.isPending
   const runCommit = useCommand('step.commit', () => {
-    if (stepInput) addStepMutation.mutate(stepInput)
+    if (stepInput && commitEnabled) {
+      setMismatch(null)
+      setError(null)
+      addStepMutation.mutate(stepInput)
+    }
   }, { enabled: commitEnabled, scope: formRef })
   useCommand('step.add.premise', () => setKind('premise'), { scope: formRef })
   useCommand('step.add.assumption', () => setKind('assumption'), { scope: formRef })
@@ -307,13 +342,15 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
     </select>
   )
 
-  const argumentOptions = suggestion?.arg_candidates.map((candidates, index) => {
-    const options = candidates.length > 0 || ruleMode ? candidates : priorSteps.map((step) => step.ord)
-    const selected = argStepOrds[index]
-    // An assigned step may require a substitution that is still undetermined.
-    return selected != null && selected >= 0 && !options.includes(selected)
-      ? [selected, ...options]
-      : options
+  const argumentOptions = suggestion?.arg_candidates.map((candidates) => {
+    const exact = new Set(changedSubstitution ? [] : candidates)
+    return priorSteps.map((step) => {
+      const tokens = proofState?.established.find((item) => item.ord === step.ord)?.tokens
+        ?? proofState?.open_assumptions.find((item) => item.step_ord === step.ord)?.tokens
+      const tree = tokens && tokensToTree(tokens, symbolsById).tree
+      const formula = tree ? renderPreview(tree, symbolsById) : step.conclusion_formula.description
+      return { ord: step.ord, matches: exact.has(step.ord), formula: formula?.slice(0, 100) }
+    }).sort((left, right) => Number(right.matches) - Number(left.matches))
   }) ?? []
 
   return (
@@ -357,7 +394,10 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
             onChange={(event) => {
               const id = Number(event.target.value)
               setAxiomId(id)
-              suggestMutation.mutate({ kind: 'axiom', axiom_id: id })
+              setSuggestion(null)
+              setEditedDraft(null)
+              setMismatch(null)
+              requestSuggestion({ kind: 'axiom', axiom_id: id })
             }}
             className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
           >
@@ -404,7 +444,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
                   <button
                     key={item.theorem.id}
                     type="button"
-                    disabled={lemmaGoalFormulaId != null && lemmaGoalFormula == null}
+                    disabled={tooFewPremises(item.theorem) || (lemmaGoalFormulaId != null && lemmaGoalFormula == null)}
                     onClick={() => chooseLemma(item.theorem.id)}
                     className="block w-full rounded px-2 py-1 text-left text-sm text-slate-700 hover:bg-indigo-50 disabled:opacity-40"
                   >
@@ -420,7 +460,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
                       <button
                         key={item.theorem.id}
                         type="button"
-                        disabled={lemmaGoalFormulaId != null && lemmaGoalFormula == null}
+                        disabled={tooFewPremises(item.theorem) || (lemmaGoalFormulaId != null && lemmaGoalFormula == null)}
                         onClick={() => chooseLemma(item.theorem.id)}
                         className="block w-full rounded px-2 py-1 text-left hover:bg-indigo-50 disabled:opacity-40"
                       >
@@ -436,14 +476,17 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
             </div>
           )}
 
-          <label className="block text-xs text-slate-500">
-            {t("StepForm_400")}<input
-              value={lemmaSearch}
-              onChange={(event) => setLemmaSearch(event.target.value)}
-              placeholder={t("StepForm_401")}
-              className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
-            />
+          <div>
+            <label className="block text-xs text-slate-500">
+              {t("StepForm_400")}<input
+                value={lemmaSearch}
+                onChange={(event) => setLemmaSearch(event.target.value)}
+                placeholder={t("StepForm_401")}
+                className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
+              />
+            </label>
             <select
+              aria-label={t("stepChooseLemma")}
               value={appliedTheoremId}
               onChange={(event) => {
                 const id = Number(event.target.value)
@@ -453,35 +496,44 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
             >
               <option value="" disabled>{t("StepForm_381")}</option>
               {lemmaOptions.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
+                <option key={item.id} value={item.id} disabled={tooFewPremises(item)}>
+                  {item.name}{tooFewPremises(item) && ` — ${t('stepTooFewPremises')}`}
                 </option>
               ))}
             </select>
-          </label>
+          </div>
           </>}
           {suggestion && Array.from({ length: suggestion.premise_count }, (_, index) => (
             <div key={index} className="block text-xs text-slate-500">
               <label>
               {t("InferenceRulePicker_229")}{index + 1} {t("StepForm_404")}<select
-                value={argStepOrds[index] ?? ''}
+                value={argStepOrds[index] ?? -1}
+                disabled={suggestMutation.isPending}
                 onChange={(event) => {
                   const next = [...argStepOrds]
                   next[index] = Number(event.target.value)
                   setArgStepOrds(next)
-                  if (appliedTheoremId !== '' && (!ruleMode || next.every((ord) => ord >= 0))) {
-                    suggestMutation.mutate({
+                  setMismatch(null)
+                  setError(null)
+                  if (appliedTheoremId !== '' && !editedDraft && next.every((ord) => ord >= 0)
+                    && !suggestion.arg_candidates[index]?.includes(next[index])) {
+                    requestSuggestion({
                       kind: 'theorem',
                       applied_theorem_id: appliedTheoremId,
                       arg_step_ords: next,
+                      keepSlots: true,
                       goal_tokens: ruleMode ? undefined : lemmaGoalFormula?.tokens,
                     })
                   }
                 }}
                 className="mt-1 w-full rounded border border-slate-300 px-2 py-1 text-sm"
               >
-                {ruleMode && <option value={-1} disabled>{t("StepForm_405")}</option>}
-                {(argumentOptions[index] ?? []).map((ord) => <option key={ord} value={ord}>#{ord}{ruleMode ? t("StepForm_406", priorSteps.find((step) => step.ord === ord)?.conclusion_formula.description ?? t("StepForm_407")) : ''}</option>)}
+                <option value={-1} disabled>{t("StepForm_381")}</option>
+                {(argumentOptions[index] ?? []).map(({ ord, matches, formula }) => (
+                  <option key={ord} value={ord}>
+                    #{ord}{matches && ` [${t('stepArgumentMatch')}]`}{t("StepForm_406", formula ?? t("StepForm_407"))}
+                  </option>
+                ))}
               </select>
               </label>
               {ruleMode && (suggestion.arg_candidates[index]?.length ?? 0) > 1 && <p className="mt-1 text-amber-700">{t("StepForm_408")}</p>}
@@ -544,26 +596,22 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
         </div>
       )}
 
-      {suggestion && (
-        <div className="rounded bg-indigo-50 px-3 py-2 text-xs text-indigo-800">
-          {suggestion.defaulted_to_identity.length + suggestion.subst.term_substs.length + suggestion.subst.prop_substs.length + suggestion.undetermined.length} {t("StepForm_418")}{' '}{suggestion.defaulted_to_identity.length + suggestion.subst.term_substs.length + suggestion.subst.prop_substs.length} {t("StepForm_419")}</div>
-      )}
       {suggestedConclusionLatex && (
         <div className="rounded border border-indigo-100 bg-white px-3 py-2">
-          <div className="mb-1 text-xs text-slate-500">{t("StepForm_420")}</div>
+          <div className="mb-1 text-xs text-slate-500">{t('stepSuggestedConclusion')}</div>
           <Latex display>{suggestedConclusionLatex}</Latex>
         </div>
       )}
-      {suggestion && suggestion.undetermined.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-xs text-amber-700">{t("StepForm_421")}</p>
+      {suggestion && draft && (
+        <fieldset disabled={suggestMutation.isPending || addStepMutation.isPending}>
           <SubstitutionEditor
-            value={subst}
-            onChange={setSubst}
-            editableSymbolIds={suggestion.undetermined.map((item) => item.symbol_id)}
+            inference={suggestion}
+            draft={draft}
+            onChange={(next) => { setEditedDraft(next); setMismatch(null); setError(null) }}
+            symbolsById={symbolsById}
             context={context}
           />
-        </div>
+        </fieldset>
       )}
 
       <button
@@ -574,6 +622,7 @@ export function StepForm({ proofId, theoremId, priorSteps, onAdded, context = {}
       >
         {t("StepForm_422")}<kbd aria-hidden="true" className="ml-1 text-xs">Ctrl/⌘ Enter</kbd>
       </button>
+      {mismatch && <ArgumentMismatchMessage details={mismatch} symbolsById={symbolsById} />}
       {error && <p className="text-sm text-red-700">{error}</p>}
     </div>
   )

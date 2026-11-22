@@ -10,20 +10,32 @@ from dem.db.seeds.public_mk_data import AXIOMS
 from dem.db.seeds.public_set_tools import completed
 from dem.db.seeds.public_zfc import _Proofs, THEOREM_NAMES as ZF_NAMES
 
-HELPERS = ('MK:集合における類内包', 'MK:順序対内包の導入', 'MK:順序対内包の除去',
-           'MK:三つ組内包の導入', 'MK:三つ組内包の除去')
+PAIR_MEMBERSHIP = (
+    '⟨,⟩(a,b) ∈ ({|} q. ∃ x. ∃ y. (IsSet(x) ∧ (IsSet(y) ∧ (q = ⟨,⟩(x,y) ∧ φ²(x,y)))))'
+)
+TRIPLE_MEMBERSHIP = (
+    '⟨,⟩(⟨,⟩(a,b),c) ∈ ({|} q. ∃ x. ∃ y. ∃ z. '
+    '(IsSet(x) ∧ (IsSet(y) ∧ (IsSet(z) ∧ (q = ⟨,⟩(⟨,⟩(x,y),z) ∧ φ³(x,y,z))))))'
+)
+HELPERS = (
+    ('MK:集合における類内包', ('IsSet(a)',), '(a ∈ ({|} x. φ¹(x))) ↔ φ¹(a)'),
+    ('MK:順序対内包の導入', ('IsSet(a)', 'IsSet(b)', 'φ²(a,b)'), PAIR_MEMBERSHIP),
+    ('MK:順序対内包の除去', ('IsSet(a)', 'IsSet(b)', PAIR_MEMBERSHIP), 'φ²(a,b)'),
+    ('MK:三つ組内包の導入', ('IsSet(a)', 'IsSet(b)', 'IsSet(c)', 'φ³(a,b,c)'), TRIPLE_MEMBERSHIP),
+    ('MK:三つ組内包の除去', ('IsSet(a)', 'IsSet(b)', 'IsSet(c)', TRIPLE_MEMBERSHIP), 'φ³(a,b,c)'),
+)
 STATEMENTS = (
-    ('MK:B1 所属関係の類', '∃ Z. (∀ x. IsSet(x) → (∀ y. IsSet(y) → (⟨,⟩(x, y) ∈ Z ↔ (x ∈ y))))'),
-    ('MK:B2 共通部分の類', '∀ a. (∀ b. (∃ Z. (∀ x. IsSet(x) → (x ∈ Z ↔ (x ∈ a ∧ x ∈ b)))))'),
-    ('MK:B3 補類', '∀ a. (∃ Z. (∀ x. IsSet(x) → (x ∈ Z ↔ (¬(x ∈ a)))))'),
-    ('MK:B4 定義域の類', '∀ a. (∃ Z. (∀ x. IsSet(x) → (x ∈ Z ↔ (∃ y. (IsSet(y) ∧ ⟨,⟩(x, y) ∈ a)))))'),
-    ('MK:B5 全体類との直積', '∀ g. (∃ Z. (∀ x. IsSet(x) → (∀ y. IsSet(y) → (⟨,⟩(x, y) ∈ Z ↔ (x ∈ g)))))'),
-    ('MK:B6 三つ組の巡回置換の類', '∀ g. (∃ Z. (∀ a. IsSet(a) → (∀ b. IsSet(b) → (∀ c. IsSet(c) → (⟨,⟩(⟨,⟩(a, b), c) ∈ Z ↔ ⟨,⟩(⟨,⟩(b, c), a) ∈ g)))))'),
-    ('MK:B7 三つ組の後ろ二成分の転置の類', '∀ g. (∃ Z. (∀ a. IsSet(a) → (∀ b. IsSet(b) → (∀ c. IsSet(c) → (⟨,⟩(⟨,⟩(a, b), c) ∈ Z ↔ ⟨,⟩(⟨,⟩(a, c), b) ∈ g)))))'),
-    ('MK:逆関係の類', '∀ g. (∃ Z. (∀ x. IsSet(x) → (∀ y. IsSet(y) → (⟨,⟩(x, y) ∈ Z ↔ (⟨,⟩(y, x) ∈ g)))))'),
+    ('MK:B1 所属関係の類', (), '∃ Z. (∀ x. IsSet(x) → (∀ y. IsSet(y) → (⟨,⟩(x, y) ∈ Z ↔ (x ∈ y))))'),
+    ('MK:B2 共通部分の類', (), '∀ a. (∀ b. (∃ Z. (∀ x. IsSet(x) → (x ∈ Z ↔ (x ∈ a ∧ x ∈ b)))))'),
+    ('MK:B3 補類', (), '∀ a. (∃ Z. (∀ x. IsSet(x) → (x ∈ Z ↔ (¬(x ∈ a)))))'),
+    ('MK:B4 定義域の類', (), '∀ a. (∃ Z. (∀ x. IsSet(x) → (x ∈ Z ↔ (∃ y. (IsSet(y) ∧ ⟨,⟩(x, y) ∈ a)))))'),
+    ('MK:B5 全体類との直積', (), '∀ g. (∃ Z. (∀ x. IsSet(x) → (∀ y. IsSet(y) → (⟨,⟩(x, y) ∈ Z ↔ (x ∈ g)))))'),
+    ('MK:B6 三つ組の巡回置換の類', (), '∀ g. (∃ Z. (∀ a. IsSet(a) → (∀ b. IsSet(b) → (∀ c. IsSet(c) → (⟨,⟩(⟨,⟩(a, b), c) ∈ Z ↔ ⟨,⟩(⟨,⟩(b, c), a) ∈ g)))))'),
+    ('MK:B7 三つ組の後ろ二成分の転置の類', (), '∀ g. (∃ Z. (∀ a. IsSet(a) → (∀ b. IsSet(b) → (∀ c. IsSet(c) → (⟨,⟩(⟨,⟩(a, b), c) ∈ Z ↔ ⟨,⟩(⟨,⟩(a, c), b) ∈ g)))))'),
+    ('MK:逆関係の類', (), '∀ g. (∃ Z. (∀ x. IsSet(x) → (∀ y. IsSet(y) → (⟨,⟩(x, y) ∈ Z ↔ (⟨,⟩(y, x) ∈ g)))))'),
 )
 EMPTY_CLASS = 'MK:空類の一意性'
-THEOREM_NAMES = (*HELPERS, *(name for name, _ in STATEMENTS), EMPTY_CLASS)
+THEOREM_NAMES = (*(name for name, _, _ in (*HELPERS, *STATEMENTS)), EMPTY_CLASS)
 
 
 def seed_public_mk(session):
@@ -47,13 +59,14 @@ def seed_public_mk(session):
 
 class _Classes(_Proofs):
     def seed_empty_class(self):
-        self.start()
         a = self.atom('a')
-        no_members, pointwise = self.empty_membership_equivalence(a)
+        premises = (self.parse('∀ x. ¬(x ∈ a)'),)
+        no_members, = self.start(premises)
+        pointwise = self.empty_membership_equivalence(a, no_members)
         extensionality = self.uis(self.ax('MK類外延性公理'), a, self.atom('∅'))
-        self.gen(self.close(no_members, self.mp(extensionality, pointwise)), 'a')
-        self.finish(EMPTY_CLASS, self.parse('∀ a. (∀ x. ¬(x ∈ a)) → a = ∅'),
-                    'Every class with no elements equals the empty set.')
+        self.mp(extensionality, pointwise)
+        self.finish(EMPTY_CLASS, self.parse('a = ∅'),
+                    'Every class with no elements equals the empty set.', premises)
 
     def replaced(self,body,bindings):
         from dem.services.proof import apply_substitution_pure
@@ -71,25 +84,31 @@ class _Classes(_Proofs):
         return body
     def tuple_injection(self,targets,witnesses,target_sets,witness_sets,equality):
         if len(targets)==2:
-            result=self.apply(self.cite(ZF_NAMES[10],terms=dict(zip(('a','b','c','d'),[*targets,*witnesses]))),
-                              *target_sets,*witness_sets,equality)
+            result = self.cite(ZF_NAMES[10], terms=dict(zip(('a','b','c','d'),[*targets,*witnesses])),
+                               args=(*target_sets, *witness_sets, equality))
             return [self.left(result),self.right(result)]
-        result=self.apply(self.cite(ZF_NAMES[10],terms=dict(zip(('a','b','c','d'),
-                              [self.ordered(*targets[:2]),targets[2],self.ordered(*witnesses[:2]),witnesses[2]]))),
-                          self.set_ordered(*targets[:2]),target_sets[2],self.set_ordered(*witnesses[:2]),witness_sets[2],equality)
+        terms = dict(zip(('a','b','c','d'), [
+            self.ordered(*targets[:2]), targets[2], self.ordered(*witnesses[:2]), witnesses[2],
+        ]))
+        result = self.cite(ZF_NAMES[10], terms=terms, args=(
+            self.set_ordered(*targets[:2]), target_sets[2],
+            self.set_ordered(*witnesses[:2]), witness_sets[2], equality,
+        ))
         inner=self.left(result); last=self.right(result)
         return [*self.tuple_injection(targets[:2],witnesses[:2],target_sets[:2],witness_sets[:2],inner),last]
 
     def tuple_helper(self,n,introduction):
-        self.start(); names=('a','b','c')[:n]; ws=('x','y','z')[:n]
+        names=('a','b','c')[:n]; ws=('x','y','z')[:n]
         targets=[self.atom(v) for v in names]; witnesses=[self.atom(v) for v in ws]
         prop='φ²' if n==2 else 'φ³'
-        pred=self.op(prop,*witnesses); value=self.op(prop,*targets)
-        body=self.tuple_body(n,pred); z=self.comp('q',body); term=self.tuple_term(targets)
-        guards=[self.assume(self.isset(t)) for t in targets]
+        pred = self.op(prop, *witnesses)
+        body = self.tuple_body(n, pred)
+        term = self.tuple_term(targets)
+        name, texts, conclusion = HELPERS[(1 if n == 2 else 3) + (not introduction)]
+        premises = tuple(map(self.parse, texts))
+        *guards, p = self.start(premises)
         raw=self.ui(self.ax('MK類内包公理図式',{'φ¹':(body,('q',))}),term)
         if introduction:
-            p=self.assume(value)
             core=self.pair(self.refl(term),p)
             for s in reversed(guards): core=self.pair(s,core)
             # Introduce existential witnesses from the innermost binder out.
@@ -99,9 +118,9 @@ class _Classes(_Proofs):
                 for v in reversed(ws[i+1:]): tail=self.some(v,tail)
                 tail=self.replaced(tail,{'q':term,**dict(zip(ws[:i],targets[:i]))})
                 core=self.ei(core,ws[i],tail,targets[i])
-            result=self.iff_out(raw,self.pair(self.element(self.tuple_set(targets)),core),True)
+            self.iff_out(raw,self.pair(self.element(self.tuple_set(targets)),core),True)
         else:
-            p=self.assume(self.member(term,z)); ex=self.right(self.iff_out(raw,p))
+            ex = self.right(self.iff_out(raw,p))
             def unpack(existential,i):
                 witness=self.assume(self.opened(self.tokens(existential),ws[i]))
                 if i+1<n: result=unpack(witness,i+1)
@@ -116,32 +135,36 @@ class _Classes(_Proofs):
                         result=self.transport(self.sym(equation),result,'v',self.op(prop,*predicate_args))
                         current[j]=targets[j]
                 return self.ee(existential,ws[i],witness,result)
-            result=unpack(ex,0)
-        self.close_many([*guards,p],result)
-        self.finish(HELPERS[(1 if n==2 else 3)+(not introduction)])
+            unpack(ex,0)
+        self.finish(name, self.parse(conclusion), premises=premises)
 
     def seed_classes(self):
         a,x=self.atom('a'),self.atom('x'); predicate=self.op('φ¹',x)
-        self.start(); sa=self.assume(self.isset(a)); term=self.comp('x',predicate)
+        name, texts, conclusion = HELPERS[0]
+        premises = tuple(map(self.parse, texts))
+        sa, = self.start(premises)
+        term = self.comp('x', predicate)
         raw=self.ui(self.ax('MK類内包公理図式'),a)
         member=self.assume(self.member(a,term)); fwd=self.close(member,self.right(self.iff_out(raw,member)))
         value=self.op('φ¹',a); p=self.assume(value)
         rev=self.close(p,self.iff_out(raw,self.pair(self.element(sa),p),True))
-        self.close(sa,self.iff_in(fwd,rev)); self.finish(HELPERS[0])
+        self.iff_in(fwd,rev)
+        self.finish(name, self.parse(conclusion), premises=premises)
         for n in (2,3):
             self.tuple_helper(n,True); self.tuple_helper(n,False)
         self.existence_theorems()
 
     def existence_theorems(self):
         a,b,c,x,y,g,Z=[self.atom(v) for v in ('a','b','c','x','y','g','Z')]
-        for index,(name,text) in enumerate(STATEMENTS):
-            self.start()
+        for index, (name, texts, text) in enumerate(STATEMENTS):
+            premises = tuple(map(self.parse, texts))
+            self.start(premises)
             if index in (1,2,3):
                 predicate=(self.conj(self.member(x,a),self.member(x,b)) if index==1 else
                            self.neg(self.member(x,a)) if index==2 else
                            self.some('y',self.conj(self.isset(y),self.member(self.ordered(x,y),a))))
                 z=self.comp('x',predicate); sx=self.assume(self.isset(x))
-                fact=self.mp(self.cite(HELPERS[0],{'φ¹':(predicate,('x',))},{'a':x}),sx)
+                fact = self.cite(HELPERS[0][0], {'φ¹': (predicate, ('x',))}, {'a': x}, args=(sx,))
                 result=self.gen(self.close(sx,fact),'x')
                 body=self.all('x',self.imp(self.isset(x),self.iff(self.member(x,Z),predicate)))
                 result=self.ei(result,'Z',body,z)
@@ -159,12 +182,15 @@ class _Classes(_Proofs):
                 z=self.comp('q',self.tuple_body(n,renamed)); guards=[self.assume(self.isset(t)) for t in values]
                 prop='φ²' if n==2 else 'φ³'; first=1 if n==2 else 3
                 bindings=dict(zip(('a','b','c')[:n],values))
-                fwd=self.apply(self.cite(HELPERS[first+1],{prop:(predicate,names)},bindings),*guards)
-                rev=self.apply(self.cite(HELPERS[first],{prop:(predicate,names)},bindings),*guards)
+                props = {prop: (predicate, names)}
+                member = self.assume(self.member(self.tuple_term(values), z))
+                fwd = self.close(member, self.cite(HELPERS[first + 1][0], props, bindings, args=(*guards, member)))
+                value = self.assume(predicate)
+                rev = self.close(value, self.cite(HELPERS[first][0], props, bindings, args=(*guards, value)))
                 result=self.iff_in(fwd,rev)
                 for v,guard in reversed(list(zip(names,guards))): result=self.gen(self.close(guard,result),v)
                 body=self.iff(self.member(self.tuple_term(values),Z),predicate)
                 for v,t in reversed(list(zip(names,values))): body=self.all(v,self.imp(self.isset(t),body))
                 result=self.ei(result,'Z',body,z)
                 if index: result=self.gen(result,'g')
-            self.finish(name,self.parse(text),'Class existence from comprehension; B1–B7 numbering follows Mendelson, 4th ed., p.230.')
+            self.finish(name,self.parse(text),'Class existence from comprehension; B1–B7 numbering follows Mendelson, 4th ed., p.230.', premises)

@@ -68,6 +68,7 @@ const note = {
     namespace_name: 'dem.foundation.logic',
     name: '遊ぶノート',
     conclusion_formula_id: 112,
+    premise_formula_ids: [formula.id],
     conclusion_formula: formula,
     status: 'conjecture',
     description: null,

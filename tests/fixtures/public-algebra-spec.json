@@ -1,0 +1,759 @@
+{
+  "systems": [
+    "ヒルベルト体系（コア）",
+    "ヒルベルト体系（古典）",
+    "直観主義論理",
+    "古典論理",
+    "直観主義論理（同値つき）",
+    "古典論理（同値つき）",
+    "ZF",
+    "ZFC",
+    "MK"
+  ],
+  "definitions": [
+    {
+      "name": "op",
+      "id": "ea75679b-d84f-5b18-abc9-f4842d815848",
+      "symbol_id": "fbe95309-f4a3-57fd-ac71-bb71b4d75480",
+      "axiom_id": "4aa27d65-50e5-5e5f-992f-90935d101d42",
+      "kind": "function",
+      "hash": "edd3a3ad8bcb7d5682c100a38b0ff0c3a1a9b99c0919a355cac63b06eee13694",
+      "dss": "∀ x. ∀ y. ∀ z. (op(x, y, z)) = (ev(x, ⟨,⟩(y, z)))",
+      "notation": "prefix",
+      "precedence": null,
+      "latex": "#2 \\cdot_{#1} #3"
+    },
+    {
+      "name": "IsSemigroup",
+      "id": "7ce4119b-d3af-55d9-a13b-940253758c1a",
+      "symbol_id": "fab2ce6d-b7c7-51f8-bf78-d187dd7a10d9",
+      "axiom_id": "3f342c1a-c6eb-565b-b853-db3dcbe7a7e3",
+      "kind": "predicate",
+      "hash": "218a27e188105e78732554f7f685944600962a611226b92d6abb13a1cd4f8beb",
+      "dss": "∀ x. ∀ y. (IsSemigroup(x, y)) ↔ ((IsSet(x)) ∧ (IsMap(y, x × x, x)) ∧ (∀ z. ∀ x_1. ∀ y_1. (z ∈ x) → (x_1 ∈ x) → (y_1 ∈ x) → ((op(y, op(y, z, x_1), y_1)) = (op(y, z, op(y, x_1, y_1))))))",
+      "notation": "prefix",
+      "precedence": null,
+      "latex": "\\left(#1, #2\\right) \\mathrel{\\mathsf{IsSemigroup}}"
+    },
+    {
+      "name": "IsMonoid",
+      "id": "6ca02b05-8667-5389-a04d-48305ea2703e",
+      "symbol_id": "88ca3065-017e-510c-b2ae-2f6c1788ac66",
+      "axiom_id": "ef95be20-1ab8-5e82-9e04-45b27cf43be2",
+      "kind": "predicate",
+      "hash": "8f49517f8cfbe9522a5af6af79572034a2ccc566b70d453df5fe9545937e493a",
+      "dss": "∀ x. ∀ y. ∀ z. (IsMonoid(x, y, z)) ↔ ((IsSemigroup(x, y)) ∧ (z ∈ x) ∧ (∀ x_1. (x_1 ∈ x) → (((op(y, z, x_1)) = x_1) ∧ ((op(y, x_1, z)) = x_1))))",
+      "notation": "prefix",
+      "precedence": null,
+      "latex": "\\left(#1, #2, #3\\right) \\mathrel{\\mathsf{IsMonoid}}"
+    }
+  ],
+  "theorems": [
+    {
+      "name": "演算:値の所属",
+      "id": "6bce5c17-7188-500b-9b95-b6666b06e788",
+      "hash": "3325fa2bc6da7c4d16852fa5a0b4b584e732fda2754a6c614521ecd4325eb7c6",
+      "dss": "(op(m, x, y)) ∈ S",
+      "steps": 41,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "op 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "5c74d289184d4421f9d5c10a16d30122878912c25e175484401009a5cadd393c",
+          "dss": "IsSet(S)"
+        },
+        {
+          "hash": "18da648a6034ba13201463ea61f85d52d7287f8936671907b50bcffdde40d90d",
+          "dss": "IsMap(m, S × S, S)"
+        },
+        {
+          "hash": "b1fc0706b84ca09c1acfbc4904f89a5ffff8f01d5beaa0bc3442a10ce3ab3852",
+          "dss": "x ∈ S"
+        },
+        {
+          "hash": "1aea1f1c2508804a0be31c69bdaab320f7699c64b3106c8ff66ae737af790b86",
+          "dss": "y ∈ S"
+        }
+      ]
+    },
+    {
+      "name": "演算:グラフと値",
+      "id": "0b918227-b8fc-51b6-91e3-5093e4da2325",
+      "hash": "9a788ece4e8c077fb61ded2112f2b81e451948c28aea2d3032a13c2745e42a3e",
+      "dss": "((⟨,⟩(⟨,⟩(x, y), z)) ∈ m) ↔ ((op(m, x, y)) = z)",
+      "steps": 61,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "op 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "5c74d289184d4421f9d5c10a16d30122878912c25e175484401009a5cadd393c",
+          "dss": "IsSet(S)"
+        },
+        {
+          "hash": "18da648a6034ba13201463ea61f85d52d7287f8936671907b50bcffdde40d90d",
+          "dss": "IsMap(m, S × S, S)"
+        },
+        {
+          "hash": "b1fc0706b84ca09c1acfbc4904f89a5ffff8f01d5beaa0bc3442a10ce3ab3852",
+          "dss": "x ∈ S"
+        },
+        {
+          "hash": "1aea1f1c2508804a0be31c69bdaab320f7699c64b3106c8ff66ae737af790b86",
+          "dss": "y ∈ S"
+        },
+        {
+          "hash": "96893a76cb5850f420908222957d9fc3436a1d889c2841b8a3c5efbb1fcedfb3",
+          "dss": "z ∈ S"
+        }
+      ]
+    },
+    {
+      "name": "半群:台の集合性",
+      "id": "79847c20-5c9e-585e-b170-692826f8685d",
+      "hash": "5c74d289184d4421f9d5c10a16d30122878912c25e175484401009a5cadd393c",
+      "dss": "IsSet(S)",
+      "steps": 11,
+      "valid": [
+        "直観主義論理（同値つき）",
+        "古典論理（同値つき）",
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsSemigroup 定義公理",
+        "全称除去公理",
+        "同値除去公理（左）",
+        "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "7662ecd3f2e722945efda17cc1aaa2ea4aaedea73dd5b2c1b5068eca6aee27f0",
+          "dss": "IsSemigroup(S, m)"
+        }
+      ]
+    },
+    {
+      "name": "半群:演算は写像",
+      "id": "db597e4f-120b-5525-ab41-d48417772559",
+      "hash": "18da648a6034ba13201463ea61f85d52d7287f8936671907b50bcffdde40d90d",
+      "dss": "IsMap(m, S × S, S)",
+      "steps": 13,
+      "valid": [
+        "直観主義論理（同値つき）",
+        "古典論理（同値つき）",
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsSemigroup 定義公理",
+        "全称除去公理",
+        "同値除去公理（左）",
+        "連言除去公理（右）",
+        "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "7662ecd3f2e722945efda17cc1aaa2ea4aaedea73dd5b2c1b5068eca6aee27f0",
+          "dss": "IsSemigroup(S, m)"
+        }
+      ]
+    },
+    {
+      "name": "半群:演算の所属",
+      "id": "81a54596-627a-5520-a84f-d706a484ff3d",
+      "hash": "3325fa2bc6da7c4d16852fa5a0b4b584e732fda2754a6c614521ecd4325eb7c6",
+      "dss": "(op(m, x, y)) ∈ S",
+      "steps": 6,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "IsSemigroup 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "op 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "7662ecd3f2e722945efda17cc1aaa2ea4aaedea73dd5b2c1b5068eca6aee27f0",
+          "dss": "IsSemigroup(S, m)"
+        },
+        {
+          "hash": "b1fc0706b84ca09c1acfbc4904f89a5ffff8f01d5beaa0bc3442a10ce3ab3852",
+          "dss": "x ∈ S"
+        },
+        {
+          "hash": "1aea1f1c2508804a0be31c69bdaab320f7699c64b3106c8ff66ae737af790b86",
+          "dss": "y ∈ S"
+        }
+      ]
+    },
+    {
+      "name": "半群:結合律",
+      "id": "5c963f11-b850-52b8-ba0a-dcd80667c1cf",
+      "hash": "4175c8ddf64e2940160aa5252db5c9d3824d24b1772793ea431e262faeeb1e8a",
+      "dss": "(op(m, op(m, x, y), z)) = (op(m, x, op(m, y, z)))",
+      "steps": 25,
+      "valid": [
+        "直観主義論理（同値つき）",
+        "古典論理（同値つき）",
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsSemigroup 定義公理",
+        "全称除去公理",
+        "同値除去公理（左）",
+        "連言除去公理（右）"
+      ],
+      "premises": [
+        {
+          "hash": "7662ecd3f2e722945efda17cc1aaa2ea4aaedea73dd5b2c1b5068eca6aee27f0",
+          "dss": "IsSemigroup(S, m)"
+        },
+        {
+          "hash": "b1fc0706b84ca09c1acfbc4904f89a5ffff8f01d5beaa0bc3442a10ce3ab3852",
+          "dss": "x ∈ S"
+        },
+        {
+          "hash": "1aea1f1c2508804a0be31c69bdaab320f7699c64b3106c8ff66ae737af790b86",
+          "dss": "y ∈ S"
+        },
+        {
+          "hash": "96893a76cb5850f420908222957d9fc3436a1d889c2841b8a3c5efbb1fcedfb3",
+          "dss": "z ∈ S"
+        }
+      ]
+    },
+    {
+      "name": "半群:導入",
+      "id": "9be58545-32b2-524f-82f7-f6d08d0adc9e",
+      "hash": "7662ecd3f2e722945efda17cc1aaa2ea4aaedea73dd5b2c1b5068eca6aee27f0",
+      "dss": "IsSemigroup(S, m)",
+      "steps": 17,
+      "valid": [
+        "直観主義論理（同値つき）",
+        "古典論理（同値つき）",
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsSemigroup 定義公理",
+        "全称除去公理",
+        "同値除去公理（右）",
+        "連言導入公理"
+      ],
+      "premises": [
+        {
+          "hash": "5c74d289184d4421f9d5c10a16d30122878912c25e175484401009a5cadd393c",
+          "dss": "IsSet(S)"
+        },
+        {
+          "hash": "18da648a6034ba13201463ea61f85d52d7287f8936671907b50bcffdde40d90d",
+          "dss": "IsMap(m, S × S, S)"
+        },
+        {
+          "hash": "14f39eebf2e01972a6a226eeec588493df19927926335a8668d643c512db3541",
+          "dss": "∀ x. ∀ y. ∀ z. (x ∈ S) → (y ∈ S) → (z ∈ S) → ((op(m, op(m, x, y), z)) = (op(m, x, op(m, y, z))))"
+        }
+      ]
+    },
+    {
+      "name": "半群:一点半群",
+      "id": "beb1c1b4-0c83-5618-938f-a5e2442b7890",
+      "hash": "3299bc4072996a19fde18b6de2c753ba66be6cd04dc87bcaf9a53584d1122778",
+      "dss": "IsSemigroup({}(a), {}(⟨,⟩(⟨,⟩(a, a), a)))",
+      "steps": 186,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "IsSemigroup 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "op 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "7c0c71b0b576cda1c56510926ce4ae6a027a8748f7c9c58c11591e73d47f484f",
+          "dss": "IsSet(a)"
+        }
+      ]
+    },
+    {
+      "name": "半群:空半群",
+      "id": "e222381a-66fc-5273-b7ed-07a7ef8590e2",
+      "hash": "307c272ac7b3aeae668de63dedc98e57665dd5ed6faf1be04edfb8398aec89d6",
+      "dss": "IsSemigroup(∅, ∅)",
+      "steps": 77,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "IsSemigroup 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF無限公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "{,} 定義公理",
+        "× 定義公理",
+        "∅ 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "否定導入公理",
+        "否定除去公理",
+        "存在導入公理",
+        "存在除去公理",
+        "矛盾除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）"
+      ],
+      "premises": []
+    },
+    {
+      "name": "モノイド:半群である",
+      "id": "a4049269-21e8-5520-895d-95a2a06a95e6",
+      "hash": "7662ecd3f2e722945efda17cc1aaa2ea4aaedea73dd5b2c1b5068eca6aee27f0",
+      "dss": "IsSemigroup(S, m)",
+      "steps": 13,
+      "valid": [
+        "直観主義論理（同値つき）",
+        "古典論理（同値つき）",
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMonoid 定義公理",
+        "全称除去公理",
+        "同値除去公理（左）",
+        "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "4ed4c9f06d3005e7077b648fbc2f3c5ba2b48f95ad6aab0ffc8a656f0e6006bc",
+          "dss": "IsMonoid(S, m, e)"
+        }
+      ]
+    },
+    {
+      "name": "モノイド:単位元の所属",
+      "id": "ed1ba8f1-2e3a-5c32-aad4-2688f4308e7f",
+      "hash": "f571e3818ada112d50c35b35d1966eb1bc95707ed0bc00044599039cddd40563",
+      "dss": "e ∈ S",
+      "steps": 15,
+      "valid": [
+        "直観主義論理（同値つき）",
+        "古典論理（同値つき）",
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMonoid 定義公理",
+        "全称除去公理",
+        "同値除去公理（左）",
+        "連言除去公理（右）",
+        "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "4ed4c9f06d3005e7077b648fbc2f3c5ba2b48f95ad6aab0ffc8a656f0e6006bc",
+          "dss": "IsMonoid(S, m, e)"
+        }
+      ]
+    },
+    {
+      "name": "モノイド:左単位律",
+      "id": "ec91ad5e-7d8c-54a6-a5e5-953a48437bde",
+      "hash": "6bceab7e2d470001dc952c24a14552aa72ee2b4e77189fdda4cb9dbdccee8212",
+      "dss": "(op(m, e, x)) = x",
+      "steps": 21,
+      "valid": [
+        "直観主義論理（同値つき）",
+        "古典論理（同値つき）",
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMonoid 定義公理",
+        "全称除去公理",
+        "同値除去公理（左）",
+        "連言除去公理（右）",
+        "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "4ed4c9f06d3005e7077b648fbc2f3c5ba2b48f95ad6aab0ffc8a656f0e6006bc",
+          "dss": "IsMonoid(S, m, e)"
+        },
+        {
+          "hash": "b1fc0706b84ca09c1acfbc4904f89a5ffff8f01d5beaa0bc3442a10ce3ab3852",
+          "dss": "x ∈ S"
+        }
+      ]
+    },
+    {
+      "name": "モノイド:右単位律",
+      "id": "f2d2168b-72e7-5735-8ce3-56270026f0bf",
+      "hash": "d334a6829f90f2cdf46c6e9d514c74202d553678676fbad11eb4d6451238f483",
+      "dss": "(op(m, x, e)) = x",
+      "steps": 21,
+      "valid": [
+        "直観主義論理（同値つき）",
+        "古典論理（同値つき）",
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMonoid 定義公理",
+        "全称除去公理",
+        "同値除去公理（左）",
+        "連言除去公理（右）"
+      ],
+      "premises": [
+        {
+          "hash": "4ed4c9f06d3005e7077b648fbc2f3c5ba2b48f95ad6aab0ffc8a656f0e6006bc",
+          "dss": "IsMonoid(S, m, e)"
+        },
+        {
+          "hash": "b1fc0706b84ca09c1acfbc4904f89a5ffff8f01d5beaa0bc3442a10ce3ab3852",
+          "dss": "x ∈ S"
+        }
+      ]
+    },
+    {
+      "name": "モノイド:導入",
+      "id": "da462af5-ca94-5b75-a187-02badc127d5c",
+      "hash": "4ed4c9f06d3005e7077b648fbc2f3c5ba2b48f95ad6aab0ffc8a656f0e6006bc",
+      "dss": "IsMonoid(S, m, e)",
+      "steps": 19,
+      "valid": [
+        "直観主義論理（同値つき）",
+        "古典論理（同値つき）",
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMonoid 定義公理",
+        "全称除去公理",
+        "同値除去公理（右）",
+        "連言導入公理"
+      ],
+      "premises": [
+        {
+          "hash": "7662ecd3f2e722945efda17cc1aaa2ea4aaedea73dd5b2c1b5068eca6aee27f0",
+          "dss": "IsSemigroup(S, m)"
+        },
+        {
+          "hash": "f571e3818ada112d50c35b35d1966eb1bc95707ed0bc00044599039cddd40563",
+          "dss": "e ∈ S"
+        },
+        {
+          "hash": "81cda7d55c5fb63355b46ac08eebab8413c5b7515c34dc90b12ee41c7297fb54",
+          "dss": "∀ x. (x ∈ S) → (((op(m, e, x)) = x) ∧ ((op(m, x, e)) = x))"
+        }
+      ]
+    },
+    {
+      "name": "モノイド:単位元の一意性",
+      "id": "0689b6e5-1d21-588d-8057-318359eee027",
+      "hash": "cbbee582903ee98cb82e8b412dc00eba10a31eea89b043e1d7bb4193cdcad8f7",
+      "dss": "e = u",
+      "steps": 13,
+      "valid": [
+        "直観主義論理（同値つき）",
+        "古典論理（同値つき）",
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMonoid 定義公理",
+        "全称除去公理",
+        "同値除去公理（左）",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "4ed4c9f06d3005e7077b648fbc2f3c5ba2b48f95ad6aab0ffc8a656f0e6006bc",
+          "dss": "IsMonoid(S, m, e)"
+        },
+        {
+          "hash": "7e7573cf1225b96e5041bbe9c8e3abba069aea95ba4642d7fdad2ca4f0e271b2",
+          "dss": "IsMonoid(S, m, u)"
+        }
+      ]
+    },
+    {
+      "name": "モノイド:一点モノイド",
+      "id": "3afb8048-41d1-5152-b603-61fa650d0857",
+      "hash": "f5d2ae92997add7c508b83d5ccd335f6080e89b7f9ccc9ad65d0c8a5c245a9ac",
+      "dss": "IsMonoid({}(a), {}(⟨,⟩(⟨,⟩(a, a), a)), a)",
+      "steps": 44,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsMonoid 定義公理",
+        "IsRelation 定義公理",
+        "IsSemigroup 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "op 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "7c0c71b0b576cda1c56510926ce4ae6a027a8748f7c9c58c11591e73d47f484f",
+          "dss": "IsSet(a)"
+        }
+      ]
+    },
+    {
+      "name": "モノイド:空集合はモノイドでない",
+      "id": "44399695-205c-5334-84ff-9c74d0ea5028",
+      "hash": "3084bbac70d27ed539ee26248e6d77b481c836aeaf57f86d85323b3f619883f2",
+      "dss": "¬(IsMonoid(∅, m, e))",
+      "steps": 11,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMonoid 定義公理",
+        "ZF内包項所属公理図式",
+        "ZF無限公理",
+        "ZF純粋性公理",
+        "∅ 定義公理",
+        "全称除去公理",
+        "同値除去公理（左）",
+        "否定導入公理",
+        "否定除去公理",
+        "存在除去公理",
+        "等号代入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）"
+      ],
+      "premises": []
+    }
+  ],
+  "digests": {
+    "dem.public.algebra@1.0.0": "dd1528d038bee693f40c036d731894a0d843872f09f47de70c415c34a126d261"
+  },
+  "counts": {
+    "before": {
+      "symbol": 58,
+      "definition": 13,
+      "axiom": 49,
+      "axiom_system": 9,
+      "theorem": 96,
+      "proof": 97
+    },
+    "after": {
+      "symbol": 63,
+      "definition": 16,
+      "axiom": 52,
+      "axiom_system": 9,
+      "theorem": 113,
+      "proof": 114
+    }
+  }
+}

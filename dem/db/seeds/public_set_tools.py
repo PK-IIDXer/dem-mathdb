@@ -12,7 +12,7 @@ from dem.services.proof import ProofService, abstract_and_quantify_pure
 from dem.services.symbol import SymbolService
 from dem.services.theorem import TheoremService
 from dem.types import (Token, PropSubst, TermSubst, Substitution, AxiomStepInput,
-                       TheoremStepInput, AssumptionStepInput, MPStepInput,
+                       TheoremStepInput, AssumptionStepInput, MPStepInput, PremiseStepInput,
                        GenStepInput, ImplicationIntroStepInput)
 
 
@@ -152,12 +152,20 @@ class Builder:
         row = self.logic[key] if key in self.logic else self.axs.get_by_name(key)
         sigma = self.sigma(props, terms)
         return self.line(AxiomStepInput(row.id, sigma), self.ps.compute_substituted_tokens(row.formula_id, sigma))
-    def cite(self, name, props=None, terms=None):
+    def cite(self, name, props=None, terms=None, args=()):
         row = self.ts.get_by_name(name)
         proof = self.ps.list_for_theorem(row.id)
         if len(proof) != 1: raise ValidationError('Ambiguous public helper proof')
         sigma = self.sigma(props, terms)
-        return self.line(TheoremStepInput(proof[0].id, sigma), self.ps.compute_substituted_tokens(row.conclusion_formula_id, sigma))
+        premises = self.ts.list_premises(row.id)
+        if len(premises) != len(args):
+            raise ValidationError(f'Builder theorem argument count mismatch: {name}')
+        for (ord_, formula), arg in zip(premises, args, strict=True):
+            instance = self.ps.compute_substituted_tokens(formula.id, sigma)
+            if instance != self.tokens(arg):
+                raise ValidationError(f'Builder theorem premise mismatch: {name}, premise {ord_}')
+        return self.line(TheoremStepInput(proof[0].id, sigma, tuple(args)),
+                         self.ps.compute_substituted_tokens(row.conclusion_formula_id, sigma))
     def assume(self, tokens): return self.line(AssumptionStepInput(), tokens)
     def mp(self, implication, antecedent):
         p, q = self.parts(self.tokens(implication))
@@ -210,13 +218,15 @@ class Builder:
         if self.tokens(assumption) != body: raise ValidationError('Existential witness mismatch')
         closed = self.gen(self.close(assumption, conclusion), v)
         return self.apply(self.ax('exists_out', {'φ¹': (body, (v,)), 'ψ': self.tokens(conclusion)}), closed, existential)
-    def start(self): self.lines = []
-    def finish(self, name, expected=None, description=''):
+    def start(self, premises=()):
+        self.lines = []
+        return tuple(self.line(PremiseStepInput(i), tokens) for i, tokens in enumerate(premises))
+    def finish(self, name, expected=None, description='', premises=()):
         if not self.lines or len(self.lines) > 200:
             raise ValidationError(f'Public proof step limit: {name}: {len(self.lines)}')
         target = self.tokens(len(self.lines)-1)
         if expected is not None and target != expected: raise ValidationError(f'Wrong public statement: {name}')
-        theorem = self.ts.register(name, self.fid(target), [], description=description,
+        theorem = self.ts.register(name, self.fid(target), [self.fid(p) for p in premises], description=description,
                                    public_id_key=f'dem.public.{self.package}::{name}')
         proof = self.ps.create_proof(theorem.id, name=name+'の証明')
         for spec, tokens in self.lines: self.ps.add_step(proof.id, spec, self.fid(tokens))

@@ -16,7 +16,7 @@ Independent demonstrations add a definition and derived theorems with validated
 proofs, including self-implication, implication chaining, theorem citation and a
 classical implication example. Their construction uses only the public core.
 `dem.public.logic` and `dem.public.demos` provide package catalogs; the latter
-depends on the former. `dem.public.natural_deduction` also depends on the core:
+depends on the former. `dem.public.natural-deduction` also depends on the core:
 it adopts eleven connective and existential schemas and adds twenty-two verified
 theorems, including double negation, contraposition and excluded middle. Its
 intuitionistic and classical systems keep the original two systems unchanged.

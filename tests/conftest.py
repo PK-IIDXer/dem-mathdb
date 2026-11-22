@@ -41,7 +41,7 @@ from dem.db.models import Base
 from dem.db.seed import seed_inference_rules, seed_language
 
 
-from dem.db.seeds import (seed_public_core, seed_public_demos, seed_all,
+from dem.db.seeds import (seed_public_core, seed_public_demos, seed_all, seed_public_class_relations_layer,
                           seed_public_natural_deductions, seed_public_equivalences, seed_public_sets,
                           seed_public_classes)
 
@@ -71,7 +71,8 @@ _PHASES: tuple[tuple[str, SeedFunction], ...] = (
     ("public_equivalence", seed_public_equivalences),
     ("public_zfc", seed_public_sets),
     ("public_mk", seed_public_classes),
-    ("public_class_relations", seed_all),
+    ("public_class_relations", seed_public_class_relations_layer),
+    ("public_algebra", seed_all),
 )
 _BRANCHES: tuple[tuple[str, str, SeedFunction], ...] = ()
 
@@ -953,7 +954,7 @@ def all_seeded_session(
     seed_snapshot_factory: SeedSnapshotFactory,
 ) -> Iterator[Session]:
     with seed_snapshot_factory.session(
-        "public_class_relations", _database_for(request)
+        "public_algebra", _database_for(request)
     ) as session:
         yield session
 

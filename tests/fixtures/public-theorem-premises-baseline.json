@@ -1,0 +1,3920 @@
+{
+  "migration": {
+    "ZF:単集合の所属": {
+      "generalize": false,
+      "arity": 1
+    },
+    "ZF:非順序対の所属": {
+      "generalize": false,
+      "arity": 2
+    },
+    "ZF:順序対の第一成分": {
+      "generalize": false,
+      "arity": 5
+    },
+    "ZF:順序対の成分範囲": {
+      "generalize": false,
+      "arity": 4
+    },
+    "ZF:対の共通成分消去": {
+      "generalize": false,
+      "arity": 2
+    },
+    "ZF:順序対の第二成分": {
+      "generalize": false,
+      "arity": 5
+    },
+    "ZF:順序対の成分一致": {
+      "generalize": false,
+      "arity": 5
+    },
+    "ZF:空集合の一意性": {
+      "generalize": true,
+      "arity": 2
+    },
+    "ZF:空でない集合は元を持つ": {
+      "generalize": true,
+      "arity": 2
+    },
+    "ZF:空集合は単集合でない": {
+      "generalize": true,
+      "arity": 1
+    },
+    "一意存在:導入": {
+      "generalize": false,
+      "arity": 2
+    },
+    "一意存在:存在": {
+      "generalize": false,
+      "arity": 1
+    },
+    "一意存在:一意性": {
+      "generalize": false,
+      "arity": 3
+    },
+    "一意存在:存在と一意性から": {
+      "generalize": false,
+      "arity": 2
+    },
+    "包含:推移律": {
+      "generalize": false,
+      "arity": 2
+    },
+    "包含:反対称律": {
+      "generalize": false,
+      "arity": 4
+    },
+    "直積:順序対の片側の像の集合性": {
+      "generalize": false,
+      "arity": 2
+    },
+    "直積:順序対の片側の像を集めた集合": {
+      "generalize": false,
+      "arity": 2
+    },
+    "直積:集合性": {
+      "generalize": false,
+      "arity": 2
+    },
+    "直積:所属": {
+      "generalize": false,
+      "arity": 2
+    },
+    "直積:順序対の所属": {
+      "generalize": false,
+      "arity": 4
+    },
+    "関係:元は順序対": {
+      "generalize": false,
+      "arity": 3
+    },
+    "関係:直積は関係": {
+      "generalize": false,
+      "arity": 2
+    },
+    "関係:外延性": {
+      "generalize": false,
+      "arity": 5
+    },
+    "写像:写像は関係": {
+      "generalize": false,
+      "arity": 1
+    },
+    "写像:値の存在": {
+      "generalize": false,
+      "arity": 1
+    },
+    "写像:値の一意性": {
+      "generalize": false,
+      "arity": 1
+    },
+    "写像:包含する写像は等しい": {
+      "generalize": false,
+      "arity": 5
+    },
+    "MK:集合における類内包": {
+      "generalize": false,
+      "arity": 1
+    },
+    "MK:順序対内包の導入": {
+      "generalize": false,
+      "arity": 3
+    },
+    "MK:順序対内包の除去": {
+      "generalize": false,
+      "arity": 3
+    },
+    "MK:三つ組内包の導入": {
+      "generalize": false,
+      "arity": 4
+    },
+    "MK:三つ組内包の除去": {
+      "generalize": false,
+      "arity": 4
+    },
+    "MK:空類の一意性": {
+      "generalize": true,
+      "arity": 1
+    },
+    "類写像:類写像は類関係": {
+      "generalize": false,
+      "arity": 1
+    },
+    "類写像:値の存在": {
+      "generalize": false,
+      "arity": 1
+    },
+    "類写像:値の一意性": {
+      "generalize": false,
+      "arity": 1
+    },
+    "MK:類関係の元は順序対": {
+      "generalize": false,
+      "arity": 1
+    },
+    "MK:集合の間の類関係は関係": {
+      "generalize": false,
+      "arity": 3
+    },
+    "類写像:集合を定義域とする類写像の順序対の像は集合": {
+      "generalize": false,
+      "arity": 2
+    },
+    "MK:定義域が集合の類写像は写像": {
+      "generalize": false,
+      "arity": 2
+    },
+    "MK:包含する類写像は等しい": {
+      "generalize": false,
+      "arity": 3
+    }
+  },
+  "theorems": {
+    "含意の自己適用": {
+      "id": "04f9430e-2709-5fd3-aaea-d5c792fcea82",
+      "hash": "ea9c32ccb6929a3a2d9dbdf1917b0074d3e020d6f1f401bae0d05929e112614f",
+      "dss": "φ → φ",
+      "premises": [],
+      "proofs": {
+        "1f0c36bb-6f2f-550d-82b1-5dd3dfb4ad4a": {
+          "steps": 5,
+          "step_hash": "c7ef7908220114de78a0b66b6d4af7643a9639ceb58b5b37835e3d6f35541281",
+          "direct_axioms": [
+            "40fd0ee6-c625-560e-b002-db31582fe8ae",
+            "f78bf2fa-26c3-5047-ae0d-f90393cd2555"
+          ],
+          "cites": [],
+          "axioms": [
+            "ヒルベルト公理K",
+            "ヒルベルト公理S"
+          ],
+          "valid": [
+            "ヒルベルト体系（コア）",
+            "ヒルベルト体系（古典）",
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        },
+        "825a0467-eb8a-5d12-9624-7ec629863540": {
+          "steps": 2,
+          "step_hash": "c4a38659c52931bf04528560baa893267913159bbc22e5fdb5040774e7951d38",
+          "direct_axioms": [],
+          "cites": [],
+          "axioms": [],
+          "valid": [
+            "ヒルベルト体系（コア）",
+            "ヒルベルト体系（古典）",
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "含意の連鎖": {
+      "id": "1a94c136-668c-58b7-9273-19d552473ae2",
+      "hash": "65460d2c536a25467937bd7928fc6fc7f3a6b0b99ac36d523b05329ff2efa0cc",
+      "dss": "χ",
+      "premises": [
+        {
+          "hash": "d162ddb918fe947888e69d32af1ccedf14e77eb541ba34b9fc4dee456ab9ba8a",
+          "dss": "φ → ψ"
+        },
+        {
+          "hash": "a93326f20242f2a3a0efbc8fa905aea8f8fc16e6253ec1cbe5b1c88cd68070bf",
+          "dss": "ψ → χ"
+        },
+        {
+          "hash": "197b6b086ab94deddaa3b8c6f3e680e37c7b5ce2ccef525f802bd76fa8a8e01f",
+          "dss": "φ"
+        }
+      ],
+      "proofs": {
+        "95c140f0-8579-51b5-a68a-b1b44bafbf55": {
+          "steps": 5,
+          "step_hash": "d476062b3271c1c65b3c1959f2824190fc8ec2be6fdadc151e92d4c7e504e3a7",
+          "direct_axioms": [],
+          "cites": [],
+          "axioms": [],
+          "valid": [
+            "ヒルベルト体系（コア）",
+            "ヒルベルト体系（古典）",
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "導出の引用": {
+      "id": "3a20be21-f428-5144-ac5b-ced58a7e9857",
+      "hash": "65460d2c536a25467937bd7928fc6fc7f3a6b0b99ac36d523b05329ff2efa0cc",
+      "dss": "χ",
+      "premises": [
+        {
+          "hash": "d162ddb918fe947888e69d32af1ccedf14e77eb541ba34b9fc4dee456ab9ba8a",
+          "dss": "φ → ψ"
+        },
+        {
+          "hash": "a93326f20242f2a3a0efbc8fa905aea8f8fc16e6253ec1cbe5b1c88cd68070bf",
+          "dss": "ψ → χ"
+        },
+        {
+          "hash": "197b6b086ab94deddaa3b8c6f3e680e37c7b5ce2ccef525f802bd76fa8a8e01f",
+          "dss": "φ"
+        }
+      ],
+      "proofs": {
+        "d5f33408-0a1c-53ac-9f4e-290a07911480": {
+          "steps": 4,
+          "step_hash": "89431e74defa872bfcc486a35a3787607271a7dcb9a6360ac48f61694550bade",
+          "direct_axioms": [],
+          "cites": [
+            "含意の連鎖"
+          ],
+          "axioms": [],
+          "valid": [
+            "ヒルベルト体系（コア）",
+            "ヒルベルト体系（古典）",
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "古典含意の例": {
+      "id": "90b4f2b5-4e6d-5fb3-9343-75070d6c1c2a",
+      "hash": "32b85f6afcb4264d7a68230b08619714df1517c63370421aaecd05019746d248",
+      "dss": "((φ → ψ) → φ) → φ",
+      "premises": [],
+      "proofs": {
+        "02ad6140-f683-5235-9dd3-4247d3f682da": {
+          "steps": 1,
+          "step_hash": "731783bfb4f8ee6112e374971d5fa6a3256336eecc6108eb83b6991fb0d13022",
+          "direct_axioms": [
+            "a4169fa3-8198-51f5-9f57-7ea6a09e71b7"
+          ],
+          "cites": [],
+          "axioms": [
+            "パース公理"
+          ],
+          "valid": [
+            "ヒルベルト体系（古典）",
+            "古典論理",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "前提の保持": {
+      "id": "2377a993-0724-5f88-bf96-7d73e535e47b",
+      "hash": "195e9ed9896ea4c982ce062073847d748ac82ef02e3d0474b7bc1e3b9894ca9f",
+      "dss": "ψ → φ",
+      "premises": [
+        {
+          "hash": "197b6b086ab94deddaa3b8c6f3e680e37c7b5ce2ccef525f802bd76fa8a8e01f",
+          "dss": "φ"
+        }
+      ],
+      "proofs": {
+        "19e9ee08-d8b1-526f-b96e-b22f41c2c2d1": {
+          "steps": 3,
+          "step_hash": "8c464a921398213c74f585e954540ca8201bf807387f59e001828766a992c17d",
+          "direct_axioms": [
+            "40fd0ee6-c625-560e-b002-db31582fe8ae"
+          ],
+          "cites": [],
+          "axioms": [
+            "ヒルベルト公理K"
+          ],
+          "valid": [
+            "ヒルベルト体系（コア）",
+            "ヒルベルト体系（古典）",
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "含意除去": {
+      "id": "204f2e8d-a382-53f7-90d2-13fef1694dc4",
+      "hash": "b1b95f7e3a75fc9018e4453b6c7f5ce3702548d26c9c29cc13d686995f99ef51",
+      "dss": "ψ",
+      "premises": [
+        {
+          "hash": "d162ddb918fe947888e69d32af1ccedf14e77eb541ba34b9fc4dee456ab9ba8a",
+          "dss": "φ → ψ"
+        },
+        {
+          "hash": "197b6b086ab94deddaa3b8c6f3e680e37c7b5ce2ccef525f802bd76fa8a8e01f",
+          "dss": "φ"
+        }
+      ],
+      "proofs": {
+        "61c9abd2-01a3-5891-827d-39b3cc814f10": {
+          "steps": 3,
+          "step_hash": "54b9bbddb2197a96908ec6c2ac7ddab1be6a155622e8bf838e27c15e8dd38f39",
+          "direct_axioms": [],
+          "cites": [],
+          "axioms": [],
+          "valid": [
+            "ヒルベルト体系（コア）",
+            "ヒルベルト体系（古典）",
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "矛盾除去": {
+      "id": "ca86f918-df2e-5c29-a5c6-9a5f8a50b2d0",
+      "hash": "197b6b086ab94deddaa3b8c6f3e680e37c7b5ce2ccef525f802bd76fa8a8e01f",
+      "dss": "φ",
+      "premises": [
+        {
+          "hash": "ebae4eca39733df25aa7b3586ff8a2a0328c62dfb6f5ece161c5b3c78ac25a9f",
+          "dss": "⊥"
+        }
+      ],
+      "proofs": {
+        "526b4578-d1be-594c-99ce-d742b8ceedcb": {
+          "steps": 3,
+          "step_hash": "9dbedcebc1fd9d024bc3bd2efaf16517e1adeaaab669875604a2b27da533780a",
+          "direct_axioms": [
+            "dc105544-9958-5c00-838e-a58805f1720e"
+          ],
+          "cites": [],
+          "axioms": [
+            "矛盾除去公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "否定導入": {
+      "id": "b5bb1f3d-d9c8-5193-a996-b6fd8cb8abed",
+      "hash": "78b4231b8daf2922785b518906ce6f591bbb9fd403d172d140295129d085b271",
+      "dss": "¬(φ)",
+      "premises": [
+        {
+          "hash": "54590392626faeb13063611a16f2310ae07de6ccd2ec3ff9aca7dcfc0eaf6bc3",
+          "dss": "φ → ⊥"
+        }
+      ],
+      "proofs": {
+        "8f2117c3-38ba-5bff-ae06-37b5ac62d3a1": {
+          "steps": 3,
+          "step_hash": "fa00ef69c48dd119c5016bb0e7e0f5be50c6fc4f80bd31c06ba1e2ed17bd74a2",
+          "direct_axioms": [
+            "bad16ebf-db51-5354-8dc8-84044f69f407"
+          ],
+          "cites": [],
+          "axioms": [
+            "否定導入公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "否定除去": {
+      "id": "912e0f62-3d26-5d58-8c83-9f8594e9d12b",
+      "hash": "ebae4eca39733df25aa7b3586ff8a2a0328c62dfb6f5ece161c5b3c78ac25a9f",
+      "dss": "⊥",
+      "premises": [
+        {
+          "hash": "78b4231b8daf2922785b518906ce6f591bbb9fd403d172d140295129d085b271",
+          "dss": "¬(φ)"
+        },
+        {
+          "hash": "197b6b086ab94deddaa3b8c6f3e680e37c7b5ce2ccef525f802bd76fa8a8e01f",
+          "dss": "φ"
+        }
+      ],
+      "proofs": {
+        "4fcba823-33fb-5371-8fb7-865a9c41fe74": {
+          "steps": 5,
+          "step_hash": "26a6da76102177fcdef5c189006a3371a1fd428178448b147e173ddb78e57937",
+          "direct_axioms": [
+            "8380701d-7127-518d-b6f4-97519c8a407f"
+          ],
+          "cites": [],
+          "axioms": [
+            "否定除去公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "連言導入": {
+      "id": "80c0a32c-8d4c-5544-bfdc-9c26f195fa4a",
+      "hash": "44069a535d5f528cc963e51ccf4b57f2a47e25e13e44ad41c1ebce1fdcd4b87e",
+      "dss": "φ ∧ ψ",
+      "premises": [
+        {
+          "hash": "197b6b086ab94deddaa3b8c6f3e680e37c7b5ce2ccef525f802bd76fa8a8e01f",
+          "dss": "φ"
+        },
+        {
+          "hash": "b1b95f7e3a75fc9018e4453b6c7f5ce3702548d26c9c29cc13d686995f99ef51",
+          "dss": "ψ"
+        }
+      ],
+      "proofs": {
+        "f219596a-4f84-5327-9b71-2b76f0e67150": {
+          "steps": 5,
+          "step_hash": "6a77459529a17536e6b22e9e99fe025caf0b6636af69793b1b60682354bd78b5",
+          "direct_axioms": [
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [],
+          "axioms": [
+            "連言導入公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "連言除去（左）": {
+      "id": "dc6b5e06-5aac-585d-969f-232d5186e0af",
+      "hash": "197b6b086ab94deddaa3b8c6f3e680e37c7b5ce2ccef525f802bd76fa8a8e01f",
+      "dss": "φ",
+      "premises": [
+        {
+          "hash": "44069a535d5f528cc963e51ccf4b57f2a47e25e13e44ad41c1ebce1fdcd4b87e",
+          "dss": "φ ∧ ψ"
+        }
+      ],
+      "proofs": {
+        "5606510e-a679-5dc3-8313-a9dcc380ac80": {
+          "steps": 3,
+          "step_hash": "0d8e2c08ceb5c97a87b8207cc6f43d9e6ba4545f77d575038a8bfc3c6606ceb9",
+          "direct_axioms": [
+            "4d0fec14-b78c-58f7-8247-40b1585692aa"
+          ],
+          "cites": [],
+          "axioms": [
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "連言除去（右）": {
+      "id": "847bcc61-4404-5b6b-9942-9c1d0db923fa",
+      "hash": "b1b95f7e3a75fc9018e4453b6c7f5ce3702548d26c9c29cc13d686995f99ef51",
+      "dss": "ψ",
+      "premises": [
+        {
+          "hash": "44069a535d5f528cc963e51ccf4b57f2a47e25e13e44ad41c1ebce1fdcd4b87e",
+          "dss": "φ ∧ ψ"
+        }
+      ],
+      "proofs": {
+        "a9b93cb1-7864-5fae-a620-15b00ff005b5": {
+          "steps": 3,
+          "step_hash": "d4e2662d2705f5b9e48da29ad5d5baaefe136132e7aa509068bc6998b22d2c71",
+          "direct_axioms": [
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [],
+          "axioms": [
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "選言導入（左）": {
+      "id": "a1bc68ad-3648-59c9-83e0-f2f47f135c1d",
+      "hash": "6be7b2e6fcd0bd59a607d50ead7506ecaecc04eb79b0edeae8bc3f535d660136",
+      "dss": "φ ∨ ψ",
+      "premises": [
+        {
+          "hash": "197b6b086ab94deddaa3b8c6f3e680e37c7b5ce2ccef525f802bd76fa8a8e01f",
+          "dss": "φ"
+        }
+      ],
+      "proofs": {
+        "4022a5eb-6ef7-5742-8267-e212b6d57cf1": {
+          "steps": 3,
+          "step_hash": "86b9eda417c08793f43659aa5dc35ab3b9322937a511826a410cc918c1e58457",
+          "direct_axioms": [
+            "c0180c6a-f053-5522-a685-5c834e89b02c"
+          ],
+          "cites": [],
+          "axioms": [
+            "選言導入公理（左）"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "選言導入（右）": {
+      "id": "b5e9e2e5-3717-5e77-bdfc-be98f622ef15",
+      "hash": "6be7b2e6fcd0bd59a607d50ead7506ecaecc04eb79b0edeae8bc3f535d660136",
+      "dss": "φ ∨ ψ",
+      "premises": [
+        {
+          "hash": "b1b95f7e3a75fc9018e4453b6c7f5ce3702548d26c9c29cc13d686995f99ef51",
+          "dss": "ψ"
+        }
+      ],
+      "proofs": {
+        "a8de14ce-d58c-58bd-8d79-7043a4ec525a": {
+          "steps": 3,
+          "step_hash": "acf77baa452d6c9711291037e5efa9763d86169ffe77345b273d9a7865ae6c0a",
+          "direct_axioms": [
+            "fe8021cc-f00c-52e4-a776-7c30dd9e1d44"
+          ],
+          "cites": [],
+          "axioms": [
+            "選言導入公理（右）"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "選言除去": {
+      "id": "486e4059-f93e-5ec3-99cc-c1b32da1df89",
+      "hash": "65460d2c536a25467937bd7928fc6fc7f3a6b0b99ac36d523b05329ff2efa0cc",
+      "dss": "χ",
+      "premises": [
+        {
+          "hash": "6be7b2e6fcd0bd59a607d50ead7506ecaecc04eb79b0edeae8bc3f535d660136",
+          "dss": "φ ∨ ψ"
+        },
+        {
+          "hash": "cec3be658aa644b828cce93122462bef99893e9785631b42ac09c3666eb04e1d",
+          "dss": "φ → χ"
+        },
+        {
+          "hash": "a93326f20242f2a3a0efbc8fa905aea8f8fc16e6253ec1cbe5b1c88cd68070bf",
+          "dss": "ψ → χ"
+        }
+      ],
+      "proofs": {
+        "bdbbad01-3381-59c2-83e3-8ed2f11fbf09": {
+          "steps": 7,
+          "step_hash": "2fa9e5a385a35ae5f1af6f4e77f08635536c6aa54843383a41bc7a14ab6d9023",
+          "direct_axioms": [
+            "48bda1ee-dc25-5bf7-ae14-374d6a65401e"
+          ],
+          "cites": [],
+          "axioms": [
+            "選言除去公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "全称除去": {
+      "id": "286262b1-aa7a-5a33-b903-49817ffa3014",
+      "hash": "b350bdb91d354a548296a18dac05f3506e1255a3c3cade7166e167b586625fb6",
+      "dss": "φ¹(t)",
+      "premises": [
+        {
+          "hash": "00e0d45caccfbd48e90fc8ce5ac691641a4f2523079aa8e92720db354bf167d8",
+          "dss": "∀ x. φ¹(x)"
+        }
+      ],
+      "proofs": {
+        "2dd62c96-4903-5d9c-9300-3247a21e41df": {
+          "steps": 3,
+          "step_hash": "7ca7a957579187d985d489d471ae121b377efe5043db6aeea0a1b0316f504a1b",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882"
+          ],
+          "cites": [],
+          "axioms": [
+            "全称除去公理"
+          ],
+          "valid": [
+            "ヒルベルト体系（コア）",
+            "ヒルベルト体系（古典）",
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "存在導入": {
+      "id": "c63ff02a-53f6-5c27-b365-dbdf9b51fde9",
+      "hash": "c5a8c4cec893653158f0a83ec852a67ae6af621f8ce2031353ff9aa004141d36",
+      "dss": "∃ x. φ¹(x)",
+      "premises": [
+        {
+          "hash": "b350bdb91d354a548296a18dac05f3506e1255a3c3cade7166e167b586625fb6",
+          "dss": "φ¹(t)"
+        }
+      ],
+      "proofs": {
+        "31ba9cdf-7f5d-520c-b852-df818acfe3fd": {
+          "steps": 3,
+          "step_hash": "b583ce2aa2b5e642b30a1e07ef7655facc66c1e0b83373c1e6ac6bbfd8d1f99c",
+          "direct_axioms": [
+            "77148fe8-ffd5-553b-9509-a1dde33134d6"
+          ],
+          "cites": [],
+          "axioms": [
+            "存在導入公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "存在除去": {
+      "id": "f3187b15-0968-5581-8488-cac0ac214c8f",
+      "hash": "b1b95f7e3a75fc9018e4453b6c7f5ce3702548d26c9c29cc13d686995f99ef51",
+      "dss": "ψ",
+      "premises": [
+        {
+          "hash": "c5a8c4cec893653158f0a83ec852a67ae6af621f8ce2031353ff9aa004141d36",
+          "dss": "∃ x. φ¹(x)"
+        },
+        {
+          "hash": "b1e6bd1fe03dc3973886fb5e458c0be1684963844e53ea35773f30e730309978",
+          "dss": "∀ x. (φ¹(x)) → ψ"
+        }
+      ],
+      "proofs": {
+        "b66745bc-2cf6-581c-ad2a-c0cba0578314": {
+          "steps": 5,
+          "step_hash": "442a4f703e3ccef3272fe1fe28567df6bed22d39b147de08fb2bb6173fbfcefe",
+          "direct_axioms": [
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06"
+          ],
+          "cites": [],
+          "axioms": [
+            "存在除去公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "等号代入": {
+      "id": "2b6d9081-0e3d-52d1-8dec-ebd196e6c868",
+      "hash": "8fdd776bb3a49ee679841fd112568904fd2ff5e13b367cea95d71a8cf26787a4",
+      "dss": "φ¹(y)",
+      "premises": [
+        {
+          "hash": "96c1855c435c54d4e4c5af1cfdb0d2e9686b0c328e6898ae7ddb05b8a71e6ac8",
+          "dss": "x = y"
+        },
+        {
+          "hash": "6cbfe7ee98a74ae26cce7da1f6a07eecad5e73380ff64cd08b08ae84db194537",
+          "dss": "φ¹(x)"
+        }
+      ],
+      "proofs": {
+        "2d3a40a9-708b-5c13-8eb7-01bd8ce8e9e9": {
+          "steps": 5,
+          "step_hash": "2a95fec160ad29e50a39ba273e8e58d96bc102abce231c5a8e6284f521fd7b85",
+          "direct_axioms": [
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f"
+          ],
+          "cites": [],
+          "axioms": [
+            "等号代入公理"
+          ],
+          "valid": [
+            "ヒルベルト体系（コア）",
+            "ヒルベルト体系（古典）",
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "二重否定導入": {
+      "id": "446fa27a-a649-5b75-b963-8767142fd1d8",
+      "hash": "e84ede8ab541a2d830070b48f47823bcd886b4d62853d55cdc16ef51b903dea8",
+      "dss": "φ → (¬(¬(φ)))",
+      "premises": [],
+      "proofs": {
+        "28cbebdd-36a5-537f-837e-6fc72106c0e5": {
+          "steps": 7,
+          "step_hash": "970afbec86f17419616ffe8794adc7b306fe6af99b24f9e2a68c039b029cad58",
+          "direct_axioms": [
+            "bad16ebf-db51-5354-8dc8-84044f69f407"
+          ],
+          "cites": [
+            "否定除去"
+          ],
+          "axioms": [
+            "否定導入公理",
+            "否定除去公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "対偶": {
+      "id": "40bb2184-a227-51d1-b2fa-f13bc750a3b8",
+      "hash": "75c6e0adf054fe3f861a6c9a2f2e3fa3e296444748572eca9a3d16fc4824659b",
+      "dss": "(φ → ψ) → (¬(ψ)) → (¬(φ))",
+      "premises": [],
+      "proofs": {
+        "60e16ae4-4e92-506d-a09a-c7347fcaee0b": {
+          "steps": 10,
+          "step_hash": "585c718a7e5422be0418b6e0a0bdd8dccb3e7df2cf63abd2d441dac9b387f6e0",
+          "direct_axioms": [
+            "bad16ebf-db51-5354-8dc8-84044f69f407"
+          ],
+          "cites": [
+            "否定除去"
+          ],
+          "axioms": [
+            "否定導入公理",
+            "否定除去公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "無矛盾律": {
+      "id": "3d9f0465-e6c9-51b6-b879-7ef12c36c650",
+      "hash": "387141fb4308ed1ad6717a4ebd35a00e610f0fafd30c8131fdd864b3ee0d90c4",
+      "dss": "¬(φ ∧ (¬(φ)))",
+      "premises": [],
+      "proofs": {
+        "00f7f869-940e-5646-b5cb-c84f98b97127": {
+          "steps": 9,
+          "step_hash": "22deab8f6554bfdebcb1f34ab0d18640dc4f08529af8f56099b0cb7f265c43f5",
+          "direct_axioms": [
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "bad16ebf-db51-5354-8dc8-84044f69f407",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "否定除去"
+          ],
+          "axioms": [
+            "否定導入公理",
+            "否定除去公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "連言の交換": {
+      "id": "e33874c3-920e-51e0-8f41-05a34124d716",
+      "hash": "1aa6020ca207a54641a3c9493c1460ed0ffc2b1a2f798cf64f6365bd8a4127f9",
+      "dss": "(φ ∧ ψ) → (ψ ∧ φ)",
+      "premises": [],
+      "proofs": {
+        "b0f03c6d-716f-556f-841b-31bcabfa40e2": {
+          "steps": 7,
+          "step_hash": "02304332d4453ee866444028e9e1199774c6d435323a1e08a3e1999c80b08985",
+          "direct_axioms": [
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "連言導入"
+          ],
+          "axioms": [
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "選言の交換": {
+      "id": "d8a37c38-9d9f-55dd-b11c-da576c9a6303",
+      "hash": "6d2f97039b9fc606c2d8369f8f1e715d36dca25e88a881db1c73cc65b99d8844",
+      "dss": "(φ ∨ ψ) → (ψ ∨ φ)",
+      "premises": [],
+      "proofs": {
+        "d07f9931-aa62-5907-ae1b-313383820d66": {
+          "steps": 11,
+          "step_hash": "a041dd793e07c68c5d1c133613b59b61314294df575795c5c3b5482dc38369d5",
+          "direct_axioms": [
+            "c0180c6a-f053-5522-a685-5c834e89b02c",
+            "fe8021cc-f00c-52e4-a776-7c30dd9e1d44"
+          ],
+          "cites": [
+            "選言除去"
+          ],
+          "axioms": [
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ド・モルガン": {
+      "id": "8f8c85b5-b86b-549e-93ae-76bfc3b2af5f",
+      "hash": "69babb7eaf428777893918239d1dd25747339b01d8dd33af810e7ade6887998d",
+      "dss": "(¬(φ ∨ ψ)) → ((¬(φ)) ∧ (¬(ψ)))",
+      "premises": [],
+      "proofs": {
+        "f9e072ef-54ce-53ad-b87a-dd3887fd3d31": {
+          "steps": 17,
+          "step_hash": "fb7f59b5e5737b06820b40b6876347e1c77ccee4b1e9b57a56498ef936cdb336",
+          "direct_axioms": [
+            "bad16ebf-db51-5354-8dc8-84044f69f407",
+            "c0180c6a-f053-5522-a685-5c834e89b02c",
+            "fe8021cc-f00c-52e4-a776-7c30dd9e1d44"
+          ],
+          "cites": [
+            "否定除去",
+            "連言導入"
+          ],
+          "axioms": [
+            "否定導入公理",
+            "否定除去公理",
+            "連言導入公理",
+            "選言導入公理（右）",
+            "選言導入公理（左）"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "二重否定除去": {
+      "id": "f5c5f552-680f-5b3a-9ccf-e75047358abc",
+      "hash": "03162e60bbaa48b9afc38ecf18faaf7920bd6157f266f24c7459ddccb47e4360",
+      "dss": "(¬(¬(φ))) → φ",
+      "premises": [],
+      "proofs": {
+        "3d68ef7d-493f-546a-9151-602773e03589": {
+          "steps": 13,
+          "step_hash": "4d4454b01b666f01c33378d66bc0d6129627b9dfb2f8d14b8dff5a85505c6374",
+          "direct_axioms": [
+            "8380701d-7127-518d-b6f4-97519c8a407f",
+            "a4169fa3-8198-51f5-9f57-7ea6a09e71b7",
+            "bad16ebf-db51-5354-8dc8-84044f69f407",
+            "dc105544-9958-5c00-838e-a58805f1720e"
+          ],
+          "cites": [],
+          "axioms": [
+            "パース公理",
+            "否定導入公理",
+            "否定除去公理",
+            "矛盾除去公理"
+          ],
+          "valid": [
+            "古典論理",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "排中律": {
+      "id": "ebae5c99-c236-5329-a855-f5b4806edb16",
+      "hash": "df4848dff3efba928eac1f98a8157dfa925df4dea05b36a6797504384f0d83f7",
+      "dss": "φ ∨ (¬(φ))",
+      "premises": [],
+      "proofs": {
+        "99e8b81a-7b61-5b5b-92a8-561ce29047e4": {
+          "steps": 16,
+          "step_hash": "c8ff2cc9d5869e440f3f7c3b267b0b814058d68b44f2ad8793c4a57ed621db6b",
+          "direct_axioms": [
+            "bad16ebf-db51-5354-8dc8-84044f69f407",
+            "c0180c6a-f053-5522-a685-5c834e89b02c",
+            "fe8021cc-f00c-52e4-a776-7c30dd9e1d44"
+          ],
+          "cites": [
+            "二重否定除去",
+            "否定除去"
+          ],
+          "axioms": [
+            "パース公理",
+            "否定導入公理",
+            "否定除去公理",
+            "矛盾除去公理",
+            "選言導入公理（右）",
+            "選言導入公理（左）"
+          ],
+          "valid": [
+            "古典論理",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:単集合の集合性": {
+      "id": "fa1e3cb5-d1b6-515a-b3e1-5239a3245041",
+      "hash": "7750cb6e94549a15df16e1b05a049e03ed049bcce10d39d18ae9d2a61bce9a35",
+      "dss": "IsSet({}(a))",
+      "premises": [],
+      "proofs": {
+        "577ad69f-c360-5725-8378-429d878eeee3": {
+          "steps": 38,
+          "step_hash": "d1faf30d4da320b64e8b21d4adeac552dc40c4ee3d95c5ae476b3e2b4e3190b0",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "48bda1ee-dc25-5bf7-ae14-374d6a65401e",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "65fc8871-b28f-5027-b155-6fdc3c48fdf9",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "8ca5d520-b2d2-5965-9091-62d5e7ccefdb",
+            "adfd21cc-625f-5686-9b73-bc58c9547382",
+            "c0180c6a-f053-5522-a685-5c834e89b02c"
+          ],
+          "cites": [],
+          "axioms": [
+            "ZF内包項外延性公理図式",
+            "ZF対公理",
+            "{} 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:非順序対の集合性": {
+      "id": "38c350a1-5683-5a3b-884f-ad9adadbf2c3",
+      "hash": "9a6674eccc455999b879e62e32ec39d2434ff881326de4d748353773a7d71c12",
+      "dss": "IsSet({,}(a, b))",
+      "premises": [],
+      "proofs": {
+        "a8b04ecb-de45-5b20-a584-66fb83dab097": {
+          "steps": 17,
+          "step_hash": "f41c9b97e3df44c3c2a64c7e39d6bcc27c201433c8bf608f1647802a747b2f42",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "8ca5d520-b2d2-5965-9091-62d5e7ccefdb",
+            "99db1bcf-2dd5-574d-a410-4795c8ce4290"
+          ],
+          "cites": [],
+          "axioms": [
+            "ZF対公理",
+            "{,} 定義公理",
+            "全称除去公理",
+            "等号代入公理",
+            "等号反射律公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:順序対の集合性": {
+      "id": "4d371584-79d1-549f-9fc5-b6585f0a7660",
+      "hash": "d9a447b21f1b008fc426a89f1db883261cf11148ebafbedf107c17b42fab79ca",
+      "dss": "IsSet(⟨,⟩(a, b))",
+      "premises": [],
+      "proofs": {
+        "86d625fa-1dbb-5bfb-a5b5-a0ee2f04a9e0": {
+          "steps": 13,
+          "step_hash": "120fbfcc5f6af035b8cf70b2f899889d6c8f2a43d1d7e464fb44f3dcd6b09143",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "6c72c48c-d90c-5243-af06-1f9e8323a58f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f"
+          ],
+          "cites": [
+            "ZF:非順序対の集合性"
+          ],
+          "axioms": [
+            "ZF対公理",
+            "{,} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "等号代入公理",
+            "等号反射律公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:単集合の所属": {
+      "id": "2dc1707f-ddf8-5879-9789-e20abe6ee77b",
+      "hash": "f8ae9471a590636789fc6e5f30590ab0019bf1a3a7b05182937d06077d2fb15c",
+      "dss": "(IsSet(a)) → ((x ∈ ({}(a))) ↔ (x = a))",
+      "premises": [],
+      "proofs": {
+        "8ecfa144-00ac-587c-a2d2-3d83ab39510d": {
+          "steps": 52,
+          "step_hash": "2bc12cea1cd7a3c4ad8ca54608544647f77cdfb4996e3fc944781e1f51688ac0",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "65fc8871-b28f-5027-b155-6fdc3c48fdf9",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "dcacdf51-3291-5dd8-961c-c1658d3f68c5",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:単集合の集合性"
+          ],
+          "axioms": [
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{} 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:非順序対の所属": {
+      "id": "0203392a-046b-50eb-9894-4cc6c1e51e8c",
+      "hash": "e5f93f64f63ae2905f82c3c55f8094bb38ec80d97150d321e2dc2a51596270f1",
+      "dss": "(IsSet(a)) → (IsSet(b)) → ((x ∈ ({,}(a, b))) ↔ ((x = a) ∨ (x = b)))",
+      "premises": [],
+      "proofs": {
+        "8998842a-33d0-5ff5-b2ba-2be272802cde": {
+          "steps": 75,
+          "step_hash": "a9ad6c61c2fd760037f49e5b56e52b2bb9ce9318fff1467ed0df90f107a8f5af",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "48bda1ee-dc25-5bf7-ae14-374d6a65401e",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "99db1bcf-2dd5-574d-a410-4795c8ce4290",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "dcacdf51-3291-5dd8-961c-c1658d3f68c5",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:非順序対の集合性"
+          ],
+          "axioms": [
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:ラッセル": {
+      "id": "89a136b5-8a8c-5b95-9601-43e4cbf36873",
+      "hash": "501305d2c030498001487ee43fd454a97d8f061a1e6771b0eaedb5eeba223e48",
+      "dss": "¬(IsSet({|} x. ¬(x ∈ x)))",
+      "premises": [],
+      "proofs": {
+        "258c90f1-9bde-5f71-8675-5ecb5b6fd055": {
+          "steps": 33,
+          "step_hash": "35e0145226b193a26c39a839604e2a2129617d2363f1c3db529c6e42d64d90b4",
+          "direct_axioms": [
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "8380701d-7127-518d-b6f4-97519c8a407f",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "bad16ebf-db51-5354-8dc8-84044f69f407",
+            "dcacdf51-3291-5dd8-961c-c1658d3f68c5",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [],
+          "axioms": [
+            "ZF内包項所属公理図式",
+            "ZF集合元性公理",
+            "全称除去公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "否定導入公理",
+            "否定除去公理",
+            "連言導入公理",
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:順序対の第一成分": {
+      "id": "72ce1d04-c024-5a6b-a6d6-70eed35a03bd",
+      "hash": "af8a703e53c1b694d3540420e81b4542555486c0b7d849712fe4e424749658f1",
+      "dss": "(IsSet(a)) → (IsSet(b)) → (IsSet(c)) → (IsSet(d)) → ((⟨,⟩(a, b)) = (⟨,⟩(c, d))) → (a = c)",
+      "premises": [],
+      "proofs": {
+        "f527ad89-173e-56ac-bc34-01829f252b7e": {
+          "steps": 107,
+          "step_hash": "b96a17988a98789806570b597cea68ed13331ec7c4b6f06315b29e676d2f8d07",
+          "direct_axioms": [
+            "48bda1ee-dc25-5bf7-ae14-374d6a65401e",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "6c72c48c-d90c-5243-af06-1f9e8323a58f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "c0180c6a-f053-5522-a685-5c834e89b02c",
+            "e61050ba-1875-562c-bc49-c99ba407f41f"
+          ],
+          "cites": [
+            "ZF:単集合の所属",
+            "ZF:単集合の集合性",
+            "ZF:非順序対の所属",
+            "ZF:非順序対の集合性"
+          ],
+          "axioms": [
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:順序対の成分範囲": {
+      "id": "6f7ffc50-23b4-51ab-af61-ecd0827e9b5e",
+      "hash": "84223970676a8eb7063bc9e1133ae764c9fdefe12b279222544ffa6ca2dec81a",
+      "dss": "(IsSet(c)) → (IsSet(d)) → (x ∈ u) → (u ∈ (⟨,⟩(c, d))) → ((x = c) ∨ (x = d))",
+      "premises": [],
+      "proofs": {
+        "695724ec-f05f-5785-b4fb-ef4062dab0f7": {
+          "steps": 51,
+          "step_hash": "36a5600a3274d182075b1dd424d52150a43c5703e764062ac9e76623b9d9794d",
+          "direct_axioms": [
+            "48bda1ee-dc25-5bf7-ae14-374d6a65401e",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "6c72c48c-d90c-5243-af06-1f9e8323a58f",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "c0180c6a-f053-5522-a685-5c834e89b02c"
+          ],
+          "cites": [
+            "ZF:単集合の所属",
+            "ZF:単集合の集合性",
+            "ZF:非順序対の所属",
+            "ZF:非順序対の集合性"
+          ],
+          "axioms": [
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:対の共通成分消去": {
+      "id": "80f7d19f-a4c5-5ae9-a6ab-b686d25199ae",
+      "hash": "e31fc894624a2727991addde3d74b9abc1daaafa508588a556139b2d7414f00c",
+      "dss": "((b = a) ∨ (b = d)) → ((d = a) ∨ (d = b)) → (b = d)",
+      "premises": [],
+      "proofs": {
+        "faa7def0-671c-559a-89bc-286ea6e7f220": {
+          "steps": 31,
+          "step_hash": "1b9200c73f394a4bedcc60ada6bcd808254291e2ec23b2eafe17df8b6af71808",
+          "direct_axioms": [
+            "48bda1ee-dc25-5bf7-ae14-374d6a65401e",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f"
+          ],
+          "cites": [],
+          "axioms": [
+            "等号代入公理",
+            "等号反射律公理",
+            "選言除去公理"
+          ],
+          "valid": [
+            "直観主義論理",
+            "古典論理",
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:順序対の第二成分": {
+      "id": "a5e06ad6-bf81-5ee9-9918-7fb3400c7400",
+      "hash": "cd1cd5541e157245979699d70ef8e46034fef871658545546cf5dcc394c69ff7",
+      "dss": "(IsSet(a)) → (IsSet(b)) → (IsSet(c)) → (IsSet(d)) → ((⟨,⟩(a, b)) = (⟨,⟩(c, d))) → (b = d)",
+      "premises": [],
+      "proofs": {
+        "0255387d-9651-5dcd-ab63-d19173b78d50": {
+          "steps": 110,
+          "step_hash": "685b9fe55c043e6f34f1b44a3191afdd7dc858708fc9578a234d4c4758abb61b",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "6c72c48c-d90c-5243-af06-1f9e8323a58f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fe8021cc-f00c-52e4-a776-7c30dd9e1d44"
+          ],
+          "cites": [
+            "ZF:単集合の集合性",
+            "ZF:対の共通成分消去",
+            "ZF:非順序対の所属",
+            "ZF:非順序対の集合性",
+            "ZF:順序対の成分範囲",
+            "ZF:順序対の第一成分"
+          ],
+          "axioms": [
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:順序対の成分一致": {
+      "id": "2f70f217-6130-5c72-a486-0fdc913442fe",
+      "hash": "e4a371cc084d1d608391c16d3704b6c82b23d7b8a2ecf57bbd3beee7887714e0",
+      "dss": "(IsSet(a)) → (IsSet(b)) → (IsSet(c)) → (IsSet(d)) → ((⟨,⟩(a, b)) = (⟨,⟩(c, d))) → ((a = c) ∧ (b = d))",
+      "premises": [],
+      "proofs": {
+        "9b8c0a24-228b-5b03-a31b-e5a5e858ec3d": {
+          "steps": 25,
+          "step_hash": "f4aba7e37d86db06be73414cb1cba74e52033f2e7a1feeb7641d630f6854e049",
+          "direct_axioms": [
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:順序対の第一成分",
+            "ZF:順序対の第二成分"
+          ],
+          "axioms": [
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:空集合の集合性": {
+      "id": "8c36c258-671b-5749-a47d-b11c2618d762",
+      "hash": "e43e54e9b829ebd62c67bea2e1d0f18fe32b36c1b224b6dea3b4770c0f46b50b",
+      "dss": "IsSet(∅)",
+      "premises": [],
+      "proofs": {
+        "0dd817f5-f5b9-5ecb-a3b6-ee16e966043f": {
+          "steps": 17,
+          "step_hash": "257fbff264b7a20b343523a0e3862e96640859081207ebfbb6db8c87e377d13b",
+          "direct_axioms": [
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "2ed34631-aed9-524c-a1de-256f6a0703fe",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "dd00e7fd-ace3-5e74-a618-2b82451f0d90",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [],
+          "axioms": [
+            "ZF無限公理",
+            "ZF純粋性公理",
+            "全称除去公理",
+            "存在除去公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:空集合は元を持たない": {
+      "id": "8e1484ff-b9cc-5909-9de3-ccba334fced8",
+      "hash": "8b360a156395ce1b17d74eac209db2d6e425382448073e065810d4fe48ea7246",
+      "dss": "∀ x. ¬(x ∈ ∅)",
+      "premises": [],
+      "proofs": {
+        "f699ab5e-20ed-566e-9db2-e85a9b1e3451": {
+          "steps": 22,
+          "step_hash": "fb365acb76e61a9229ce8da554f1a1ec65ffb9e56e17d97e68cc6a5f514e8dcb",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "9f77b3b7-3ffc-5dcd-b449-8fead94b5c75",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "bad16ebf-db51-5354-8dc8-84044f69f407",
+            "dcacdf51-3291-5dd8-961c-c1658d3f68c5",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "ZF:空集合の集合性"
+          ],
+          "axioms": [
+            "ZF内包項所属公理図式",
+            "ZF無限公理",
+            "ZF純粋性公理",
+            "∅ 定義公理",
+            "全称除去公理",
+            "同値除去公理（左）",
+            "否定導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:空集合の一意性": {
+      "id": "3f70bd31-1f80-58d9-b6f3-0116e3fffc0d",
+      "hash": "8816c75cf77a6e5194a5e0c2898f2d61a3038d4ff20a9881db1a2600b055e1e1",
+      "dss": "∀ x. (IsSet(x)) → (∀ y. ¬(y ∈ x)) → (x = ∅)",
+      "premises": [],
+      "proofs": {
+        "d79dd4eb-913c-54fd-9644-a6b34275b3c0": {
+          "steps": 37,
+          "step_hash": "f87acdd28d2a9c30fde8c16af480b480b894c20978ec1fdc0b147e6981bb8be5",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "63ae98fe-e18d-5284-9017-a4e481ca04e1",
+            "8380701d-7127-518d-b6f4-97519c8a407f",
+            "dc105544-9958-5c00-838e-a58805f1720e"
+          ],
+          "cites": [
+            "ZF:空集合の集合性",
+            "ZF:空集合は元を持たない"
+          ],
+          "axioms": [
+            "ZF内包項所属公理図式",
+            "ZF外延性公理",
+            "ZF無限公理",
+            "ZF純粋性公理",
+            "∅ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（左）",
+            "否定導入公理",
+            "否定除去公理",
+            "存在除去公理",
+            "矛盾除去公理",
+            "等号代入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:空でない集合は元を持つ": {
+      "id": "4acb1a67-2266-5aae-8837-0a891877aa65",
+      "hash": "165e0af1649fc1c0934e3305de19a1a6ee12d8174ff014b0a996c713fe482947",
+      "dss": "∀ x. (IsSet(x)) → (¬(x = ∅)) → (∃ y. y ∈ x)",
+      "premises": [],
+      "proofs": {
+        "de2e29b7-32d7-5dcd-8c29-49bb5db0f7fa": {
+          "steps": 27,
+          "step_hash": "3313496febe2df52ddb661590d380ac5bff7570060666f6032fa5210c6ff1514",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "8380701d-7127-518d-b6f4-97519c8a407f",
+            "a4169fa3-8198-51f5-9f57-7ea6a09e71b7",
+            "bad16ebf-db51-5354-8dc8-84044f69f407",
+            "dc105544-9958-5c00-838e-a58805f1720e"
+          ],
+          "cites": [
+            "ZF:空集合の一意性"
+          ],
+          "axioms": [
+            "ZF内包項所属公理図式",
+            "ZF外延性公理",
+            "ZF無限公理",
+            "ZF純粋性公理",
+            "∅ 定義公理",
+            "パース公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（左）",
+            "否定導入公理",
+            "否定除去公理",
+            "存在導入公理",
+            "存在除去公理",
+            "矛盾除去公理",
+            "等号代入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "ZF:空集合は単集合でない": {
+      "id": "557304de-d064-5def-996d-32118d018f54",
+      "hash": "691d11a082d43ab23494f718ea69b474feb871ca83b36d5f8de58b69ceac82ea",
+      "dss": "∀ x. (IsSet(x)) → (¬(∅ = ({}(x))))",
+      "premises": [],
+      "proofs": {
+        "5fe1ae6d-640a-5954-b7d9-e808099e3439": {
+          "steps": 26,
+          "step_hash": "dd50d982e5189c2e7ca0a1cb868f944012b3c348f017bed356b7b416f8e94359",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8380701d-7127-518d-b6f4-97519c8a407f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "bad16ebf-db51-5354-8dc8-84044f69f407",
+            "e61050ba-1875-562c-bc49-c99ba407f41f"
+          ],
+          "cites": [
+            "ZF:単集合の所属",
+            "ZF:空集合は元を持たない"
+          ],
+          "axioms": [
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF無限公理",
+            "ZF純粋性公理",
+            "ZF集合元性公理",
+            "{} 定義公理",
+            "∅ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "否定導入公理",
+            "否定除去公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "一意存在:導入": {
+      "id": "403a61e1-d953-518a-a3e8-b2495ec73e42",
+      "hash": "91b2bc917c2881ac9fd58b0bff0d5c2cabe5499447386c26a8e7ba4f5f8d7be2",
+      "dss": "(φ¹(t)) → (∀ x. (φ¹(x)) → (x = t)) → (∃! x. φ¹(x))",
+      "premises": [],
+      "proofs": {
+        "a7a2a507-7662-5d67-bd5b-c05c5ac65ceb": {
+          "steps": 13,
+          "step_hash": "a3f3099f474976367a96dc027a11a1ab2ac3cb417d4260378b13362e17f947c6",
+          "direct_axioms": [
+            "680aa6ee-a527-5528-a058-cb928dfeb7a5",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [],
+          "axioms": [
+            "∃! 定義公理",
+            "同値除去公理（右）",
+            "存在導入公理",
+            "連言導入公理"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "一意存在:存在": {
+      "id": "e054b314-9469-59cb-a40b-909311d84665",
+      "hash": "da1a90c4674e3d99bbba4ff8a48e546c6ccfeef21bdce61f0ab46b540ff1d0ff",
+      "dss": "(∃! x. φ¹(x)) → (∃ x. φ¹(x))",
+      "premises": [],
+      "proofs": {
+        "1639e29c-a387-5d8b-9e75-0f52b9a45970": {
+          "steps": 16,
+          "step_hash": "a960a5b4feb7c002960c000bc36c789c590824a57e120a6564ec1a2020dd8c86",
+          "direct_axioms": [
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "680aa6ee-a527-5528-a058-cb928dfeb7a5",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "ae543764-4b4b-5773-b408-589a5390d76a"
+          ],
+          "cites": [],
+          "axioms": [
+            "∃! 定義公理",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "一意存在:一意性": {
+      "id": "e565ebc3-7ce0-578e-be51-5c6f69191674",
+      "hash": "1c6cea5783e2b756b772f1251f0154b29334ba5e034a00aecf30fb791dd484e5",
+      "dss": "(∃! x. φ¹(x)) → (φ¹(y)) → (φ¹(t)) → (y = t)",
+      "premises": [],
+      "proofs": {
+        "b70dcf82-f0c3-5553-ba44-69a66e0e6bd5": {
+          "steps": 31,
+          "step_hash": "b3ea383cf56d8a8e228905212128f3b837f44524b92748ed63b0ac4a198aa9db",
+          "direct_axioms": [
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "680aa6ee-a527-5528-a058-cb928dfeb7a5",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [],
+          "axioms": [
+            "∃! 定義公理",
+            "全称除去公理",
+            "同値除去公理（左）",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "一意存在:存在と一意性から": {
+      "id": "44d18ce6-b8ac-501d-a9fd-0cf999a342ce",
+      "hash": "9e3ccb4e38804ba45d0283fc184f5cdc43db314a61e89019c64d5e838ba8628c",
+      "dss": "(∃ x. φ¹(x)) → (∀ x. ∀ y. (φ¹(x)) → (φ¹(y)) → (x = y)) → (∃! x. φ¹(x))",
+      "premises": [],
+      "proofs": {
+        "85a300c0-b2ac-57da-b28a-fc4150be081b": {
+          "steps": 22,
+          "step_hash": "461138fd79a403235f907bd8af46a410c66c1e7a3131e8c01aae7bfafe484363",
+          "direct_axioms": [
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882"
+          ],
+          "cites": [
+            "一意存在:導入"
+          ],
+          "axioms": [
+            "∃! 定義公理",
+            "全称除去公理",
+            "同値除去公理（右）",
+            "存在導入公理",
+            "存在除去公理",
+            "連言導入公理"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "包含:反射律": {
+      "id": "b10a2097-e429-5e0f-b459-c43d6c34516d",
+      "hash": "83135a18f401239c6704cbf23aecc1b08ab14dbade9e3449f90f13cf9c50c54b",
+      "dss": "a ⊂ a",
+      "premises": [],
+      "proofs": {
+        "34450db5-1d98-5143-957d-64d25c815fea": {
+          "steps": 11,
+          "step_hash": "e99bad0d1901581c07dcd178a5becd33412e44477caaff6d80c0e3d289698960",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "8cb45f9d-0d1b-5d39-a997-856d00763543",
+            "e61050ba-1875-562c-bc49-c99ba407f41f"
+          ],
+          "cites": [],
+          "axioms": [
+            "⊂ 定義公理",
+            "全称除去公理",
+            "同値除去公理（右）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "包含:推移律": {
+      "id": "63629f99-6af7-52a4-aa08-49fa540f94ca",
+      "hash": "e0ea82aaba4f7341dddcaf40b1a146a879ecd315ec30be3263986be3f8e401b0",
+      "dss": "(a ⊂ b) → (b ⊂ c) → (a ⊂ c)",
+      "premises": [],
+      "proofs": {
+        "d942f5f5-0a2f-5b6a-a2ff-9e882e63c276": {
+          "steps": 37,
+          "step_hash": "56db73e984c175cd34b3e83dc463d1bafaca291c7eaa96cf7500681831392b43",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "8cb45f9d-0d1b-5d39-a997-856d00763543",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "e61050ba-1875-562c-bc49-c99ba407f41f"
+          ],
+          "cites": [],
+          "axioms": [
+            "⊂ 定義公理",
+            "全称除去公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "包含:反対称律": {
+      "id": "275c2f75-eb48-509c-be23-aed6cbab79fe",
+      "hash": "270e8f2244dbf2f7226ae0ce3452ee62f656d28b8e104955e9c345b8898ee85a",
+      "dss": "(IsSet(a)) → (IsSet(b)) → (a ⊂ b) → (b ⊂ a) → (a = b)",
+      "premises": [],
+      "proofs": {
+        "ef006128-4ca1-538c-992d-10f25eb4b150": {
+          "steps": 46,
+          "step_hash": "c7d3e1a413081f767e607948b97b5f2e6654a3fd9eb611ee2c42d7cdc6ea527a",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "63ae98fe-e18d-5284-9017-a4e481ca04e1",
+            "8cb45f9d-0d1b-5d39-a997-856d00763543",
+            "ae543764-4b4b-5773-b408-589a5390d76a"
+          ],
+          "cites": [],
+          "axioms": [
+            "ZF外延性公理",
+            "⊂ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "包含:空集合はすべてに含まれる": {
+      "id": "478a5839-fb58-5012-9c61-ec2343a6cbca",
+      "hash": "f22a5eac3708d46c6af28b9257e482386f05f006debc683a77635ca6da7b05cc",
+      "dss": "∅ ⊂ a",
+      "premises": [],
+      "proofs": {
+        "e4ebb055-1f51-5047-afff-e07fe5a28809": {
+          "steps": 19,
+          "step_hash": "3735a840642e1ddf3885826bf1e68f491211c2e86a3d7030f436c68b9145de18",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "8380701d-7127-518d-b6f4-97519c8a407f",
+            "8cb45f9d-0d1b-5d39-a997-856d00763543",
+            "dc105544-9958-5c00-838e-a58805f1720e",
+            "e61050ba-1875-562c-bc49-c99ba407f41f"
+          ],
+          "cites": [
+            "ZF:空集合は元を持たない"
+          ],
+          "axioms": [
+            "ZF内包項所属公理図式",
+            "ZF無限公理",
+            "ZF純粋性公理",
+            "∅ 定義公理",
+            "⊂ 定義公理",
+            "全称除去公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "否定導入公理",
+            "否定除去公理",
+            "存在除去公理",
+            "矛盾除去公理",
+            "等号代入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "直積:順序対の片側の像の集合性": {
+      "id": "54a7788b-fc8b-57af-aadb-23f08aad3b8d",
+      "hash": "ac6933a021cd551327e2844042c4e43f970c541e6f40a61804fcc5fac9b9efb3",
+      "dss": "(IsSet(X)) → (IsSet(b)) → (IsSet({|} x. ∃ y. (y ∈ X) ∧ (x = (⟨,⟩(y, b)))))",
+      "premises": [],
+      "proofs": {
+        "52302568-4119-58d5-9c84-b5b4569cd3d6": {
+          "steps": 31,
+          "step_hash": "d04c26f3fadb93f51b0e99dce62d1d7e6b7cf7bf6e65f803a4fd6709148ca8bd",
+          "direct_axioms": [
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "68da6153-3a97-57d1-9c12-1fa534f4be4d",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:順序対の集合性"
+          ],
+          "axioms": [
+            "ZF対公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "存在導入公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "直積:順序対の片側の像を集めた集合": {
+      "id": "7a325758-6e21-5186-962e-6b86d97bf543",
+      "hash": "329022066c049a91cc9a8b9c4694f724c7a7991549340dce750e6c18256ebdc8",
+      "dss": "(IsSet(X)) → (IsSet(Y)) → (IsSet({|} x. ∃ y. (y ∈ Y) ∧ (x = ({|} z. ∃ x_1. (x_1 ∈ X) ∧ (z = (⟨,⟩(x_1, y)))))))",
+      "premises": [],
+      "proofs": {
+        "44274b3d-49f9-5ff5-89d5-8c00b1ae7dc8": {
+          "steps": 39,
+          "step_hash": "ac90661d33e5bc053d139b07e1053594d539a5674d581f81f3870d2422b51509",
+          "direct_axioms": [
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "68da6153-3a97-57d1-9c12-1fa534f4be4d",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "dd00e7fd-ace3-5e74-a618-2b82451f0d90",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "直積:順序対の片側の像の集合性"
+          ],
+          "axioms": [
+            "ZF対公理",
+            "ZF純粋性公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "存在導入公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "直積:集合性": {
+      "id": "d16ca9fc-b1b6-54f9-92d8-93754f1c22a1",
+      "hash": "d1423f149f225b32b7a072430d46cbfc45269e2d68d319630daf22fe0062e253",
+      "dss": "(IsSet(X)) → (IsSet(Y)) → (IsSet(X × Y))",
+      "premises": [],
+      "proofs": {
+        "b852d1f2-e6da-54a0-ba22-3b4341577832": {
+          "steps": 187,
+          "step_hash": "6faa3e2f51799fc5c522675e1256a3d12c3407277acfda72c3a4cb0531ddb612",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "84495358-e8a8-55f7-beb2-730ed92181d3",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "adfd21cc-625f-5686-9b73-bc58c9547382",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "dcacdf51-3291-5dd8-961c-c1658d3f68c5",
+            "dd00e7fd-ace3-5e74-a618-2b82451f0d90",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "f60cd193-8c99-5212-805d-88c20fde3bea",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:順序対の集合性",
+            "直積:順序対の片側の像の集合性",
+            "直積:順序対の片側の像を集めた集合"
+          ],
+          "axioms": [
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF和集合公理",
+            "ZF対公理",
+            "ZF純粋性公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "直積:所属": {
+      "id": "66f20dbc-fd66-5319-8227-857b6df48b5d",
+      "hash": "2ba85ccc1ff8c74449e0066a8a2dad148730145208edfd30ab9228c5182c8f6f",
+      "dss": "(IsSet(X)) → (IsSet(Y)) → (∀ x. (x ∈ (X × Y)) ↔ (∃ y. ∃ z. (y ∈ X) ∧ (z ∈ Y) ∧ (x = (⟨,⟩(y, z)))))",
+      "premises": [],
+      "proofs": {
+        "37a8112c-6d4f-5574-8143-3518dc29b7a2": {
+          "steps": 73,
+          "step_hash": "2e863538a07fa34b2beb2ccf582f2396611fc746cf0092966d9b3eb50cdfa6a7",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "dcacdf51-3291-5dd8-961c-c1658d3f68c5",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "f60cd193-8c99-5212-805d-88c20fde3bea",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:順序対の集合性",
+            "直積:集合性"
+          ],
+          "axioms": [
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF和集合公理",
+            "ZF対公理",
+            "ZF純粋性公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "直積:順序対の所属": {
+      "id": "fe831dae-4c58-5784-a93d-ef10a17660ca",
+      "hash": "e50a845a2e7c2ed8d9aab0d339e33dff7592cf81ef07d443488f5e9b3c133c89",
+      "dss": "(IsSet(X)) → (IsSet(Y)) → (IsSet(a)) → (IsSet(b)) → (((⟨,⟩(a, b)) ∈ (X × Y)) ↔ ((a ∈ X) ∧ (b ∈ Y)))",
+      "premises": [],
+      "proofs": {
+        "d467d0d8-0d1e-5c61-b71b-843f9698077a": {
+          "steps": 100,
+          "step_hash": "268eb020d5184d8a62d351d6a9a57fcb6497a900a0b9fc6d7870ab847345db6b",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "dd00e7fd-ace3-5e74-a618-2b82451f0d90",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:順序対の成分一致",
+            "直積:所属"
+          ],
+          "axioms": [
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF和集合公理",
+            "ZF対公理",
+            "ZF純粋性公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "× 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）",
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "関係:元は順序対": {
+      "id": "0119ab46-9188-5fb1-bd2d-a832089a2d2f",
+      "hash": "0e35d311f792f54c2e99f16c894485a6532bc58a8196cedb0030d23554ef69fb",
+      "dss": "(IsSet(X)) → (IsSet(Y)) → (IsRelation(R, X, Y)) → (∀ x. (x ∈ R) → (∃ y. ∃ z. (y ∈ X) ∧ (z ∈ Y) ∧ (x = (⟨,⟩(y, z)))))",
+      "premises": [],
+      "proofs": {
+        "92d9fd7b-35e2-5c89-ba9f-4254a05b8434": {
+          "steps": 40,
+          "step_hash": "5c67d99bcd7a6bdaf35d132d1e28c3df3762f97d2c6a99f800194ffd2af18f21",
+          "direct_axioms": [
+            "46305cde-9761-56c0-8e48-08acf8bbabf6",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "8cb45f9d-0d1b-5d39-a997-856d00763543",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "直積:所属"
+          ],
+          "axioms": [
+            "IsRelation 定義公理",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF和集合公理",
+            "ZF対公理",
+            "ZF純粋性公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "⊂ 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "関係:直積は関係": {
+      "id": "25f5e786-e813-5234-aa62-dcbdebf6848f",
+      "hash": "87f237753ee13386efbd270c1f2ed5a45926b651c6ebe6f43ef0b448e9a7062f",
+      "dss": "(IsSet(X)) → (IsSet(Y)) → (IsRelation(X × Y, X, Y))",
+      "premises": [],
+      "proofs": {
+        "74d692fa-7551-5b39-9464-319e96470a6a": {
+          "steps": 21,
+          "step_hash": "8bfe55b6c471456df0ea1bd7af0c31762aadfa2c12a4487fad7c76be614e5491",
+          "direct_axioms": [
+            "46305cde-9761-56c0-8e48-08acf8bbabf6",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "包含:反射律",
+            "直積:集合性"
+          ],
+          "axioms": [
+            "IsRelation 定義公理",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF和集合公理",
+            "ZF対公理",
+            "ZF純粋性公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "⊂ 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "関係:空集合は関係": {
+      "id": "018d8e2a-c5f1-5b00-bf2f-89b9703b6c69",
+      "hash": "6ccc88e372e796a6e7bee260feea1bb8e16d1d8e25ef84aa4ba2d40f3a495e41",
+      "dss": "IsRelation(∅, X, Y)",
+      "premises": [],
+      "proofs": {
+        "9f678251-8af3-52af-a7a8-76ad265015c0": {
+          "steps": 15,
+          "step_hash": "c57b97058694c6250e1d5f4a473d97e754f181704a318646f4e3bc97c7f16c33",
+          "direct_axioms": [
+            "46305cde-9761-56c0-8e48-08acf8bbabf6",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:空集合の集合性",
+            "包含:空集合はすべてに含まれる"
+          ],
+          "axioms": [
+            "IsRelation 定義公理",
+            "ZF内包項所属公理図式",
+            "ZF無限公理",
+            "ZF純粋性公理",
+            "∅ 定義公理",
+            "⊂ 定義公理",
+            "全称除去公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "否定導入公理",
+            "否定除去公理",
+            "存在除去公理",
+            "矛盾除去公理",
+            "等号代入公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "関係:外延性": {
+      "id": "d4153be4-1c5b-51b3-805f-ab0dd92ae102",
+      "hash": "598d41db919d49a749fc5d30a9e03051a6dd7b5265d23734c7cc56867155e7c0",
+      "dss": "(IsSet(X)) → (IsSet(Y)) → (IsRelation(R, X, Y)) → (IsRelation(S, X, Y)) → (∀ x. ∀ y. (x ∈ X) → (y ∈ Y) → (((⟨,⟩(x, y)) ∈ R) ↔ ((⟨,⟩(x, y)) ∈ S))) → (R = S)",
+      "premises": [],
+      "proofs": {
+        "7c9533ba-8e11-504f-a6cf-59968e835874": {
+          "steps": 153,
+          "step_hash": "f5723a98d313b1c493304d502be3c9a765c77af1fdbbaf9083890b8a7466ae45",
+          "direct_axioms": [
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "46305cde-9761-56c0-8e48-08acf8bbabf6",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "8cb45f9d-0d1b-5d39-a997-856d00763543",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "包含:反対称律",
+            "関係:元は順序対"
+          ],
+          "axioms": [
+            "IsRelation 定義公理",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF和集合公理",
+            "ZF外延性公理",
+            "ZF対公理",
+            "ZF純粋性公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "⊂ 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "写像:写像は関係": {
+      "id": "b8bc784d-852d-59bc-9bda-994edd9b5b75",
+      "hash": "26e6db2f0b0e6a3f9a96622c6216130813aa6adcd7ee231cf8533b3989e8ff67",
+      "dss": "(IsMap(f, X, Y)) → (IsRelation(f, X, Y))",
+      "premises": [],
+      "proofs": {
+        "a42baed2-0a1f-5d0d-a5db-55f96349d5dd": {
+          "steps": 14,
+          "step_hash": "46bd137db68a6f04031002cdd2fc16247e4a7a56bf1043fb705d430a73349c81",
+          "direct_axioms": [
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "f75f5483-bccc-5484-83e1-93b19aeb836a"
+          ],
+          "cites": [],
+          "axioms": [
+            "IsMap 定義公理",
+            "全称除去公理",
+            "同値除去公理（左）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "写像:値の存在": {
+      "id": "7aa7de4b-0f53-575f-b98e-cc67a962f05b",
+      "hash": "9f01e2448fdcd441e23ea681e8ff7e15fde10a8e262035ea503cd5f7785ab159",
+      "dss": "(IsMap(f, X, Y)) → (∀ x. (x ∈ X) → (∃ y. (y ∈ Y) ∧ ((⟨,⟩(x, y)) ∈ f)))",
+      "premises": [],
+      "proofs": {
+        "10fd69c6-2767-5979-9cdb-dd6bc304c83a": {
+          "steps": 22,
+          "step_hash": "5d98294447a45775eb6742ce11d567953b08c6244e31aab7b1f3100c44e28b6f",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "f75f5483-bccc-5484-83e1-93b19aeb836a",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "一意存在:存在"
+          ],
+          "axioms": [
+            "IsMap 定義公理",
+            "∃! 定義公理",
+            "全称除去公理",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "写像:値の一意性": {
+      "id": "80394553-4fba-5cb5-9a62-dad38e402b78",
+      "hash": "10d64ba3cedf0b5eb0fe25b45c075047f034e1cc4e76f5cd0d62ad54b5f46871",
+      "dss": "(IsMap(f, X, Y)) → (∀ x. ∀ y. ∀ z. (x ∈ X) → (y ∈ Y) → (z ∈ Y) → ((⟨,⟩(x, y)) ∈ f) → ((⟨,⟩(x, z)) ∈ f) → (y = z))",
+      "premises": [],
+      "proofs": {
+        "c3a3fbcb-6229-5323-b9b2-6323e985cb32": {
+          "steps": 40,
+          "step_hash": "8ff39562dda6023ef6b8f0dfc9a74f2a40dab0b2654e419927d5143952c0429c",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "f75f5483-bccc-5484-83e1-93b19aeb836a",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "一意存在:一意性"
+          ],
+          "axioms": [
+            "IsMap 定義公理",
+            "∃! 定義公理",
+            "全称除去公理",
+            "同値除去公理（左）",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "写像:包含する写像は等しい": {
+      "id": "d15fc567-f798-5f6f-967b-9fa8da33e94f",
+      "hash": "43a448e854cb0617077834b861d1c5c1eccb169faf3ef9bd0f65b2251e889c5a",
+      "dss": "(IsSet(X)) → (IsSet(Y)) → (IsMap(f, X, Y)) → (IsMap(g, X, Y)) → (f ⊂ g) → (f = g)",
+      "premises": [],
+      "proofs": {
+        "77fa3845-51e6-5fc8-a5c1-0c1cedf6c9f9": {
+          "steps": 133,
+          "step_hash": "08adcb11e11a4ab864618ef5dd867dd87580560ea57bdaf810e4b48743146cbd",
+          "direct_axioms": [
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "46305cde-9761-56c0-8e48-08acf8bbabf6",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "8cb45f9d-0d1b-5d39-a997-856d00763543",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "写像:値の一意性",
+            "写像:値の存在",
+            "写像:写像は関係",
+            "包含:反対称律",
+            "関係:元は順序対"
+          ],
+          "axioms": [
+            "IsMap 定義公理",
+            "IsRelation 定義公理",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF和集合公理",
+            "ZF外延性公理",
+            "ZF対公理",
+            "ZF純粋性公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "∃! 定義公理",
+            "⊂ 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "写像:空写像": {
+      "id": "910c8249-6c19-56ab-8439-d84142fd80d9",
+      "hash": "c2280ec3ccf6dc551f6f17b8997cf2a09c47fea21bdef97049b7774b61bb3569",
+      "dss": "IsMap(∅, ∅, Y)",
+      "premises": [],
+      "proofs": {
+        "8d23a87b-6302-51de-a2dc-a0df7d71c316": {
+          "steps": 25,
+          "step_hash": "272bec064a20d579bba1ab2cb2e0cb842210f8088de73eb9ff598778bfa753bd",
+          "direct_axioms": [
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "8380701d-7127-518d-b6f4-97519c8a407f",
+            "dc105544-9958-5c00-838e-a58805f1720e",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "f75f5483-bccc-5484-83e1-93b19aeb836a",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:空集合は元を持たない",
+            "関係:空集合は関係"
+          ],
+          "axioms": [
+            "IsMap 定義公理",
+            "IsRelation 定義公理",
+            "ZF内包項所属公理図式",
+            "ZF無限公理",
+            "ZF純粋性公理",
+            "∅ 定義公理",
+            "⊂ 定義公理",
+            "全称除去公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "否定導入公理",
+            "否定除去公理",
+            "存在除去公理",
+            "矛盾除去公理",
+            "等号代入公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:集合における類内包": {
+      "id": "1e18a980-c5f9-54ba-a9e6-2b58700a5074",
+      "hash": "57f11c7d1ffd6b1b72efd5297eeb684947420337f6afdde1475ac741f422cbe7",
+      "dss": "(IsSet(a)) → ((a ∈ ({|} x. φ¹(x))) ↔ (φ¹(a)))",
+      "premises": [],
+      "proofs": {
+        "daef7194-0c93-583d-a81f-b13adff2f127": {
+          "steps": 27,
+          "step_hash": "1b3e581847d4c0927159241d0911d7994f4ed6fa3ae95808fc2538dbebb76816",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "a506bb2b-e4f1-5a50-9b97-d0e564ae28cb",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF集合元性公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "連言導入公理",
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:順序対内包の導入": {
+      "id": "4976686a-76e8-5da4-b597-c61624d8dffc",
+      "hash": "a0dbb1ef724b093f8130bb3002c2e6a4717cc3ca3ad1119c82d1c65fa9722b2c",
+      "dss": "(IsSet(a)) → (IsSet(b)) → (φ²(a, b)) → ((⟨,⟩(a, b)) ∈ ({|} x. ∃ y. ∃ z. (IsSet(y)) ∧ (IsSet(z)) ∧ (x = (⟨,⟩(y, z))) ∧ (φ²(y, z))))",
+      "premises": [],
+      "proofs": {
+        "868c16c1-d4ef-5b63-90eb-00763599de42": {
+          "steps": 34,
+          "step_hash": "5fa3c88905f78df2062171af05122a4e9e5eaceec33c3fb73808329354471cc5",
+          "direct_axioms": [
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "a506bb2b-e4f1-5a50-9b97-d0e564ae28cb",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:順序対の集合性"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値除去公理（右）",
+            "存在導入公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:順序対内包の除去": {
+      "id": "4191f1db-722d-5831-8269-7fb14b75f5c3",
+      "hash": "051a88da622a984f5aea3c5f239a2cbe48ee18152aaf53a951c7dc1180d93c52",
+      "dss": "(IsSet(a)) → (IsSet(b)) → ((⟨,⟩(a, b)) ∈ ({|} x. ∃ y. ∃ z. (IsSet(y)) ∧ (IsSet(z)) ∧ (x = (⟨,⟩(y, z))) ∧ (φ²(y, z)))) → (φ²(a, b))",
+      "premises": [],
+      "proofs": {
+        "aa4b5ab9-7b07-56a7-9db8-72aa83ce470e": {
+          "steps": 62,
+          "step_hash": "7d862cb351efa16f56ca9959d4dd7ebc6c3cdf38e30074b8e96e2774ad3e1089",
+          "direct_axioms": [
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "a506bb2b-e4f1-5a50-9b97-d0e564ae28cb",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "ZF:順序対の成分一致"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）",
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:三つ組内包の導入": {
+      "id": "e69bb01e-46e6-5986-81db-6fd2c5802bb4",
+      "hash": "f5bb78c7c2d3dde9a94da7e627d4c7fbc11bddf5cdbf7acc008f829c3a59da25",
+      "dss": "(IsSet(a)) → (IsSet(b)) → (IsSet(c)) → (φ³(a, b, c)) → ((⟨,⟩(⟨,⟩(a, b), c)) ∈ ({|} x. ∃ y. ∃ z. ∃ x_1. (IsSet(y)) ∧ (IsSet(z)) ∧ (IsSet(x_1)) ∧ (x = (⟨,⟩(⟨,⟩(y, z), x_1))) ∧ (φ³(y, z, x_1))))",
+      "premises": [],
+      "proofs": {
+        "2983cf08-f1e1-5c78-ba90-c122bf44a8e4": {
+          "steps": 41,
+          "step_hash": "4354dd2deeb2256ee796f1637a1b23e482f2e47c84413cafeecf36897b6c5ab9",
+          "direct_axioms": [
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "a506bb2b-e4f1-5a50-9b97-d0e564ae28cb",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:順序対の集合性"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値除去公理（右）",
+            "存在導入公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:三つ組内包の除去": {
+      "id": "c20ed691-cca9-5a9d-9a7c-3fab72813d04",
+      "hash": "99470b876e061b2b54f86a40cfd1d67c7e273fef94bd341f7a6dd911337f8182",
+      "dss": "(IsSet(a)) → (IsSet(b)) → (IsSet(c)) → ((⟨,⟩(⟨,⟩(a, b), c)) ∈ ({|} x. ∃ y. ∃ z. ∃ x_1. (IsSet(y)) ∧ (IsSet(z)) ∧ (IsSet(x_1)) ∧ (x = (⟨,⟩(⟨,⟩(y, z), x_1))) ∧ (φ³(y, z, x_1)))) → (φ³(a, b, c))",
+      "premises": [],
+      "proofs": {
+        "f04a2bc5-cba0-5fdf-b2f7-516ad537a771": {
+          "steps": 93,
+          "step_hash": "8085b94e132203b5a2169d95ba21cb052c7c7e813074250cc194f5c51f5cc23b",
+          "direct_axioms": [
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "a506bb2b-e4f1-5a50-9b97-d0e564ae28cb",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "ZF:順序対の成分一致",
+            "ZF:順序対の集合性"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）",
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:B1 所属関係の類": {
+      "id": "c309657c-3669-5614-95c1-d6daee98945b",
+      "hash": "5bc9e8f904774c251e6ddb05b8085292f2beae6ffc9878b9e7c9d252121fb856",
+      "dss": "∃ x. ∀ y. (IsSet(y)) → (∀ z. (IsSet(z)) → (((⟨,⟩(y, z)) ∈ x) ↔ (y ∈ z)))",
+      "premises": [],
+      "proofs": {
+        "95e2ba4b-9447-506b-90ad-b01375e4e99f": {
+          "steps": 17,
+          "step_hash": "f5a4235430587a2a11a6905d9a8c222d9396cd33f434901e3f6c0d8bca1ca8e0",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6"
+          ],
+          "cites": [
+            "MK:順序対内包の導入",
+            "MK:順序対内包の除去"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）",
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:B2 共通部分の類": {
+      "id": "bc1623bc-c26c-5f52-8bfd-6dcd545ad0eb",
+      "hash": "3343bc2add2070e15b95f1695278385828e0075f1cdf56e5e38421ae6ebbfbd6",
+      "dss": "∀ x. ∀ y. ∃ z. ∀ x_1. (IsSet(x_1)) → ((x_1 ∈ z) ↔ ((x_1 ∈ x) ∧ (x_1 ∈ y)))",
+      "premises": [],
+      "proofs": {
+        "99e345c9-f1cb-53e1-94e0-d03e109092d3": {
+          "steps": 9,
+          "step_hash": "a1ab81ce8a1acee87e2836d7152eddfe528cf8f2b2e26cf114c2877429768d85",
+          "direct_axioms": [
+            "77148fe8-ffd5-553b-9509-a1dde33134d6"
+          ],
+          "cites": [
+            "MK:集合における類内包"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF集合元性公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "連言導入公理",
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:B3 補類": {
+      "id": "6c683589-0022-5676-9c9d-a455d040afd6",
+      "hash": "a21c540cce9aee2a5387d1b3b3417ca5f66dd88dd9d8625f6863550c0f3c719f",
+      "dss": "∀ x. ∃ y. ∀ z. (IsSet(z)) → ((z ∈ y) ↔ (¬(z ∈ x)))",
+      "premises": [],
+      "proofs": {
+        "2149583e-e7bf-511f-8e59-b15226c927da": {
+          "steps": 8,
+          "step_hash": "6e7bbe0d5c3f3029216496cc3f9523bae06a2acff66ecf11559a2ec7802ebb23",
+          "direct_axioms": [
+            "77148fe8-ffd5-553b-9509-a1dde33134d6"
+          ],
+          "cites": [
+            "MK:集合における類内包"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF集合元性公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "連言導入公理",
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:B4 定義域の類": {
+      "id": "433764c6-ad75-5cb7-885c-2b2799fd4158",
+      "hash": "30ce08c7eed084fdfee42b69a944a710c0ef3de50609fd0a7b6cc9a2aa8aa4d8",
+      "dss": "∀ x. ∃ y. ∀ z. (IsSet(z)) → ((z ∈ y) ↔ (∃ x_1. (IsSet(x_1)) ∧ ((⟨,⟩(z, x_1)) ∈ x)))",
+      "premises": [],
+      "proofs": {
+        "1f6fd7b8-96ae-5f3d-a6e2-4179531ca1ed": {
+          "steps": 8,
+          "step_hash": "f5cefc173942b4bb7a6e08d63ffdae7b3f988ce44a030a18c4117c08327ae425",
+          "direct_axioms": [
+            "77148fe8-ffd5-553b-9509-a1dde33134d6"
+          ],
+          "cites": [
+            "MK:集合における類内包"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF集合元性公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "連言導入公理",
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:B5 全体類との直積": {
+      "id": "2a8a42c0-f42a-50f1-b024-a6c0d6d172e1",
+      "hash": "85cd3dd42e4a9e7892ae82f07d805560abd314c2a7ff4387b0dd04952d59df1f",
+      "dss": "∀ x. ∃ y. ∀ z. (IsSet(z)) → (∀ x_1. (IsSet(x_1)) → (((⟨,⟩(z, x_1)) ∈ y) ↔ (z ∈ x)))",
+      "premises": [],
+      "proofs": {
+        "d4c043de-5141-5450-87aa-f072fc98f00e": {
+          "steps": 18,
+          "step_hash": "94637b865119c8d5e9d9b928f1aba374fc40b7940d5a9998accf514cd01884df",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6"
+          ],
+          "cites": [
+            "MK:順序対内包の導入",
+            "MK:順序対内包の除去"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）",
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:B6 三つ組の巡回置換の類": {
+      "id": "a3e174c1-0054-5461-b59c-6a1257b2dcf3",
+      "hash": "6c854bab24e31975bd9193707a09593f0919db558d5f7f2ac506c53d9ad787cf",
+      "dss": "∀ x. ∃ y. ∀ z. (IsSet(z)) → (∀ x_1. (IsSet(x_1)) → (∀ y_1. (IsSet(y_1)) → (((⟨,⟩(⟨,⟩(z, x_1), y_1)) ∈ y) ↔ ((⟨,⟩(⟨,⟩(x_1, y_1), z)) ∈ x))))",
+      "premises": [],
+      "proofs": {
+        "2377942a-d921-5d6c-9150-cd686e6e4573": {
+          "steps": 23,
+          "step_hash": "e970cb36be6f0f2f7cf2582d18ec9020c8c9c0e6a257dc72fa5953524358f4e9",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6"
+          ],
+          "cites": [
+            "MK:三つ組内包の導入",
+            "MK:三つ組内包の除去"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）",
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:B7 三つ組の後ろ二成分の転置の類": {
+      "id": "9d16a33b-a3ff-5e0b-b915-999fc758af24",
+      "hash": "ad28f76141e73bfc8041ddd49f5c96929fdb59aa9df05526b3cc71880b68cedf",
+      "dss": "∀ x. ∃ y. ∀ z. (IsSet(z)) → (∀ x_1. (IsSet(x_1)) → (∀ y_1. (IsSet(y_1)) → (((⟨,⟩(⟨,⟩(z, x_1), y_1)) ∈ y) ↔ ((⟨,⟩(⟨,⟩(z, y_1), x_1)) ∈ x))))",
+      "premises": [],
+      "proofs": {
+        "b2c3cb5c-b93a-5b89-91a3-6fc38e69aede": {
+          "steps": 23,
+          "step_hash": "522097c9db019c896030a77b08d8075a3a84e32445f02e18999089de07a8618b",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6"
+          ],
+          "cites": [
+            "MK:三つ組内包の導入",
+            "MK:三つ組内包の除去"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）",
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:逆関係の類": {
+      "id": "78e61a53-15b9-5e14-804f-6ba96062f5d4",
+      "hash": "10744bd8d73b262db7c32e44e83173e6bc33d000903a405f836c31bd78cf00fa",
+      "dss": "∀ x. ∃ y. ∀ z. (IsSet(z)) → (∀ x_1. (IsSet(x_1)) → (((⟨,⟩(z, x_1)) ∈ y) ↔ ((⟨,⟩(x_1, z)) ∈ x)))",
+      "premises": [],
+      "proofs": {
+        "7e1cc1dc-3d32-550c-a8ce-80edb601caeb": {
+          "steps": 18,
+          "step_hash": "43a534a165b2b81d812fa6f8a47082d24e41ee637cdae2f12650c8c917f3a93c",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6"
+          ],
+          "cites": [
+            "MK:順序対内包の導入",
+            "MK:順序対内包の除去"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "{} 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）",
+            "選言導入公理（右）",
+            "選言導入公理（左）",
+            "選言除去公理"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:空類の一意性": {
+      "id": "abd98b7d-cef0-5c81-bc62-2662d706c39f",
+      "hash": "161f0cf20f722d5bf297d511b43b69dd0888f6156795e27965437abc8fb2ece8",
+      "dss": "∀ x. (∀ y. ¬(y ∈ x)) → (x = ∅)",
+      "premises": [],
+      "proofs": {
+        "9b547d30-b199-5fdf-823a-dc4506c70443": {
+          "steps": 32,
+          "step_hash": "02b09704f910a6116505eb87ed36b6051fc6b9ee7ed8661cb23cdc4045ccaf60",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "8380701d-7127-518d-b6f4-97519c8a407f",
+            "dc105544-9958-5c00-838e-a58805f1720e",
+            "e7984fab-2f19-5175-9d43-0464d34568f5"
+          ],
+          "cites": [
+            "ZF:空集合は元を持たない"
+          ],
+          "axioms": [
+            "MK類外延性公理",
+            "ZF内包項所属公理図式",
+            "ZF無限公理",
+            "ZF純粋性公理",
+            "∅ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（左）",
+            "否定導入公理",
+            "否定除去公理",
+            "存在除去公理",
+            "矛盾除去公理",
+            "等号代入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "類関係:関係は集合である類関係": {
+      "id": "84ccacac-f27d-54c3-b5d8-459dc44ad4fb",
+      "hash": "d7e46c867197f14623b5190157d338b68a074466b66b484351e0b0c6a9fdbd50",
+      "dss": "(IsRelation(R, X, Y)) ↔ ((IsSet(R)) ∧ (IsClassRelation(R, X, Y)))",
+      "premises": [],
+      "proofs": {
+        "734a67a5-cd61-5d22-836a-bace70aad0ba": {
+          "steps": 47,
+          "step_hash": "915f47b228bfa0b83ca0822b31dd65170dcd18936a3c2590459eb9f52c109df9",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "46305cde-9761-56c0-8e48-08acf8bbabf6",
+            "4888525b-68ce-5027-b189-a04f267f101d",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [],
+          "axioms": [
+            "IsClassRelation 定義公理",
+            "IsRelation 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "類写像:写像は集合である類写像": {
+      "id": "a627fa32-6c96-5b0c-884d-df5713b4adfc",
+      "hash": "11e70a9f59d5639845da26e1e003a542e898a8cbec7e2ecb1319e57cee692ca0",
+      "dss": "(IsMap(f, X, Y)) ↔ ((IsSet(f)) ∧ (IsClassMap(f, X, Y)))",
+      "premises": [],
+      "proofs": {
+        "22889b09-d6af-524a-82e6-994477d2e228": {
+          "steps": 68,
+          "step_hash": "f9ff875ed0100683888ec8362819698688d7d9d54f7a50bc245003c3dccba7b4",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "293f3d50-264a-5f90-a6d0-acebe91f8048",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "f75f5483-bccc-5484-83e1-93b19aeb836a",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "類関係:関係は集合である類関係"
+          ],
+          "axioms": [
+            "IsClassMap 定義公理",
+            "IsClassRelation 定義公理",
+            "IsMap 定義公理",
+            "IsRelation 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "類写像:類写像は類関係": {
+      "id": "0ab293d1-c477-5f34-8b2f-993eaebb4bd2",
+      "hash": "92dadf498b2cb7a88b26d13693761177980ec0e4657f857060a519494bec578e",
+      "dss": "(IsClassMap(f, X, Y)) → (IsClassRelation(f, X, Y))",
+      "premises": [],
+      "proofs": {
+        "6e19d914-2826-5215-bc9e-0c5b43cb4d0c": {
+          "steps": 14,
+          "step_hash": "defb2de870cb773cca07fd03bff7341f4e1584d4987bd443a6673548de3d6c96",
+          "direct_axioms": [
+            "293f3d50-264a-5f90-a6d0-acebe91f8048",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "ae543764-4b4b-5773-b408-589a5390d76a"
+          ],
+          "cites": [],
+          "axioms": [
+            "IsClassMap 定義公理",
+            "全称除去公理",
+            "同値除去公理（左）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "類写像:値の存在": {
+      "id": "df44ce4d-f19e-53c1-8b41-414849b7ca62",
+      "hash": "5aa1cf6443ac0b59186d65efaef408ee6bba12017290e9f0ea043a8c6528b423",
+      "dss": "(IsClassMap(f, X, Y)) → (∀ x. (x ∈ X) → (∃ y. (y ∈ Y) ∧ ((⟨,⟩(x, y)) ∈ f)))",
+      "premises": [],
+      "proofs": {
+        "1e9524e4-fb19-53da-bfc7-f023bbbafee4": {
+          "steps": 22,
+          "step_hash": "4adea15b561985c5427ea2b8d27f05bcd6b6dd3c81105e55b41076b7d467504f",
+          "direct_axioms": [
+            "293f3d50-264a-5f90-a6d0-acebe91f8048",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "一意存在:存在"
+          ],
+          "axioms": [
+            "IsClassMap 定義公理",
+            "∃! 定義公理",
+            "全称除去公理",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "類写像:値の一意性": {
+      "id": "87075f17-5dcb-5e32-b7b2-4312b18abf84",
+      "hash": "77cc4748edae9c11f0a99c422c32c62285b016749deec0afb369feb299a42c32",
+      "dss": "(IsClassMap(f, X, Y)) → (∀ x. ∀ y. ∀ z. (x ∈ X) → (y ∈ Y) → (z ∈ Y) → ((⟨,⟩(x, y)) ∈ f) → ((⟨,⟩(x, z)) ∈ f) → (y = z))",
+      "premises": [],
+      "proofs": {
+        "a19be1fb-493d-5003-9699-ef411e6620a7": {
+          "steps": 40,
+          "step_hash": "db6f492b23b7a0afdb0157159042d3d93507db2b3bf6a2250d670082e86ccf41",
+          "direct_axioms": [
+            "293f3d50-264a-5f90-a6d0-acebe91f8048",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "一意存在:一意性"
+          ],
+          "axioms": [
+            "IsClassMap 定義公理",
+            "∃! 定義公理",
+            "全称除去公理",
+            "同値除去公理（左）",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "直観主義論理（同値つき）",
+            "古典論理（同値つき）",
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:直積の所属": {
+      "id": "2b75f474-817e-588a-aaab-4d51856b5a98",
+      "hash": "bb0494ebb8957b99fac2e97afe832343a77518b046ef8de301d09c36f83aa1f1",
+      "dss": "∀ x. (x ∈ (X × Y)) ↔ (∃ y. ∃ z. (y ∈ X) ∧ (z ∈ Y) ∧ (x = (⟨,⟩(y, z))))",
+      "premises": [],
+      "proofs": {
+        "61116081-5a99-5990-8fa4-f050b27a49c8": {
+          "steps": 62,
+          "step_hash": "5cc5d90e36ce27e1e446570d3b117546d4fa0d07db5efb030c8d19240b9fa7df",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "a506bb2b-e4f1-5a50-9b97-d0e564ae28cb",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "f60cd193-8c99-5212-805d-88c20fde3bea",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:順序対の集合性"
+          ],
+          "axioms": [
+            "MK類内包公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:類関係の元は順序対": {
+      "id": "d97033cd-6b20-5124-8300-3f93a0fb73be",
+      "hash": "3f89056f070fc24527020c25b94a0fce6c92034b6bc2760474ae98721949c249",
+      "dss": "(IsClassRelation(R, X, Y)) → (∀ x. (x ∈ R) → (∃ y. ∃ z. (y ∈ X) ∧ (z ∈ Y) ∧ (x = (⟨,⟩(y, z)))))",
+      "premises": [],
+      "proofs": {
+        "aa03312c-5d94-5b7a-88be-c76a64613306": {
+          "steps": 32,
+          "step_hash": "06220952e6394b18eb17ec6693052a627be3e9899450077251935eb3b78528e0",
+          "direct_axioms": [
+            "4888525b-68ce-5027-b189-a04f267f101d",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "8cb45f9d-0d1b-5d39-a997-856d00763543",
+            "ae543764-4b4b-5773-b408-589a5390d76a"
+          ],
+          "cites": [
+            "MK:直積の所属"
+          ],
+          "axioms": [
+            "IsClassRelation 定義公理",
+            "MK類内包公理図式",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "⊂ 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:集合の間の類関係は関係": {
+      "id": "d2f7270e-4b07-53de-8b8a-71aa11e8d217",
+      "hash": "b908068a5a0d0dd09ee4b4e134883a02a4d01bc74f346f3c37cc00386096949b",
+      "dss": "(IsSet(X)) → (IsSet(Y)) → (IsClassRelation(R, X, Y)) → (IsRelation(R, X, Y))",
+      "premises": [],
+      "proofs": {
+        "b3c33f44-c899-5734-b8d7-17864f50d77c": {
+          "steps": 91,
+          "step_hash": "a54918711a6fd158fdc3b7cb796388df9e834169919ed3956426471bd252198a",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "4888525b-68ce-5027-b189-a04f267f101d",
+            "52e850aa-5538-5413-916e-1205ac323730",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "8cb45f9d-0d1b-5d39-a997-856d00763543",
+            "a506bb2b-e4f1-5a50-9b97-d0e564ae28cb",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "dd00e7fd-ace3-5e74-a618-2b82451f0d90",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "e7984fab-2f19-5175-9d43-0464d34568f5",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "直積:集合性",
+            "類関係:関係は集合である類関係"
+          ],
+          "axioms": [
+            "IsClassRelation 定義公理",
+            "IsRelation 定義公理",
+            "MK類内包公理図式",
+            "MK類外延性公理",
+            "ZF内包項外延性公理図式",
+            "ZF内包項所属公理図式",
+            "ZF分出公理図式",
+            "ZF和集合公理",
+            "ZF対公理",
+            "ZF純粋性公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "⊂ 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "類写像:集合を定義域とする類写像の順序対の像は集合": {
+      "id": "a6d42759-69b2-52c7-80a8-a5c9fe1dc244",
+      "hash": "df65a1303c687ebcd7e7bec2e3b3f243d539fd7f02ca14e78e6fdc87286d6394",
+      "dss": "(IsSet(X)) → (IsClassMap(f, X, Y)) → (IsSet({|} x. ∃ y. (y ∈ X) ∧ (∃ z. (z ∈ Y) ∧ ((⟨,⟩(y, z)) ∈ f) ∧ (x = (⟨,⟩(y, z))))))",
+      "premises": [],
+      "proofs": {
+        "90f9872a-ed5d-5bd4-9b71-ffbb67342931": {
+          "steps": 84,
+          "step_hash": "0c3ad55b289d2f6e84e3378f986a5f1c43f0100a1083d74149b490b7b7a52c33",
+          "direct_axioms": [
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "68da6153-3a97-57d1-9c12-1fa534f4be4d",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "ZF:順序対の集合性",
+            "類写像:値の一意性",
+            "類写像:値の存在"
+          ],
+          "axioms": [
+            "IsClassMap 定義公理",
+            "ZF対公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "∃! 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "ZF",
+            "ZFC",
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:定義域が集合の類写像は写像": {
+      "id": "b5133339-970a-5f98-a0c5-17b38e58f061",
+      "hash": "b61f0456cd627cb91341224838ddd5b2e9645362356e7a9c0f7babc82f3032da",
+      "dss": "(IsSet(X)) → (IsClassMap(f, X, Y)) → (IsMap(f, X, Y))",
+      "premises": [],
+      "proofs": {
+        "1040499c-43b4-5f1d-8809-095877f7ee3c": {
+          "steps": 129,
+          "step_hash": "68cd123a242fb57454d4ce51fed8e9e24cde6a437639aa88d668e9ee42094322",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "18261f2c-47d4-50d9-99bb-fdd081ea2198",
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "77148fe8-ffd5-553b-9509-a1dde33134d6",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "a506bb2b-e4f1-5a50-9b97-d0e564ae28cb",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "dd00e7fd-ace3-5e74-a618-2b82451f0d90",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "e7984fab-2f19-5175-9d43-0464d34568f5",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03",
+            "fa7363ec-8065-5b36-8383-87dfb95f0410"
+          ],
+          "cites": [
+            "MK:類関係の元は順序対",
+            "類写像:写像は集合である類写像",
+            "類写像:集合を定義域とする類写像の順序対の像は集合",
+            "類写像:類写像は類関係"
+          ],
+          "axioms": [
+            "IsClassMap 定義公理",
+            "IsClassRelation 定義公理",
+            "IsMap 定義公理",
+            "IsRelation 定義公理",
+            "MK類内包公理図式",
+            "MK類外延性公理",
+            "ZF対公理",
+            "ZF純粋性公理",
+            "ZF置換公理図式",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "∃! 定義公理",
+            "⊂ 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    },
+    "MK:包含する類写像は等しい": {
+      "id": "9065d163-6a00-58a0-a2dc-9b8d462afdcc",
+      "hash": "d1026952b3933588269968f260302041fe415d708ed7c0f70507ba1b9d969d48",
+      "dss": "(IsClassMap(f, X, Y)) → (IsClassMap(g, X, Y)) → (f ⊂ g) → (f = g)",
+      "premises": [],
+      "proofs": {
+        "4c997149-3d8f-510e-850d-2bba10f1c7fc": {
+          "steps": 132,
+          "step_hash": "1d7cf78f99024f5575b109ae7c818fc612a4061f6dd807f2417f6f1f5fecfd54",
+          "direct_axioms": [
+            "067fadd8-3880-5252-9afa-7435a7a00075",
+            "1f56a039-344f-50f7-afbe-10cf2ecfff06",
+            "4d0fec14-b78c-58f7-8247-40b1585692aa",
+            "5e6cd880-e55e-508c-ae3f-bd2069977882",
+            "6b768878-ac8e-5c4b-b954-bf8304a0bc2f",
+            "8489a563-5ed6-51b0-81dd-dcc43ffbf83f",
+            "8cb45f9d-0d1b-5d39-a997-856d00763543",
+            "ae543764-4b4b-5773-b408-589a5390d76a",
+            "e61050ba-1875-562c-bc49-c99ba407f41f",
+            "e7984fab-2f19-5175-9d43-0464d34568f5",
+            "fa66562b-2a21-5f48-9a84-adafc9902d03"
+          ],
+          "cites": [
+            "MK:類関係の元は順序対",
+            "類写像:値の一意性",
+            "類写像:値の存在",
+            "類写像:類写像は類関係"
+          ],
+          "axioms": [
+            "IsClassMap 定義公理",
+            "IsClassRelation 定義公理",
+            "MK類内包公理図式",
+            "MK類外延性公理",
+            "ZF対公理",
+            "ZF集合元性公理",
+            "{,} 定義公理",
+            "× 定義公理",
+            "∃! 定義公理",
+            "⊂ 定義公理",
+            "⟨,⟩ 定義公理",
+            "全称除去公理",
+            "同値導入公理",
+            "同値除去公理（右）",
+            "同値除去公理（左）",
+            "存在導入公理",
+            "存在除去公理",
+            "等号代入公理",
+            "等号反射律公理",
+            "連言導入公理",
+            "連言除去公理（右）",
+            "連言除去公理（左）"
+          ],
+          "valid": [
+            "MK"
+          ]
+        }
+      }
+    }
+  }
+}

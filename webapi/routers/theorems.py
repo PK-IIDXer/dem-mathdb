@@ -87,13 +87,14 @@ def list_applicable_theorems(
     )
     shown = visible_ids(dem.session, [item.id for item, _, _ in candidates])
     candidates = [entry for entry in candidates if entry[0].id in shown][:limit]
+    outputs = theorem_outputs(dem.session, (theorem for theorem, _, _ in candidates))
     return [
         ApplicableTheoremOut(
-            theorem=theorem_output(dem.session, theorem),
+            theorem=output,
             is_schematic=is_schematic,
             score=score,
         )
-        for theorem, is_schematic, score in candidates
+        for output, (_, is_schematic, score) in zip(outputs, candidates, strict=True)
     ]
 
 

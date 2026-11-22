@@ -15,21 +15,25 @@
         "name": "命題",
         "code": "proposition",
         "remarks": "proposition. 真偽を問える論理式。",
-        "created_at": "2026-11-15T09:13:08Z"
+        "created_at": "2026-11-15T22:29:49Z"
       },
       "hash": "b1b95f7e3a75fc9018e4453b6c7f5ce3702548d26c9c29cc13d686995f99ef51",
       "token_count": 1,
       "description": null,
       "remarks": null,
-      "created_at": "2026-11-15T09:13:09Z"
+      "created_at": "2026-11-15T22:29:50Z"
     },
+    "premise_formula_ids": [
+      16,
+      10
+    ],
     "status": "proven",
     "description": "教科書的な論理の規則・基本定理。含意導入はImpIntro、全称導入はGenに相当します。各証明は使用した公理に相対的に妥当です。",
     "tags": [],
     "external_checks": [],
     "remarks": null,
-    "created_at": "2026-11-15T09:13:10Z",
-    "updated_at": "2026-11-15T09:13:10Z"
+    "created_at": "2026-11-15T22:29:51Z",
+    "updated_at": "2026-11-15T22:29:51Z"
   },
   "steps": [
     {
@@ -37,7 +41,7 @@
       "ord": 0,
       "step_kind": "premise",
       "conclusion_formula": {
-        "id": 1075,
+        "id": 984,
         "public_id": "38966cc8-4b2f-5d45-b2bf-97d0e666f332",
         "formula_type_id": 2,
         "formula_type": {
@@ -45,13 +49,13 @@
           "name": "命題",
           "code": "proposition",
           "remarks": "proposition. 真偽を問える論理式。",
-          "created_at": "2026-11-15T09:13:08Z"
+          "created_at": "2026-11-15T22:29:49Z"
         },
         "hash": "3c0d9fd5bef368b21057ab5b5ecc2a0a5bbb677bf312f44ad5fbcd45ec035ca0",
         "token_count": 3,
         "description": null,
         "remarks": null,
-        "created_at": "2026-11-15T09:13:25Z"
+        "created_at": "2026-11-15T22:30:10Z"
       },
       "premise_ord": 0,
       "axiom": null,
@@ -62,14 +66,14 @@
       "term_substs": [],
       "prop_substs": [],
       "remarks": null,
-      "created_at": "2026-11-15T09:40:26Z"
+      "created_at": "2026-11-15T22:39:24Z"
     },
     {
       "proof_id": 92,
       "ord": 1,
       "step_kind": "premise",
       "conclusion_formula": {
-        "id": 2105,
+        "id": 1905,
         "public_id": "f65f6af4-530e-5e0f-9103-49aba35d8d6c",
         "formula_type_id": 2,
         "formula_type": {
@@ -77,13 +81,13 @@
           "name": "命題",
           "code": "proposition",
           "remarks": "proposition. 真偽を問える論理式。",
-          "created_at": "2026-11-15T09:13:08Z"
+          "created_at": "2026-11-15T22:29:49Z"
         },
         "hash": "a6cc372fb45b833c1e18df2bd27bfdcde7b5c33fd3172a01e46d6c6df78ccf42",
         "token_count": 7,
         "description": null,
         "remarks": null,
-        "created_at": "2026-11-15T09:40:26Z"
+        "created_at": "2026-11-15T22:39:24Z"
       },
       "premise_ord": 1,
       "axiom": null,
@@ -94,7 +98,7 @@
       "term_substs": [],
       "prop_substs": [],
       "remarks": null,
-      "created_at": "2026-11-15T09:40:26Z"
+      "created_at": "2026-11-15T22:39:24Z"
     }
   ],
   "suggestion": {
@@ -103,12 +107,12 @@
       "prop_substs": [
         {
           "source_symbol_id": 10,
-          "body_formula_id": 1075,
+          "body_formula_id": 984,
           "formal_param_symbol_ids": []
         },
         {
           "source_symbol_id": 11,
-          "body_formula_id": 522,
+          "body_formula_id": 479,
           "formal_param_symbol_ids": []
         }
       ],

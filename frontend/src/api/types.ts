@@ -142,6 +142,7 @@ export interface Theorem {
   name: string
   conclusion_formula_id: number
   conclusion_formula: Formula
+  premise_formula_ids: number[]
   status: string
   description: string | null
   tags: Tag[]

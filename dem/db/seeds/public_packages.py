@@ -18,11 +18,12 @@ VERSIONS = {
     "public-demo": "1.0.0",
     "public-natural-deduction": "1.0.0",
     "public-equivalence": "1.0.0",
-    "public-zfc": "1.1.0",
-    "public-mk": "1.1.0",
-    "public-unique-existence": "1.0.0",
-    "public-relations": "1.0.0",
-    "public-class-relations": "1.0.0",
+    "public-zfc": "2.0.0",
+    "public-mk": "2.0.0",
+    "public-unique-existence": "2.0.0",
+    "public-relations": "2.0.0",
+    "public-class-relations": "2.0.0",
+    "public-algebra": "1.0.0",
 }
 RUNTIME_RANGE = ">=0.1.0,<0.2.0"
 PACKAGE_GROUPS = (("public-core", (), ()), ("public-demo", (), ("public-core",)),
@@ -32,15 +33,17 @@ PACKAGE_GROUPS = (("public-core", (), ()), ("public-demo", (), ("public-core",))
                   ("public-mk", (), ("public-zfc",)),
                   ("public-unique-existence", (), ("public-equivalence",)),
                   ("public-relations", (), ("public-zfc", "public-unique-existence")),
-                  ("public-class-relations", (), ("public-relations", "public-mk")))
+                  ("public-class-relations", (), ("public-relations", "public-mk")),
+                  ("public-algebra", (), ("public-relations",)))
 def package_name(key):
     return {"public-core": "dem.public.logic", "public-demo": "dem.public.demos",
-            "public-natural-deduction": "dem.public.natural_deduction",
+            "public-natural-deduction": "dem.public.natural-deduction",
             "public-equivalence": "dem.public.equivalence",
             "public-zfc": "dem.public.zfc", "public-mk": "dem.public.mk",
-            "public-unique-existence": "dem.public.unique_existence",
+            "public-unique-existence": "dem.public.unique-existence",
             "public-relations": "dem.public.relations",
-            "public-class-relations": "dem.public.class_relations"}[key]
+            "public-class-relations": "dem.public.class-relations",
+            "public-algebra": "dem.public.algebra"}[key]
 
 MODELS = (Symbol, Definition, Axiom, AxiomSystem, Theorem, Proof)
 

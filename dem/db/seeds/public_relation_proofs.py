@@ -7,13 +7,15 @@ from dem.db.seeds.public_zfc import _Proofs
 class RelationProofs(_Proofs):
     extra_logic = {}
 
-    def named(self, index, **terms):
-        return self.cite(STATEMENTS[index - 1][0], terms=terms)
+    def named(self, index, *args, **terms):
+        return self.cite(STATEMENTS[index - 1][0], terms=terms, args=args)
 
-    def prove(self, index, assumptions, result):
-        self.close_many(assumptions, result)
-        name, text = STATEMENTS[index - 1]
-        self.finish(name, self.parse(text))
+    def begin(self, index):
+        return self.start(tuple(self.parse(text) for text in STATEMENTS[index - 1][1]))
+
+    def prove(self, index):
+        name, premises, conclusion = STATEMENTS[index - 1]
+        self.finish(name, self.parse(conclusion), premises=tuple(map(self.parse, premises)))
         self.start()
 
     def using_witness(self, existential, variable, derive):

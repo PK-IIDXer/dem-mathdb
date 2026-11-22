@@ -344,6 +344,7 @@ class TheoremOut(BaseModel):
     name: str
     conclusion_formula_id: int
     conclusion_formula: FormulaOut
+    premise_formula_ids: list[int] = Field(default_factory=list)
     status: str
     description: str | None
     tags: list[TagOut] = Field(default_factory=list)

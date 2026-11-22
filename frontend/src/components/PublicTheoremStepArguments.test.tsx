@@ -6,6 +6,7 @@ import { afterEach, expect, it, vi } from 'vitest'
 import type { ProofStep } from '../api/types'
 import { setLanguage } from '../i18n/language'
 import fixture from '../test/fixtures/public-theorem-step-arguments.json'
+import { symbols } from '../test/fixtures/public-zfc-mk.json'
 import { setupUser } from '../test/user'
 import { StepForm } from './StepForm/StepForm'
 
@@ -16,7 +17,7 @@ afterEach(() => {
 
 it.each([false, true])('submits steps in premise order (exact second premise candidate: %s)', async (exactSecondCandidate) => {
   setLanguage('en')
-  const { lemma, steps, suggestion, symbols } = fixture
+  const { lemma, steps, suggestion } = fixture
   const proofId = steps[0].proof_id
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } })
   client.setQueryData(['theorems', lemma.id, 'premises'], [])

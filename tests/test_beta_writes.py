@@ -104,12 +104,13 @@ RELATION_PACKAGES = (
     package_name("public-unique-existence"),
     package_name("public-relations"),
     package_name("public-class-relations"),
+    package_name("public-algebra"),
 )
 
 
 @pytest.mark.parametrize("enabled", [False, True])
 @pytest.mark.parametrize("package", [
-    "dem.public.logic", "dem.public.natural_deduction", "dem.public.equivalence",
+    "dem.public.logic", "dem.public.natural-deduction", "dem.public.equivalence",
     "dem.public.zfc", "dem.public.mk", *RELATION_PACKAGES,
 ])
 def test_published_write_matrix(base_api, monkeypatch, enabled, package):
@@ -133,7 +134,7 @@ def test_published_write_matrix(base_api, monkeypatch, enabled, package):
         if theorem is None: theorem = dem.session.scalar(select(Theorem).order_by(Theorem.id))
         proof = dem.session.scalar(select(Proof).where(Proof.theorem_id == theorem.id, Proof.status == "verified"))
         member = Base.metadata.tables["axiom_system_member"]
-        # The three relations packages introduce definitions and theorems.
+        # The relations and algebra packages introduce definitions and theorems.
         # Use MK for the member routes because those packages own no systems.
         system_owner = AxiomSystem.name == "MK" if relation_package else AxiomSystem.release_id == release_id
         system_id, member_axiom_id = dem.session.execute(

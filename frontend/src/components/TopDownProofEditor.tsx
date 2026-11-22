@@ -10,16 +10,17 @@ import type {
   Axiom,
   BackwardStepSuggestion,
   ProofState,
-  Substitution,
   Symbol,
   Theorem,
   Token,
 } from '../api/types'
 import { ApiError } from '../api/client'
-import { SYMBOL_TYPE } from '../constants/symbolTypes'
 import { FormulaPicker } from './FormulaPicker'
 import { Latex } from './Latex'
 import { SubstitutionEditor } from './StepForm/SubstitutionEditor'
+import { completedSubstitution, createSubstitutionDraft, type SubstitutionDraft } from './StepForm/substitutionDraft'
+import { ArgumentMismatchMessage } from './StepForm/ArgumentMismatchMessage'
+import { argumentMismatch, type ArgumentMismatch } from './StepForm/argumentMismatch'
 import { renderLatex, tokensToTree } from './FormulaEditor/model'
 import { useCommand } from '../commands/CommandProvider'
 import { InferenceRulePicker } from './InferenceRulePicker'
@@ -69,7 +70,9 @@ export function TopDownProofEditor({
 
   const [state, reduce] = useReducer(proofPlanReducer, proofState.goal_tokens, createProofPlan)
   const editorRef = useRef<HTMLDivElement>(null)
+  const substitutionRequest = useRef(0)
   const [selectedHoleId, setSelectedHoleId] = useState(0)
+  const [mismatch, setMismatch] = useState<ArgumentMismatch | null>(null)
   const [pending, setPending] = useState(false)
   const [focusRequest, setFocusRequest] = useState<{ holeId: number | null; sequence: number } | null>(null)
   const actionPanelRef = useRef<HTMLDivElement>(null)
@@ -86,8 +89,11 @@ export function TopDownProofEditor({
     kind: 'axiom' | 'theorem'
     label: string
     sourceId: number
-    candidate: BackwardStepSuggestion
-    value: Substitution
+    goalTokens: Token[]
+    inference: BackwardStepSuggestion
+    candidate: BackwardStepSuggestion | null
+    draft: SubstitutionDraft
+    error: string | null
   } | null>(null)
   const { data: theorems = [] } = useQuery({
     queryKey: ['theorems', 'top-down-picker'],
@@ -98,11 +104,7 @@ export function TopDownProofEditor({
   const holes = listPlanHoles(state.root)
   const selectedNode = findPlanNode(state.root, selectedHoleId)
   const selectedHole = selectedNode?.kind === 'hole' ? selectedNode : holes[0] ?? null
-  const backwardRequiredIncomplete = backwardEdit?.candidate.undetermined.some((item) => {
-    const term = backwardEdit.value.term_substs.find((subst) => subst.source_symbol_id === item.symbol_id)
-    const prop = backwardEdit.value.prop_substs.find((subst) => subst.source_symbol_id === item.symbol_id)
-    return (term?.target_formula_id ?? prop?.body_formula_id ?? 0) <= 0
-  }) ?? false
+  const backwardComplete = backwardEdit && completedSubstitution(backwardEdit.inference, backwardEdit.draft, symbolsById)
 
   useLayoutEffect(() => {
     if (pending || focusRequest === null) return
@@ -125,7 +127,8 @@ export function TopDownProofEditor({
   }
 
   async function finishOperation(baseAction: ProofPlanAction): Promise<void> {
-    if (baseAction.type !== 'apply_backward') setBackwardEdit(null)
+    setBackwardEdit(null)
+    setMismatch(null)
     const preview = proofPlanReducer(state, baseAction)
     let workingRoot = preview.root
     const insertions: PlanInsertion[] = []
@@ -140,7 +143,9 @@ export function TopDownProofEditor({
         insertions.push(insertion)
         workingRoot = applyInsertionRecords(workingRoot, [insertion])
       } catch (error) {
-        failure = { nodeId: ready.nodeId, message: errorMessage(error) }
+        const details = argumentMismatch(error)
+        setMismatch(details)
+        failure = { nodeId: ready.nodeId, message: details ? t('stepArgumentMismatch', details.premise) : errorMessage(error) }
         break
       }
     }
@@ -151,38 +156,6 @@ export function TopDownProofEditor({
     const nextHoleId = nextHoles[0]?.id ?? null
     if (nextHoleId !== null) setSelectedHoleId(nextHoleId)
     setFocusRequest((current) => ({ holeId: nextHoleId, sequence: (current?.sequence ?? 0) + 1 }))
-  }
-
-  function editableSubstitution(candidate: BackwardStepSuggestion): Substitution {
-    const editableIds = new Set([
-      ...candidate.defaulted_to_identity,
-      ...candidate.undetermined.map((item) => item.symbol_id),
-    ])
-    const value: Substitution = {
-      term_substs: candidate.subst.term_substs.filter((item) => editableIds.has(item.source_symbol_id)),
-      prop_substs: candidate.subst.prop_substs.filter((item) => editableIds.has(item.source_symbol_id)),
-    }
-    const termVariables = symbols.filter(
-      (symbol) => symbol.symbol_type.name === SYMBOL_TYPE.freeTermVariable,
-    )
-    for (const symbolId of editableIds) {
-      const symbol = symbolsById.get(symbolId)
-      if (symbol?.symbol_type.name === SYMBOL_TYPE.freeTermVariable) {
-        if (!value.term_substs.some((item) => item.source_symbol_id === symbolId)) {
-          value.term_substs.push({ source_symbol_id: symbolId, target_formula_id: 0 })
-        }
-      } else if (!value.prop_substs.some((item) => item.source_symbol_id === symbolId)) {
-        value.prop_substs.push({
-          source_symbol_id: symbolId,
-          body_formula_id: 0,
-          formal_param_symbol_ids: Array.from(
-            { length: symbol?.arity ?? 0 },
-            (_, index) => termVariables[index]?.id ?? termVariables[0]?.id ?? 0,
-          ),
-        })
-      }
-    }
-    return value
   }
 
   function backwardAction(
@@ -217,8 +190,16 @@ export function TopDownProofEditor({
     setBackwardChoice(null)
     const editable = candidate.defaulted_to_identity.length > 0 || candidate.undetermined.length > 0
     if (editable) {
-      setBackwardEdit({ ...choice, candidate, value: editableSubstitution(candidate) })
-      dispatch(backwardAction(choice, candidate))
+      const goalTokens = findPlanNode(state.root, choice.holeId)?.goalTokens ?? []
+      const draft = createSubstitutionDraft(candidate, symbols, [
+        goalTokens,
+        proofState.goal_tokens,
+        candidate.application_conclusion_tokens,
+        ...candidate.premise_goals,
+        ...candidate.antecedent_goals,
+        ...proofState.established.map((step) => step.tokens),
+      ])
+      setBackwardEdit({ ...choice, goalTokens, inference: candidate, candidate, draft, error: null })
     } else {
       setBackwardEdit(null)
       await finishOperation(backwardAction(choice, candidate))
@@ -231,6 +212,7 @@ export function TopDownProofEditor({
     source: Axiom | Theorem,
   ): Promise<void> {
     setPending(true)
+    setMismatch(null)
     const choice = { holeId: hole.id, kind, label: source.name, sourceId: source.id }
     try {
       const result = await proofsApi.suggestBackward(proofId, {
@@ -252,38 +234,50 @@ export function TopDownProofEditor({
     }
   }
 
-  async function updateBackwardSubstitution(value: Substitution): Promise<void> {
+  async function updateBackwardSubstitution(draft: SubstitutionDraft): Promise<void> {
     if (backwardEdit == null) return
-    setBackwardEdit({ ...backwardEdit, value })
-    const required = new Set(backwardEdit.candidate.undetermined.map((item) => item.symbol_id))
-    const completeIds = new Set([
-      ...value.term_substs.filter((item) => item.target_formula_id > 0).map((item) => item.source_symbol_id),
-      ...value.prop_substs.filter((item) => item.body_formula_id > 0).map((item) => item.source_symbol_id),
-    ])
-    if ([...required].some((symbolId) => !completeIds.has(symbolId))) return
-    const subst: Substitution = {
-      term_substs: value.term_substs.filter((item) => item.target_formula_id > 0),
-      prop_substs: value.prop_substs.filter((item) => item.body_formula_id > 0),
+    const changed = draft.value !== backwardEdit.draft.value
+    const edit = { ...backwardEdit, draft }
+    if (!changed && (edit.candidate || edit.error || draft.unfinished.length > 0)) {
+      setBackwardEdit((current) => current && { ...current, draft })
+      return
+    }
+    const request = ++substitutionRequest.current
+    setBackwardEdit({ ...edit, candidate: null, error: null })
+    const subst = completedSubstitution(edit.inference, draft, symbolsById)
+    if (!subst) {
+      setPending(false)
+      return
     }
     setPending(true)
     try {
       const result = await proofsApi.suggestBackward(proofId, {
-        kind: backwardEdit.kind,
-        ...(backwardEdit.kind === 'axiom'
-          ? { axiom_id: backwardEdit.sourceId }
-          : { applied_theorem_id: backwardEdit.sourceId }),
-        goal_tokens: findPlanNode(state.root, backwardEdit.holeId)?.goalTokens ?? [],
+        kind: edit.kind,
+        ...(edit.kind === 'axiom' ? { axiom_id: edit.sourceId } : { applied_theorem_id: edit.sourceId }),
+        goal_tokens: edit.goalTokens,
         subst,
       })
       const candidate = result.candidates.find(
-        (item) => item.match_depth === backwardEdit.candidate.match_depth,
+        (item) => item.match_depth === edit.inference.match_depth,
       ) ?? result.candidates[0]
       if (candidate == null) throw new Error(t("TopDownProofEditor_437"))
-      const choice = { ...backwardEdit }
-      dispatch(backwardAction(choice, candidate))
-      setBackwardEdit({ ...backwardEdit, candidate, value })
+      if (request === substitutionRequest.current) {
+        setBackwardEdit((current) => current && { ...current, candidate, error: null })
+      }
     } catch (error) {
-      dispatch({ type: 'failed', holeId: backwardEdit.holeId, message: errorMessage(error) })
+      if (request === substitutionRequest.current) {
+        setBackwardEdit((current) => current && { ...current, candidate: null, error: errorMessage(error) })
+      }
+    } finally {
+      if (request === substitutionRequest.current) setPending(false)
+    }
+  }
+
+  async function applyBackwardSubstitution(): Promise<void> {
+    if (!backwardEdit?.candidate || !backwardComplete || pending) return
+    setPending(true)
+    try {
+      await finishOperation(backwardAction(backwardEdit, backwardEdit.candidate))
     } finally {
       setPending(false)
     }
@@ -387,7 +381,7 @@ export function TopDownProofEditor({
     if (!showRules) return
     const listener = (event: Event) => {
       const detail = (event as CustomEvent<{ mode: string; theoremId: number }>).detail
-      if (detail.mode !== 'plan' || !selectedHole) return
+      if (detail.mode !== 'plan' || !selectedHole || backwardEdit || pending) return
       const theorem = theorems.find((item) => item.id === detail.theoremId)
       if (theorem) void suggestBackward(selectedHole, 'theorem', theorem)
       else void theoremsApi.get(detail.theoremId).then((item) => suggestBackward(selectedHole, 'theorem', item))
@@ -399,6 +393,10 @@ export function TopDownProofEditor({
   useCommand('plan.recipe.choose', () => focusAction('[data-plan-recipe]'), { enabled: backwardChoice != null, scope: editorRef })
   useCommand('plan.assume', () => focusAction('[data-plan-assume]'), { enabled: selectedHole != null, scope: editorRef })
   useCommand('plan.argument.choose', () => focusAction('[data-plan-argument]'), { scope: editorRef })
+
+  const previewRoot = backwardEdit?.candidate
+    ? proofPlanReducer(state, backwardAction(backwardEdit, backwardEdit.candidate)).root
+    : state.root
 
   return (
     <div ref={editorRef} data-top-down data-rule-enabled={showRules} className="rounded-lg border border-violet-200 bg-violet-50/40 p-4">
@@ -414,10 +412,10 @@ export function TopDownProofEditor({
 
       <div className="mt-3 rounded border border-violet-100 bg-white p-3">
         <PlanNodeView
-          node={state.root}
+          node={previewRoot}
           symbolsById={symbolsById}
           selectedHoleId={selectedHole?.id ?? null}
-          pending={pending}
+          pending={pending || backwardEdit != null}
           onSelect={setSelectedHoleId}
           onSelectArgument={(nodeId, premiseIndex, stepOrd) => {
             void selectArgument(nodeId, premiseIndex, stepOrd)
@@ -444,43 +442,33 @@ export function TopDownProofEditor({
       )}
 
       {backwardEdit && (
-        <div className="mt-3 space-y-2 rounded border border-indigo-200 bg-indigo-50 p-3">
-          <p className="text-xs font-semibold text-indigo-900">backward substitution</p>
-          {(backwardEdit.candidate.subst.term_substs.length
-            + backwardEdit.candidate.subst.prop_substs.length) > 0 && (
-            <p className="text-xs text-indigo-800">
-              {t("TopDownProofEditor_448")}{[...backwardEdit.candidate.subst.term_substs, ...backwardEdit.candidate.subst.prop_substs]
-                .map((item) => `#${item.source_symbol_id}`).join(', ')}
-            </p>
-          )}
-          {backwardEdit.candidate.defaulted_to_identity.length > 0 && (
-            <p className="text-xs text-indigo-800">
-              {t("TopDownProofEditor_449")}{backwardEdit.candidate.defaulted_to_identity.map((id) => `#${id}`).join(', ')}
-            </p>
-          )}
-          {backwardEdit.candidate.undetermined.length > 0 && (
-            <p className="text-xs text-amber-700">
-              {t("TopDownProofEditor_450")}{backwardEdit.candidate.undetermined.map((item) => item.name).join(', ')}
-            </p>
-          )}
+        <fieldset disabled={pending} className="mt-3 space-y-2 rounded border border-indigo-200 bg-indigo-50 p-3">
+          <legend className="text-xs font-semibold text-indigo-900">{t('substitutionHeading')}</legend>
           <SubstitutionEditor
-            value={backwardEdit.value}
-            onChange={(value) => void updateBackwardSubstitution(value)}
-            editableSymbolIds={[
-              ...backwardEdit.candidate.defaulted_to_identity,
-              ...backwardEdit.candidate.undetermined.map((item) => item.symbol_id),
-            ]}
+            inference={backwardEdit.inference}
+            draft={backwardEdit.draft}
+            onChange={(draft) => void updateBackwardSubstitution(draft)}
+            symbolsById={symbolsById}
             context={context}
           />
-        </div>
+          {backwardEdit.error && <p role="alert" className="text-xs text-red-700">{backwardEdit.error}</p>}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              disabled={!backwardComplete || !backwardEdit.candidate}
+              onClick={() => void applyBackwardSubstitution()}
+              className="rounded bg-indigo-700 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40"
+            >
+              {t('substitutionApply')}
+            </button>
+            <button type="button" className="text-xs text-slate-700 underline" onClick={() => setBackwardEdit(null)}>
+              {t('substitutionCancel')}
+            </button>
+          </div>
+        </fieldset>
       )}
 
-      {backwardRequiredIncomplete && (
-        <p className="mt-3 rounded bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          {t("TopDownProofEditor_451")}</p>
-      )}
-
-      {selectedHole && !backwardRequiredIncomplete && (
+      {selectedHole && !backwardEdit && (
         <div ref={actionPanelRef} data-hole-actions={selectedHole.id} className="mt-3 space-y-3 rounded border border-violet-100 bg-white p-3">
           <div>
             <p className="text-xs font-semibold text-violet-900">hole #{selectedHole.id} {t("TopDownProofEditor_452")}</p>
@@ -534,6 +522,7 @@ export function TopDownProofEditor({
           {selectedHole.error && <p className="rounded bg-red-50 px-3 py-2 text-sm text-red-800">hole #{selectedHole.id}: {selectedHole.error}</p>}
         </div>
       )}
+      {mismatch && <ArgumentMismatchMessage details={mismatch} symbolsById={symbolsById} />}
       {state.root.error && state.root.kind !== 'hole' && (
         <p className="mt-3 rounded bg-red-50 px-3 py-2 text-sm text-red-800">plan node #{state.root.id}: {state.root.error}</p>
       )}
@@ -579,7 +568,7 @@ function PlanNodeView({
         : t("TopDownProofEditor_465", node.assumptionStepOrd, node.stepOrd == null ? '' : ` → step (${node.stepOrd})`)
   return (
     <div className="border-l border-violet-200 pl-3">
-      <button type="button" disabled={node.kind !== 'hole'} onClick={() => onSelect(node.id)} className={`text-left text-xs ${node.kind === 'hole' ? 'font-semibold text-violet-700' : 'text-slate-600'} ${selectedHoleId === node.id ? 'underline' : ''}`}>
+      <button type="button" disabled={pending || node.kind !== 'hole'} onClick={() => onSelect(node.id)} className={`text-left text-xs ${node.kind === 'hole' ? 'font-semibold text-violet-700' : 'text-slate-600'} ${selectedHoleId === node.id ? 'underline' : ''}`}>
         {label}
       </button>
       <div className="mt-0.5 text-sm"><PlanFormula tokens={node.goalTokens} symbolsById={symbolsById} /></div>
@@ -608,10 +597,10 @@ function PlanNodeView({
         <p className="mt-1 text-xs text-slate-500">
           {t("TopDownProofEditor_468")}{[
             ...node.application.subst.term_substs.map(
-              (item) => `#${item.source_symbol_id} ↦ formula #${item.target_formula_id}`,
+              (item) => `${symbolsById.get(item.source_symbol_id)?.name ?? item.source_symbol_id} ↦ formula #${item.target_formula_id}`,
             ),
             ...node.application.subst.prop_substs.map(
-              (item) => `#${item.source_symbol_id} ↦ formula #${item.body_formula_id}`,
+              (item) => `${symbolsById.get(item.source_symbol_id)?.name ?? item.source_symbol_id} ↦ formula #${item.body_formula_id}`,
             ),
           ].join(', ')}
         </p>

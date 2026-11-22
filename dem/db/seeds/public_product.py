@@ -26,7 +26,7 @@ class ProductProofs(RelationProofs):
         return self.comp("k", self.some("r", self.conj(self.member(r, X), self.eq(k, self.ordered(r, b)))))
 
     def slice_set(self, sx, belongs_y, y):
-        return self.apply(self.cite(SLICE, terms={"b": y}), sx, self.set_member(belongs_y))
+        return self.cite(SLICE, terms={"b": y}, args=(sx, self.set_member(belongs_y)))
 
     def slice_membership(self, X, y, q, sethood):
         return self.comprehension("q", self.opened(self.slice(X, y), "q"), q,
@@ -34,28 +34,26 @@ class ProductProofs(RelationProofs):
 
     def seed_product(self):
         X, Y, b, q = map(self.atom, ("X", "Y", "b", "q"))
-        sx, sb = self.assume(self.isset(X)), self.assume(self.isset(b))
-        result = self.functional_replacement(
+        premises = (self.isset(X), self.isset(b))
+        sx, _ = self.start(premises)
+        self.functional_replacement(
             X, sx, lambda x: self.ordered(x, b),
             lambda x, belongs: self.pair_element(x, b),
         )
-        self.close_many((sx, sb), result)
-        self.finish(SLICE, self.parse("IsSet(X) → IsSet(b) → IsSet({|} q. ∃ x. (x ∈ X ∧ q = ⟨,⟩(x,b)))"))
-        self.start()
+        self.finish(SLICE, self.isset(self.slice(X, b)), premises=premises)
 
-        sx, sy = self.assume(self.isset(X)), self.assume(self.isset(Y))
-        result = self.functional_replacement(
+        premises = (self.isset(X), self.isset(Y))
+        sx, sy = self.start(premises)
+        self.functional_replacement(
             Y, sy, lambda y: self.slice(X, y),
             lambda y, belongs: self.element(self.slice_set(sx, belongs, y)),
         )
-        self.close_many((sx, sy), result)
         self.finish(SLICES, self.parse(
-            "IsSet(X) → IsSet(Y) → IsSet({|} w. ∃ y. (y ∈ Y ∧ w = ({|} q. ∃ x. (x ∈ X ∧ q = ⟨,⟩(x,y)))))",
-        ))
-        self.start()
+            "IsSet({|} w. ∃ y. (y ∈ Y ∧ w = ({|} q. ∃ x. (x ∈ X ∧ q = ⟨,⟩(x,y)))))",
+        ), premises=premises)
 
-        sx, sy = self.assume(self.isset(X)), self.assume(self.isset(Y))
-        slices_set = self.apply(self.cite(SLICES), sx, sy)
+        sx, sy = self.begin(9)
+        slices_set = self.cite(SLICES, args=(sx, sy))
         slices = self.parts(self.tokens(slices_set))[0]
         union_set = self.mp(self.ui(self.ax("ZF和集合公理"), slices), slices_set)
         union = self.parts(self.tokens(union_set))[0]
@@ -73,11 +71,12 @@ class ProductProofs(RelationProofs):
         }), same_members)
         v = self.atom("v")
         result = self.transport(equality, union_set, "v", self.isset(v))
-        result = self.transport(self.sym(self.definition("×", X, Y)), result, "v", self.isset(v))
-        self.prove(9, (sx, sy), result)
+        self.transport(self.sym(self.definition("×", X, Y)), result, "v", self.isset(v))
+        self.prove(9)
 
-        sx, sy = self.assume(self.isset(X)), self.assume(self.isset(Y))
-        self.prove(10, (sx, sy), self.product_membership(COMPREHENSION, self.apply(self.named(9), sx, sy)))
+        sx, sy = self.begin(10)
+        self.product_membership(COMPREHENSION, self.named(9, sx, sy))
+        self.prove(10)
 
     def union_to_product(self, member, slices, slices_set, X, Y, sx, q):
         x, y, u, v = map(self.atom, ("x", "y", "u", "v"))

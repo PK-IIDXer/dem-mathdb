@@ -1,0 +1,4683 @@
+{
+  "manifest.json": [
+    {
+      "dem_runtime": ">=0.1.0,<0.2.0",
+      "depends": {},
+      "derived_fields": {
+        "proofs.jsonl": [
+          "status"
+        ],
+        "theorems.jsonl": [
+          "status"
+        ]
+      },
+      "description": "Old public theorem statement",
+      "empty_field_reasons": {
+        "depends": "Package dependency tracking starts in Phase 5-6.",
+        "license": "The workspace model does not yet store a workspace-wide license. When present, license covers only the imported entities named in NOTICE."
+      },
+      "identity": {
+        "entities": "public_id",
+        "formulas": "public_id and hash",
+        "non_formula_identity": "public_id only; canonical hashes start in Phase 5-6"
+      },
+      "license": null,
+      "license_scope": null,
+      "package": "workspace.theorem-premises",
+      "schema_version": 2,
+      "version": "0.0.0"
+    }
+  ],
+  "namespaces.jsonl": [
+    {
+      "name": "dem.foundation",
+      "parent": null
+    },
+    {
+      "name": "dem.foundation.logic",
+      "parent": "dem.foundation"
+    }
+  ],
+  "formula_types.jsonl": [
+    {
+      "name": "命題",
+      "remarks": "proposition. 真偽を問える論理式。"
+    },
+    {
+      "name": "項",
+      "remarks": "term. 数学的な実体を表す論理式。"
+    }
+  ],
+  "symbol_types.jsonl": [
+    {
+      "fixed_arity": null,
+      "input_formula_type": "項",
+      "is_quantifier": false,
+      "name": "命題型自由変数記号",
+      "output_formula_type": "命題",
+      "remarks": "自由な命題変数"
+    },
+    {
+      "fixed_arity": 1,
+      "input_formula_type": "命題",
+      "is_quantifier": true,
+      "name": "命題型量化記号",
+      "output_formula_type": "命題",
+      "remarks": "命題を束縛して命題を作る記号"
+    },
+    {
+      "fixed_arity": null,
+      "input_formula_type": "命題",
+      "is_quantifier": false,
+      "name": "論理記号",
+      "output_formula_type": "命題",
+      "remarks": "¬, ∨, ∧, →, ↔ など。"
+    },
+    {
+      "fixed_arity": null,
+      "input_formula_type": "項",
+      "is_quantifier": false,
+      "name": "述語記号",
+      "output_formula_type": "命題",
+      "remarks": "項から命題を作る記号"
+    },
+    {
+      "fixed_arity": null,
+      "input_formula_type": "項",
+      "is_quantifier": false,
+      "name": "関数記号",
+      "output_formula_type": "項",
+      "remarks": "項から項を作る記号"
+    },
+    {
+      "fixed_arity": 0,
+      "input_formula_type": null,
+      "is_quantifier": false,
+      "name": "項型自由変数記号",
+      "output_formula_type": "項",
+      "remarks": "自由な項変数"
+    },
+    {
+      "fixed_arity": 1,
+      "input_formula_type": "命題",
+      "is_quantifier": true,
+      "name": "項型量化記号",
+      "output_formula_type": "項",
+      "remarks": "項を作る束縛記法。現在インスタンスは無い。"
+    }
+  ],
+  "symbols.jsonl": [
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "f",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "ψ",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "056bb080-b4a4-5b6c-a651-86b3309dcda6",
+      "remarks": null,
+      "symbol_type": "命題型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "j",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "080638fa-4f5c-5671-8938-bdbe62d643c2",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "S",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "089c33b2-013e-5ddb-9ab8-005776d762db",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": false,
+      "latex_template": "\\{#1,#2\\}",
+      "name": "{,}",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "0e2776cb-b874-59b2-8480-98ca7d4fbaf8",
+      "remarks": "Explicit term abbreviation.",
+      "symbol_type": "関数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "Z",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "0fa218c0-2c6e-5c7d-8be8-8f9ff6d66712",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "d",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "14253a75-24f1-5889-88d5-41838b5ac926",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "g",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "191dd445-6390-5b44-9bc0-e05b99d0a8fc",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "#1 \\in #2",
+      "name": "∈",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 50,
+      "public_id": "2267b6f1-547f-5692-a001-4f67db673389",
+      "remarks": null,
+      "symbol_type": "述語記号"
+    },
+    {
+      "arity": 3,
+      "is_primitive": false,
+      "latex_template": "#1 \\mathrel{\\mathsf{IsRelationFrom}} #2 \\mathrel{\\mathsf{To}} #3",
+      "name": "IsRelation",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e",
+      "remarks": null,
+      "symbol_type": "述語記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": "y",
+      "name": "y",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "28ffc497-17bf-56b0-b792-3b4f3882539a",
+      "remarks": "シード用自由項変数",
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "ψ¹",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "2efc9d40-a273-5e41-8315-4de58dfabad3",
+      "remarks": null,
+      "symbol_type": "命題型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": true,
+      "latex_template": "\\bot",
+      "name": "⊥",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "3200b32b-2960-5ad9-98b0-3c46eea42f9c",
+      "remarks": "矛盾",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "i",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "37b02e8e-0a3a-5b7a-be5f-2667762850e2",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "φ",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "43c9c73e-69f5-500a-ba17-852af85be0b7",
+      "remarks": null,
+      "symbol_type": "命題型自由変数記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "\\wedge",
+      "name": "∧",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 40,
+      "public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1",
+      "remarks": "連言",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": "t",
+      "name": "t",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "4b3303de-7abf-5ee7-b37a-4dc01d43665c",
+      "remarks": "シード用自由項変数",
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": true,
+      "latex_template": "\\{#1 \\mid #2\\}",
+      "name": "{|}",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "554fae59-0cd9-556d-bf9b-9e6dcadcf278",
+      "remarks": null,
+      "symbol_type": "項型量化記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": false,
+      "latex_template": "\\{#1\\}",
+      "name": "{}",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "589e211c-09e2-5ce9-960b-a427f66bf0c2",
+      "remarks": "Explicit term abbreviation.",
+      "symbol_type": "関数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": "x",
+      "name": "x",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "58f571b2-5a2d-51ed-8fbf-7e5e6494d147",
+      "remarks": "シード用自由項変数",
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": false,
+      "latex_template": "\\exists!",
+      "name": "∃!",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "5a5db6b4-230a-592f-9048-17197b0657c4",
+      "remarks": null,
+      "symbol_type": "命題型量化記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "a",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "5df58ce0-bf65-52d8-9e75-14398116b027",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "φ²",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "5fddd714-b6e1-5b99-b981-0976f650267d",
+      "remarks": null,
+      "symbol_type": "命題型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "k",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "670aa197-9a3e-57c6-9d7c-9d46d2f3273c",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "v",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "711605cf-48f3-5133-aba8-3752a46050f9",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "Y",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "q",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "7900f757-1a50-5c60-8e56-b540bbd829df",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "X",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": true,
+      "latex_template": "\\neg",
+      "name": "¬",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "7ef55380-cb00-59f7-989f-1347cab26b12",
+      "remarks": "否定",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "u",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "85a4f66d-126a-5a12-a2f6-7354dad1ec4f",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": true,
+      "latex_template": "\\forall",
+      "name": "∀",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62",
+      "remarks": "整形式な項すべてを走る全称量化",
+      "symbol_type": "命題型量化記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "χ",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "8e86446f-fb4f-529e-be9c-3ff070066779",
+      "remarks": null,
+      "symbol_type": "命題型自由変数記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "=",
+      "name": "=",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 50,
+      "public_id": "9c6f5697-7475-52bd-b600-b981e924af62",
+      "remarks": "等号",
+      "symbol_type": "述語記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "φ¹",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1",
+      "remarks": null,
+      "symbol_type": "命題型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "w",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "a4b7d106-1364-568d-b802-40c8a142696e",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "r",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "a9c5dacc-2d6a-523f-aff6-094bb238e6c5",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 3,
+      "is_primitive": false,
+      "latex_template": "#1 \\mathrel{\\mathsf{IsClassRelationFrom}} #2 \\mathrel{\\mathsf{To}} #3",
+      "name": "IsClassRelation",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "ad785183-ec25-5475-9161-f5756379d645",
+      "remarks": null,
+      "symbol_type": "述語記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": true,
+      "latex_template": "\\exists",
+      "name": "∃",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "b299df13-8ca1-5327-9b4c-f08b1231a678",
+      "remarks": "整形式な項すべてを走る存在量化",
+      "symbol_type": "命題型量化記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": false,
+      "latex_template": "#1 \\times #2",
+      "name": "×",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 70,
+      "public_id": "b596d30a-d16a-58b2-a13f-0d045a7cf0b5",
+      "remarks": null,
+      "symbol_type": "関数記号"
+    },
+    {
+      "arity": 3,
+      "is_primitive": false,
+      "latex_template": "#1 \\mathrel{\\mathsf{IsMapFrom}} #2 \\mathrel{\\mathsf{To}} #3",
+      "name": "IsMap",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc",
+      "remarks": null,
+      "symbol_type": "述語記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": true,
+      "latex_template": "\\operatorname{IsSet}(#1)",
+      "name": "IsSet",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "ba3eee89-4fef-52cf-9b04-fcbb5680cc96",
+      "remarks": null,
+      "symbol_type": "述語記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": false,
+      "latex_template": "\\langle #1,#2\\rangle",
+      "name": "⟨,⟩",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f",
+      "remarks": "Explicit term abbreviation.",
+      "symbol_type": "関数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "s",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "be68136e-7a62-57a7-a721-ec20e9e5dd01",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 3,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "φ³",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "c48df6a0-94f9-55d3-ab4f-7201c98acb45",
+      "remarks": null,
+      "symbol_type": "命題型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": "\\varnothing",
+      "name": "∅",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "c4ec1e44-7555-51f1-bfa8-2f757ad9368e",
+      "remarks": "The comprehension term for the always-false predicate.",
+      "symbol_type": "関数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "b",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "cb820b83-7e20-577a-8743-618ea45f6d2e",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 1,
+      "is_primitive": false,
+      "latex_template": "\\mathsf{Self}(#1)",
+      "name": "同式含意",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "d807ef85-63f5-5649-aac2-05cc10dda180",
+      "remarks": "Self-implication connective: a standard definitional abbreviation.",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "R",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "dab10caa-8f2e-5030-a75d-7a5819ddf9b4",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": false,
+      "latex_template": "#1 \\subset #2",
+      "name": "⊂",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 50,
+      "public_id": "e1d98c45-ba59-57a9-a450-86cbce243e6f",
+      "remarks": null,
+      "symbol_type": "述語記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "l",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "e4d6bbd7-0eee-5b71-8736-c0054d307479",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "\\implies",
+      "name": "→",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 20,
+      "public_id": "e72831d9-19bc-5094-abd7-359f275f87a1",
+      "remarks": "含意",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "\\vee",
+      "name": "∨",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 30,
+      "public_id": "e9ab484b-d683-5276-987a-af3df5a6e8e9",
+      "remarks": "選言",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "h",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "ed5e7042-1ef3-5a6f-9142-90a02f7780e5",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "z",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "f21f29e8-f8bc-5a4a-847d-215ff1a21ce4",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 0,
+      "is_primitive": false,
+      "latex_template": null,
+      "name": "c",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "f39fb585-b566-525d-ae50-d4a530e658fc",
+      "remarks": null,
+      "symbol_type": "項型自由変数記号"
+    },
+    {
+      "arity": 2,
+      "is_primitive": true,
+      "latex_template": "\\iff",
+      "name": "↔",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 10,
+      "public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec",
+      "remarks": "同値",
+      "symbol_type": "論理記号"
+    },
+    {
+      "arity": 3,
+      "is_primitive": false,
+      "latex_template": "#1 \\mathrel{\\mathsf{IsClassMapFrom}} #2 \\mathrel{\\mathsf{To}} #3",
+      "name": "IsClassMap",
+      "namespace": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "public_id": "f6c93212-ff3b-506e-8481-0a177fb2a32c",
+      "remarks": null,
+      "symbol_type": "述語記号"
+    }
+  ],
+  "symbol_aliases.jsonl": [
+    {
+      "alias": "/\\",
+      "source": "builtin",
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "alias": "\\wedge",
+      "source": "builtin",
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "alias": "!",
+      "source": "builtin",
+      "symbol_public_id": "7ef55380-cb00-59f7-989f-1347cab26b12"
+    },
+    {
+      "alias": "\\neg",
+      "source": "builtin",
+      "symbol_public_id": "7ef55380-cb00-59f7-989f-1347cab26b12"
+    },
+    {
+      "alias": "\\forall",
+      "source": "builtin",
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "alias": "forall",
+      "source": "builtin",
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "alias": "\\exists",
+      "source": "builtin",
+      "symbol_public_id": "b299df13-8ca1-5327-9b4c-f08b1231a678"
+    },
+    {
+      "alias": "exists",
+      "source": "builtin",
+      "symbol_public_id": "b299df13-8ca1-5327-9b4c-f08b1231a678"
+    },
+    {
+      "alias": "->",
+      "source": "builtin",
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "alias": "\\to",
+      "source": "builtin",
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "alias": "\\/",
+      "source": "builtin",
+      "symbol_public_id": "e9ab484b-d683-5276-987a-af3df5a6e8e9"
+    },
+    {
+      "alias": "\\vee",
+      "source": "builtin",
+      "symbol_public_id": "e9ab484b-d683-5276-987a-af3df5a6e8e9"
+    },
+    {
+      "alias": "<->",
+      "source": "builtin",
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "alias": "\\leftrightarrow",
+      "source": "builtin",
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    }
+  ],
+  "symbol_roles.jsonl": [
+    {
+      "remarks": null,
+      "role": "biconditional",
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "remarks": null,
+      "role": "equality",
+      "symbol_public_id": "9c6f5697-7475-52bd-b600-b981e924af62"
+    },
+    {
+      "remarks": null,
+      "role": "implication",
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "remarks": null,
+      "role": "universal_quantifier",
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    }
+  ],
+  "inference_rules.jsonl": [
+    {
+      "elimination_procedure": null,
+      "kind": "generalization",
+      "name": "Gen",
+      "premise_count": 1,
+      "remarks": "φ から ∀°x.φ を導く",
+      "requires_variable_param": true,
+      "tier": "primitive"
+    },
+    {
+      "elimination_procedure": "expand_implication_intro",
+      "kind": "implication_intro",
+      "name": "ImpIntro",
+      "premise_count": 1,
+      "remarks": "仮定 φ の下での ψ から φ→ψ を導き、その仮定を落とす (Tier 2 許容規則。除去手続きは expand_implication_intro、設計書 §9.3)",
+      "requires_variable_param": false,
+      "tier": "admissible"
+    },
+    {
+      "elimination_procedure": null,
+      "kind": "modus_ponens",
+      "name": "MP",
+      "premise_count": 2,
+      "remarks": "φ と φ→ψ から ψ を導く",
+      "requires_variable_param": false,
+      "tier": "primitive"
+    }
+  ],
+  "formulas.jsonl": [
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "03c1ad3496c8a7aa11d9f18f2e99cbceb6c208f27789411edf4d74bea0d361ff",
+      "public_id": "02e25898-ce38-50fc-bc2b-90b61c8137df",
+      "remarks": null,
+      "token_count": 7
+    },
+    {
+      "description": null,
+      "formula_type": "項",
+      "hash": "0596f24efbb00d7fc8837813d0718c951e00778c8e7259bcda9737e50bddd009",
+      "public_id": "e7128414-09fd-5eba-a3fe-50a084b2f4b0",
+      "remarks": null,
+      "token_count": 1
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "12348d8672780a1edc8218fd125d4de51907ebbe141a7c6f63f96504967b0932",
+      "public_id": "e109b0d6-db46-5b57-bcf3-2c20bff5bb16",
+      "remarks": null,
+      "token_count": 4
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "149cab26626b3bd8222344d4cf299f158ef849ea07fdea84d830b29120f4fb89",
+      "public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "remarks": null,
+      "token_count": 27
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "2570deb4e6f17d30f8f8f453be360dfcf9a634cb460573fa474aa44f98d9142d",
+      "public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "remarks": null,
+      "token_count": 20
+    },
+    {
+      "description": null,
+      "formula_type": "項",
+      "hash": "26a22a898c379ebdaf67316fef3fc0b685dc38e8eb571ff9020ed39d5142f3db",
+      "public_id": "f6da1482-cdf3-59fd-a67b-addaff6b4480",
+      "remarks": null,
+      "token_count": 1
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "26e6db2f0b0e6a3f9a96622c6216130813aa6adcd7ee231cf8533b3989e8ff67",
+      "public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "remarks": null,
+      "token_count": 9
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "3158054bf6942674732eb5a57e68e4dbb2b643d7ebbde29161dd01ad3852827d",
+      "public_id": "dde00176-0be1-5774-81d1-47b6b7706532",
+      "remarks": null,
+      "token_count": 5
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "4b8dc3db94eeb94bb3edd67cc4c05eff05c99d76ffcb5c4ed534830c62e1abca",
+      "public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "remarks": null,
+      "token_count": 54
+    },
+    {
+      "description": null,
+      "formula_type": "項",
+      "hash": "4fa7630eedfc18de72480b1894c7ec144b355aa8dae03257fecb0183e0d456f9",
+      "public_id": "9ac20cc7-f585-51a4-97fe-a04d4271ebc7",
+      "remarks": null,
+      "token_count": 1
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "5d6700a39e236d72d92b6023003fcef308d76efab678a8fc8bebf1895751af01",
+      "public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "remarks": null,
+      "token_count": 25
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "8113d291c7e662f474b799e15776db7c5a7a1304d8f7c3d978e4b8b8b2500736",
+      "public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "remarks": null,
+      "token_count": 26
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "8591378c7f45ff5c16d56057fd9f3a493e4c07ce4a6b3355f74c3a3859ae7e9e",
+      "public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "remarks": null,
+      "token_count": 25
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "8bed86ea822b30fef19d2f75f3ec28687f2717163c280c4b4be23a20e358d6bf",
+      "public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "remarks": null,
+      "token_count": 52
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "93410254963ecb664fc18d5b8b6789e65ef61942f324f3fe9bea93c81ec90cee",
+      "public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "remarks": null,
+      "token_count": 56
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "b1b6963454b67b7ca731dcaed26f4e9a531ff14ec6c4a7c2aee87c8a8a15d381",
+      "public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "remarks": null,
+      "token_count": 25
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "b45ef9c07547dc81bdfe755b1532d3a5724edd23fb4b6f03b09196d506731cd5",
+      "public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "remarks": null,
+      "token_count": 27
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "c0477833afda7f4a384dcff02d31eded1900d78873359faccddfa17097c50cdd",
+      "public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "remarks": "IsMap の定義公理式",
+      "token_count": 28
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "cf2e80eba4e2132bf4b24cd2a763a99133b0937e311aea2cfebf89121f02f078",
+      "public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "remarks": null,
+      "token_count": 26
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "d070493bf0782bc8793cc014de65339110137031f8631eb37d94e4898d0b9112",
+      "public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "remarks": null,
+      "token_count": 51
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "d36379b2d68b57f7d90bfa06732ec2c9d4d7c67979cbf7a0bf613af40e2c7a3f",
+      "public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "remarks": null,
+      "token_count": 15
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "f6630dccd1deaafb61d3c2941b82e063750dbb8c0d6a649c49d4e4c08762e8ea",
+      "public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+      "remarks": "全称除去公理の論理式",
+      "token_count": 6
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "f6de7ef87051c865f8ca9cac93bd87230cebd64c3153913e3b894aafbfeaf77e",
+      "public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "remarks": null,
+      "token_count": 25
+    },
+    {
+      "description": null,
+      "formula_type": "命題",
+      "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+      "public_id": "08be3f5b-eb0b-524a-997e-fdbf245a7f78",
+      "remarks": null,
+      "token_count": 4
+    }
+  ],
+  "formula_tokens.jsonl": [
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "02e25898-ce38-50fc-bc2b-90b61c8137df",
+      "position": 0,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "02e25898-ce38-50fc-bc2b-90b61c8137df",
+      "position": 1,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "02e25898-ce38-50fc-bc2b-90b61c8137df",
+      "position": 2,
+      "symbol_public_id": "43c9c73e-69f5-500a-ba17-852af85be0b7"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "02e25898-ce38-50fc-bc2b-90b61c8137df",
+      "position": 3,
+      "symbol_public_id": "056bb080-b4a4-5b6c-a651-86b3309dcda6"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "02e25898-ce38-50fc-bc2b-90b61c8137df",
+      "position": 4,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "02e25898-ce38-50fc-bc2b-90b61c8137df",
+      "position": 5,
+      "symbol_public_id": "43c9c73e-69f5-500a-ba17-852af85be0b7"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "02e25898-ce38-50fc-bc2b-90b61c8137df",
+      "position": 6,
+      "symbol_public_id": "056bb080-b4a4-5b6c-a651-86b3309dcda6"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "e7128414-09fd-5eba-a3fe-50a084b2f4b0",
+      "position": 0,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "e109b0d6-db46-5b57-bcf3-2c20bff5bb16",
+      "position": 0,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "e109b0d6-db46-5b57-bcf3-2c20bff5bb16",
+      "position": 1,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "e109b0d6-db46-5b57-bcf3-2c20bff5bb16",
+      "position": 2,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "e109b0d6-db46-5b57-bcf3-2c20bff5bb16",
+      "position": 3,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 0,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 1,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 2,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 3,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 4,
+      "symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 5,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 6,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 7,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 8,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 9,
+      "symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 10,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 11,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 12,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 13,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 14,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 15,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 16,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 17,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 18,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 19,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 20,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 21,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 22,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 23,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 24,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 25,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "position": 26,
+      "symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 0,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 1,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 2,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 3,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 4,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 5,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 6,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 7,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 8,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 9,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 10,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 11,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 12,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 13,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 14,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 15,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 16,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 17,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 18,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "position": 19,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "f6da1482-cdf3-59fd-a67b-addaff6b4480",
+      "position": 0,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "position": 0,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "position": 1,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "position": 2,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "position": 3,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "position": 4,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "position": 5,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "position": 6,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "position": 7,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "position": 8,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "dde00176-0be1-5774-81d1-47b6b7706532",
+      "position": 0,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "dde00176-0be1-5774-81d1-47b6b7706532",
+      "position": 1,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "dde00176-0be1-5774-81d1-47b6b7706532",
+      "position": 2,
+      "symbol_public_id": "43c9c73e-69f5-500a-ba17-852af85be0b7"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "dde00176-0be1-5774-81d1-47b6b7706532",
+      "position": 3,
+      "symbol_public_id": "056bb080-b4a4-5b6c-a651-86b3309dcda6"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "dde00176-0be1-5774-81d1-47b6b7706532",
+      "position": 4,
+      "symbol_public_id": "43c9c73e-69f5-500a-ba17-852af85be0b7"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 0,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 1,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 2,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 3,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 4,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 5,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 6,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 7,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 8,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 9,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 10,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 11,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 12,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 13,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 14,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 15,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 16,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 17,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 18,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 19,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 20,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 21,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 22,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 23,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 24,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 25,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 26,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 27,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 28,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 29,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 30,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 31,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 32,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 33,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 34,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 35,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 36,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 37,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 38,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 39,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 40,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 41,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 42,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 43,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 44,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 45,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 46,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 47,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 48,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 49,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 50,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 51,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 52,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "position": 53,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "9ac20cc7-f585-51a4-97fe-a04d4271ebc7",
+      "position": 0,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 0,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 1,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 2,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 3,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 4,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 5,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 6,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 7,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 8,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 9,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 10,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 11,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 12,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 13,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 14,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 15,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 16,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 17,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 18,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 19,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 20,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 21,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 22,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 23,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "position": 24,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 0,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 1,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 2,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 3,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 4,
+      "symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 5,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 6,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 7,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 8,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 9,
+      "symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 10,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 11,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 12,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 13,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 14,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 15,
+      "symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 16,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 17,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 18,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 19,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 20,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 21,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 22,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 23,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 24,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "position": 25,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 0,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 1,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 2,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 3,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 4,
+      "symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 5,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 6,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 7,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 8,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 9,
+      "symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 10,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 11,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 12,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 13,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 14,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 15,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 16,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 17,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 18,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 19,
+      "symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 20,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 21,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 22,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 23,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "position": 24,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 0,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 1,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 2,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 3,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 4,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 5,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 6,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 7,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 8,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 9,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 10,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 11,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 12,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 13,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 14,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 15,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 16,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 17,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 18,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 19,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 20,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 21,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 22,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 23,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 24,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 25,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 26,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 27,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 28,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 29,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 30,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 31,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 32,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 33,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 34,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 35,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 36,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 37,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 38,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 39,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 40,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 41,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 42,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 43,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 44,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 45,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 46,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 47,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 48,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 49,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 50,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "position": 51,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 0,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 1,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 2,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 3,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 4,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 5,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 6,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 7,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 8,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 9,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 10,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 11,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 12,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 13,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 14,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 15,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 16,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 17,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 18,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 19,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 20,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 21,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 22,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 23,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 24,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 25,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 26,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 27,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 4,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 28,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 29,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 30,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 31,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 32,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 33,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 34,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 35,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 36,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 37,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 38,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 39,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 40,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 41,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 42,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 43,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 44,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 45,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 46,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 47,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 48,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 49,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 50,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 51,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 52,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 53,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 54,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "position": 55,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 0,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 1,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 2,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 3,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 4,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 5,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 6,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 7,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 8,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 9,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 10,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 11,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 12,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 13,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 14,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 15,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 16,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 17,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 18,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 19,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 20,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 21,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 22,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 23,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "position": 24,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 0,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 1,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 2,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 3,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 4,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 5,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 6,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 7,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 8,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 9,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 10,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 11,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 12,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 13,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 14,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 15,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 16,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 17,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 18,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 19,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 20,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 21,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 22,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 23,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 24,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 25,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "position": 26,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 0,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 1,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 2,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 3,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 4,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 5,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 6,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 7,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 8,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 9,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 10,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 11,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 12,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 13,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 14,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 15,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 16,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 17,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 18,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 19,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 20,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 21,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 22,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 23,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 24,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 25,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 26,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 4,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "position": 27,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 0,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 1,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 2,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 3,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 4,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 5,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 6,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 7,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 8,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 9,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 10,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 11,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 12,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 13,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 14,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 15,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 16,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 17,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 18,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 19,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 2,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 20,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 21,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 22,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 23,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 24,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "position": 25,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 0,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 1,
+      "symbol_public_id": "f4243ce5-6563-52e2-ac75-15de5e49cdec"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 2,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 3,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 4,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 5,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 6,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 7,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 8,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 9,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 10,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 11,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 12,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 13,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 14,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 15,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 16,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 17,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 18,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 19,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 20,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 21,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 22,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 23,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 24,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 25,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 26,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 27,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 28,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 29,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 30,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 31,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 32,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 33,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 34,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 35,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 36,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 37,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 38,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 39,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 40,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 41,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 42,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 43,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 44,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 45,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 46,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 47,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 48,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 49,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "position": 50,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 0,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 1,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 2,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 3,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 4,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 5,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 6,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 7,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 8,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 9,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 10,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 11,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 12,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 13,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "position": 14,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+      "position": 0,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+      "position": 1,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+      "position": 2,
+      "symbol_public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+      "position": 3,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+      "position": 4,
+      "symbol_public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+      "position": 5,
+      "symbol_public_id": "4b3303de-7abf-5ee7-b37a-4dc01d43665c"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 0,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 1,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 2,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 3,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 4,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 5,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 6,
+      "symbol_public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 7,
+      "symbol_public_id": "e72831d9-19bc-5094-abd7-359f275f87a1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 8,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 9,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 10,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 11,
+      "symbol_public_id": "5a5db6b4-230a-592f-9048-17197b0657c4"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 12,
+      "symbol_public_id": "473e2256-e6c2-5c2a-b45b-7c39f69519e1"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 13,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 14,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 15,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 16,
+      "symbol_public_id": "2267b6f1-547f-5692-a001-4f67db673389"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 17,
+      "symbol_public_id": "bb704705-6c35-5d92-8ece-e460b123ee8f"
+    },
+    {
+      "de_bruijn_index": 1,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 18,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": 0,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 19,
+      "symbol_public_id": null
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 20,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 21,
+      "symbol_public_id": "244ae0e5-63cb-53f1-a4ea-3c165b8c675e"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 22,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 23,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "position": 24,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "08be3f5b-eb0b-524a-997e-fdbf245a7f78",
+      "position": 0,
+      "symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "08be3f5b-eb0b-524a-997e-fdbf245a7f78",
+      "position": 1,
+      "symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "08be3f5b-eb0b-524a-997e-fdbf245a7f78",
+      "position": 2,
+      "symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "de_bruijn_index": null,
+      "formula_public_id": "08be3f5b-eb0b-524a-997e-fdbf245a7f78",
+      "position": 3,
+      "symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    }
+  ],
+  "definitions.jsonl": [
+    {
+      "description": null,
+      "display_formula_public_id": null,
+      "existence_uniqueness_proof_public_id": null,
+      "kind": "predicate",
+      "name": "IsMap",
+      "new_symbol_public_id": "b85af76c-da58-5392-85d7-cdf99906d3fc",
+      "public_id": "7a5903af-a90d-52ad-b1ac-bb42f56d99c1",
+      "remarks": null,
+      "requires_existence_proof": false,
+      "requires_uniqueness_proof": false
+    }
+  ],
+  "definition_formal_params.jsonl": [
+    {
+      "definition_public_id": "7a5903af-a90d-52ad-b1ac-bb42f56d99c1",
+      "ord": 0,
+      "param_symbol_public_id": "0103f25e-2ff9-5a5a-99eb-c53f4dba4a4b"
+    },
+    {
+      "definition_public_id": "7a5903af-a90d-52ad-b1ac-bb42f56d99c1",
+      "ord": 1,
+      "param_symbol_public_id": "7be22637-bffc-52c8-b5ed-8258d98f599f"
+    },
+    {
+      "definition_public_id": "7a5903af-a90d-52ad-b1ac-bb42f56d99c1",
+      "ord": 2,
+      "param_symbol_public_id": "74597602-9932-549f-ade3-1e1e6a8d1d41"
+    }
+  ],
+  "axioms.jsonl": [
+    {
+      "definition_public_id": null,
+      "description": "Hilbert coreから導出したものではなく、結合子の意味を与えるために採用したスキーマ。",
+      "formula_public_id": "dde00176-0be1-5774-81d1-47b6b7706532",
+      "name": "連言除去公理（左）",
+      "namespace": "dem.foundation.logic",
+      "origin_kind": "primitive",
+      "public_id": "4d0fec14-b78c-58f7-8247-40b1585692aa",
+      "remarks": null
+    },
+    {
+      "definition_public_id": null,
+      "description": null,
+      "formula_public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+      "name": "全称除去公理",
+      "namespace": "dem.foundation.logic",
+      "origin_kind": "primitive",
+      "public_id": "5e6cd880-e55e-508c-ae3f-bd2069977882",
+      "remarks": "ヒルベルト体系のシード"
+    },
+    {
+      "definition_public_id": null,
+      "description": "Biconditional schema. 同値の意味を与える公理図式。",
+      "formula_public_id": "02e25898-ce38-50fc-bc2b-90b61c8137df",
+      "name": "同値除去公理（左）",
+      "namespace": "dem.foundation.logic",
+      "origin_kind": "primitive",
+      "public_id": "ae543764-4b4b-5773-b408-589a5390d76a",
+      "remarks": null
+    },
+    {
+      "definition_public_id": "7a5903af-a90d-52ad-b1ac-bb42f56d99c1",
+      "description": null,
+      "formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "name": "IsMap 定義公理",
+      "namespace": "dem.foundation.logic",
+      "origin_kind": "definition_derived",
+      "public_id": "f75f5483-bccc-5484-83e1-93b19aeb836a",
+      "remarks": null
+    }
+  ],
+  "axiom_systems.jsonl": [],
+  "axiom_system_members.jsonl": [],
+  "theorems.jsonl": [
+    {
+      "conclusion_formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "description": null,
+      "name": "写像:写像は関係",
+      "namespace": "dem.foundation.logic",
+      "public_id": "b8bc784d-852d-59bc-9bda-994edd9b5b75",
+      "remarks": null,
+      "status": "proven"
+    }
+  ],
+  "theorem_premises.jsonl": [],
+  "import_records.jsonl": [],
+  "tags.jsonl": [],
+  "theorem_tags.jsonl": [],
+  "proof_identity_sequences.jsonl": [
+    {
+      "next_ordinal": 1,
+      "theorem_public_id": "b8bc784d-852d-59bc-9bda-994edd9b5b75"
+    }
+  ],
+  "proofs.jsonl": [
+    {
+      "identity_ordinal": 0,
+      "name": "写像:写像は関係の証明",
+      "public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "status": "verified",
+      "theorem_public_id": "b8bc784d-852d-59bc-9bda-994edd9b5b75"
+    }
+  ],
+  "proof_steps.jsonl": [
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": null,
+      "conclusion_formula_public_id": "08be3f5b-eb0b-524a-997e-fdbf245a7f78",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": null,
+      "ord": 0,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "assumption"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": "f75f5483-bccc-5484-83e1-93b19aeb836a",
+      "conclusion_formula_public_id": "6db80f2e-28e4-5251-8c14-b33761a288f1",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": null,
+      "ord": 1,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "axiom"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": "5e6cd880-e55e-508c-ae3f-bd2069977882",
+      "conclusion_formula_public_id": "0ab7f2c2-8c10-5d68-8d03-9ce6fa83975f",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": null,
+      "ord": 2,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "axiom"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": null,
+      "conclusion_formula_public_id": "972ac67a-39c6-5d46-9df6-df4abc5f6d86",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": "MP",
+      "ord": 3,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "rule"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": "5e6cd880-e55e-508c-ae3f-bd2069977882",
+      "conclusion_formula_public_id": "334484ca-fcf3-5b2a-90a4-518477cc48e1",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": null,
+      "ord": 4,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "axiom"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": null,
+      "conclusion_formula_public_id": "22490599-9ac5-5f2b-b6f3-d59a6be80b6d",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": "MP",
+      "ord": 5,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "rule"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": "5e6cd880-e55e-508c-ae3f-bd2069977882",
+      "conclusion_formula_public_id": "879cb74e-ad1d-5623-8086-6b52ef0b12a4",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": null,
+      "ord": 6,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "axiom"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": null,
+      "conclusion_formula_public_id": "be94c256-210f-5401-9956-ce3f7fb88401",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": "MP",
+      "ord": 7,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "rule"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": "ae543764-4b4b-5773-b408-589a5390d76a",
+      "conclusion_formula_public_id": "c753c2d4-64aa-54d7-8366-5453ab8c3a1e",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": null,
+      "ord": 8,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "axiom"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": null,
+      "conclusion_formula_public_id": "cbb21ce9-52c6-59a4-92d1-f6800e35a764",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": "MP",
+      "ord": 9,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "rule"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": null,
+      "conclusion_formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": "MP",
+      "ord": 10,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "rule"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": "4d0fec14-b78c-58f7-8247-40b1585692aa",
+      "conclusion_formula_public_id": "3e33d88c-0979-5f3b-a091-371309737d80",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": null,
+      "ord": 11,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "axiom"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": null,
+      "conclusion_formula_public_id": "e109b0d6-db46-5b57-bcf3-2c20bff5bb16",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": "MP",
+      "ord": 12,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "rule"
+    },
+    {
+      "applied_proof_public_id": null,
+      "axiom_public_id": null,
+      "conclusion_formula_public_id": "4ff3f024-8f8b-57e7-96ff-4efb72312465",
+      "gen_variable_symbol_public_id": null,
+      "inference_rule": "ImpIntro",
+      "ord": 13,
+      "premise_ord": null,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "remarks": null,
+      "step_kind": "rule"
+    }
+  ],
+  "proof_step_args.jsonl": [
+    {
+      "arg_ord": 0,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 1,
+      "step_ord": 3
+    },
+    {
+      "arg_ord": 1,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 2,
+      "step_ord": 3
+    },
+    {
+      "arg_ord": 0,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 3,
+      "step_ord": 5
+    },
+    {
+      "arg_ord": 1,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 4,
+      "step_ord": 5
+    },
+    {
+      "arg_ord": 0,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 5,
+      "step_ord": 7
+    },
+    {
+      "arg_ord": 1,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 6,
+      "step_ord": 7
+    },
+    {
+      "arg_ord": 0,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 7,
+      "step_ord": 9
+    },
+    {
+      "arg_ord": 1,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 8,
+      "step_ord": 9
+    },
+    {
+      "arg_ord": 0,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 0,
+      "step_ord": 10
+    },
+    {
+      "arg_ord": 1,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 9,
+      "step_ord": 10
+    },
+    {
+      "arg_ord": 0,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 10,
+      "step_ord": 12
+    },
+    {
+      "arg_ord": 1,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 11,
+      "step_ord": 12
+    },
+    {
+      "arg_ord": 0,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 0,
+      "step_ord": 13
+    },
+    {
+      "arg_ord": 1,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "referenced_step_ord": 12,
+      "step_ord": 13
+    }
+  ],
+  "proof_step_subst_terms.jsonl": [
+    {
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "4b3303de-7abf-5ee7-b37a-4dc01d43665c",
+      "step_ord": 2,
+      "target_formula_public_id": "9ac20cc7-f585-51a4-97fe-a04d4271ebc7"
+    },
+    {
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "4b3303de-7abf-5ee7-b37a-4dc01d43665c",
+      "step_ord": 4,
+      "target_formula_public_id": "e7128414-09fd-5eba-a3fe-50a084b2f4b0"
+    },
+    {
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "4b3303de-7abf-5ee7-b37a-4dc01d43665c",
+      "step_ord": 6,
+      "target_formula_public_id": "f6da1482-cdf3-59fd-a67b-addaff6b4480"
+    }
+  ],
+  "proof_step_subst_props.jsonl": [
+    {
+      "body_formula_public_id": "8053291f-9400-579b-ac65-03abe4a5bae9",
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1",
+      "step_ord": 2
+    },
+    {
+      "body_formula_public_id": "0e5e34e6-0d3a-5a77-9817-f1ce5df0de1f",
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1",
+      "step_ord": 4
+    },
+    {
+      "body_formula_public_id": "76672de4-553f-5e67-a374-f4d3f5a650aa",
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1",
+      "step_ord": 6
+    },
+    {
+      "body_formula_public_id": "126d5b75-20b1-5ab9-9e5c-00b6204e8095",
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "056bb080-b4a4-5b6c-a651-86b3309dcda6",
+      "step_ord": 8
+    },
+    {
+      "body_formula_public_id": "08be3f5b-eb0b-524a-997e-fdbf245a7f78",
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "43c9c73e-69f5-500a-ba17-852af85be0b7",
+      "step_ord": 8
+    },
+    {
+      "body_formula_public_id": "1b1beb92-3aa3-5d16-b758-61c66b6e298c",
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "056bb080-b4a4-5b6c-a651-86b3309dcda6",
+      "step_ord": 11
+    },
+    {
+      "body_formula_public_id": "e109b0d6-db46-5b57-bcf3-2c20bff5bb16",
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "43c9c73e-69f5-500a-ba17-852af85be0b7",
+      "step_ord": 11
+    }
+  ],
+  "proof_step_subst_prop_params.jsonl": [
+    {
+      "formal_param_symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9",
+      "ord": 0,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1",
+      "step_ord": 2
+    },
+    {
+      "formal_param_symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9",
+      "ord": 0,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1",
+      "step_ord": 4
+    },
+    {
+      "formal_param_symbol_public_id": "711605cf-48f3-5133-aba8-3752a46050f9",
+      "ord": 0,
+      "proof_public_id": "a42baed2-0a1f-5d0d-a5db-55f96349d5dd",
+      "source_symbol_public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1",
+      "step_ord": 6
+    }
+  ]
+}

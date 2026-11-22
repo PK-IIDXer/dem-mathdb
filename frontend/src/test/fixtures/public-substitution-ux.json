@@ -1,0 +1,1046 @@
+{
+  "axiom": {
+    "id": 3,
+    "public_id": "5e6cd880-e55e-508c-ae3f-bd2069977882",
+    "name": "全称除去公理",
+    "namespace_id": 2,
+    "namespace_name": "dem.foundation.logic",
+    "formula_id": 3,
+    "formula": {
+      "id": 3,
+      "public_id": "c63bee19-55d5-5a83-917a-bfcd962df657",
+      "formula_type_id": 2,
+      "formula_type": {
+        "id": 2,
+        "name": "命題",
+        "code": "proposition",
+        "remarks": "proposition. 真偽を問える論理式。",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "hash": "f6630dccd1deaafb61d3c2941b82e063750dbb8c0d6a649c49d4e4c08762e8ea",
+      "token_count": 6,
+      "description": null,
+      "remarks": "全称除去公理の論理式",
+      "created_at": "2026-11-15T09:45:47Z"
+    },
+    "origin_kind": "primitive",
+    "definition_id": null,
+    "description": null,
+    "tags": [],
+    "remarks": "ヒルベルト体系のシード",
+    "created_at": "2026-11-15T09:45:47Z"
+  },
+  "lemma": {
+    "id": 16,
+    "public_id": "286262b1-aa7a-5a33-b903-49817ffa3014",
+    "namespace_id": 2,
+    "namespace_name": "dem.foundation.logic",
+    "name": "全称除去",
+    "conclusion_formula_id": 41,
+    "conclusion_formula": {
+      "id": 41,
+      "public_id": "b6b45e67-1ca2-5f46-9640-bde0546d24ae",
+      "formula_type_id": 2,
+      "formula_type": {
+        "id": 2,
+        "name": "命題",
+        "code": "proposition",
+        "remarks": "proposition. 真偽を問える論理式。",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "hash": "b350bdb91d354a548296a18dac05f3506e1255a3c3cade7166e167b586625fb6",
+      "token_count": 2,
+      "description": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:52Z"
+    },
+    "premise_formula_ids": [
+      42
+    ],
+    "status": "proven",
+    "description": "教科書的な論理の規則・基本定理。含意導入はImpIntro、全称導入はGenに相当します。各証明は使用した公理に相対的に妥当です。",
+    "tags": [],
+    "external_checks": [],
+    "remarks": null,
+    "created_at": "2026-11-15T09:45:52Z",
+    "updated_at": "2026-11-15T09:45:52Z"
+  },
+  "equality": {
+    "id": 19,
+    "public_id": "2b6d9081-0e3d-52d1-8dec-ebd196e6c868",
+    "namespace_id": 2,
+    "namespace_name": "dem.foundation.logic",
+    "name": "等号代入",
+    "conclusion_formula_id": 46,
+    "conclusion_formula": {
+      "id": 46,
+      "public_id": "e404d2a8-168d-5282-b2e9-e12e5421c893",
+      "formula_type_id": 2,
+      "formula_type": {
+        "id": 2,
+        "name": "命題",
+        "code": "proposition",
+        "remarks": "proposition. 真偽を問える論理式。",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "hash": "8fdd776bb3a49ee679841fd112568904fd2ff5e13b367cea95d71a8cf26787a4",
+      "token_count": 2,
+      "description": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:52Z"
+    },
+    "premise_formula_ids": [
+      47,
+      48
+    ],
+    "status": "proven",
+    "description": "教科書的な論理の規則・基本定理。含意導入はImpIntro、全称導入はGenに相当します。各証明は使用した公理に相対的に妥当です。",
+    "tags": [],
+    "external_checks": [],
+    "remarks": null,
+    "created_at": "2026-11-15T09:45:52Z",
+    "updated_at": "2026-11-15T09:45:52Z"
+  },
+  "steps": [
+    {
+      "proof_id": 59,
+      "ord": 0,
+      "step_kind": "premise",
+      "conclusion_formula": {
+        "id": 5,
+        "public_id": "6b1dc303-a6e7-51d5-99d4-50fdfa8f0391",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-11-15T09:45:46Z"
+        },
+        "hash": "3e90d11e1bfcd4e7ecd494bb05a06d0ecc6b63e51651d547afe2920d4c1997f7",
+        "token_count": 3,
+        "description": null,
+        "remarks": "等号反射律公理の論理式",
+        "created_at": "2026-11-15T09:45:47Z"
+      },
+      "premise_ord": 0,
+      "axiom": null,
+      "applied_proof_id": null,
+      "inference_rule": null,
+      "gen_variable_symbol_id": null,
+      "arg_step_ords": [],
+      "term_substs": [],
+      "prop_substs": [],
+      "remarks": null,
+      "created_at": "2026-11-17T19:58:25Z"
+    },
+    {
+      "proof_id": 59,
+      "ord": 1,
+      "step_kind": "premise",
+      "conclusion_formula": {
+        "id": 994,
+        "public_id": "65ccb968-e6b7-5e24-a821-05c64097c819",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-11-15T09:45:46Z"
+        },
+        "hash": "bbf5c43aae7b2587a4d8bd8832f7dd38517f7d0ba93bf7956fbd79967912dfac",
+        "token_count": 4,
+        "description": null,
+        "remarks": null,
+        "created_at": "2026-11-17T19:58:25Z"
+      },
+      "premise_ord": 1,
+      "axiom": null,
+      "applied_proof_id": null,
+      "inference_rule": null,
+      "gen_variable_symbol_id": null,
+      "arg_step_ords": [],
+      "term_substs": [],
+      "prop_substs": [],
+      "remarks": null,
+      "created_at": "2026-11-17T19:58:26Z"
+    },
+    {
+      "proof_id": 59,
+      "ord": 2,
+      "step_kind": "premise",
+      "conclusion_formula": {
+        "id": 995,
+        "public_id": "d4a180f3-45d5-5e4d-9496-31fb42ab98bb",
+        "formula_type_id": 2,
+        "formula_type": {
+          "id": 2,
+          "name": "命題",
+          "code": "proposition",
+          "remarks": "proposition. 真偽を問える論理式。",
+          "created_at": "2026-11-15T09:45:46Z"
+        },
+        "hash": "5efffab720899e18d35da1aa2d0a369f888fbb1ee6d3ec3db086e6eae392e716",
+        "token_count": 3,
+        "description": null,
+        "remarks": null,
+        "created_at": "2026-11-17T19:58:25Z"
+      },
+      "premise_ord": 2,
+      "axiom": null,
+      "applied_proof_id": null,
+      "inference_rule": null,
+      "gen_variable_symbol_id": null,
+      "arg_step_ords": [],
+      "term_substs": [],
+      "prop_substs": [],
+      "remarks": null,
+      "created_at": "2026-11-17T19:58:26Z"
+    }
+  ],
+  "state": {
+    "goal_tokens": [
+      {
+        "symbol_id": 19,
+        "de_bruijn_index": null
+      },
+      {
+        "symbol_id": 27,
+        "de_bruijn_index": null
+      },
+      {
+        "symbol_id": 23,
+        "de_bruijn_index": null
+      }
+    ],
+    "premises": [
+      {
+        "ord": 0,
+        "tokens": [
+          {
+            "symbol_id": 9,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 15,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 15,
+            "de_bruijn_index": null
+          }
+        ],
+        "used_by": [
+          0
+        ]
+      },
+      {
+        "ord": 1,
+        "tokens": [
+          {
+            "symbol_id": 7,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 19,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          },
+          {
+            "symbol_id": 23,
+            "de_bruijn_index": null
+          }
+        ],
+        "used_by": [
+          1
+        ]
+      },
+      {
+        "ord": 2,
+        "tokens": [
+          {
+            "symbol_id": 9,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 30,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 28,
+            "de_bruijn_index": null
+          }
+        ],
+        "used_by": [
+          2
+        ]
+      }
+    ],
+    "established": [
+      {
+        "ord": 0,
+        "tokens": [
+          {
+            "symbol_id": 9,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 15,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 15,
+            "de_bruijn_index": null
+          }
+        ],
+        "step_kind": "premise",
+        "depends_on_premises": [
+          0
+        ],
+        "depends_on_assumptions": []
+      },
+      {
+        "ord": 1,
+        "tokens": [
+          {
+            "symbol_id": 7,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 19,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          },
+          {
+            "symbol_id": 23,
+            "de_bruijn_index": null
+          }
+        ],
+        "step_kind": "premise",
+        "depends_on_premises": [
+          1
+        ],
+        "depends_on_assumptions": []
+      },
+      {
+        "ord": 2,
+        "tokens": [
+          {
+            "symbol_id": 9,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 30,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 28,
+            "de_bruijn_index": null
+          }
+        ],
+        "step_kind": "premise",
+        "depends_on_premises": [
+          2
+        ],
+        "depends_on_assumptions": []
+      }
+    ],
+    "open_assumptions": [],
+    "reached_goal": false,
+    "blocking": [
+      "goal_not_reached"
+    ]
+  },
+  "axiomSuggestion": {
+    "applied_proof_id": null,
+    "subst": {
+      "prop_substs": [],
+      "term_substs": []
+    },
+    "undetermined": [],
+    "defaulted_to_identity": [
+      13,
+      17
+    ],
+    "conclusion_tokens": [
+      {
+        "symbol_id": 5,
+        "de_bruijn_index": null
+      },
+      {
+        "symbol_id": 7,
+        "de_bruijn_index": null
+      },
+      {
+        "symbol_id": 13,
+        "de_bruijn_index": null
+      },
+      {
+        "symbol_id": null,
+        "de_bruijn_index": 0
+      },
+      {
+        "symbol_id": 13,
+        "de_bruijn_index": null
+      },
+      {
+        "symbol_id": 17,
+        "de_bruijn_index": null
+      }
+    ],
+    "premise_count": 0,
+    "arg_slots": [],
+    "arg_candidates": []
+  },
+  "lemmaSuggestion": {
+    "applied_proof_id": 17,
+    "subst": {
+      "prop_substs": [
+        {
+          "source_symbol_id": 13,
+          "body_formula_id": 580,
+          "formal_param_symbol_ids": [
+            15
+          ]
+        }
+      ],
+      "term_substs": []
+    },
+    "undetermined": [],
+    "defaulted_to_identity": [
+      17
+    ],
+    "conclusion_tokens": [
+      {
+        "symbol_id": 19,
+        "de_bruijn_index": null
+      },
+      {
+        "symbol_id": 17,
+        "de_bruijn_index": null
+      },
+      {
+        "symbol_id": 23,
+        "de_bruijn_index": null
+      }
+    ],
+    "premise_count": 1,
+    "arg_slots": [
+      0
+    ],
+    "arg_candidates": [
+      [
+        1
+      ]
+    ]
+  },
+  "backward": [
+    {
+      "match_depth": 1,
+      "applied_proof_id": null,
+      "subst": {
+        "prop_substs": [],
+        "term_substs": []
+      },
+      "undetermined": [
+        {
+          "symbol_id": 13,
+          "name": "φ¹",
+          "reason": "higher_order_pattern"
+        }
+      ],
+      "defaulted_to_identity": [
+        17
+      ],
+      "application_conclusion_tokens": [
+        {
+          "symbol_id": 5,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 7,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": null,
+          "de_bruijn_index": 0
+        },
+        {
+          "symbol_id": 13,
+          "de_bruijn_index": null
+        },
+        {
+          "symbol_id": 17,
+          "de_bruijn_index": null
+        }
+      ],
+      "antecedent_goals": [
+        [
+          {
+            "symbol_id": 7,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 13,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": null,
+            "de_bruijn_index": 0
+          }
+        ]
+      ],
+      "intermediate_conclusions": [
+        [
+          {
+            "symbol_id": 13,
+            "de_bruijn_index": null
+          },
+          {
+            "symbol_id": 17,
+            "de_bruijn_index": null
+          }
+        ]
+      ],
+      "premise_count": 0,
+      "premise_goals": [],
+      "arg_candidates": []
+    }
+  ],
+  "symbols": [
+    {
+      "id": 5,
+      "public_id": "e72831d9-19bc-5094-abd7-359f275f87a1",
+      "name": "→",
+      "symbol_type_id": 3,
+      "symbol_type": {
+        "id": 3,
+        "name": "論理記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "¬, ∨, ∧, →, ↔ など。",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 2,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 20,
+      "latex_template": "\\implies",
+      "remarks": "含意",
+      "created_at": "2026-11-15T09:45:46Z",
+      "usage_count": null
+    },
+    {
+      "id": 7,
+      "public_id": "893f7c1c-3e22-564f-a976-0a8e8e241f62",
+      "name": "∀",
+      "symbol_type_id": 4,
+      "symbol_type": {
+        "id": 4,
+        "name": "命題型量化記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 2,
+        "fixed_arity": 1,
+        "is_quantifier": true,
+        "remarks": "命題を束縛して命題を作る記号",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 1,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "\\forall",
+      "remarks": "整形式な項すべてを走る全称量化",
+      "created_at": "2026-11-15T09:45:46Z",
+      "usage_count": null
+    },
+    {
+      "id": 9,
+      "public_id": "9c6f5697-7475-52bd-b600-b981e924af62",
+      "name": "=",
+      "symbol_type_id": 2,
+      "symbol_type": {
+        "id": 2,
+        "name": "述語記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から命題を作る記号",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 2,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 50,
+      "latex_template": "=",
+      "remarks": "等号",
+      "created_at": "2026-11-15T09:45:47Z",
+      "usage_count": null
+    },
+    {
+      "id": 10,
+      "public_id": "43c9c73e-69f5-500a-ba17-852af85be0b7",
+      "name": "φ",
+      "symbol_type_id": 7,
+      "symbol_type": {
+        "id": 7,
+        "name": "命題型自由変数記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "自由な命題変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:47Z",
+      "usage_count": null
+    },
+    {
+      "id": 11,
+      "public_id": "056bb080-b4a4-5b6c-a651-86b3309dcda6",
+      "name": "ψ",
+      "symbol_type_id": 7,
+      "symbol_type": {
+        "id": 7,
+        "name": "命題型自由変数記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "自由な命題変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:47Z",
+      "usage_count": null
+    },
+    {
+      "id": 13,
+      "public_id": "9cbf22fc-7169-5d86-806b-e21c083d70b1",
+      "name": "φ¹",
+      "symbol_type_id": 7,
+      "symbol_type": {
+        "id": 7,
+        "name": "命題型自由変数記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "自由な命題変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 1,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:47Z",
+      "usage_count": null
+    },
+    {
+      "id": 15,
+      "public_id": "58f571b2-5a2d-51ed-8fbf-7e5e6494d147",
+      "name": "x",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "x",
+      "remarks": "シード用自由項変数",
+      "created_at": "2026-11-15T09:45:47Z",
+      "usage_count": null
+    },
+    {
+      "id": 16,
+      "public_id": "28ffc497-17bf-56b0-b792-3b4f3882539a",
+      "name": "y",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "y",
+      "remarks": "シード用自由項変数",
+      "created_at": "2026-11-15T09:45:47Z",
+      "usage_count": null
+    },
+    {
+      "id": 17,
+      "public_id": "4b3303de-7abf-5ee7-b37a-4dc01d43665c",
+      "name": "t",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": "t",
+      "remarks": "シード用自由項変数",
+      "created_at": "2026-11-15T09:45:47Z",
+      "usage_count": null
+    },
+    {
+      "id": 19,
+      "public_id": "2267b6f1-547f-5692-a001-4f67db673389",
+      "name": "∈",
+      "symbol_type_id": 2,
+      "symbol_type": {
+        "id": 2,
+        "name": "述語記号",
+        "output_formula_type_id": 2,
+        "input_formula_type_id": 1,
+        "fixed_arity": null,
+        "is_quantifier": false,
+        "remarks": "項から命題を作る記号",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 2,
+      "is_primitive": true,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "infix",
+      "precedence": 50,
+      "latex_template": "#1 \\in #2",
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:57Z",
+      "usage_count": null
+    },
+    {
+      "id": 23,
+      "public_id": "5df58ce0-bf65-52d8-9e75-14398116b027",
+      "name": "a",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:57Z",
+      "usage_count": null
+    },
+    {
+      "id": 27,
+      "public_id": "a4b7d106-1364-568d-b802-40c8a142696e",
+      "name": "w",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:57Z",
+      "usage_count": null
+    },
+    {
+      "id": 28,
+      "public_id": "85a4f66d-126a-5a12-a2f6-7354dad1ec4f",
+      "name": "u",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:57Z",
+      "usage_count": null
+    },
+    {
+      "id": 29,
+      "public_id": "f21f29e8-f8bc-5a4a-847d-215ff1a21ce4",
+      "name": "z",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:57Z",
+      "usage_count": null
+    },
+    {
+      "id": 30,
+      "public_id": "711605cf-48f3-5133-aba8-3752a46050f9",
+      "name": "v",
+      "symbol_type_id": 6,
+      "symbol_type": {
+        "id": 6,
+        "name": "項型自由変数記号",
+        "output_formula_type_id": 1,
+        "input_formula_type_id": null,
+        "fixed_arity": 0,
+        "is_quantifier": false,
+        "remarks": "自由な項変数",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "arity": 0,
+      "is_primitive": false,
+      "namespace_id": 2,
+      "namespace_name": "dem.foundation.logic",
+      "notation_kind": "prefix",
+      "precedence": null,
+      "latex_template": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:45:57Z",
+      "usage_count": null
+    }
+  ],
+  "formulas": [
+    {
+      "id": 580,
+      "public_id": "8c0a68ec-fef1-517b-a144-28c7d9dd7daa",
+      "formula_type_id": 2,
+      "formula_type": {
+        "id": 2,
+        "name": "命題",
+        "code": "proposition",
+        "remarks": "proposition. 真偽を問える論理式。",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "hash": "323894e5753ef0f884790ca449e8e0f385e111c84815ced9b1e4862a25527b2d",
+      "token_count": 3,
+      "description": null,
+      "remarks": null,
+      "created_at": "2026-11-15T09:46:07Z",
+      "tokens": [
+        {
+          "position": 0,
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "position": 1,
+          "symbol_id": 15,
+          "de_bruijn_index": null
+        },
+        {
+          "position": 2,
+          "symbol_id": 23,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "id": 993,
+      "public_id": "97503a81-53ac-5ab7-a679-71ef97528e65",
+      "formula_type_id": 2,
+      "formula_type": {
+        "id": 2,
+        "name": "命題",
+        "code": "proposition",
+        "remarks": "proposition. 真偽を問える論理式。",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "hash": "0e6710fafb911a05b2e5836cf73e2ac3eee7b48c600ed890edb9c49e46ee9993",
+      "token_count": 3,
+      "description": null,
+      "remarks": null,
+      "created_at": "2026-11-17T19:58:25Z",
+      "tokens": [
+        {
+          "position": 0,
+          "symbol_id": 19,
+          "de_bruijn_index": null
+        },
+        {
+          "position": 1,
+          "symbol_id": 27,
+          "de_bruijn_index": null
+        },
+        {
+          "position": 2,
+          "symbol_id": 23,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "id": 995,
+      "public_id": "d4a180f3-45d5-5e4d-9496-31fb42ab98bb",
+      "formula_type_id": 2,
+      "formula_type": {
+        "id": 2,
+        "name": "命題",
+        "code": "proposition",
+        "remarks": "proposition. 真偽を問える論理式。",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "hash": "5efffab720899e18d35da1aa2d0a369f888fbb1ee6d3ec3db086e6eae392e716",
+      "token_count": 3,
+      "description": null,
+      "remarks": null,
+      "created_at": "2026-11-17T19:58:25Z",
+      "tokens": [
+        {
+          "position": 0,
+          "symbol_id": 9,
+          "de_bruijn_index": null
+        },
+        {
+          "position": 1,
+          "symbol_id": 30,
+          "de_bruijn_index": null
+        },
+        {
+          "position": 2,
+          "symbol_id": 28,
+          "de_bruijn_index": null
+        }
+      ]
+    },
+    {
+      "id": 996,
+      "public_id": "17fa8383-f973-5de4-9b34-ee082577599b",
+      "formula_type_id": 1,
+      "formula_type": {
+        "id": 1,
+        "name": "項",
+        "code": "term",
+        "remarks": "term. 数学的な実体を表す論理式。",
+        "created_at": "2026-11-15T09:45:46Z"
+      },
+      "hash": "1c01621326225b4db21ce029093edf4c9617bbfb925ae67f7963fe60b86a9bd6",
+      "token_count": 1,
+      "description": null,
+      "remarks": null,
+      "created_at": "2026-11-17T19:58:26Z",
+      "tokens": [
+        {
+          "position": 0,
+          "symbol_id": 27,
+          "de_bruijn_index": null
+        }
+      ]
+    }
+  ],
+  "inputIds": {
+    "w": 996,
+    "w ∈ a": 993,
+    "v = u": 995
+  }
+}

@@ -8,7 +8,7 @@ from dem.services.definition import DefinitionService
 
 PACKAGE = "unique-existence"
 STATEMENTS = STATEMENTS[:4]
-THEOREM_NAMES = tuple(name for name, _ in STATEMENTS)
+THEOREM_NAMES = tuple(name for name, _, _ in STATEMENTS)
 
 
 def seed_public_unique_existence(session):
@@ -34,30 +34,28 @@ class UniqueExistenceProofs(Builder):
         def uniqueness(witness):
             return self.all("x", self.imp(predicate("x"), equal("x", witness)))
 
-        def finish(index, assumptions, result):
-            for assumption in reversed(assumptions):
-                result = self.close(assumption, result)
-            name, statement = STATEMENTS[index]
-            self.finish(name, self.parse(statement))
-            self.start()
+        def start(index):
+            return self.start(tuple(map(self.parse, STATEMENTS[index][1])))
 
-        unique = self.quant("∃!", "x", predicate("x"))
-        exists = self.some("x", predicate("x"))
+        def finish(index):
+            name, premises, conclusion = STATEMENTS[index]
+            self.finish(name, self.parse(conclusion), premises=tuple(map(self.parse, premises)))
+
         expanded_body = self.conj(predicate("i"), uniqueness("i"))
 
-        value = self.assume(predicate("t"))
-        all_equal = self.assume(uniqueness("t"))
+        value, all_equal = start(0)
         expanded = self.ei(self.pair(value, all_equal), "i", expanded_body, self.atom("t"))
-        finish(0, (value, all_equal), self.iff_out(self.ax(definition_axiom), expanded, True))
+        self.iff_out(self.ax(definition_axiom), expanded, True)
+        finish(0)
 
-        given = self.assume(unique)
+        given, = start(1)
         expanded = self.iff_out(self.ax(definition_axiom), given)
         witness = self.assume(expanded_body)
         existence = self.ei(self.left(witness), "i", predicate("i"), self.atom("i"))
-        finish(1, (given,), self.ee(expanded, "i", witness, existence))
+        self.ee(expanded, "i", witness, existence)
+        finish(1)
 
-        given = self.assume(unique)
-        sy, st = self.assume(predicate("y")), self.assume(predicate("t"))
+        given, sy, st = start(2)
         expanded = self.iff_out(self.ax(definition_axiom), given)
         witness = self.assume(expanded_body)
         all_equal = self.right(witness)
@@ -66,11 +64,10 @@ class UniqueExistenceProofs(Builder):
         # Transport t = t along t = i, then transport y = i along i = t.
         it = self.transport(ti, self.refl(self.atom("t")), "j", equal("j", "t"))
         yt = self.transport(it, yi, "j", equal("y", "j"))
-        finish(2, (given, sy, st), self.ee(expanded, "i", witness, yt))
+        self.ee(expanded, "i", witness, yt)
+        finish(2)
 
-        existence = self.assume(exists)
-        pairwise = self.assume(self.all("x", self.all("y", self.imp(
-            predicate("x"), self.imp(predicate("y"), equal("x", "y"))))))
+        existence, pairwise = start(3)
         witness = self.assume(predicate("i"))
         value = self.assume(predicate("x"))
         equality = self.apply(
@@ -78,8 +75,7 @@ class UniqueExistenceProofs(Builder):
             value, witness,
         )
         all_equal = self.gen(self.close(value, equality), "x")
-        introduction = self.cite(THEOREM_NAMES[0], terms={"t": self.atom("i")})
-        finish(3, (existence, pairwise), self.ee(
-            existence, "i", witness, self.apply(introduction, witness, all_equal),
-        ))
-
+        introduction = self.cite(THEOREM_NAMES[0], terms={"t": self.atom("i")},
+                                 args=(witness, all_equal))
+        self.ee(existence, "i", witness, introduction)
+        finish(3)

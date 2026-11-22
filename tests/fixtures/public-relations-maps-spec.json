@@ -94,15 +94,51 @@
       "notation": "prefix",
       "precedence": null,
       "latex": "#1 \\mathrel{\\mathsf{IsClassMapFrom}} #2 \\mathrel{\\mathsf{To}} #3"
+    },
+    {
+      "name": "ev",
+      "id": "19d56d74-2a57-5838-add3-904e901cafbe",
+      "symbol_id": "69ccebb1-6c28-5da0-ad78-926c3218e9c8",
+      "axiom_id": "d68d0f48-e9a0-5af3-bb71-852dd54fcb45",
+      "kind": "function",
+      "hash": "f2f77537fbb8b55f5bd42cefa98ee4a70ae3bac72de81c2c4a2224e87fd69a2f",
+      "dss": "∀ x. ∀ y. (ev(x, y)) = ({|} z. (IsSet(y)) ∧ (∃ x_1. (IsSet(x_1)) ∧ ((⟨,⟩(y, x_1)) ∈ x) ∧ (∀ y_1. ((IsSet(y_1)) ∧ ((⟨,⟩(y, y_1)) ∈ x)) → (y_1 = x_1)) ∧ (z ∈ x_1)))",
+      "notation": "prefix",
+      "precedence": null,
+      "latex": "#1\\left(#2\\right)"
+    },
+    {
+      "name": "Preimage",
+      "id": "426c58c3-a174-53ca-8057-f31395f58330",
+      "symbol_id": "92d5c2c7-6b18-5e1a-84b2-152f4c57982a",
+      "axiom_id": "84fe4ab2-887c-50c1-8e03-5f33df1e6d3e",
+      "kind": "function",
+      "hash": "d684ab36285e63c5a352a6dd65f94bd498d791d6c3f4e8c48fce117fcb1129f7",
+      "dss": "∀ x. ∀ y. (Preimage(x, y)) = ({|} z. (IsSet(z)) ∧ (∃ x_1. (x_1 ∈ y) ∧ ((⟨,⟩(z, x_1)) ∈ x)))",
+      "notation": "prefix",
+      "precedence": null,
+      "latex": "\\operatorname{Preimage}\\left(#1, #2\\right)"
+    },
+    {
+      "name": "∘",
+      "id": "9911ff1a-ab61-5d35-993d-ba8720db8332",
+      "symbol_id": "2baac1ac-339b-559e-9dc3-d73a4ed66426",
+      "axiom_id": "c0bce91d-a718-5ccb-9587-ebae2516876b",
+      "kind": "function",
+      "hash": "0e8b2d396ef5b5389634657a905a0f23c3ee76f824c5e81dcd41621162c3d4da",
+      "dss": "∀ x. ∀ y. (x ∘ y) = ({|} z. ∃ x_1. ∃ y_1. ∃ z_1. (IsSet(x_1)) ∧ (IsSet(y_1)) ∧ (IsSet(z_1)) ∧ (z = (⟨,⟩(x_1, z_1))) ∧ ((⟨,⟩(x_1, y_1)) ∈ y) ∧ ((⟨,⟩(y_1, z_1)) ∈ x))",
+      "notation": "infix",
+      "precedence": 70,
+      "latex": "#1 \\circ #2"
     }
   ],
   "theorems": [
     {
       "name": "一意存在:導入",
       "id": "403a61e1-d953-518a-a3e8-b2495ec73e42",
-      "hash": "91b2bc917c2881ac9fd58b0bff0d5c2cabe5499447386c26a8e7ba4f5f8d7be2",
-      "dss": "φ¹(t) → (∀ y. (φ¹(y) → y = t)) → (∃! x. φ¹(x))",
-      "steps": 13,
+      "hash": "9a3b49302d7dbf76b7bf491b99191559df3613c02f4638c4e9264e825d012db1",
+      "dss": "∃! x. φ¹(x)",
+      "steps": 11,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -115,14 +151,24 @@
         "同値除去公理（右）",
         "存在導入公理",
         "連言導入公理"
+      ],
+      "premises": [
+        {
+          "hash": "b350bdb91d354a548296a18dac05f3506e1255a3c3cade7166e167b586625fb6",
+          "dss": "φ¹(t)"
+        },
+        {
+          "hash": "6de0d8b61cfede5f1a1dedd3f3d3188fb56939a535063c0eca34781db3919256",
+          "dss": "∀ x. (φ¹(x)) → (x = t)"
+        }
       ]
     },
     {
       "name": "一意存在:存在",
       "id": "e054b314-9469-59cb-a40b-909311d84665",
-      "hash": "da1a90c4674e3d99bbba4ff8a48e546c6ccfeef21bdce61f0ab46b540ff1d0ff",
-      "dss": "(∃! x. φ¹(x)) → (∃ x. φ¹(x))",
-      "steps": 16,
+      "hash": "c5a8c4cec893653158f0a83ec852a67ae6af621f8ce2031353ff9aa004141d36",
+      "dss": "∃ x. φ¹(x)",
+      "steps": 15,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -136,14 +182,20 @@
         "存在導入公理",
         "存在除去公理",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "9a3b49302d7dbf76b7bf491b99191559df3613c02f4638c4e9264e825d012db1",
+          "dss": "∃! x. φ¹(x)"
+        }
       ]
     },
     {
       "name": "一意存在:一意性",
       "id": "e565ebc3-7ce0-578e-be51-5c6f69191674",
-      "hash": "1c6cea5783e2b756b772f1251f0154b29334ba5e034a00aecf30fb791dd484e5",
-      "dss": "(∃! x. φ¹(x)) → φ¹(y) → φ¹(t) → y = t",
-      "steps": 31,
+      "hash": "36c70fc0f15df5e272d5e290d3d512f394732d5125594a525871cd00f2a74bd8",
+      "dss": "y = t",
+      "steps": 28,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -159,14 +211,28 @@
         "等号代入公理",
         "等号反射律公理",
         "連言除去公理（右）"
+      ],
+      "premises": [
+        {
+          "hash": "9a3b49302d7dbf76b7bf491b99191559df3613c02f4638c4e9264e825d012db1",
+          "dss": "∃! x. φ¹(x)"
+        },
+        {
+          "hash": "8fdd776bb3a49ee679841fd112568904fd2ff5e13b367cea95d71a8cf26787a4",
+          "dss": "φ¹(y)"
+        },
+        {
+          "hash": "b350bdb91d354a548296a18dac05f3506e1255a3c3cade7166e167b586625fb6",
+          "dss": "φ¹(t)"
+        }
       ]
     },
     {
       "name": "一意存在:存在と一意性から",
       "id": "44d18ce6-b8ac-501d-a9fd-0cf999a342ce",
-      "hash": "9e3ccb4e38804ba45d0283fc184f5cdc43db314a61e89019c64d5e838ba8628c",
-      "dss": "(∃ x. φ¹(x)) → (∀ x. ∀ y. (φ¹(x) → φ¹(y) → x = y)) → (∃! x. φ¹(x))",
-      "steps": 22,
+      "hash": "9a3b49302d7dbf76b7bf491b99191559df3613c02f4638c4e9264e825d012db1",
+      "dss": "∃! x. φ¹(x)",
+      "steps": 18,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -181,6 +247,16 @@
         "存在導入公理",
         "存在除去公理",
         "連言導入公理"
+      ],
+      "premises": [
+        {
+          "hash": "c5a8c4cec893653158f0a83ec852a67ae6af621f8ce2031353ff9aa004141d36",
+          "dss": "∃ x. φ¹(x)"
+        },
+        {
+          "hash": "ce0f375e7db21fa503c9ac27d4b885ac29d3b14e0702416ff9e2d3ff29c5098c",
+          "dss": "∀ x. ∀ y. (φ¹(x)) → (φ¹(y)) → (x = y)"
+        }
       ]
     },
     {
@@ -200,14 +276,15 @@
         "⊂ 定義公理",
         "全称除去公理",
         "同値除去公理（右）"
-      ]
+      ],
+      "premises": []
     },
     {
       "name": "包含:推移律",
       "id": "63629f99-6af7-52a4-aa08-49fa540f94ca",
-      "hash": "e0ea82aaba4f7341dddcaf40b1a146a879ecd315ec30be3263986be3f8e401b0",
-      "dss": "a ⊂ b → b ⊂ c → a ⊂ c",
-      "steps": 37,
+      "hash": "6f1283700d2a76838e1550d8dd4043fcf46518c5269f204c326a5cf6f4d73de3",
+      "dss": "a ⊂ c",
+      "steps": 35,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -220,14 +297,24 @@
         "全称除去公理",
         "同値除去公理（右）",
         "同値除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "6b7908ace2b8ab4a308525fd4a21a17bbcfdf0faf39ea8a0e214695798c526d0",
+          "dss": "a ⊂ b"
+        },
+        {
+          "hash": "d83f1cb2445c6ac496507343ea4d9db1c91978001a6ca1add8bfbfa29dcfc0c6",
+          "dss": "b ⊂ c"
+        }
       ]
     },
     {
       "name": "包含:反対称律",
       "id": "275c2f75-eb48-509c-be23-aed6cbab79fe",
-      "hash": "270e8f2244dbf2f7226ae0ce3452ee62f656d28b8e104955e9c345b8898ee85a",
-      "dss": "IsSet(a) → IsSet(b) → a ⊂ b → b ⊂ a → a = b",
-      "steps": 46,
+      "hash": "7bd6b7055790667ecb7fecf93f3061cd3171c6f0fd628addbe7a06e72750bf2f",
+      "dss": "a = b",
+      "steps": 42,
       "valid": [
         "ZF",
         "ZFC",
@@ -239,6 +326,24 @@
         "全称除去公理",
         "同値導入公理",
         "同値除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "7c0c71b0b576cda1c56510926ce4ae6a027a8748f7c9c58c11591e73d47f484f",
+          "dss": "IsSet(a)"
+        },
+        {
+          "hash": "0df98b28b6d050ffbefd27252d0ff368b0db1d00fc6bf33b530e8960ff6332b5",
+          "dss": "IsSet(b)"
+        },
+        {
+          "hash": "6b7908ace2b8ab4a308525fd4a21a17bbcfdf0faf39ea8a0e214695798c526d0",
+          "dss": "a ⊂ b"
+        },
+        {
+          "hash": "ce4fed1f81342ef57a3ba0c2610df4c57c2ea7703018f599af11611167dcdc6d",
+          "dss": "b ⊂ a"
+        }
       ]
     },
     {
@@ -268,14 +373,15 @@
         "等号代入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
-      ]
+      ],
+      "premises": []
     },
     {
       "name": "直積:集合性",
       "id": "d16ca9fc-b1b6-54f9-92d8-93754f1c22a1",
-      "hash": "d1423f149f225b32b7a072430d46cbfc45269e2d68d319630daf22fe0062e253",
-      "dss": "IsSet(X) → IsSet(Y) → IsSet(X × Y)",
-      "steps": 187,
+      "hash": "66f21b1db11190adf58c317f8033236d470117fb07f2151cd8abe90d8fd45c5b",
+      "dss": "IsSet(X × Y)",
+      "steps": 179,
       "valid": [
         "ZF",
         "ZFC",
@@ -303,14 +409,24 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        }
       ]
     },
     {
       "name": "直積:所属",
       "id": "66f20dbc-fd66-5319-8227-857b6df48b5d",
-      "hash": "2ba85ccc1ff8c74449e0066a8a2dad148730145208edfd30ab9228c5182c8f6f",
-      "dss": "IsSet(X) → IsSet(Y) → (∀ q. (q ∈ X × Y ↔ (∃ x. ∃ y. (x ∈ X ∧ (y ∈ Y ∧ q = ⟨,⟩(x, y))))))",
-      "steps": 73,
+      "hash": "bb0494ebb8957b99fac2e97afe832343a77518b046ef8de301d09c36f83aa1f1",
+      "dss": "∀ x. (x ∈ (X × Y)) ↔ (∃ y. ∃ z. (y ∈ X) ∧ (z ∈ Y) ∧ (x = (⟨,⟩(y, z))))",
+      "steps": 69,
       "valid": [
         "ZF",
         "ZFC",
@@ -338,14 +454,24 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        }
       ]
     },
     {
       "name": "直積:順序対の所属",
       "id": "fe831dae-4c58-5784-a93d-ef10a17660ca",
-      "hash": "e50a845a2e7c2ed8d9aab0d339e33dff7592cf81ef07d443488f5e9b3c133c89",
-      "dss": "IsSet(X) → IsSet(Y) → IsSet(a) → IsSet(b) → (⟨,⟩(a, b) ∈ X × Y ↔ (a ∈ X ∧ b ∈ Y))",
-      "steps": 100,
+      "hash": "6be43aeaa315c31f50f177688117b9fcb7ec62ffa26a7795b2b5cd375bdc622c",
+      "dss": "((⟨,⟩(a, b)) ∈ (X × Y)) ↔ ((a ∈ X) ∧ (b ∈ Y))",
+      "steps": 89,
       "valid": [
         "ZF",
         "ZFC",
@@ -377,14 +503,32 @@
         "選言導入公理（右）",
         "選言導入公理（左）",
         "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "7c0c71b0b576cda1c56510926ce4ae6a027a8748f7c9c58c11591e73d47f484f",
+          "dss": "IsSet(a)"
+        },
+        {
+          "hash": "0df98b28b6d050ffbefd27252d0ff368b0db1d00fc6bf33b530e8960ff6332b5",
+          "dss": "IsSet(b)"
+        }
       ]
     },
     {
       "name": "関係:元は順序対",
       "id": "0119ab46-9188-5fb1-bd2d-a832089a2d2f",
-      "hash": "0e35d311f792f54c2e99f16c894485a6532bc58a8196cedb0030d23554ef69fb",
-      "dss": "IsSet(X) → IsSet(Y) → IsRelation(R, X, Y) → (∀ q. (q ∈ R → (∃ x. ∃ y. (x ∈ X ∧ (y ∈ Y ∧ q = ⟨,⟩(x, y))))))",
-      "steps": 40,
+      "hash": "ffff369110a2111902f3cd32cc1d915641ca4df74ce3bcea587889a912a41956",
+      "dss": "∀ x. (x ∈ R) → (∃ y. ∃ z. (y ∈ X) ∧ (z ∈ Y) ∧ (x = (⟨,⟩(y, z))))",
+      "steps": 35,
       "valid": [
         "ZF",
         "ZFC",
@@ -414,14 +558,28 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "6eb58b35e925b084eb44460b6d9cdb41ad43261be199b974b74f004e6ef3c6ee",
+          "dss": "IsRelation(R, X, Y)"
+        }
       ]
     },
     {
       "name": "関係:直積は関係",
       "id": "25f5e786-e813-5234-aa62-dcbdebf6848f",
-      "hash": "87f237753ee13386efbd270c1f2ed5a45926b651c6ebe6f43ef0b448e9a7062f",
-      "dss": "IsSet(X) → IsSet(Y) → IsRelation(X × Y, X, Y)",
-      "steps": 21,
+      "hash": "e200a4473b8bdfdd9e5a8948b272e8856f84e1bcfb8a89c6552c51a8cc40f6b1",
+      "dss": "IsRelation(X × Y, X, Y)",
+      "steps": 17,
       "valid": [
         "ZF",
         "ZFC",
@@ -451,6 +609,16 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        }
       ]
     },
     {
@@ -482,14 +650,15 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
-      ]
+      ],
+      "premises": []
     },
     {
       "name": "関係:外延性",
       "id": "d4153be4-1c5b-51b3-805f-ab0dd92ae102",
-      "hash": "598d41db919d49a749fc5d30a9e03051a6dd7b5265d23734c7cc56867155e7c0",
-      "dss": "IsSet(X) → IsSet(Y) → IsRelation(R, X, Y) → IsRelation(S, X, Y) → (∀ x. ∀ y. (x ∈ X → y ∈ Y → (⟨,⟩(x, y) ∈ R ↔ ⟨,⟩(x, y) ∈ S))) → R = S",
-      "steps": 153,
+      "hash": "6fe0e6f5e852353d4c90fbb112e819b4f60977308f1c4e6621f8af95ceb93abe",
+      "dss": "R = S",
+      "steps": 138,
       "valid": [
         "ZF",
         "ZFC",
@@ -520,14 +689,36 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "6eb58b35e925b084eb44460b6d9cdb41ad43261be199b974b74f004e6ef3c6ee",
+          "dss": "IsRelation(R, X, Y)"
+        },
+        {
+          "hash": "ed3612ab76aa487da2e227acf1cf355133e020004a9b8386d5be2d74abf6f039",
+          "dss": "IsRelation(S, X, Y)"
+        },
+        {
+          "hash": "9ca18e4efb86ef8bdf14ae87c799652d6802db9ba708063795bd6461861c7e59",
+          "dss": "∀ x. ∀ y. (x ∈ X) → (y ∈ Y) → (((⟨,⟩(x, y)) ∈ R) ↔ ((⟨,⟩(x, y)) ∈ S))"
+        }
       ]
     },
     {
       "name": "写像:写像は関係",
       "id": "b8bc784d-852d-59bc-9bda-994edd9b5b75",
-      "hash": "26e6db2f0b0e6a3f9a96622c6216130813aa6adcd7ee231cf8533b3989e8ff67",
-      "dss": "IsMap(f, X, Y) → IsRelation(f, X, Y)",
-      "steps": 14,
+      "hash": "12348d8672780a1edc8218fd125d4de51907ebbe141a7c6f63f96504967b0932",
+      "dss": "IsRelation(f, X, Y)",
+      "steps": 13,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -540,14 +731,20 @@
         "全称除去公理",
         "同値除去公理（左）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        }
       ]
     },
     {
       "name": "写像:値の存在",
       "id": "7aa7de4b-0f53-575f-b98e-cc67a962f05b",
-      "hash": "9f01e2448fdcd441e23ea681e8ff7e15fde10a8e262035ea503cd5f7785ab159",
-      "dss": "IsMap(f, X, Y) → (∀ x. (x ∈ X → (∃ y. (y ∈ Y ∧ ⟨,⟩(x, y) ∈ f))))",
-      "steps": 22,
+      "hash": "0ba1dc0e4cbdf1b63bb874e16b39b42efcc8488633b3d4981cdab3f9dd6af5ee",
+      "dss": "∀ x. (x ∈ X) → (∃ y. (y ∈ Y) ∧ ((⟨,⟩(x, y)) ∈ f))",
+      "steps": 20,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -564,14 +761,20 @@
         "存在除去公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        }
       ]
     },
     {
       "name": "写像:値の一意性",
       "id": "80394553-4fba-5cb5-9a62-dad38e402b78",
-      "hash": "10d64ba3cedf0b5eb0fe25b45c075047f034e1cc4e76f5cd0d62ad54b5f46871",
-      "dss": "IsMap(f, X, Y) → (∀ x. ∀ y. ∀ z. (x ∈ X → y ∈ Y → z ∈ Y → ⟨,⟩(x, y) ∈ f → ⟨,⟩(x, z) ∈ f → y = z))",
-      "steps": 40,
+      "hash": "87176e112632254ace25955b6aac81825973f50f17b67e61e38d19fe0a50be7b",
+      "dss": "∀ x. ∀ y. ∀ z. (x ∈ X) → (y ∈ Y) → (z ∈ Y) → ((⟨,⟩(x, y)) ∈ f) → ((⟨,⟩(x, z)) ∈ f) → (y = z)",
+      "steps": 36,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -589,14 +792,20 @@
         "等号反射律公理",
         "連言導入公理",
         "連言除去公理（右）"
+      ],
+      "premises": [
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        }
       ]
     },
     {
       "name": "写像:包含する写像は等しい",
       "id": "d15fc567-f798-5f6f-967b-9fa8da33e94f",
-      "hash": "43a448e854cb0617077834b861d1c5c1eccb169faf3ef9bd0f65b2251e889c5a",
-      "dss": "IsSet(X) → IsSet(Y) → IsMap(f, X, Y) → IsMap(g, X, Y) → f ⊂ g → f = g",
-      "steps": 133,
+      "hash": "ef82a03d80bfb375af665331256d5e63f13d89079f90c72be423dec5f5425343",
+      "dss": "f = g",
+      "steps": 117,
       "valid": [
         "ZF",
         "ZFC",
@@ -629,6 +838,28 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        },
+        {
+          "hash": "f64034e3d41c2a8771e08997fb5ee540835bf112575b2ac11b6de3ae04e93c2b",
+          "dss": "IsMap(g, X, Y)"
+        },
+        {
+          "hash": "3097251cb24032ee8dd6380e47062cf7452642ff0fdf5f8472f3dfce3981a5cf",
+          "dss": "f ⊂ g"
+        }
       ]
     },
     {
@@ -661,7 +892,8 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
-      ]
+      ],
+      "premises": []
     },
     {
       "name": "類関係:関係は集合である類関係",
@@ -686,7 +918,8 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
-      ]
+      ],
+      "premises": []
     },
     {
       "name": "類写像:写像は集合である類写像",
@@ -713,14 +946,15 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
-      ]
+      ],
+      "premises": []
     },
     {
       "name": "類写像:類写像は類関係",
       "id": "0ab293d1-c477-5f34-8b2f-993eaebb4bd2",
-      "hash": "92dadf498b2cb7a88b26d13693761177980ec0e4657f857060a519494bec578e",
-      "dss": "IsClassMap(f, X, Y) → IsClassRelation(f, X, Y)",
-      "steps": 14,
+      "hash": "8f59e7c0c5526149277a341b5f9ae0926264e706c0b31eec437be42e592caa92",
+      "dss": "IsClassRelation(f, X, Y)",
+      "steps": 13,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -733,14 +967,20 @@
         "全称除去公理",
         "同値除去公理（左）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "42d73be918de28ce93d585d400fe6fa5fd9fa76edf758056f2a3514c3828de54",
+          "dss": "IsClassMap(f, X, Y)"
+        }
       ]
     },
     {
       "name": "類写像:値の存在",
       "id": "df44ce4d-f19e-53c1-8b41-414849b7ca62",
-      "hash": "5aa1cf6443ac0b59186d65efaef408ee6bba12017290e9f0ea043a8c6528b423",
-      "dss": "IsClassMap(f, X, Y) → (∀ x. (x ∈ X → (∃ y. (y ∈ Y ∧ ⟨,⟩(x, y) ∈ f))))",
-      "steps": 22,
+      "hash": "0ba1dc0e4cbdf1b63bb874e16b39b42efcc8488633b3d4981cdab3f9dd6af5ee",
+      "dss": "∀ x. (x ∈ X) → (∃ y. (y ∈ Y) ∧ ((⟨,⟩(x, y)) ∈ f))",
+      "steps": 20,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -757,14 +997,20 @@
         "存在除去公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "42d73be918de28ce93d585d400fe6fa5fd9fa76edf758056f2a3514c3828de54",
+          "dss": "IsClassMap(f, X, Y)"
+        }
       ]
     },
     {
       "name": "類写像:値の一意性",
       "id": "87075f17-5dcb-5e32-b7b2-4312b18abf84",
-      "hash": "77cc4748edae9c11f0a99c422c32c62285b016749deec0afb369feb299a42c32",
-      "dss": "IsClassMap(f, X, Y) → (∀ x. ∀ y. ∀ z. (x ∈ X → y ∈ Y → z ∈ Y → ⟨,⟩(x, y) ∈ f → ⟨,⟩(x, z) ∈ f → y = z))",
-      "steps": 40,
+      "hash": "87176e112632254ace25955b6aac81825973f50f17b67e61e38d19fe0a50be7b",
+      "dss": "∀ x. ∀ y. ∀ z. (x ∈ X) → (y ∈ Y) → (z ∈ Y) → ((⟨,⟩(x, y)) ∈ f) → ((⟨,⟩(x, z)) ∈ f) → (y = z)",
+      "steps": 36,
       "valid": [
         "直観主義論理（同値つき）",
         "古典論理（同値つき）",
@@ -782,6 +1028,12 @@
         "等号反射律公理",
         "連言導入公理",
         "連言除去公理（右）"
+      ],
+      "premises": [
+        {
+          "hash": "42d73be918de28ce93d585d400fe6fa5fd9fa76edf758056f2a3514c3828de54",
+          "dss": "IsClassMap(f, X, Y)"
+        }
       ]
     },
     {
@@ -809,14 +1061,15 @@
         "等号反射律公理",
         "連言導入公理",
         "連言除去公理（右）"
-      ]
+      ],
+      "premises": []
     },
     {
       "name": "MK:類関係の元は順序対",
       "id": "d97033cd-6b20-5124-8300-3f93a0fb73be",
-      "hash": "3f89056f070fc24527020c25b94a0fce6c92034b6bc2760474ae98721949c249",
-      "dss": "IsClassRelation(R, X, Y) → (∀ q. (q ∈ R → (∃ x. ∃ y. (x ∈ X ∧ (y ∈ Y ∧ q = ⟨,⟩(x, y))))))",
-      "steps": 32,
+      "hash": "ffff369110a2111902f3cd32cc1d915641ca4df74ce3bcea587889a912a41956",
+      "dss": "∀ x. (x ∈ R) → (∃ y. ∃ z. (y ∈ X) ∧ (z ∈ Y) ∧ (x = (⟨,⟩(y, z))))",
+      "steps": 31,
       "valid": [
         "MK"
       ],
@@ -838,14 +1091,20 @@
         "等号反射律公理",
         "連言導入公理",
         "連言除去公理（右）"
+      ],
+      "premises": [
+        {
+          "hash": "fdf150a87a92b00dcaeccc814e8fb617fc4ff60aedd7b943a93240ec778992ab",
+          "dss": "IsClassRelation(R, X, Y)"
+        }
       ]
     },
     {
       "name": "MK:集合の間の類関係は関係",
       "id": "d2f7270e-4b07-53de-8b8a-71aa11e8d217",
-      "hash": "b908068a5a0d0dd09ee4b4e134883a02a4d01bc74f346f3c37cc00386096949b",
-      "dss": "IsSet(X) → IsSet(Y) → IsClassRelation(R, X, Y) → IsRelation(R, X, Y)",
-      "steps": 91,
+      "hash": "6eb58b35e925b084eb44460b6d9cdb41ad43261be199b974b74f004e6ef3c6ee",
+      "dss": "IsRelation(R, X, Y)",
+      "steps": 86,
       "valid": [
         "MK"
       ],
@@ -877,14 +1136,28 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "fdf150a87a92b00dcaeccc814e8fb617fc4ff60aedd7b943a93240ec778992ab",
+          "dss": "IsClassRelation(R, X, Y)"
+        }
       ]
     },
     {
       "name": "MK:定義域が集合の類写像は写像",
       "id": "b5133339-970a-5f98-a0c5-17b38e58f061",
-      "hash": "b61f0456cd627cb91341224838ddd5b2e9645362356e7a9c0f7babc82f3032da",
-      "dss": "IsSet(X) → IsClassMap(f, X, Y) → IsMap(f, X, Y)",
-      "steps": 129,
+      "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+      "dss": "IsMap(f, X, Y)",
+      "steps": 123,
       "valid": [
         "MK"
       ],
@@ -915,14 +1188,24 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "42d73be918de28ce93d585d400fe6fa5fd9fa76edf758056f2a3514c3828de54",
+          "dss": "IsClassMap(f, X, Y)"
+        }
       ]
     },
     {
       "name": "MK:包含する類写像は等しい",
       "id": "9065d163-6a00-58a0-a2dc-9b8d462afdcc",
-      "hash": "d1026952b3933588269968f260302041fe415d708ed7c0f70507ba1b9d969d48",
-      "dss": "IsClassMap(f, X, Y) → IsClassMap(g, X, Y) → f ⊂ g → f = g",
-      "steps": 132,
+      "hash": "ef82a03d80bfb375af665331256d5e63f13d89079f90c72be423dec5f5425343",
+      "dss": "f = g",
+      "steps": 125,
       "valid": [
         "MK"
       ],
@@ -949,14 +1232,28 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "42d73be918de28ce93d585d400fe6fa5fd9fa76edf758056f2a3514c3828de54",
+          "dss": "IsClassMap(f, X, Y)"
+        },
+        {
+          "hash": "79e0ca97d210649bc002dcbf0406a209962ae5d6625ce17c744744f23932549f",
+          "dss": "IsClassMap(g, X, Y)"
+        },
+        {
+          "hash": "3097251cb24032ee8dd6380e47062cf7452642ff0fdf5f8472f3dfce3981a5cf",
+          "dss": "f ⊂ g"
+        }
       ]
     },
     {
       "name": "直積:順序対の片側の像の集合性",
       "id": "54a7788b-fc8b-57af-aadb-23f08aad3b8d",
-      "hash": "ac6933a021cd551327e2844042c4e43f970c541e6f40a61804fcc5fac9b9efb3",
-      "dss": "(IsSet(X)) → (IsSet(b)) → (IsSet({|} x. ∃ y. (y ∈ X) ∧ (x = (⟨,⟩(y, b)))))",
-      "steps": 31,
+      "hash": "036cd009f5862c6f57d6d8074299a49eb5a679fd2941a704aab6d55bbb335587",
+      "dss": "IsSet({|} x. ∃ y. (y ∈ X) ∧ (x = (⟨,⟩(y, b))))",
+      "steps": 29,
       "valid": [
         "ZF",
         "ZFC",
@@ -973,14 +1270,24 @@
         "等号代入公理",
         "等号反射律公理",
         "連言導入公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "0df98b28b6d050ffbefd27252d0ff368b0db1d00fc6bf33b530e8960ff6332b5",
+          "dss": "IsSet(b)"
+        }
       ]
     },
     {
       "name": "直積:順序対の片側の像を集めた集合",
       "id": "7a325758-6e21-5186-962e-6b86d97bf543",
-      "hash": "329022066c049a91cc9a8b9c4694f724c7a7991549340dce750e6c18256ebdc8",
-      "dss": "(IsSet(X)) → (IsSet(Y)) → (IsSet({|} x. ∃ y. (y ∈ Y) ∧ (x = ({|} z. ∃ x_1. (x_1 ∈ X) ∧ (z = (⟨,⟩(x_1, y)))))))",
-      "steps": 39,
+      "hash": "14541a87b445edd188008abecfb2ba10657aefade2207d28b0c254534ee3d81b",
+      "dss": "IsSet({|} x. ∃ y. (y ∈ Y) ∧ (x = ({|} z. ∃ x_1. (x_1 ∈ X) ∧ (z = (⟨,⟩(x_1, y))))))",
+      "steps": 35,
       "valid": [
         "ZF",
         "ZFC",
@@ -998,14 +1305,24 @@
         "等号代入公理",
         "等号反射律公理",
         "連言導入公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        }
       ]
     },
     {
       "name": "類写像:集合を定義域とする類写像の順序対の像は集合",
       "id": "a6d42759-69b2-52c7-80a8-a5c9fe1dc244",
-      "hash": "df65a1303c687ebcd7e7bec2e3b3f243d539fd7f02ca14e78e6fdc87286d6394",
-      "dss": "(IsSet(X)) → (IsClassMap(f, X, Y)) → (IsSet({|} x. ∃ y. (y ∈ X) ∧ (∃ z. (z ∈ Y) ∧ ((⟨,⟩(y, z)) ∈ f) ∧ (x = (⟨,⟩(y, z))))))",
-      "steps": 84,
+      "hash": "f503c63171b065cc2aea2736516d35ede8e28a47cc6195a13b0d17b2c78c2f72",
+      "dss": "IsSet({|} x. ∃ y. (y ∈ X) ∧ (∃ z. (z ∈ Y) ∧ ((⟨,⟩(y, z)) ∈ f) ∧ (x = (⟨,⟩(y, z)))))",
+      "steps": 80,
       "valid": [
         "ZF",
         "ZFC",
@@ -1028,19 +1345,875 @@
         "連言導入公理",
         "連言除去公理（右）",
         "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "42d73be918de28ce93d585d400fe6fa5fd9fa76edf758056f2a3514c3828de54",
+          "dss": "IsClassMap(f, X, Y)"
+        }
+      ]
+    },
+    {
+      "name": "値:特徴づけ",
+      "id": "608d51f5-a63f-5986-9ad9-80232ccb6d05",
+      "hash": "ee72d4389fd21d77a8824dc73dbeddb394feb080b796eae9f9b5bdbea99946d1",
+      "dss": "(ev(f, x)) = y",
+      "steps": 155,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF外延性公理",
+        "ZF純粋性公理",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "b07d1b1fa3d27911f120fdb481e4732606549a895f593ae15c1cf276f18e6ccb",
+          "dss": "IsSet(x)"
+        },
+        {
+          "hash": "753d2d9ac3fab8291cc8e8059b39ac1c15d086c31a39910012441c0f9119430e",
+          "dss": "IsSet(y)"
+        },
+        {
+          "hash": "a5d2e3cce830efe7da42e9825dd4b49bfa0129961dab4d44530102415341ef25",
+          "dss": "(⟨,⟩(x, y)) ∈ f"
+        },
+        {
+          "hash": "c0bc9736ea683137ad68244e6f5730f8ee682f1836c8f91dc7a2d9736ff29229",
+          "dss": "∀ x′. ((IsSet(x′)) ∧ ((⟨,⟩(x, x′)) ∈ f)) → (x′ = y)"
+        }
+      ]
+    },
+    {
+      "name": "値:未定義なら空",
+      "id": "6dcc2cf9-0afa-578c-b85d-8ee7967713e2",
+      "hash": "ea188cd708856a648de9a84e9754f63f94aaf9b7029c1a7768311d94831b449e",
+      "dss": "(ev(f, x)) = ∅",
+      "steps": 59,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "ZF内包項外延性公理図式",
+        "ev 定義公理",
+        "∃! 定義公理",
+        "∅ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "否定除去公理",
+        "存在導入公理",
+        "存在除去公理",
+        "矛盾除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）"
+      ],
+      "premises": [
+        {
+          "hash": "97b5924dc0ed2a4e94d6a7a2657ec556d4282f2c5002b8cf0b24fd151709f882",
+          "dss": "¬((IsSet(x)) ∧ (∃! x′. (IsSet(x′)) ∧ ((⟨,⟩(x, x′)) ∈ f)))"
+        }
+      ]
+    },
+    {
+      "name": "値:集合性",
+      "id": "275afe8c-61f7-5c71-869e-92f337e835da",
+      "hash": "a92ef8c3761874aa129c682ece3c26bce20058bf2d4591e0eaba344e91c7d608",
+      "dss": "IsSet(ev(f, x))",
+      "steps": 47,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF外延性公理",
+        "ZF無限公理",
+        "ZF純粋性公理",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "∃! 定義公理",
+        "∅ 定義公理",
+        "パース公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "否定導入公理",
+        "否定除去公理",
+        "存在導入公理",
+        "存在除去公理",
+        "矛盾除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）"
+      ],
+      "premises": []
+    },
+    {
+      "name": "写像:値の所属",
+      "id": "12687897-4f1b-5b97-9de7-8b5cebb676b9",
+      "hash": "79ee72f068126a447aeb9695f8fa8a70170bbbf012e6a90ccb1b303e21b6864a",
+      "dss": "((ev(f, x)) ∈ Y) ∧ ((⟨,⟩(x, ev(f, x))) ∈ f)",
+      "steps": 95,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        },
+        {
+          "hash": "fc48ebf2988c1c70651a312f9ee3d59d1359ae5783438ff8c07825332f0e1b8a",
+          "dss": "x ∈ X"
+        }
+      ]
+    },
+    {
+      "name": "写像:グラフと値",
+      "id": "5e4dae73-41f6-5039-afdc-68eaebfe2a39",
+      "hash": "bfbf7e11bb4ce40e79a7f17e7c3d3c2be5c1c03f14720d8aa2e45e5dda7cd6fa",
+      "dss": "((y ∈ Y) ∧ ((⟨,⟩(x, y)) ∈ f)) ↔ ((ev(f, x)) = y)",
+      "steps": 89,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        },
+        {
+          "hash": "fc48ebf2988c1c70651a312f9ee3d59d1359ae5783438ff8c07825332f0e1b8a",
+          "dss": "x ∈ X"
+        }
+      ]
+    },
+    {
+      "name": "類写像:値の所属",
+      "id": "dcbbf240-8cdf-5e4b-af7b-abbf5eee4ec2",
+      "hash": "79ee72f068126a447aeb9695f8fa8a70170bbbf012e6a90ccb1b303e21b6864a",
+      "dss": "((ev(f, x)) ∈ Y) ∧ ((⟨,⟩(x, ev(f, x))) ∈ f)",
+      "steps": 133,
+      "valid": [
+        "MK"
+      ],
+      "axioms": [
+        "IsClassMap 定義公理",
+        "IsClassRelation 定義公理",
+        "MK類内包公理図式",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "42d73be918de28ce93d585d400fe6fa5fd9fa76edf758056f2a3514c3828de54",
+          "dss": "IsClassMap(f, X, Y)"
+        },
+        {
+          "hash": "fc48ebf2988c1c70651a312f9ee3d59d1359ae5783438ff8c07825332f0e1b8a",
+          "dss": "x ∈ X"
+        }
+      ]
+    },
+    {
+      "name": "写像:逆像の集合性",
+      "id": "4b17cc4d-fb64-5da3-94cf-f058a3b9326a",
+      "hash": "60bd7ecf9126f7147dad8b8146c09e588ba9c7565dddeb91af87fb78a1fa9485",
+      "dss": "IsSet(Preimage(f, a))",
+      "steps": 91,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "Preimage 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        }
+      ]
+    },
+    {
+      "name": "写像:逆像の所属",
+      "id": "81a2867f-60af-57d1-8e4f-b1376612e5bf",
+      "hash": "114a0bb7c35695181eba5c981f6e87e951e3d73e946b5ec3f504f6fb6432f3f4",
+      "dss": "(x ∈ (Preimage(f, a))) ↔ ((x ∈ X) ∧ ((ev(f, x)) ∈ a))",
+      "steps": 139,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "Preimage 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        }
+      ]
+    },
+    {
+      "name": "写像:逆像は定義域に含まれる",
+      "id": "0ad23eb7-6bc1-5935-a1cc-cf1c5b1dffa3",
+      "hash": "e1aee22eeacc4feb9ab54ff3815a9f5190bf92bf39a96d1908e431bc0511d0c6",
+      "dss": "(Preimage(f, a)) ⊂ X",
+      "steps": 20,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "Preimage 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        }
+      ]
+    },
+    {
+      "name": "写像:合成は関係",
+      "id": "57fa42bb-f5d6-54a2-88e5-8bb5eb83a50f",
+      "hash": "290e89fe0ce972d8aa2e9a87a910531e410c1fa8b14211d54c811f8d68cfa014",
+      "dss": "IsRelation(g ∘ f, X, Z)",
+      "steps": 196,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∘ 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "ee17014186d1349e37a372cb7ba185056ec0be52a316f6109ab3b40dd2247774",
+          "dss": "IsSet(Z)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        },
+        {
+          "hash": "f17c4d5d6d8ddeac0370cb57c387a4bdd958e2d60d82f5131296aabe4b6f5379",
+          "dss": "IsMap(g, Y, Z)"
+        }
+      ]
+    },
+    {
+      "name": "写像:合成の所属",
+      "id": "a6c24014-0097-59b7-8a17-096e4c4e1364",
+      "hash": "f94348a5a16961fa885f49d27103c912b2fb48ddc4d16401d7efd21ba43ddbc8",
+      "dss": "((⟨,⟩(x, z)) ∈ (g ∘ f)) ↔ (∃ x′. (x′ ∈ Y) ∧ ((⟨,⟩(x, x′)) ∈ f) ∧ ((⟨,⟩(x′, z)) ∈ g))",
+      "steps": 199,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∘ 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "ee17014186d1349e37a372cb7ba185056ec0be52a316f6109ab3b40dd2247774",
+          "dss": "IsSet(Z)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        },
+        {
+          "hash": "f17c4d5d6d8ddeac0370cb57c387a4bdd958e2d60d82f5131296aabe4b6f5379",
+          "dss": "IsMap(g, Y, Z)"
+        },
+        {
+          "hash": "b07d1b1fa3d27911f120fdb481e4732606549a895f593ae15c1cf276f18e6ccb",
+          "dss": "IsSet(x)"
+        },
+        {
+          "hash": "72af0820fb0380dafa46e80b5a547558af704fe972907bef9710813ee0ccbe46",
+          "dss": "IsSet(z)"
+        }
+      ]
+    },
+    {
+      "name": "写像:合成は写像",
+      "id": "2e9f04b7-54d9-55d2-a956-68ca5aa8f3f9",
+      "hash": "495859b8e5a0d5db1ea90a78ac08a3765d891928245ba9357bc470b267c1ace0",
+      "dss": "IsMap(g ∘ f, X, Z)",
+      "steps": 124,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "∘ 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "ee17014186d1349e37a372cb7ba185056ec0be52a316f6109ab3b40dd2247774",
+          "dss": "IsSet(Z)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        },
+        {
+          "hash": "f17c4d5d6d8ddeac0370cb57c387a4bdd958e2d60d82f5131296aabe4b6f5379",
+          "dss": "IsMap(g, Y, Z)"
+        }
+      ]
+    },
+    {
+      "name": "写像:合成の値",
+      "id": "2d79c5c7-14e3-5a3a-b7c5-9b2929992104",
+      "hash": "a8b86b3118ec66c661f2e5add65646e20dd9f163aaac058811518e28eafe75eb",
+      "dss": "(ev(g ∘ f, x)) = (ev(g, ev(f, x)))",
+      "steps": 48,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "∘ 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "ee17014186d1349e37a372cb7ba185056ec0be52a316f6109ab3b40dd2247774",
+          "dss": "IsSet(Z)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        },
+        {
+          "hash": "f17c4d5d6d8ddeac0370cb57c387a4bdd958e2d60d82f5131296aabe4b6f5379",
+          "dss": "IsMap(g, Y, Z)"
+        },
+        {
+          "hash": "fc48ebf2988c1c70651a312f9ee3d59d1359ae5783438ff8c07825332f0e1b8a",
+          "dss": "x ∈ X"
+        }
+      ]
+    },
+    {
+      "name": "写像:合成の結合律",
+      "id": "fc553e58-98be-5606-8cad-3e2ef6ce8e3f",
+      "hash": "0b575408782bbfc4c4dcf3fc642d54464d2441066f725057563f6b94b4fde26c",
+      "dss": "(h ∘ (g ∘ f)) = ((h ∘ g) ∘ f)",
+      "steps": 98,
+      "valid": [
+        "ZF",
+        "ZFC",
+        "MK"
+      ],
+      "axioms": [
+        "IsMap 定義公理",
+        "IsRelation 定義公理",
+        "ZF内包項外延性公理図式",
+        "ZF内包項所属公理図式",
+        "ZF分出公理図式",
+        "ZF和集合公理",
+        "ZF外延性公理",
+        "ZF対公理",
+        "ZF純粋性公理",
+        "ZF置換公理図式",
+        "ZF集合元性公理",
+        "ev 定義公理",
+        "{,} 定義公理",
+        "{} 定義公理",
+        "× 定義公理",
+        "∃! 定義公理",
+        "∘ 定義公理",
+        "⊂ 定義公理",
+        "⟨,⟩ 定義公理",
+        "全称除去公理",
+        "同値導入公理",
+        "同値除去公理（右）",
+        "同値除去公理（左）",
+        "存在導入公理",
+        "存在除去公理",
+        "等号代入公理",
+        "等号反射律公理",
+        "連言導入公理",
+        "連言除去公理（右）",
+        "連言除去公理（左）",
+        "選言導入公理（右）",
+        "選言導入公理（左）",
+        "選言除去公理"
+      ],
+      "premises": [
+        {
+          "hash": "96e7081e669d0a64d2f13cbb4a486788bc825e7aec5170b70911019a08597d02",
+          "dss": "IsSet(X)"
+        },
+        {
+          "hash": "739ed44395d9f58467a3ea8b5bd101339eae3f1aaeebe4d6c53e57df36d12e5c",
+          "dss": "IsSet(Y)"
+        },
+        {
+          "hash": "ee17014186d1349e37a372cb7ba185056ec0be52a316f6109ab3b40dd2247774",
+          "dss": "IsSet(Z)"
+        },
+        {
+          "hash": "0bcef8f874effce353630a35d5409db185ab68c7f53fa7607e751d1812074720",
+          "dss": "IsSet(W)"
+        },
+        {
+          "hash": "f82b549ffe57dc889142de3c6ede913e6b4da96cdf0ced187480a67018fb21db",
+          "dss": "IsMap(f, X, Y)"
+        },
+        {
+          "hash": "f17c4d5d6d8ddeac0370cb57c387a4bdd958e2d60d82f5131296aabe4b6f5379",
+          "dss": "IsMap(g, Y, Z)"
+        },
+        {
+          "hash": "14f0f43db2e01a718d09a07a5cc6d40c48b5686d0c28b6cb42eb5e28e5923a70",
+          "dss": "IsMap(h, Z, W)"
+        }
       ]
     }
   ],
   "digests": {
     "dem.public.logic@1.0.0": "1e3c9f079c1e3b68f534366419d2f2b656bc997a12c4031ef5d627df52fb3bb6",
     "dem.public.demos@1.0.0": "786d874a331e7cb223bd9f045bd4c6355ec77d23d6beddb3fe2a8cafd69c901c",
-    "dem.public.natural_deduction@1.0.0": "7346c1aa0cf9470356cf1d1339ecf5c1bfbf15ac16956c9eb8dead8bb5c88962",
-    "dem.public.equivalence@1.0.0": "663fc09b6bfef5ed5deae62e676e4bb245d3c85f7abfa134da7228570b4f8fe5",
-    "dem.public.zfc@1.1.0": "fa71dc202b76568ca4b8f7f416b8a038450b01c20fd7f1ef55561e80e4bb14b9",
-    "dem.public.mk@1.1.0": "2a14ded1899654760219751918bf919ae516ba9a0df263258c2ce4efc3b756cc",
-    "dem.public.unique_existence@1.0.0": "0337a8103066b9dc5badf7e2c0c166e5e8b06e2a3de061a62f360353ac9e6c5a",
-    "dem.public.relations@1.0.0": "6d6facf7fe863f8822b82f9bb26783ea6630035dd493fcd78481745a347e7cb3",
-    "dem.public.class_relations@1.0.0": "ddc7483673b0e39b73f8b1e880613fab58d5c73441233c13eac1174b635f8726"
+    "dem.public.natural-deduction@1.0.0": "f44ec7bc5d0ceb27ac71075c26d81ffd714cb795a69f453d420358b08d9fe0a8",
+    "dem.public.equivalence@1.0.0": "a4796fa0d1bd603beb35c464eb44c1845bbf908dbb40fc2cae767e7f7882a442",
+    "dem.public.zfc@2.0.0": "34083fa8c2d291166caf9699545ee5464307e13daccb816985ca3a7fb2acf10a",
+    "dem.public.unique-existence@2.0.0": "1b0596e6a1274a178f3fa3928faae9f62124a0111df92392ce51504735df2086",
+    "dem.public.relations@2.0.0": "edb4f18586e8b912e34fffe91c45d546a2dd5cc7679f0703ddadbfdaba5d13a7",
+    "dem.public.mk@2.0.0": "a17d06e72ccda1ca11d257704a6df2c285ec1713ac8f92decd899b479045bd43",
+    "dem.public.class-relations@2.0.0": "04bc85d1d28f8912a74c22ef73df3fe62541a17e6eed385f8ca41566c5dcf814"
   },
   "counts": {
     "before": {

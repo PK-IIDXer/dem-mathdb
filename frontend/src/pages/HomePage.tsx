@@ -10,7 +10,8 @@ import { useQuery } from '@tanstack/react-query'
 import { theoremsApi } from '../api/theorems'
 import { tagsApi } from '../api/tags'
 import { axiomsApi } from '../api/axioms'
-import { FormulaPreview } from '../components/FormulaPreview'
+import { TheoremStatementPreview, theoremFormulaIds } from '../components/TheoremStatementPreview'
+import { usePrimeFormulas } from '../hooks/useFormulaLatex'
 import { ONBOARDING_TAG_NAME, onboardingQuery } from '../onboarding'
 import { EXPLORATION_TAG_NAME } from '../exploration'
 import { useReadOnly } from '../ReadOnlyContext'
@@ -41,6 +42,7 @@ export function HomePage() {
 
   const { data: stats, isError: statsError } = useQuery({ queryKey: ['stats'], queryFn: statsApi.get })
   const recentTheorems = [...theorems].sort((a, b) => b.id - a.id).slice(0, RECENT_COUNT)
+  const formulasWaiting = usePrimeFormulas(recentTheorems.flatMap(theoremFormulaIds))
   const visibleTags = tags.filter(
     (tag) => tag.name !== ONBOARDING_TAG_NAME && tag.name !== EXPLORATION_TAG_NAME,
   )
@@ -102,7 +104,7 @@ export function HomePage() {
                     </span>
                   </div>
                   <div className="text-sm">
-                    <FormulaPreview formulaId={theorem.conclusion_formula_id} />
+                    <TheoremStatementPreview theorem={theorem} formulasWaiting={formulasWaiting} />
                   </div>
                 </Link>
               </li>

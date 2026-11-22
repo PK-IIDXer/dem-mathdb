@@ -52,13 +52,14 @@ function SubstSummary({
         <span className="ml-1 inline-flex flex-wrap items-center gap-x-2">
           {termSubsts.map((subst, index) => (
             <span key={`t${index}`} className="whitespace-nowrap">
-              {symbolsById.get(subst.source_symbol_id)?.name ?? `#${subst.source_symbol_id}`} ↦{' '}
+              {symbolsById.get(subst.source_symbol_id)?.name ?? `#${subst.source_symbol_id}`}{' := '}
               <FormulaPreview formulaId={subst.target_formula_id} />
             </span>
           ))}
           {propSubsts.map((subst, index) => (
             <span key={`p${index}`} className="whitespace-nowrap">
-              {symbolsById.get(subst.source_symbol_id)?.name ?? `#${subst.source_symbol_id}`} ↦{' '}
+              {symbolsById.get(subst.source_symbol_id)?.name ?? `#${subst.source_symbol_id}`}
+              {subst.formal_param_symbol_ids.length > 0 && `(${subst.formal_param_symbol_ids.map((id) => symbolsById.get(id)?.name ?? `#${id}`).join(', ')})`}{' := '}
               <FormulaPreview formulaId={subst.body_formula_id} />
             </span>
           ))}

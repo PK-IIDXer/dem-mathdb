@@ -11,10 +11,11 @@ import { Latex } from '../Latex'
 interface FormulaPickerProps {
   value: number | null
   onChange: (formulaId: number) => void
+  onDraftChange?: (unfinished: boolean) => void
   context?: Record<string, number>
 }
 
-export function FormulaPicker({ value, onChange, context }: FormulaPickerProps) {
+export function FormulaPicker({ value, onChange, onDraftChange, context }: FormulaPickerProps) {
   useLanguage()
 
   const { data: symbols = [] } = useQuery({
@@ -42,7 +43,7 @@ export function FormulaPicker({ value, onChange, context }: FormulaPickerProps) 
 
   return (
     <div className="space-y-2">
-      <FormulaEditor context={context} onRegistered={(formula) => onChange(formula.id)} />
+      <FormulaEditor context={context} onDraftChange={onDraftChange} onRegistered={(formula) => onChange(formula.id)} />
       {selectedFormula && (
         <div className="rounded border border-indigo-100 bg-indigo-50 p-2 text-xs text-indigo-800">
           {t("FormulaPicker_185")}{selectedFormula.id}

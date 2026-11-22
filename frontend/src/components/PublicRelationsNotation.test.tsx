@@ -41,7 +41,7 @@ it.each(['ja', 'en'] as const)('renders and serializes the public relations nota
 
 it('offers the public symbols for input and recognizes the definition kinds', () => {
   const completion = buildSymbolCompletionItems(symbols, new Map(), {})
-  for (const name of ['∃!', '⊂', '×', 'IsRelation', 'IsMap', 'IsClassRelation', 'IsClassMap']) {
+  for (const name of ['∃!', '⊂', '×', 'IsRelation', 'IsMap', 'IsClassRelation', 'IsClassMap', 'Preimage', '∘']) {
     expect(completion.some(item => item.symbol.name === name), name).toBe(true)
   }
   const phi = symbols.find(symbol => symbol.name === 'φ¹')!
@@ -50,6 +50,21 @@ it('offers the public symbols for input and recognizes the definition kinds', ()
   expect(inferDefinitionKind(Array.from({ length: 3 }, () => ({
     symbolTypeName: x.symbol_type.name, arity: 0,
   })), 'proposition')).toBe('predicate')
+})
+
+it('keeps the grouping of composition in the display', () => {
+  const latexOf = (text: string) => {
+    const sample = fixture.samples.find(candidate => candidate.text === text)
+    expect(sample, text).toBeDefined()
+    const parsed = tokensToTree(sample!.tokens, byId)
+    expect(parsed.ok, text).toBe(true)
+    return renderLatex(parsed.tree, byId).replace(/\s+/g, '')
+  }
+  const associativity = latexOf('(h ∘ (g ∘ f)) = ((h ∘ g) ∘ f)')
+  expect(associativity).toContain('h\\circ\\left(g\\circ f\\right)'.replace(/\s+/g, ''))
+  expect(associativity).toContain('\\left(h\\circ g\\right)\\circ f'.replace(/\s+/g, ''))
+  // The value of a composite reads (g ∘ f)(x), never g ∘ f(x).
+  expect(latexOf('(ev(g ∘ f, x)) = (ev(g, ev(f, x)))')).toContain('\\left(g\\circ f\\right)\\left(x\\right)'.replace(/\s+/g, ''))
 })
 
 it.each(['ja', 'en'] as const)('shows the requested names and explanatory copy in %s', language => {
@@ -69,12 +84,13 @@ it.each(['ja', 'en'] as const)('shows the requested names and explanatory copy i
 
 it.each(['ja', 'en'] as const)('accepts relations and maps through the formula editor in %s', async language => {
   setLanguage(language)
-  const samples = fixture.samples.filter(sample => [
-    'IsMap(f, X, Y) → (∀ x.',
-    'IsSet(X) → IsSet(Y) → IsMap(f, X, Y)',
-    '∀ x. ∀ y. ∀ z. (IsMap(x, y, z))',
-  ].some(start => sample.text.startsWith(start)))
-  expect(samples).toHaveLength(3)
+  const samples = fixture.samples.filter(sample =>
+    sample.text === 'IsMap(f, X, Y)' ||
+    sample.text.includes('Preimage(f, a)') && sample.text.includes('⊂ X') ||
+    sample.text.startsWith('∀ x. (x ∈ X) → (∃ y.') ||
+    sample.text.startsWith('∀ x. ∀ y. ∀ z. (IsMap(x, y, z))'),
+  )
+  expect(samples).toHaveLength(4)
   const parse = vi.spyOn(formulasApi, 'parse').mockImplementation(async text => {
     const sample = samples.find(candidate => candidate.text === text)
     if (!sample) throw new Error('Unexpected formula input')

@@ -97,7 +97,7 @@ def test_ownership_dependency_closure_and_freeze(fresh_seeded_session):
         publish_release(s,r.id)
     assert_release_digests(s, SPEC['release_digests'])
     versions = {s.get(Package, r.package_id).name: r for r in releases}
-    assert versions['dem.public.mk'].manifest['depends'] == {'dem.public.zfc': '=1.1.0'}
+    assert versions['dem.public.mk'].manifest['depends'] == {'dem.public.zfc': '=2.0.0'}
     assert versions['dem.public.zfc'].manifest['depends'] == {'dem.public.equivalence': '=1.0.0'}
     for model in MODELS:
         for row in s.scalars(select(model)):
@@ -107,12 +107,22 @@ def test_ownership_dependency_closure_and_freeze(fresh_seeded_session):
 
 def test_all_new_proofs_in_all_systems(fresh_seeded_session):
     s = fresh_seeded_session; ps = ProofService(s); axs = AxiomService(s)
+    fs, ts = FormulaService(s), TheoremService(s)
     new = [t for t in s.scalars(select(Theorem)) if t.name.startswith(('ZF:','MK:'))]
     assert len(new) == 30
     for theorem in new:
         proofs = ps.list_for_theorem(theorem.id)
         assert len(proofs) == 1 and proofs[0].status == 'verified' and theorem.status == 'proven'
-        assert len(ps.list_steps(proofs[0].id)) <= 200
+        row = SPEC['proofs'][theorem.name]
+        assert len(ps.list_steps(proofs[0].id)) == row['steps'] <= 200
+        assert theorem.conclusion_formula.hash == row['hash']
+        assert fs.parse_text(row['dss'])[0] == ps._tokens_for_formula(theorem.conclusion_formula_id)
+        assert [(formula.hash, ps._tokens_for_formula(formula.id))
+                for _, formula in ts.list_premises(theorem.id)] == [
+                    (premise['hash'], fs.parse_text(premise['dss'])[0]) for premise in row['premises']
+                ]
+        assert sorted(a.name for a in ps.list_used_axioms(proofs[0].id)) == row['axioms']
+        assert [n for n in SYSTEMS if ps.is_valid_in_system(proofs[0].id, axs.get_system_by_name(n).id)] == row['valid']
         expected = ([False]*8+[True] if theorem.name.startswith('MK:') else
                     [False,False]+[True]*7 if theorem.name == 'ZF:対の共通成分消去' else [False]*6+[True]*3)
         assert [ps.is_valid_in_system(proofs[0].id,axs.get_system_by_name(n).id) for n in SYSTEMS] == expected, theorem.name

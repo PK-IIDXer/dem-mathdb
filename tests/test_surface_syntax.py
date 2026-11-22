@@ -53,7 +53,7 @@ def test_round_trip_all_formulas(all_seeded_session: Session) -> None:
         assert parse_core(rendered, table) == tokens, formula_id
         assert parse_convenience(rendered, table) == tokens, formula_id
         formula_count += 1
-    assert formula_count == 2104
+    assert formula_count == 3195
 
 
 @pytest.mark.parametrize("parser", (parse_core, parse_convenience))
@@ -225,12 +225,15 @@ def test_lexer_longest_match(all_seeded_session: Session) -> None:
         for long in names
         if short != long and long.startswith(short)
     ]
-    assert set(prefix_pairs) == {("φ", "φ¹"), ("φ", "φ²"), ("φ", "φ³"), ("ψ", "ψ¹"), ("∃", "∃!")}
+    assert set(prefix_pairs) == {("φ", "φ¹"), ("φ", "φ²"), ("φ", "φ³"), ("ψ", "ψ¹"), ("∃", "∃!"), ("e", "ev")}
     for _short, long in prefix_pairs:
         lexemes = lexer.tokenize(long)
         assert len(lexemes) == 2
         assert lexemes[0].text == long
         assert lexemes[0].symbol_id == table.resolve(long).id
+        short_lexemes = lexer.tokenize(_short)
+        assert [lexeme.text for lexeme in short_lexemes[:-1]] == [_short]
+        assert short_lexemes[0].symbol_id == table.resolve(_short).id
 
 
 def test_parse_errors_carry_position(all_seeded_session: Session) -> None:
@@ -278,7 +281,7 @@ def test_builtin_aliases_and_public_variables(all_seeded_session: Session) -> No
         )
     }
     assert variable_names == {"t", "x", "y", "a", "b", "c", "d", "w", "u", "z",
-                              "v", "q", "g", "Z", "r", "s", "h", "k", "f", "R", "S", "X", "Y", "i", "j", "l"}
+                              "v", "q", "g", "Z", "r", "s", "h", "k", "f", "R", "S", "X", "Y", "W", "i", "j", "l", "m", "e"}
 
 
 @pytest.fixture(scope="module", autouse=True)

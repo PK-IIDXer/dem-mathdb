@@ -143,12 +143,17 @@ def seed_public_set_relations(session):
     return _extend(session, previous, seed_public_relations, (), (), THEOREM_NAMES)
 
 
-def seed_all(session):
-    from dem.db.seeds._notation import validate_display_shapes
+def seed_public_class_relations_layer(session):
     from dem.db.seeds.public_class_relations import THEOREM_NAMES, seed_public_class_relations
     from dem.db.seeds.public_mk import AXIOMS, THEOREM_NAMES as MK_NAMES, seed_public_mk
     previous = _extend(session, seed_public_set_relations(session), seed_public_mk,
                        tuple(a[0] for a in AXIOMS), ("MK",), MK_NAMES)
-    summary = _extend(session, previous, seed_public_class_relations, (), (), THEOREM_NAMES)
+    return _extend(session, previous, seed_public_class_relations, (), (), THEOREM_NAMES)
+
+
+def seed_all(session):
+    from dem.db.seeds._notation import validate_display_shapes
+    from dem.db.seeds.public_algebra import THEOREM_NAMES, seed_public_algebra
+    summary = _extend(session, seed_public_class_relations_layer(session), seed_public_algebra, (), (), THEOREM_NAMES)
     validate_display_shapes(session)
     return summary

@@ -134,7 +134,7 @@ def test_catalog_preserves_every_existing_public_identity_and_owns_all_rows(fres
             expected_release = session.scalar(select(PackageRelease).where(
                 PackageRelease.manifest["package"].as_string() == {
                     "public-core": "dem.public.logic", "public-demo": "dem.public.demos",
-                    "public-natural-deduction": "dem.public.natural_deduction"}[phase["package"]]))
+                    "public-natural-deduction": "dem.public.natural-deduction"}[phase["package"]]))
             for row in rows:
                 if row.public_id in phase["entities"][kind]:
                     assert expected_release is not None and row.release_id == expected_release.id

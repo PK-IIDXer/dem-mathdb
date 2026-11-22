@@ -25,6 +25,17 @@ DEFINITIONS = {
         ("IsMap", PredicateDefinitionInput, ("f", "X", "Y"),
          "IsRelation(f, X, Y) ∧ (∀ x. (x ∈ X → (∃! y. (y ∈ Y ∧ ⟨,⟩(x, y) ∈ f))))",
          r"#1 \mathrel{\mathsf{IsMapFrom}} #2 \mathrel{\mathsf{To}} #3", None),
+        ("ev", FunctionDefinitionInput, ("f", "x"),
+         "{|} z. (IsSet(x) ∧ (∃ y. (IsSet(y) ∧ (⟨,⟩(x, y) ∈ f"
+         " ∧ ((∀ w. ((IsSet(w) ∧ ⟨,⟩(x, w) ∈ f) → w = y)) ∧ z ∈ y)))))",
+         r"#1\left(#2\right)", None),
+        ("Preimage", FunctionDefinitionInput, ("f", "a"),
+         "{|} x. (IsSet(x) ∧ (∃ y. (y ∈ a ∧ ⟨,⟩(x, y) ∈ f)))",
+         r"\operatorname{Preimage}\left(#1, #2\right)", None),
+        ("∘", FunctionDefinitionInput, ("g", "f"),
+         "{|} q. (∃ x. ∃ y. ∃ z. (IsSet(x) ∧ (IsSet(y) ∧ (IsSet(z) ∧ (q = ⟨,⟩(x, z)"
+         " ∧ (⟨,⟩(x, y) ∈ f ∧ ⟨,⟩(y, z) ∈ g))))))",
+         r"#1 \circ #2", 70),
     ),
     "class-relations": (
         ("IsClassRelation", PredicateDefinitionInput, ("R", "X", "Y"),
@@ -34,7 +45,7 @@ DEFINITIONS = {
          r"#1 \mathrel{\mathsf{IsClassMapFrom}} #2 \mathrel{\mathsf{To}} #3", None),
     ),
 }
-VARIABLES = {"unique-existence": ("i", "j", "l"), "relations": ("f", "R", "S", "X", "Y"), "class-relations": ()}
+VARIABLES = {"unique-existence": ("i", "j", "l"), "relations": ("f", "R", "S", "X", "Y", "W"), "class-relations": ()}
 
 
 def register_definitions(session, package):

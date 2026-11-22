@@ -6,7 +6,7 @@ import pytest
 from sqlalchemy import event, select
 
 from dem.db.models import Package, PackageRelease, Symbol
-from dem.db.seeds import seed_all
+from dem.db.seeds import seed_public_class_relations_layer
 from dem.db.seeds.public_relation_definitions import DEFINITIONS, register_definitions
 
 from dem.errors import FormulaValidationError, ProofValidationError, ValidationError
@@ -62,6 +62,9 @@ def test_statements_proof_dependencies_and_systems(fresh_seeded_session):
         tokens = fs.parse_text(expected["dss"])[0]
         assert tokens == ps._tokens_for_formula(theorem.conclusion_formula_id)
         assert fs.parse_text(fs.print_text(tokens))[0] == tokens
+        assert [(form.hash, ps._tokens_for_formula(form.id)) for _, form in ts.list_premises(theorem.id)] == [
+            (p["hash"], fs.parse_text(p["dss"])[0]) for p in expected["premises"]
+        ]
         assert proof.status == "verified"
         assert len(ps.list_steps(proof.id)) == expected["steps"] <= 200
         assert [name for name, sid in systems.items() if ps.is_valid_in_system(proof.id, sid)] == expected["valid"]
@@ -90,7 +93,8 @@ def test_seed_all_returns_with_selects(fresh_seeded_session):
 
     event.listen(s.get_bind(), "before_cursor_execute", record)
     try:
-        summary = seed_all(s)
+        # This phase ends with the class relations layer; seed_all also adds algebra.
+        summary = seed_public_class_relations_layer(s)
     finally:
         event.remove(s.get_bind(), "before_cursor_execute", record)
     assert {row["name"] for row in SPEC["theorems"]} <= set(summary.theorem_names)
@@ -117,6 +121,11 @@ def replace_step(session, theorem_name, old_axiom, new_axiom):
 @pytest.mark.parametrize(("theorem","old","new"), [
     ("直積:集合性", "ZF和集合公理", "hilbert_eq_refl"),
     ("MK:定義域が集合の類写像は写像", "MK類外延性公理", "ZF外延性公理"),
+    ("値:特徴づけ", "ZF分出公理図式", "hilbert_eq_refl"),
+    ("写像:逆像の集合性", "ZF分出公理図式", "hilbert_eq_refl"),
+    ("写像:逆像の所属", "ZF内包項所属公理図式", "hilbert_eq_refl"),
+    ("写像:合成は関係", "ZF分出公理図式", "hilbert_eq_refl"),
+    ("写像:合成の所属", "ZF内包項所属公理図式", "hilbert_eq_refl"),
 ])
 def test_replacing_axiom_rejects_proof(fresh_seeded_session, theorem, old, new):
     replace_step(fresh_seeded_session, theorem, old, new)
@@ -125,6 +134,9 @@ def test_replacing_axiom_rejects_proof(fresh_seeded_session, theorem, old, new):
 @pytest.mark.parametrize(("system","axiom","theorem"), [
     ("ZF", "ZF和集合公理", "直積:集合性"),
     ("MK", "MK類外延性公理", "MK:定義域が集合の類写像は写像"),
+    ("ZF", "ZF分出公理図式", "値:特徴づけ"),
+    ("ZF", "パース公理", "値:集合性"),
+    ("MK", "MK類内包公理図式", "類写像:値の所属"),
 ])
 def test_removing_axiom_from_system_changes_validity(fresh_seeded_session, system, axiom, theorem):
     s = fresh_seeded_session
@@ -152,7 +164,10 @@ def test_unowned_symbol_is_detected(fresh_seeded_session, monkeypatch):
         assert_ownership(s)
 
 
-@pytest.mark.parametrize(("name","guard"), [("IsRelation", "IsSet(R) ∧ "), ("IsMap", "y ∈ Y ∧ ")])
+@pytest.mark.parametrize(("name","guard"), [
+    ("IsRelation", "IsSet(R) ∧ "), ("IsMap", "y ∈ Y ∧ "), ("ev", "IsSet(w) ∧ "),
+    ("Preimage", "IsSet(x) ∧ "), ("∘", "IsSet(y) ∧ "),
+])
 def test_definition_guard_mutation_changes_hash(seed_snapshot_factory, monkeypatch, name, guard):
     with seed_snapshot_factory.session("public_mk", "sqlite") as s:
         from dem.db.seeds.public_unique_existence import seed_public_unique_existence
@@ -175,6 +190,10 @@ def test_definition_guard_mutation_changes_hash(seed_snapshot_factory, monkeypat
             builder.seed_product()
             with pytest.raises(ValidationError, match="proposition substitution body must be a proposition"):
                 builder.seed_set_relations()
+        if name == "ev":
+            # Without the guard, a proper class would satisfy the uniqueness clause.
+            with pytest.raises(ValidationError, match="Builder MP mismatch"):
+                SetRelationProofs(s, "relations").seed_values()
 
 
 def test_workspace_roundtrip_with_relations(fresh_seeded_session, tmp_path):

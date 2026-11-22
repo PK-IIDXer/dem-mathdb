@@ -8,7 +8,7 @@ import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-quer
 import { tagsApi } from '../api/tags'
 import { theoremsApi } from '../api/theorems'
 import type { Theorem } from '../api/types'
-import { FormulaPreview } from '../components/FormulaPreview'
+import { TheoremStatementPreview, theoremFormulaIds } from '../components/TheoremStatementPreview'
 import { SearchFilterBar } from '../components/SearchFilterBar'
 import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { usePrimeFormulas } from '../hooks/useFormulaLatex'
@@ -131,9 +131,8 @@ const TheoremResults = memo(function TheoremResults({
 }) {
   useLanguage()
 
-  // One request for the conclusions not cached yet, instead of one FormulaPreview
-  // fetch per card. Called here rather than in the page so the memo still holds.
-  const formulasWaiting = usePrimeFormulas(theorems.map((theorem) => theorem.conclusion_formula_id))
+  // Prime the statements together while keeping cached cards visible.
+  const formulasWaiting = usePrimeFormulas(theorems.flatMap(theoremFormulaIds))
   const counts = theoremValidationCounts(theorems)
   return (
     <>
@@ -148,7 +147,7 @@ const TheoremResults = memo(function TheoremResults({
             key={theorem.id}
             type="button"
             onClick={() => navigate(`/theorems/${theorem.public_id}`)}
-            className="rounded-lg border border-slate-200 p-4 text-left hover:border-indigo-300 hover:bg-indigo-50/40"
+            className="min-w-0 rounded-lg border border-slate-200 p-4 text-left hover:border-indigo-300 hover:bg-indigo-50/40"
           >
             <div className="mb-1 flex items-center justify-between">
               <span className="font-mono text-sm text-slate-800">{theorem.name}</span> <EntityBadge namespace={theorem.namespace_name} />
@@ -163,13 +162,7 @@ const TheoremResults = memo(function TheoremResults({
               </span>
             </div>
             <div className="mb-2 text-sm">
-              {/* Only cards whose formula is in the pending batch wait; cached ones
-                  stay on screen while the next result's formulas load. */}
-              {formulasWaiting.has(theorem.conclusion_formula_id) ? (
-                <span className="text-slate-400">{t("BetaGettingStarted_109")}</span>
-              ) : (
-                <FormulaPreview formulaId={theorem.conclusion_formula_id} />
-              )}
+              <TheoremStatementPreview theorem={theorem} formulasWaiting={formulasWaiting} />
             </div>
             {theorem.description && (
               <p className="mb-2 text-xs text-slate-500">{theorem.description}</p>

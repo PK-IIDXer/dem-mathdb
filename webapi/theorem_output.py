@@ -1,4 +1,4 @@
-"""Display-only projection of imported provenance onto theorem responses."""
+"""Display-only projection of premises and imported provenance onto theorem responses."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from dem.db.models import ImportRecord
-from dem.db.models.theorem import Theorem
+from dem.db.models.theorem import Theorem, TheoremPremise
 from webapi.schemas import AxiomComparisonOut, ExternalCheckOut, ExternalSourceOut, TheoremOut
 
 
@@ -48,7 +48,15 @@ def theorem_outputs(session: Session, theorems: Iterable[Theorem]) -> list[Theor
     items = list(theorems)
     theorem_ids = [item.id for item in items]
     grouped: dict[int, list[ExternalCheckOut]] = {theorem_id: [] for theorem_id in theorem_ids}
+    premises: dict[int, list[int]] = {theorem_id: [] for theorem_id in theorem_ids}
     if theorem_ids:
+        rows = session.execute(
+            select(TheoremPremise.theorem_id, TheoremPremise.formula_id)
+            .where(TheoremPremise.theorem_id.in_(theorem_ids))
+            .order_by(TheoremPremise.theorem_id, TheoremPremise.ord)
+        )
+        for theorem_id, formula_id in rows:
+            premises[theorem_id].append(formula_id)
         records = session.scalars(
             select(ImportRecord)
             .where(ImportRecord.theorem_id.in_(theorem_ids))
@@ -58,7 +66,10 @@ def theorem_outputs(session: Session, theorems: Iterable[Theorem]) -> list[Theor
             grouped[record.theorem_id].append(_external_check(record))
     return [
         TheoremOut.model_validate(theorem, from_attributes=True).model_copy(
-            update={"external_checks": grouped[theorem.id]}
+            update={
+                "premise_formula_ids": premises[theorem.id],
+                "external_checks": grouped[theorem.id],
+            }
         )
         for theorem in items
     ]
